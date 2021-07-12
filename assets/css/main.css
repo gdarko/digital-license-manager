@@ -1,0 +1,319 @@
+/* Variables */
+:root {
+	--color-primary: #007bff;
+	--color-secondary: #6c757d;
+	--color-success: #36be6c;
+	--color-danger: #dc3545;
+	--color-warning: #ffc107;
+	--color-info: #17a2b8;
+	--color-light: #f8f9fa;
+	--color-dark: #343a40;
+	--color-grey-1: #E1E1E1;
+	--color-inactive: #8f8f8f;
+}
+
+/* Text colors */
+.text-primary {
+	color: var(--color-primary);
+}
+.text-secondary {
+	color: var(--color-secondary);
+}
+.text-success {
+	color: var(--color-success);
+}
+.text-danger {
+	color: var(--color-danger);
+}
+.text-warning {
+	color: var(--color-warning);
+}
+.text-info {
+	color: var(--color-info);
+}
+.text-light {
+	color: var(--color-light);
+}
+.text-dark {
+	color: var(--color-dark);
+}
+
+/* License table */
+table.wp-list-table.licensekeys td.source.column-source > span,
+table.wp-list-table.lizenzschlssel td.source.column-source > span {
+	font-size: 2em;
+}
+.dlm-license-key-show,
+.dlm-license-key-hide {
+	cursor: pointer;
+}
+
+table.wp-list-table.licensekeys td.source.column-source,
+table.wp-list-table.lizenzschlssel td.source.column-source,
+table.wp-list-table.licensekeys td.valid_for.column-valid_for,
+table.wp-list-table.lizenzschlssel td.valid_for.column-valid_for {
+	vertical-align: middle;
+	text-align: center;
+}
+table.wp-list-table.licensekeys td.status.column-status,
+table.wp-list-table.lizenzschlssel td.status.column-status {
+	vertical-align: middle;
+	text-align: left;
+}
+table.wp-list-table.licensekeys span.dlm-date,
+table.wp-list-table.lizenzschlssel span.dlm-date {
+	display: inline-block;
+	min-width: 100px;
+	text-align: center;
+}
+
+/** License Key Placeholder */
+.dlm-placeholder {
+	display: inline-block;
+	font-family: Consolas, monospace;
+	font-weight: 400;
+	min-width: 150px;
+	min-height: 20px;
+	text-align: center;
+	position: relative;
+	line-height: 20px;
+	padding: 3px 10px 2px;
+	margin-left: 25px;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+	cursor: pointer;
+}
+.dlm-placeholder:hover {
+	background-image: linear-gradient(to right, #6fd4a1, #36be6c);
+	color: #ffffff;
+}
+.dlm-placeholder:before {
+	font-family: 'dashicons', sans-serif;
+	content: "\f112";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: -25px;
+	width: 25px;
+	background-color: #36be6c;
+	color: #ffffff;
+	line-height: 25px;
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px;
+}
+
+.dlm-placeholder.empty:after {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	content: 'XXXX-XXXX-XXXX-XXXX';
+	color: rgba(0,0,0,.4);
+	line-height: 25px;
+}
+.dlm-placeholder.empty:hover:after {
+	color: #ffffff;
+}
+.dlm-spinner {
+	opacity: 0;
+	margin-left: 5px;
+}
+.dlm-clipboard {
+	font-family: Consolas, monospace;
+	background-color: #f0f0f0;
+	color: #334;
+	padding: 7px 14px;
+	border: 1px solid rgba(0,0,0,.1);
+	border-radius: 3px;
+	opacity: 1;
+	-webkit-box-shadow: 2px 3px 5px rgba(0,0,0,.1);
+	box-shadow: 2px 3px 5px rgba(0,0,0,.1);
+	-webkit-transition: all .5s ease-out;
+	-o-transition: all .5s ease-out;
+	transition: all .5s ease-out;
+}
+
+/* Source Icons */
+.dlm-source-icon {
+	max-width: 24px;
+	max-height: 24px;
+}
+
+/* Custom status */
+.dlm-status {
+	padding: 3px 6px;
+	position: relative;
+	font-weight: 600;
+	border-radius: 3px;
+	cursor: default;
+	border: 2px solid transparent;
+	color: #6f6f6f;
+	min-width: 90px;
+	text-align: center;
+	display: block;
+	word-break: break-word;
+}
+.dlm-status.sold {
+	border: 2px solid var(--color-info);
+	color: var(--color-info);
+}
+.dlm-status.sold > span.dashicons {
+	color: var(--color-info);
+}
+
+.dlm-status.delivered {
+	border: 2px solid var(--color-success);
+	color: var(--color-success);
+}
+.dlm-status.delivered > span.dashicons {
+	color: var(--color-success);
+}
+
+.dlm-status.active {
+	border: 2px solid var(--color-primary);
+	color: var(--color-primary);
+}
+.dlm-status.active > span.dashicons {
+	color: var(--color-primary);
+}
+
+.dlm-status.inactive {
+	border: 2px solid var(--color-inactive);
+	color: var(--color-inactive);
+}
+.dlm-status.inactive > span.dashicons {
+	color: #8f8f8f;
+}
+.dlm-status.expired {
+	border: 2px solid var(--color-danger);
+	color: var(--color-danger);
+}
+.dlm-status.expired > span.dashicons {
+	color: var(--color-danger);
+}
+
+.dlm-status.disabled {
+	border: 2px solid var(--color-warning);
+	color: var(--color-warning);
+}
+.dlm-status.disabled > span.dashicons {
+	color: var(--color-warning);
+}
+
+.dlm-status-inline {
+	display: inline-block;
+}
+.dlm-status-inline.activation.done,
+.dlm-status-inline.activation.done > span.dashicons {
+	color: var(--color-info);
+}
+
+.table-view-list.licenses,
+.table-view-list.activations {
+	table-layout: auto;
+}
+
+/** My Account **/
+.dlm-myaccount-license-key {
+	font-family: Consolas, monospace;
+	font-size: 13px;
+}
+
+/** Custom icons **/
+.dlm-icons {
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+}
+.dlm-icons:before {
+	font-family: woocommerce, sans-serif;
+	text-align: center;
+	display: inline-block;
+	width: 100%;
+	position: relative;
+	top: 1px;
+}
+.dlm-icons.delivered:before {
+	content: "\e01a";
+}
+
+/** Badges **/
+.dlm-badge {
+	display: inline-block;
+	border-radius: 50%;
+	width: 15px;
+	height: 15px;
+	line-height: 15px;
+	text-align: center;
+	padding: 2px;
+	margin-left: .5em;
+	cursor: default;
+}
+.dlm-badge.info {
+	background-color: var(--color-success);
+	color: #ffffff;
+}
+
+/** Products **/
+#license_manager_product_data .form-field.dlm_licensed_product_changelog {
+	padding: 5px 12px 5px 162px;
+	position: relative;
+	margin: 9px 0;
+}
+#license_manager_product_data .form-field.dlm_licensed_product_changelog label {
+	position: absolute;
+	left: 0;
+	margin: 0 12px;
+	line-height: 24px;
+	font-size: 12px;
+}
+#license_manager_product_data .form-field.dlm_licensed_product_changelog #wp-dlm_licensed_product_changelog-wrap {
+	margin-top: 23px;
+}
+.button.dlm-license-keys-show-all {
+	margin-right: 5px;
+}
+
+@media only screen and (max-width: 500px) {
+	#license_manager_product_data .form-field.dlm_licensed_product_changelog {
+		padding: 5px 20px;
+	}
+}
+
+@media only screen and (max-width: 1280px) {
+	#license_manager_product_data .form-field.dlm_licensed_product_changelog {
+		padding: 5px 12px 5px 12px;
+		clear: both;
+	}
+	#license_manager_product_data .form-field.dlm_licensed_product_changelog label {
+		position: static;
+		margin: 0;
+	}
+}
+.dlm-text-center {
+	text-align: center !important;
+}
+.dlm-clear-spacing {
+	margin:0!important;
+	padding:0 !important;
+}
+@media(min-width: 767px) {
+	.dlm-checkbox-table {
+		max-width: 50%;
+	}
+}
+
+/* Modals */
+.dlm-form-row--checkbox {
+	display: block;
+	margin-bottom: 0;
+	margin-top: 5px;
+}
+.dlm-form-row > label {
+	font-weight: bold;
+}
+
+.wrap.dlm .tablenav  .select2-container {
+	min-width:250px;
+}

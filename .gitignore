@@ -1,0 +1,9 @@
+assets/etc/defuse.txt
+assets/etc/secret.txt
+logs/debug.log
+logs/error.log
+vendor
+vendor/*
+.idea
+.idea/*
+/composer.phar

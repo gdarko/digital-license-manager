@@ -1,0 +1,17 @@
+{
+  "name": "gdarko/digital-license-manager",
+  "autoload": {
+    "psr-4": {
+      "IdeoLogix\\DigitalLicenseManager\\": "includes/"
+    }
+  },
+  "require": {
+    "defuse/php-encryption": "^2.2",
+    "setasign/fpdf": "^1.8",
+    "ext-openssl": "*",
+    "ext-json": "*"
+  },
+  "config": {
+    "optimize-autoloader": true
+  }
+}
