@@ -13,12 +13,12 @@ $columns = \IdeoLogix\DigitalLicenseManager\Controllers\Licenses::exportColumns(
         <form method="POST" action="<?php echo admin_url( 'admin-post.php' ); ?>" id="dlm-license-export-form">
             <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="<?php echo $modal_id; ?>-title">
                 <header class="modal__header">
-                    <h2 class="modal__title" id="<?php echo $modal_id; ?>-title">
+                    <h2 class="modal__title" id="<?php echo esc_attr($modal_id); ?>-title">
 						<?php _e( 'Export Licenses', 'digital-license-manager' ); ?>
                     </h2>
                     <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
                 </header>
-                <main class="modal__content" id="<?php echo $modal_id; ?>-content">
+                <main class="modal__content" id="<?php echo esc_attr($modal_id); ?>-content">
                     <div class="dlm-form-row">
                         <label><?php _e( 'Columns' ); ?></label>
 						<?php foreach ( $columns as $column ): ?>

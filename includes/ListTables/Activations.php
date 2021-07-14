@@ -548,11 +548,11 @@ class Activations extends ListTable {
 		$selected = isset( $_REQUEST['license-id'] ) ? (int) $_REQUEST['license-id'] : '';
 		?>
         <label for="filter-by-license-id" class="screen-reader-text">
-            <span><?php _e( 'Filter by order', 'digital-license-manager' ); ?></span>
-        </label><select name="order-id" id="filter-by-license-id">
+            <span><?php _e( 'Filter by license', 'digital-license-manager' ); ?></span>
+        </label><select name="license-id" id="filter-by-license-id">
             <option></option>
 			<?php if ( $selected ): ?>
-                <option selected value="<?php echo $selected; ?>"><?php echo sprintf( '#%d', $selected ); ?></option>
+                <option selected value="<?php echo $selected; ?>"><?php echo sprintf( '#%d', esc_attr($selected) ); ?></option>
 			<?php endif; ?>
         </select>
 		<?php
@@ -572,7 +572,7 @@ class Activations extends ListTable {
         <select name="license-source" id="filter-by-source">
             <option></option>
 			<?php foreach ( ActivationSource::all() as $key => $name ): ?>
-                <option value="<?php echo $key; ?>" <?php selected( $selected, $key ); ?>><?php echo $name; ?></option>
+                <option value="<?php echo $key; ?>" <?php selected( $selected, $key ); ?>><?php echo esc_attr($name); ?></option>
 			<?php endforeach; ?>
         </select>
 		<?php

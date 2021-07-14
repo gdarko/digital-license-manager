@@ -875,10 +875,7 @@ class Licenses extends ListTable {
 		$this->verifyNonce( $nonce );
 		$this->verifySelection();
 
-		$licenseKeyIds = isset( $_REQUEST['id'] ) ? (array) $_REQUEST['id'] : array();
-		if ( ! empty( $licenseKeyIds ) ) {
-			$licenseKeyIds = array_map( 'intval', $licenseKeyIds );
-		}
+		$licenseKeyIds = isset( $_REQUEST['id'] ) ? array_map('intval', (array) $_REQUEST['id']) : array();
 		$count = 0;
 
 		foreach ( $licenseKeyIds as $licenseKeyId ) {
@@ -920,11 +917,8 @@ class Licenses extends ListTable {
 		$this->verifyNonce( 'delete' );
 		$this->verifySelection();
 
-		$licenseKeyIds = isset( $_REQUEST['id'] ) ? (array) $_REQUEST['id'] : array();
-		if ( ! empty( $licenseKeyIds ) ) {
-			$licenseKeyIds = array_map( 'intval', $licenseKeyIds );
-		}
-		$count = 0;
+		$licenseKeyIds = isset( $_REQUEST['id'] ) ? array_map('intval', (array) $_REQUEST['id']) : array();
+
 
 		foreach ( $licenseKeyIds as $licenseKeyId ) {
 			/** @var LicenseResourceModel $license */
