@@ -377,13 +377,13 @@ class Orders {
 			$html .= sprintf(
 				'<a class="button dlm-license-keys-show-all" data-order-id="%d">%s</a>',
 				$item->get_order_id(),
-				__( 'Show license key(s)', 'digital-license-manager' )
+				__( 'Show license(s)', 'digital-license-manager' )
 			);
 
 			$html .= sprintf(
 				'<a class="button dlm-license-keys-hide-all" data-order-id="%d">%s</a>',
 				$item->get_order_id(),
-				__( 'Hide license key(s)', 'digital-license-manager' )
+				__( 'Hide license(s)', 'digital-license-manager' )
 			);
 
 			$html .= sprintf(

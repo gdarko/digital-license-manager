@@ -4,16 +4,9 @@ namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\IntegrationController as AbstractIntegrationController;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\IntegrationController as IntegrationControllerInterface;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
-use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Settings as SettingsData;
-
-use IdeoLogix\DigitalLicenseManager\Utils\Hash;
 use WC_Order;
 use WC_Product;
-use WP_User;
-use WP_User_Query;
 
 defined( 'ABSPATH' ) || exit;
 

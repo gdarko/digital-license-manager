@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 class Settings {
 
 	const SECTION_GENERAL = 'dlm_settings_general';
-	const SECTION_WOOCOMMERCE = 'dlm_settings_frontend';
+	const SECTION_WOOCOMMERCE = 'dlm_settings_woocommerce';
 	const SECTION_DELIVERY = 'dlm_settings_delivery';
 
 	/**
