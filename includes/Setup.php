@@ -353,7 +353,7 @@ class Setup {
 			'safeguard_data'    => 1,
 		);
 		$defaultSettingsFrontend = array(
-			'my_account_endpoint' => '1',
+			'myaccount_endpoint' => '1',
 		);
 		if ( ! get_option( 'dlm_settings_general' ) ) {
 			update_option( 'dlm_settings_general', apply_filters( 'dlm_settings_defaults_general', $defaultSettingsGeneral ) );

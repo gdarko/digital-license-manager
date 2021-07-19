@@ -3,6 +3,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
+use IdeoLogix\DigitalLicenseManager\Abstracts\SettingsFields;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Singleton;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\ApiKey as ApiKeyResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\ApiKey as ApiKeyResourceRepository;
@@ -16,6 +17,8 @@ use IdeoLogix\DigitalLicenseManager\ListTables\ApiKeys;
  * @package IdeoLogix\DigitalLicenseManager\Controllers
  */
 class Settings extends Singleton {
+
+	use SettingsFields;
 
 	/**
 	 * Settings constructor.
@@ -98,36 +101,11 @@ class Settings extends Singleton {
 					)
 				),
 			),
-			'frontend' => array(
-				'slug'              => 'frontend',
-				'name'              => __( 'Frontend', 'digital-license-manager' ),
-				'url'               => add_query_arg( 'tab', 'frontend', $baseUrl ),
-				'priority'          => 30,
-				'sanitize_callback' => array( $this, 'sanitizeArray' ),
-				'sections'          => array(
-					'my_account' => array(
-						'name'     => __( 'My Account' ),
-						'page'     => 'my_account',
-						'priority' => 10,
-						'fields'   => array(
-							10 => array(
-								'id'       => 'my_account_endpoint',
-								'title'    => __( 'Enable "Licenses"', 'digital-license-manager' ),
-								'callback' => array( $this, 'fieldCheckbox' ),
-								'args'     => array(
-									'label'   => __( "Display the 'Licenses' section inside WooCommerce's 'My Account'.", 'digital-license-manager' ),
-									'explain' => __( "You might need to save your permalinks after enabling this option.", 'digital-license-manager' ),
-								)
-							),
-						)
-					)
-				),
-			),
 			'rest_api' => array(
 				'slug'     => 'rest_api',
 				'name'     => __( 'API Keys', 'digital-license-manager' ),
 				'url'      => add_query_arg( 'tab', 'rest_api', $baseUrl ),
-				'priority' => 40,
+				'priority' => 20,
 				'callback' => array( $this, 'renderRestApi' ),
 			),
 
@@ -144,38 +122,6 @@ class Settings extends Singleton {
 		}
 
 		return $tabList;
-
-	}
-
-
-	/**
-	 * Render the default checkbox option
-	 *
-	 * @param $args
-	 */
-	public function fieldCheckbox( $args ) {
-
-		$key     = isset( $args['key'] ) ? $args['key'] : ''; // database key.
-		$field   = isset( $args['field'] ) ? $args['field'] : ''; // field name/id.
-		$value   = isset( $args['value'] ) && (bool) $args['value']; // field name/id.
-		$label   = isset( $args['label'] ) ? $args['label'] : '';
-		$explain = isset( $args['explain'] ) ? $args['explain'] : '';
-
-		$html = '<fieldset>';
-		$html .= sprintf( '<label for="%s">', $field );
-		$html .= sprintf(
-			'<input id="%s" type="checkbox" name="%s[%s]" value="1" %s/>',
-			$key,
-			$key,
-			$field,
-			checked( true, $value, false )
-		);
-		$html .= sprintf( '<span>%s</span>', $label );
-		$html .= '</label>';
-		$html .= sprintf( '<p class="description">%s</p>', $explain );
-		$html .= '</fieldset>';
-
-		echo $html;
 
 	}
 
@@ -424,50 +370,13 @@ class Settings extends Singleton {
 	 */
 	public function sanitizeGeneral( $settings ) {
 
-		if ( isset( $_POST['dlm_stock_synchronize'] ) ) {
-			if ( ! current_user_can( 'dlm_manage_settings' ) ) {
-				return $settings;
-			}
-			$productsSynchronized = Stock::synchronize();
-			if ( $productsSynchronized > 0 ) {
-				add_settings_error(
-					'dlm_settings_group_general',
-					'dlm_stock_update',
-					sprintf( __( 'Successfully updated the stock of %d WooCommerce products.', 'digital-license-manager' ), $productsSynchronized ),
-					'success'
-				);
-			} else {
-				add_settings_error(
-					'dlm_settings_group_general',
-					'dlm_stock_update',
-					__( 'The stock of all WooCommerce products is already synchronized.', 'digital-license-manager' ),
-					'success'
-				);
-			}
-		}
-
 		do_action( 'dlm_settings_sanitized', $settings );
 
 		return $settings;
 	}
 
 
-	/**
-	 * Sanitize settings, cast to array if not already.
-	 *
-	 * @param array $settings
-	 *
-	 * @return array
-	 */
-	public function sanitizeArray( $settings ) {
-		if ( $settings === null ) {
-			$settings = array();
-		}
 
-		do_action( 'dlm_settings_sanitized', $settings );
-
-		return $settings;
-	}
 
 	/**
 	 * Priority sorting two arrays.
@@ -496,7 +405,7 @@ class Settings extends Singleton {
 	 * @return void
 	 */
 	public function afterSanitize( $settings ) {
-		if ( isset( $settings['my_account_endpoint'] ) ) {
+		if ( isset( $settings['myaccount_endpoint'] ) ) {
 			flush_rewrite_rules( true );
 		}
 	}

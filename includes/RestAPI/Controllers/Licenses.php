@@ -188,6 +188,7 @@ class Licenses extends RestController {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function getLicenses() {
+
 		if ( ! $this->isRouteEnabled( $this->settings, '010' ) ) {
 			return $this->routeDisabledError();
 		}

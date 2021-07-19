@@ -36,7 +36,7 @@ class Stock {
 	 */
 	private static function modify( $product, $action, $amount = 1 ) {
 		// Check if the setting is enabled
-		if ( ! Settings::get( 'enable_stock_manager' ) ) {
+		if ( ! Settings::get( 'stock_management', Settings::SECTION_WOOCOMMERCE ) ) {
 			return false;
 		}
 

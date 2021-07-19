@@ -43,7 +43,7 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 		new Products();
 		new Settings();
 
-		if ( SettingsData::get( 'my_account_endpoint', SettingsData::SECTION_FRONTEND ) ) {
+		if ( SettingsData::get( 'myaccount_endpoint', SettingsData::SECTION_WOOCOMMERCE ) ) {
 			new MyAccount();
 		}
 	}

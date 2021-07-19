@@ -48,7 +48,7 @@ class Orders {
 	 * change hooks.
 	 */
 	private function addOrderStatusHooks() {
-		$orderStatusSettings = Settings::get( 'order_delivery_statuses', Settings::SECTION_GENERAL );
+		$orderStatusSettings = Settings::get( 'order_delivery_statuses', Settings::SECTION_WOOCOMMERCE );
 
 		// The order status settings haven't been configured.
 		if ( empty( $orderStatusSettings ) ) {
