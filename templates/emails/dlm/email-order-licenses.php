@@ -15,52 +15,53 @@
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License;
 
-defined('ABSPATH') || exit; ?>
+defined( 'ABSPATH' ) || exit;
 
-<h2><?php esc_html_e($heading);?></h2>
+?>
 
-<?php do_action('dlm_myaccount_licenses_after_heading'); ?>
+<h2><?php esc_html_e( $heading ); ?></h2>
+
+<?php do_action( 'dlm_myaccount_licenses_after_heading' ); ?>
 
 <div style="margin-bottom: 40px;">
-    <?php foreach ($data as $row): ?>
+	<?php foreach ( $data as $row ): ?>
         <table class="td" cellspacing="0" style="width: 100%; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;" border="1">
             <tbody>
-                <thead>
-                    <tr>
-                        <th class="td" scope="col" style="text-align: left;" colspan="2">
-                            <span><?php echo esc_html($row['name']); ?></span>
-                        </th>
-                    </tr>
-                </thead>
-                <?php
-                    /** @var License $license */
-                    foreach ($row['keys'] as $license):
-                        $decrypted = $license->getDecryptedLicenseKey();
-                        if(is_wp_error($decrypted)) {
-                            $decrypted = '';
-                        }
-                    ?>
-                    <tr>
-                        <td class="td" style="text-align: left; vertical-align: middle; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;" colspan="<?php echo ($license->getExpiresAt()) ? '1' : '2'; ?>">
-                            <code><?php echo esc_html($decrypted); ?></code>
-                        </td>
+            <thead>
+            <tr>
+                <th class="td" scope="col" style="text-align: left;" colspan="2">
+                    <span><?php echo esc_html( $row['name'] ); ?></span>
+                </th>
+            </tr>
+            </thead>
+			<?php
+			/** @var License $license */
+			foreach ( $row['keys'] as $license ):
+				$decrypted = $license->getDecryptedLicenseKey();
+				if ( is_wp_error( $decrypted ) ) {
+					$decrypted = '';
+				}
+				?>
+                <tr>
+                    <td class="td" style="text-align: left; vertical-align: middle; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;" colspan="<?php echo ( $license->getExpiresAt() ) ? '1' : '2'; ?>">
+                        <code><?php echo esc_html( $decrypted ); ?></code>
+                    </td>
 
-                        <?php if ($license->getExpiresAt()): ?>
-                            <?php
-                                try {
-                                    $date = new DateTime($license->getExpiresAt());
-                                } catch (Exception $e) {
-                                }
-                            ?>
-                            <td class="td" style="text-align: left; vertical-align: middle; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;">
-                                <code><?php
-                                    printf('%s <strong>%s</strong>', $valid_until, $date->format($date_format));
-                                ?></code>
-                            </td>
-                        <?php endif; ?>
-                    </tr>
-                <?php endforeach; ?>
+					<?php if ( $license->getExpiresAt() ): ?><?php
+						try {
+							$date = new DateTime( $license->getExpiresAt() );
+						} catch ( Exception $e ) {
+						}
+						?>
+                        <td class="td" style="text-align: left; vertical-align: middle; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;">
+                            <code><?php
+								printf( '%s <strong>%s</strong>', $valid_until, $date->format( $date_format ) );
+								?></code>
+                        </td>
+					<?php endif; ?>
+                </tr>
+			<?php endforeach; ?>
             </tbody>
         </table>
-    <?php endforeach; ?>
+	<?php endforeach; ?>
 </div>

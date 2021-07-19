@@ -55,8 +55,8 @@ class Emails {
 				wc_get_template(
 					'emails/dlm/plain/email-order-licenses.php',
 					array(
-						'heading'       => apply_filters( 'dlm_licenses_table_heading', null ),
-						'valid_until'   => apply_filters( 'dlm_licenses_table_valid_until', null ),
+						'heading'       => apply_filters( 'dlm_licenses_table_heading',  __( 'Your digital license(s)', 'digital-license-manager' ) ),
+						'valid_until'   => apply_filters( 'dlm_licenses_table_valid_until', __( 'Valid until', 'digital-license-manager' ) ),
 						'data'          => $customerLicenseKeys['data'],
 						'date_format'   => get_option( 'date_format' ),
 						'order'         => $order,
@@ -72,8 +72,8 @@ class Emails {
 				echo wc_get_template_html(
 					'emails/dlm/email-order-licenses.php',
 					array(
-						'heading'       => apply_filters( 'dlm_licenses_table_heading', null ),
-						'valid_until'   => apply_filters( 'dlm_licenses_table_valid_until', null ),
+						'heading'       => apply_filters( 'dlm_licenses_table_heading',  __( 'Your digital license(s)', 'digital-license-manager' ) ),
+						'valid_until'   => apply_filters( 'dlm_licenses_table_valid_until', __( 'Valid until', 'digital-license-manager' ) ),
 						'data'          => $customerLicenseKeys['data'],
 						'date_format'   => get_option( 'date_format' ),
 						'order'         => $order,

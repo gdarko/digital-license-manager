@@ -311,7 +311,6 @@ class Boot extends Singleton {
 
 		new MenuController();
 
-		$this->publicHooks();
 		new Crypto();
 		new Notice();
 		new DropdownsController();
@@ -332,42 +331,6 @@ class Boot extends Singleton {
 	 */
 	public function adminInit() {
 		SettingsController::instance()->register();
-	}
-
-	/**
-	 * Defines all public hooks
-	 *
-	 * @return void
-	 */
-	protected function publicHooks() {
-		add_filter(
-			'dlm_licenses_table_heading',
-			function ( $text ) {
-				$default = __( 'Your digital license(s)', 'digital-license-manager' );
-
-				if ( ! $text ) {
-					return $default;
-				}
-
-				return sanitize_text_field( $text );
-			},
-			10,
-			1
-		);
-
-		add_filter(
-			'dlm_licenses_table_valid_until',
-			function ( $text ) {
-				$default = __( 'Valid until', 'digital-license-manager' );
-				if ( ! $text ) {
-					return $default;
-				}
-
-				return sanitize_text_field( $text );
-			},
-			10,
-			1
-		);
 	}
 
 	/**

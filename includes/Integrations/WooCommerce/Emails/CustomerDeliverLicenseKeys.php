@@ -24,7 +24,7 @@ class CustomerDeliverLicenseKeys extends WC_Email {
 
 		// For admin area to let the user know we are sending this email to customers.
 		$this->customer_email = true;
-		$this->heading        = __( 'Your Digital Licenses', 'digital-license-manager' );
+		$this->heading        = __( 'Your Digital License(s)', 'digital-license-manager' );
 
 		// translators: placeholder is {blogname}, a variable that will be substituted when email is sent out
 		$this->subject = sprintf(

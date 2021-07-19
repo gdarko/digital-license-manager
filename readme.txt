@@ -29,9 +29,11 @@ Digital License Manager is licensing plugin for WordPress which can be used to k
 * Export licenses to PDF or CSV format. Allows column selection
 * Works even without WooCommerce. If you want to use the plugin as standalone license manager
 
-#### API
+#### REST API
 
-* API documentation coming soon
+The REST API is one of the crucial features that this plugin provides. It allows developers to activate/deactivate/validate licenses through the API.
+
+<a href="https://bit.ly/dlm-api">See Documentation</a>
 
 #### Important
 
@@ -67,7 +69,7 @@ No, it doesn't for now.
 == Changelog ==
 
 = 1.0.0 =
-*Release Date - 9 July 2021*
+*Release Date - 19 July 2021*
 
 * Everything is new
 
