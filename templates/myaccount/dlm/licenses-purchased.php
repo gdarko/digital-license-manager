@@ -44,7 +44,9 @@ defined( 'ABSPATH' ) || exit; ?>
                 <td colspan="<?php echo ( $license->getExpiresAt() ) ? '1' : '2'; ?>">
                     <span class="dlm-myaccount-license-key"><?php echo esc_html( $decrypted ); ?></span>
                 </td>
-				<?php if ( $license->getExpiresAt() ): ?><?php
+				<?php if ( $license->getExpiresAt() ): ?>
+
+                    <?php
 					try {
 						$date = new DateTime( $license->getExpiresAt() );
 					} catch ( Exception $e ) {
