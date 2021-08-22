@@ -166,8 +166,8 @@ class Settings extends Singleton {
 
 				if ( $keyId !== 0 ) {
 					/** @var ApiKeyResourceModel $keyData */
-					$keyData = ApiKeyResourceRepository::instance()->find( $keyId );
-					$userId  = (int) $keyData->getUserId();
+					$keyData     = ApiKeyResourceRepository::instance()->find( $keyId );
+					$userId      = (int) $keyData->getUserId();
 					$date_format = get_option( 'date_format' );
 					$time_format = get_option( 'time_formt' );
 					$date        = sprintf(
@@ -360,7 +360,6 @@ class Settings extends Singleton {
 		}
 	}
 
-
 	/**
 	 * Sanitizes the settings input.
 	 *
@@ -374,8 +373,6 @@ class Settings extends Singleton {
 
 		return $settings;
 	}
-
-
 
 
 	/**
