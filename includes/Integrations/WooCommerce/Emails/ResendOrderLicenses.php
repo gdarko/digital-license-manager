@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
  * Class CustomerDeliverLicenseKeys
  * @package IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Emails
  */
-class CustomerDeliverLicenseKeys extends WC_Email {
+class ResendOrderLicenses extends WC_Email {
 
 	/**
 	 * CustomerDeliverLicenseKeys constructor.
@@ -21,15 +21,28 @@ class CustomerDeliverLicenseKeys extends WC_Email {
 		$this->id             = 'dlm_email_customer_deliver_licenses';
 		$this->title          = __( 'Order License Keys', 'digital-license-manager' );
 		$this->description    = __( 'A manual email to send out license keys to the customer.', 'digital-license-manager' );
-		$this->heading        = __( 'Your Digital License(s)', 'digital-license-manager' );
 		$this->template_html  = 'emails/dlm/email-customer-deliver-licenses.php';
 		$this->template_plain = 'emails/dlm/plain/email-customer-deliver-licenses.php';
 		$this->template_base  = DLM_TEMPLATES_DIR;
 		$this->customer_email = true;
+		$this->placeholders   = array(
+			'{order_date}'   => '',
+			'{order_number}' => '',
+		);
 
 		add_action( 'dlm_email_customer_deliver_licenses', array( $this, 'trigger' ) );
 
 		parent::__construct();
+	}
+
+	/**
+	 * Get email heading.
+	 *
+	 * @since  1.0.0
+	 * @return string
+	 */
+	public function get_default_heading() {
+		return __( 'Your Digital License(s) - Order #{order_number}', 'woocommerce' );
 	}
 
 	/**
@@ -39,7 +52,7 @@ class CustomerDeliverLicenseKeys extends WC_Email {
 	 * @return string
 	 */
 	public function get_default_subject() {
-		return __( '[{site_title}]: Your digital licenses', 'woocommerce' );
+		return __( '[{site_title}]: Your digital licenses for order #{order_number}', 'woocommerce' );
 	}
 
 	/**

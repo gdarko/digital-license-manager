@@ -12,7 +12,6 @@ class Settings {
 
 	const SECTION_GENERAL = 'dlm_settings_general';
 	const SECTION_WOOCOMMERCE = 'dlm_settings_woocommerce';
-	const SECTION_DELIVERY = 'dlm_settings_delivery';
 
 	/**
 	 * Helper function to get a setting by name.
@@ -35,5 +34,13 @@ class Settings {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Is license auto delivery enabled?
+	 * @return bool
+	 */
+	public static function isAutoDeliveryEnabled() {
+		return (bool) Settings::get( 'auto_delivery', self::SECTION_WOOCOMMERCE );
 	}
 }

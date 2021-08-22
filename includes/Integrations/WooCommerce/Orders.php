@@ -226,7 +226,7 @@ class Orders {
 			update_post_meta( $orderId, 'dlm_order_complete', 1 );
 
 			// Set status to delivered if the setting is on.
-			if ( Settings::get( 'auto_delivery', Settings::SECTION_GENERAL ) ) {
+			if ( Settings::isAutoDeliveryEnabled() ) {
 				LicenseResourceRepository::instance()->updateBy(
 					array( 'order_id' => $orderId ),
 					array( 'status' => LicenseStatus::DELIVERED )
@@ -267,7 +267,7 @@ class Orders {
 	public function showBoughtLicenses( $order ) {
 
 		// Return if the order isn't complete.
-		if ( $order->get_status() !== 'completed' && ! Orders::isComplete( $order->get_id() ) ) {
+		if ( ! Orders::isComplete( $order->get_id() ) ) {
 			return;
 		}
 
@@ -313,7 +313,7 @@ class Orders {
 		global $post;
 
 		if ( ! empty( LicenseResourceRepository::instance()->findAllBy( array( 'order_id' => $post->ID ) ) ) ) {
-			$actions['dlm_send_licenses'] = __( 'Send license(s) to customer', 'digital-license-manager' );
+			$actions['dlm_send_licenses'] = __( 'Resend license(s) to customer', 'digital-license-manager' );
 		}
 
 		return $actions;

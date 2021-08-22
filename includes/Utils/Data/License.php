@@ -686,7 +686,7 @@ class License {
 	 */
 	public static function isKeyDuplicate( $licenseKey, $licenseKeyId = null ) {
 
-		if ( Settings::get( 'allow_duplicates' ) ) {
+		if ( Settings::get( 'allow_duplicates', Settings::SECTION_GENERAL ) ) {
 			return false;
 		}
 

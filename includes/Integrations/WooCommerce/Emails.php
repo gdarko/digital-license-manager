@@ -2,7 +2,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
-use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Emails\CustomerDeliverLicenseKeys;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Emails\ResendOrderLicenses;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Emails\Templates;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use WC_Email;
@@ -17,15 +17,22 @@ defined( 'ABSPATH' ) || exit;
 class Emails {
 
 	/**
+	 * List of registered emails
+	 * @var array
+	 */
+	protected $emails;
+
+	/**
 	 * Email constructor.
 	 */
 	public function __construct() {
+		add_action( 'woocommerce_email_classes', array( $this, 'registerEmailClasses' ), 90, 1 );
 		add_action( 'woocommerce_email_after_order_table', array( $this, 'afterOrderTable' ), 10, 4 );
-		add_action( 'woocommerce_email_classes', array( $this, 'registerClasses' ), 90, 1 );
 	}
 
 	/**
-	 * Adds the bought license keys to the "Order complete" email, or displays a notice - depending on the settings.
+	 * Adds the bought license keys to the "Order complete" email,
+	 * or displays a notice - depending on the settings.
 	 *
 	 * @param WC_Order $order
 	 * @param bool $isAdminEmail
@@ -35,7 +42,7 @@ class Emails {
 	public function afterOrderTable( $order, $isAdminEmail, $plainText, $email ) {
 
 		// Return if the order isn't complete.
-		if ( $order->get_status() !== 'completed' && ! Orders::isComplete( $order->get_id() ) ) {
+		if ( ! Orders::isComplete( $order->get_id() ) ) {
 			return;
 		}
 
@@ -45,11 +52,13 @@ class Emails {
 		);
 
 		$customerLicenseKeys = Orders::getLicenseKeys( $args );
+		error_log('License keys:');
+		error_log(print_r($customerLicenseKeys, true));
 		if ( empty( $customerLicenseKeys['data'] ) ) {
 			return;
 		}
 
-		if ( (int) Settings::get( 'auto_delivery', Settings::SECTION_GENERAL ) ) {
+		if ( Settings::isAutoDeliveryEnabled() ) {
 			// Send the keys out if the setting is active.
 			if ( $plainText ) {
 				wc_get_template(
@@ -63,7 +72,7 @@ class Emails {
 						'sent_to_admin' => $isAdminEmail,
 						'plain_text'    => true,
 						'email'         => $email,
-						'args'          => apply_filters( 'dlm_template_args_emails_email_order_licenses', array() )
+						'args'          => apply_filters( 'dlm_template_args_email_order_licenses', array() )
 					),
 					'',
 					DLM_TEMPLATES_DIR
@@ -80,7 +89,7 @@ class Emails {
 						'sent_to_admin' => $isAdminEmail,
 						'plain_text'    => false,
 						'email'         => $email,
-						'args'          => apply_filters( 'dlm_template_args_emails_email_order_licenses', array() )
+						'args'          => apply_filters( 'dlm_template_args_email_order_licenses', array() )
 					),
 					'',
 					DLM_TEMPLATES_DIR
@@ -92,7 +101,7 @@ class Emails {
 				wc_get_template(
 					'emails/dlm/plain/email-order-license-notice.php',
 					array(
-						'args' => apply_filters( 'dlm_template_args_emails_email_order_license_notice', array() )
+						'args' => apply_filters( 'dlm_template_args_email_order_license_notice', array() )
 					),
 					'',
 					DLM_TEMPLATES_DIR
@@ -101,7 +110,7 @@ class Emails {
 				echo wc_get_template_html(
 					'emails/dlm/email-order-license-notice.php',
 					array(
-						'args' => apply_filters( 'dlm_template_args_emails_email_order_license_notice', array() )
+						'args' => apply_filters( 'dlm_template_args_email_order_license_notice', array() )
 					),
 					'',
 					DLM_TEMPLATES_DIR
@@ -117,13 +126,111 @@ class Emails {
 	 *
 	 * @return array
 	 */
-	public function registerClasses( $emails ) {
-		new Templates();
+	public function registerEmailClasses( $emails ) {
 
-		$pluginEmails = array(
-			'DLM_Customer_Deliver_License_Keys' => new CustomerDeliverLicenseKeys()
+		$this->registerResendOrderLicensesEmail();
+
+		return array_merge( $emails, $this->emails );
+	}
+
+	/**
+	 * Register the resend.
+	 * @return void
+	 */
+	public function registerResendOrderLicensesEmail() {
+		add_action( 'dlm_email_order_details', array( $this, 'addOrderDetails' ), 10, 4 );
+		add_action( 'dlm_email_order_licenses', array( $this, 'addOrderLicenseKeys' ), 10, 4 );
+		$this->emails['DLM_ResendOrderLicenses'] = new ResendOrderLicenses();
+	}
+
+	/**
+	 * Adds the ordered license keys to the email body.
+	 *
+	 * @param WC_Order $order WooCommerce Order
+	 * @param bool $sentToAdmin Determines if the email is sent to the admin
+	 * @param bool $plainText Determines if a plain text or HTML email will be sent
+	 * @param WC_Email $email WooCommerce Email
+	 */
+	public function addOrderDetails( $order, $sentToAdmin, $plainText, $email ) {
+		if ( $plainText ) {
+			wc_get_template(
+				'emails/dlm/plain/email-order-details.php',
+				array(
+					'order'         => $order,
+					'sent_to_admin' => false,
+					'plain_text'    => false,
+					'email'         => $email,
+					'args'          => apply_filters( 'dlm_template_args_emails_email_order_details', array() )
+				),
+				'',
+				DLM_TEMPLATES_DIR
+			);
+		} else {
+			echo wc_get_template_html(
+				'emails/dlm/email-order-details.php',
+				array(
+					'order'         => $order,
+					'sent_to_admin' => false,
+					'plain_text'    => false,
+					'email'         => $email,
+					'args'          => apply_filters( 'dlm_template_args_emails_email_order_details', array() )
+				),
+				'',
+				DLM_TEMPLATES_DIR
+			);
+		}
+	}
+
+	/**
+	 * Adds basic order info to the email body.
+	 *
+	 * @param WC_Order $order WooCommerce Order
+	 * @param bool $sentToAdmin Determines if the email is sent to the admin
+	 * @param bool $plainText Determines if a plain text or HTML email will be sent
+	 * @param WC_Email $email WooCommerce Email
+	 */
+	public function addOrderLicenseKeys( $order, $sentToAdmin, $plainText, $email ) {
+		$args = array(
+			'order' => $order,
+			'data'  => null
 		);
 
-		return array_merge( $emails, $pluginEmails );
+		$customerLicenseKeys = Orders::getLicenseKeys( $args );
+
+		if ( $plainText ) {
+			wc_get_template(
+				'emails/dlm/plain/email-order-licenses.php',
+				array(
+					'heading'       => apply_filters( 'dlm_licenses_table_heading',  __( 'Your digital license(s)', 'digital-license-manager' ) ),
+					'valid_until'   => apply_filters( 'dlm_licenses_table_valid_until', __( 'Valid until', 'digital-license-manager' ) ),
+					'data'          => $customerLicenseKeys['data'],
+					'date_format'   => get_option( 'date_format' ),
+					'order'         => $order,
+					'sent_to_admin' => false,
+					'plain_text'    => false,
+					'email'         => $email,
+					'args'          => apply_filters( 'dlm_template_args_emails_order_license_keys', array() )
+				),
+				'',
+				DLM_TEMPLATES_DIR
+			);
+		} else {
+			echo wc_get_template_html(
+				'emails/dlm/email-order-licenses.php',
+				array(
+					'heading'       => apply_filters( 'dlm_licenses_table_heading',  __( 'Your digital license(s)', 'digital-license-manager' ) ),
+					'valid_until'   => apply_filters( 'dlm_licenses_table_valid_until', __( 'Valid until', 'digital-license-manager' ) ),
+					'data'          => $customerLicenseKeys['data'],
+					'date_format'   => get_option( 'date_format' ),
+					'order'         => $order,
+					'sent_to_admin' => false,
+					'plain_text'    => false,
+					'email'         => $email,
+					'args'          => apply_filters( 'dlm_template_args_emails_order_license_keys', array() )
+				),
+				'',
+				DLM_TEMPLATES_DIR
+			);
+		}
 	}
 }

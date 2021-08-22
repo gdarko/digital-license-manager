@@ -73,7 +73,7 @@ class Authentication {
 			return $userId;
 		}
 
-		if ( is_ssl() || Settings::get( 'disable_api_ssl' ) ) {
+		if ( is_ssl() || Settings::get( 'disable_api_ssl', Settings::SECTION_GENERAL ) ) {
 			$userId = $this->performBasicAuthentication();
 		} else {
 			$this->setError(
