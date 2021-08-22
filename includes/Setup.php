@@ -617,7 +617,7 @@ class Setup {
 			array(
 				'id'         => '020',
 				'name'       => 'v1/generators/{id}',
-				'method'     => 'GET',
+				'method'     => 'PUT',
 				'deprecated' => false,
 			),
 			array(
