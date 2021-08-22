@@ -34,10 +34,7 @@ class Orders {
 	public function __construct() {
 		$this->addOrderStatusHooks();
 
-		add_action( 'woocommerce_order_action_dlm_send_licenses', array(
-			$this,
-			'processSendLicenseKeysAction'
-		), 10, 1 );
+		add_action( 'woocommerce_order_action_dlm_send_licenses', array( $this, 'actionResendLicenses' ), 10, 1 );
 		add_action( 'woocommerce_order_details_after_order_table', array( $this, 'showBoughtLicenses' ), 10, 1 );
 		add_filter( 'woocommerce_order_actions', array( $this, 'addSendLicenseKeysAction' ), 10, 1 );
 		add_action( 'woocommerce_after_order_itemmeta', array( $this, 'showOrderedLicenses' ), 10, 3 );
@@ -255,8 +252,8 @@ class Orders {
 	 *
 	 * @param WC_Order $order
 	 */
-	public function processSendLicenseKeysAction( $order ) {
-		do_action('dlm_email_customer_deliver_licenses', $order->get_id(), $order);
+	public function actionResendLicenses( $order ) {
+		do_action( 'dlm_email_customer_deliver_licenses', $order->get_id(), $order );
 	}
 
 	/**
@@ -290,8 +287,8 @@ class Orders {
 		echo wc_get_template_html(
 			'myaccount/dlm/licenses-purchased.php',
 			array(
-				'heading'     => apply_filters( 'dlm_licenses_table_heading',  __( 'Your digital license(s)', 'digital-license-manager' ) ),
-				'valid_until' => apply_filters( 'dlm_licenses_table_valid_until',  __( 'Valid until', 'digital-license-manager' ) ),
+				'heading'     => apply_filters( 'dlm_licenses_table_heading', __( 'Your digital license(s)', 'digital-license-manager' ) ),
+				'valid_until' => apply_filters( 'dlm_licenses_table_valid_until', __( 'Valid until', 'digital-license-manager' ) ),
 				'data'        => $customerLicenseKeys['data'],
 				'date_format' => get_option( 'date_format' ),
 				'args'        => apply_filters( 'dlm_template_args_myaccount_licenses', array() )
@@ -312,7 +309,7 @@ class Orders {
 	public function addSendLicenseKeysAction( $actions ) {
 		global $post;
 
-		if ( ! empty( LicenseResourceRepository::instance()->findAllBy( array( 'order_id' => $post->ID ) ) ) ) {
+		if ( LicenseResourceRepository::instance()->countBy( array( 'order_id' => $post->ID ) ) ) {
 			$actions['dlm_send_licenses'] = __( 'Resend license(s) to customer', 'digital-license-manager' );
 		}
 

@@ -38,21 +38,21 @@ class ResendOrderLicenses extends WC_Email {
 	/**
 	 * Get email heading.
 	 *
-	 * @since  1.0.0
 	 * @return string
+	 * @since  1.0.0
 	 */
 	public function get_default_heading() {
-		return __( 'Your Digital License(s) - Order #{order_number}', 'woocommerce' );
+		return __( 'Your Digital License(s) - Order #{order_number}', 'digital-license-manager' );
 	}
 
 	/**
 	 * Get email subject.
 	 *
-	 * @since  1.0.0
 	 * @return string
+	 * @since  1.0.0
 	 */
 	public function get_default_subject() {
-		return __( '[{site_title}]: Your digital licenses for order #{order_number}', 'woocommerce' );
+		return __( '[{site_title}]: Your digital licenses for order #{order_number}', 'digital-license-manager' );
 	}
 
 	/**
@@ -116,13 +116,16 @@ class ResendOrderLicenses extends WC_Email {
 		}
 
 		if ( $this->is_enabled() && $this->get_recipient() ) {
-			$this->send(
+			$res = $this->send(
 				$this->get_recipient(),
 				$this->get_subject(),
 				$this->get_content(),
 				$this->get_headers(),
 				$this->get_attachments()
 			);
+			if ( $res ) {
+				$order->add_order_note( __( 'Order licenses resent to customer.', 'digital-license-manager' ), false );
+			}
 		}
 
 		$this->restore_locale();

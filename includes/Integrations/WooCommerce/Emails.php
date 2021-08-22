@@ -52,8 +52,6 @@ class Emails {
 		);
 
 		$customerLicenseKeys = Orders::getLicenseKeys( $args );
-		error_log('License keys:');
-		error_log(print_r($customerLicenseKeys, true));
 		if ( empty( $customerLicenseKeys['data'] ) ) {
 			return;
 		}
@@ -64,7 +62,7 @@ class Emails {
 				wc_get_template(
 					'emails/dlm/plain/email-order-licenses.php',
 					array(
-						'heading'       => apply_filters( 'dlm_licenses_table_heading',  __( 'Your digital license(s)', 'digital-license-manager' ) ),
+						'heading'       => apply_filters( 'dlm_licenses_table_heading', __( 'Your digital license(s)', 'digital-license-manager' ) ),
 						'valid_until'   => apply_filters( 'dlm_licenses_table_valid_until', __( 'Valid until', 'digital-license-manager' ) ),
 						'data'          => $customerLicenseKeys['data'],
 						'date_format'   => get_option( 'date_format' ),
@@ -81,7 +79,7 @@ class Emails {
 				echo wc_get_template_html(
 					'emails/dlm/email-order-licenses.php',
 					array(
-						'heading'       => apply_filters( 'dlm_licenses_table_heading',  __( 'Your digital license(s)', 'digital-license-manager' ) ),
+						'heading'       => apply_filters( 'dlm_licenses_table_heading', __( 'Your digital license(s)', 'digital-license-manager' ) ),
 						'valid_until'   => apply_filters( 'dlm_licenses_table_valid_until', __( 'Valid until', 'digital-license-manager' ) ),
 						'data'          => $customerLicenseKeys['data'],
 						'date_format'   => get_option( 'date_format' ),
@@ -201,7 +199,7 @@ class Emails {
 			wc_get_template(
 				'emails/dlm/plain/email-order-licenses.php',
 				array(
-					'heading'       => apply_filters( 'dlm_licenses_table_heading',  __( 'Your digital license(s)', 'digital-license-manager' ) ),
+					'heading'       => apply_filters( 'dlm_licenses_table_heading', __( 'Your digital license(s)', 'digital-license-manager' ) ),
 					'valid_until'   => apply_filters( 'dlm_licenses_table_valid_until', __( 'Valid until', 'digital-license-manager' ) ),
 					'data'          => $customerLicenseKeys['data'],
 					'date_format'   => get_option( 'date_format' ),
@@ -218,7 +216,7 @@ class Emails {
 			echo wc_get_template_html(
 				'emails/dlm/email-order-licenses.php',
 				array(
-					'heading'       => apply_filters( 'dlm_licenses_table_heading',  __( 'Your digital license(s)', 'digital-license-manager' ) ),
+					'heading'       => apply_filters( 'dlm_licenses_table_heading', __( 'Your digital license(s)', 'digital-license-manager' ) ),
 					'valid_until'   => apply_filters( 'dlm_licenses_table_valid_until', __( 'Valid until', 'digital-license-manager' ) ),
 					'data'          => $customerLicenseKeys['data'],
 					'date_format'   => get_option( 'date_format' ),
