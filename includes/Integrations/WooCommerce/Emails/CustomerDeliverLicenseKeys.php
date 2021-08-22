@@ -16,35 +16,30 @@ class CustomerDeliverLicenseKeys extends WC_Email {
 	/**
 	 * CustomerDeliverLicenseKeys constructor.
 	 */
-	function __construct() {
-		// Email slug we can use to filter other data.
-		$this->id          = 'dlm_email_customer_deliver_licenses';
-		$this->title       = __( 'Deliver license keys', 'digital-license-manager' );
-		$this->description = __( 'A manual email to send out license keys to the customer.', 'digital-license-manager' );
+	public function __construct() {
 
-		// For admin area to let the user know we are sending this email to customers.
-		$this->customer_email = true;
+		$this->id             = 'dlm_email_customer_deliver_licenses';
+		$this->title          = __( 'Order License Keys', 'digital-license-manager' );
+		$this->description    = __( 'A manual email to send out license keys to the customer.', 'digital-license-manager' );
 		$this->heading        = __( 'Your Digital License(s)', 'digital-license-manager' );
-
-		// translators: placeholder is {blogname}, a variable that will be substituted when email is sent out
-		$this->subject = sprintf(
-			_x(
-				'[%s] - Your digital licenses are here!',
-				'Default email subject for resent license key emails sent to the customer',
-				'digital-license-manager'
-			),
-			'{blogname}'
-		);
-
-		// Template paths.
 		$this->template_html  = 'emails/dlm/email-customer-deliver-licenses.php';
 		$this->template_plain = 'emails/dlm/plain/email-customer-deliver-licenses.php';
 		$this->template_base  = DLM_TEMPLATES_DIR;
+		$this->customer_email = true;
 
-		// Action to which we hook onto to send the email.
 		add_action( 'dlm_email_customer_deliver_licenses', array( $this, 'trigger' ) );
 
 		parent::__construct();
+	}
+
+	/**
+	 * Get email subject.
+	 *
+	 * @since  1.0.0
+	 * @return string
+	 */
+	public function get_default_subject() {
+		return __( '[{site_title}]: Your digital licenses', 'woocommerce' );
 	}
 
 	/**

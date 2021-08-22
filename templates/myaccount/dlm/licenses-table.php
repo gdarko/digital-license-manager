@@ -21,7 +21,6 @@
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
-use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\Moment;
 
 defined( 'ABSPATH' ) || exit; ?>

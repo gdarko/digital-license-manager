@@ -256,7 +256,7 @@ class Orders {
 	 * @param WC_Order $order
 	 */
 	public function processSendLicenseKeysAction( $order ) {
-		WC()->mailer()->emails['DLM_Customer_Deliver_License_Keys']->trigger( $order->get_id(), $order );
+		do_action('dlm_email_customer_deliver_licenses', $order->get_id(), $order);
 	}
 
 	/**
