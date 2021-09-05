@@ -113,7 +113,7 @@ class Generators extends DLM_REST_Controller {
 					'callback'            => array( $this, 'updateGenerator' ),
 					'permission_callback' => array( $this, 'permissionCallback' ),
 					'args'                => array(
-						'generator_id' => array(
+						'license_key' => array(
 							'description' => 'Generator ID',
 							'type'        => 'integer',
 						),
@@ -270,8 +270,10 @@ class Generators extends DLM_REST_Controller {
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
-	public function updateGenerator( WP_REST_Request $request ) {
-		if ( ! $this->isRouteEnabled( $this->settings, '025' ) ) {
+
+	public function updateGenerator( $request ) {
+
+		if ( ! $this->isRouteEnabled( $this->settings, '020' ) ) {
 			return $this->routeDisabledError();
 		}
 

@@ -147,7 +147,6 @@ class Generator {
 		return $generator;
 	}
 
-
 	/**
 	 * Create generator in the database and enforce validation
 	 *
@@ -214,6 +213,7 @@ class Generator {
 				return new WP_Error( 'data_error', __( 'Expires In shoudld be positive integer value larger than 1 that represents number of days', 'digital-license-manager' ), array( 'code' => '422' ) );
 			}
 		}
+
 
 		if ( array_key_exists( 'separator', $params ) ) {
 			if ( ! empty( $params['separator'] ) ) {
