@@ -123,6 +123,27 @@ class Generators extends DLM_REST_Controller {
 		);
 
 		/**
+		 * DELETE generators/{id}
+		 *
+		 * Updates an already existing generator in the database
+		 */
+		register_rest_route(
+			$this->namespace, $this->rest_base . '/(?P<generator_id>[\w-]+)', array(
+				array(
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => array( $this, 'deleteGenerator' ),
+					'permission_callback' => array( $this, 'permissionCallback' ),
+					'args'                => array(
+						'generator_id' => array(
+							'description' => 'Generator ID',
+							'type'        => 'integer',
+						),
+					),
+				)
+			)
+		);
+
+		/**
 		 * PUT generators/{id}/generate
 		 *
 		 * Generates license keys using a generator.
@@ -150,7 +171,7 @@ class Generators extends DLM_REST_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function getGenerators() {
-		if ( ! $this->isRouteEnabled( $this->settings, '017' ) ) {
+		if ( ! $this->isRouteEnabled( $this->settings, '022' ) ) {
 			return $this->routeDisabledError();
 		}
 
@@ -186,7 +207,7 @@ class Generators extends DLM_REST_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function getGenerator( WP_REST_Request $request ) {
-		if ( ! $this->isRouteEnabled( $this->settings, '018' ) ) {
+		if ( ! $this->isRouteEnabled( $this->settings, '023' ) ) {
 			return $this->routeDisabledError();
 		}
 
@@ -218,7 +239,7 @@ class Generators extends DLM_REST_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function createGenerator( WP_REST_Request $request ) {
-		if ( ! $this->isRouteEnabled( $this->settings, '019' ) ) {
+		if ( ! $this->isRouteEnabled( $this->settings, '024' ) ) {
 			return $this->routeDisabledError();
 		}
 
@@ -250,7 +271,7 @@ class Generators extends DLM_REST_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function updateGenerator( WP_REST_Request $request ) {
-		if ( ! $this->isRouteEnabled( $this->settings, '020' ) ) {
+		if ( ! $this->isRouteEnabled( $this->settings, '025' ) ) {
 			return $this->routeDisabledError();
 		}
 
@@ -281,6 +302,38 @@ class Generators extends DLM_REST_Controller {
 	}
 
 	/**
+	 * Callback for the DELETE generators/{id} route. Deletes an existing generator in the database.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function deleteGenerator( WP_REST_Request $request ) {
+
+		if ( ! $this->isRouteEnabled( $this->settings, '025' ) ) {
+			return $this->routeDisabledError();
+		}
+
+		if ( ! $this->capabilityCheck( 'dlm_delete_generators' ) ) {
+			return $this->responseError(
+				'cannot_delete',
+				__( 'Sorry, you are not allowed to delete resources.', 'digital-license-manager' ),
+				array(
+					'status' => $this->authorizationRequiredCode()
+				)
+			);
+		}
+
+		$generatorId = absint( $request->get_param( 'generator_id' ) );
+		$deleted     = GeneratorUtil::delete( $generatorId );
+		if ( is_wp_error( $deleted ) ) {
+			return $this->maybeErrorResponse( $deleted );
+		}
+
+		return $this->response( true, [], 200, 'v1/generators/{id}' );
+	}
+
+	/**
 	 * Callback for the POST generators/{id}/generate route. Creates licenses
 	 * using a generator with a save option.
 	 *
@@ -290,7 +343,7 @@ class Generators extends DLM_REST_Controller {
 	 */
 	public function generateLicenseKeys( WP_REST_Request $request ) {
 
-		if ( ! $this->isRouteEnabled( $this->settings, '021' ) ) {
+		if ( ! $this->isRouteEnabled( $this->settings, '027' ) ) {
 			return $this->routeDisabledError();
 		}
 

@@ -119,6 +119,27 @@ class Licenses extends RestController {
 		);
 
 		/**
+		 * DELETE licenses/{license_key}
+		 *
+		 * Updates an already existing license in the database
+		 */
+		register_rest_route(
+			$this->namespace, $this->rest_base . '/(?P<license_key>[\w-]+)', array(
+				array(
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => array( $this, 'deleteLicense' ),
+					'permission_callback' => array( $this, 'permissionCallback' ),
+					'args'                => array(
+						'license_key' => array(
+							'description' => 'License Key',
+							'type'        => 'string',
+						),
+					),
+				)
+			)
+		);
+
+		/**
 		 * GET licenses/activate/{license_key}
 		 *
 		 * Activates a license key
@@ -272,23 +293,23 @@ class Licenses extends RestController {
 
 		$body = $request->get_params();
 
-		$orderId           = isset( $body['order_id'] ) ? absint( $body['order_id'] ) : null;
-		$productId         = isset( $body['product_id'] ) ? absint( $body['product_id'] ) : null;
-		$userId            = isset( $body['user_id'] ) ? absint( $body['user_id'] ) : null;
-		$licenseKey        = isset( $body['license_key'] ) ? sanitize_text_field( $body['license_key'] ) : null;
-		$validFor          = isset( $body['valid_for'] ) ? absint( $body['valid_for'] ) : null;
-		$expiresAt         = isset( $body['expires_at'] ) ? sanitize_text_field( $body['expires_at'] ) : null;
+		$orderId          = isset( $body['order_id'] ) ? absint( $body['order_id'] ) : null;
+		$productId        = isset( $body['product_id'] ) ? absint( $body['product_id'] ) : null;
+		$userId           = isset( $body['user_id'] ) ? absint( $body['user_id'] ) : null;
+		$licenseKey       = isset( $body['license_key'] ) ? sanitize_text_field( $body['license_key'] ) : null;
+		$validFor         = isset( $body['valid_for'] ) ? absint( $body['valid_for'] ) : null;
+		$expiresAt        = isset( $body['expires_at'] ) ? sanitize_text_field( $body['expires_at'] ) : null;
 		$activationsLimit = isset( $body['activations_limit'] ) ? absint( $body['activations_limit'] ) : null;
-		$status            = isset( $body['status'] ) ? sanitize_text_field( $body['status'] ) : null;
+		$status           = isset( $body['status'] ) ? sanitize_text_field( $body['status'] ) : null;
 
 		$license = LicenseUtil::create( $licenseKey, array(
-			'order_id'            => $orderId,
-			'product_id'          => $productId,
-			'user_id'             => $userId,
-			'valid_for'           => $validFor,
-			'expires_at'          => $expiresAt,
-			'source'              => LicenseSource::API,
-			'status'              => $status,
+			'order_id'          => $orderId,
+			'product_id'        => $productId,
+			'user_id'           => $userId,
+			'valid_for'         => $validFor,
+			'expires_at'        => $expiresAt,
+			'source'            => LicenseSource::API,
+			'status'            => $status,
 			'activations_limit' => $activationsLimit
 		) );
 
@@ -345,6 +366,39 @@ class Licenses extends RestController {
 	}
 
 	/**
+	 * Callback for the DELETE licenses/{license_key} route. Deletes an existing license key in the database.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function deleteLicense( WP_REST_Request $request ) {
+		if ( ! $this->isRouteEnabled( $this->settings, '014' ) ) {
+			return $this->routeDisabledError();
+		}
+
+		if ( ! $this->capabilityCheck( 'dlm_delete_licenses' ) ) {
+			return $this->responseError(
+				'cannot_delete',
+				__( 'Sorry, you are not allowed to delete resources.', 'digital-license-manager' ),
+				array(
+					'status' => $this->authorizationRequiredCode()
+				)
+			);
+		}
+
+		$urlParams  = $request->get_url_params();
+		$licenseKey = isset( $urlParams['license_key'] ) ? sanitize_text_field( $urlParams['license_key'] ) : '';
+		$deleted    = LicenseUtil::delete( $licenseKey );
+
+		if ( is_wp_error( $deleted ) ) {
+			return $this->maybeErrorResponse( $deleted );
+		}
+
+		return $this->response( true, [], 200, 'v1/licenses/{license_key}' );
+	}
+
+	/**
 	 * Callback for the GET licenses/activate/{license_key} route. This will activate a license key (if possible)
 	 *
 	 * @param WP_REST_Request $request
@@ -353,7 +407,7 @@ class Licenses extends RestController {
 	 */
 	public function activateLicense( WP_REST_Request $request ) {
 
-		if ( ! $this->isRouteEnabled( $this->settings, '014' ) ) {
+		if ( ! $this->isRouteEnabled( $this->settings, '015' ) ) {
 			return $this->routeDisabledError();
 		}
 
@@ -395,7 +449,7 @@ class Licenses extends RestController {
 	 */
 	public function deactivateLicense( WP_REST_Request $request ) {
 
-		if ( ! $this->isRouteEnabled( $this->settings, '015' ) ) {
+		if ( ! $this->isRouteEnabled( $this->settings, '016' ) ) {
 			return $this->routeDisabledError();
 		}
 
@@ -431,7 +485,7 @@ class Licenses extends RestController {
 	 */
 	public function validateLicense( WP_REST_Request $request ) {
 
-		if ( ! $this->isRouteEnabled( $this->settings, '016' ) ) {
+		if ( ! $this->isRouteEnabled( $this->settings, '017' ) ) {
 			return $this->routeDisabledError();
 		}
 

@@ -127,15 +127,15 @@ class Generator {
 		// Save the generator.
 		$generator = GeneratorResourceRepository::instance()->insert(
 			array(
-				'name'                => sanitize_text_field( $params['name'] ),
-				'charset'             => sanitize_text_field( $params['charset'] ),
-				'chunks'              => absint( $params['chunks'] ),
-				'chunk_length'        => absint( $params['chunk_length'] ),
+				'name'              => sanitize_text_field( $params['name'] ),
+				'charset'           => sanitize_text_field( $params['charset'] ),
+				'chunks'            => absint( $params['chunks'] ),
+				'chunk_length'      => absint( $params['chunk_length'] ),
 				'activations_limit' => $maxActivations,
-				'separator'           => isset( $params['separator'] ) ? sanitize_text_field( $params['separator'] ) : null,
-				'prefix'              => isset( $params['prefix'] ) ? sanitize_text_field( $params['prefix'] ) : null,
-				'suffix'              => isset( $params['suffix'] ) ? sanitize_text_field( $params['suffix'] ) : null,
-				'expires_in'          => $expiresIn
+				'separator'         => isset( $params['separator'] ) ? sanitize_text_field( $params['separator'] ) : null,
+				'prefix'            => isset( $params['prefix'] ) ? sanitize_text_field( $params['prefix'] ) : null,
+				'suffix'            => isset( $params['suffix'] ) ? sanitize_text_field( $params['suffix'] ) : null,
+				'expires_in'        => $expiresIn
 			)
 		);
 
@@ -158,6 +158,8 @@ class Generator {
 	 */
 	public static function update( $id, $params ) {
 
+		$updateData = array();
+
 		// Validate id
 		$generator = self::find( $id );
 		if ( is_wp_error( $generator ) ) {
@@ -165,63 +167,78 @@ class Generator {
 		}
 
 		// Validate request.
-		if ( empty( $params['name'] ) || ! is_string( $params['name'] ) ) {
-			return new WP_Error( 'data_error', __( 'Generator name is missing.', 'digital-license-manager' ), array( 'code' => '422' ) );
-		}
-
-		if ( empty( $params['charset'] ) || ! is_string( $params['charset'] ) ) {
-			return new WP_Error( 'data_error', __( 'The charset is invalid.', 'digital-license-manager' ), array( 'code' => '422' ) );
-		}
-
-		if ( empty( $params['chunks'] ) || ! is_numeric( $params['chunks'] ) ) {
-			return new WP_Error( 'data_error', __( 'Only integer values allowed for chunks.', 'digital-license-manager' ), array( 'code' => '422' ) );
-		}
-
-		if ( $params['chunks'] < 0 || $params['chunks'] > 100 ) {
-			return new WP_Error( 'data_error', __( 'Chunks should be between 1 and 99', 'digital-license-manager' ), array( 'code' => '422' ) );
-		}
-
-		if ( empty( $params['chunk_length'] ) || ! is_numeric( $params['chunk_length'] ) ) {
-			return new WP_Error( 'data_error', __( 'Only integer values allowed for chunk length.', 'digital-license-manager' ), array( 'code' => '422' ) );
-		}
-
-		if ( $params['chunk_length'] < 2 || $params['chunk_length'] > 100 ) {
-			return new WP_Error( 'data_error', __( 'Chunk length should be between 2 and 99', 'digital-license-manager' ), array( 'code' => '422' ) );
-		}
-
-		$expiresIn = null;
-		if ( ! empty( $params['expires_in'] ) ) {
-			if ( is_numeric( $params['expires_in'] ) && $params['expires_in'] > 1 ) {
-				$expiresIn = absint( $params['expires_in'] );
+		if ( array_key_exists( 'name', $params ) ) {
+			if ( ! empty( $params['name'] ) ) {
+				$updateData['name'] = sanitize_text_field( $params['name'] );
 			} else {
-				return new WP_Error( 'data_error', __( 'Expires in should be numeric and positive value larger than 1', 'digital-license-manager' ), array( 'code' => '422' ) );
+				return new WP_Error( 'data_error', __( 'Name can not be empty.', 'digital-license-manager' ), array( 'code' => '422' ) );
 			}
 		}
 
-		$maxActivations = null;
-		if ( ! empty( $params['activations_limit'] ) ) {
-			if ( is_numeric( $params['activations_limit'] ) && $params['activations_limit'] > 0 ) {
-				$maxActivations = absint( $params['activations_limit'] );
+		if ( array_key_exists( 'charset', $params ) ) {
+			if ( ! empty( $params['charset'] ) ) {
+				$updateData['charset'] = sanitize_text_field( $params['charset'] );
 			} else {
-				return new WP_Error( 'data_error', __( 'Time activated max should be numeric and positive value larger than 0', 'digital-license-manager' ), array( 'code' => '422' ) );
+				return new WP_Error( 'data_error', __( 'Charset can not be empty.', 'digital-license-manager' ), array( 'code' => '422' ) );
+			}
+		}
+
+		if ( array_key_exists( 'chunks', $params ) ) {
+			if ( is_numeric( $params['chunks'] ) && $params['chunks'] > 0 && $params['chunks'] < 100 ) {
+				$updateData['chunks'] = (int) $params['chunks'];
+			} else {
+				return new WP_Error( 'data_error', __( 'Only integer values between 1 and 99 are allowed for chunks.', 'digital-license-manager' ), array( 'code' => '422' ) );
+			}
+		}
+
+		if ( array_key_exists( 'chunk_length', $params ) ) {
+			if ( is_numeric( $params['chunk_length'] ) && $params['chunk_length'] > 0 && $params['chunk_length'] < 10 ) {
+				$updateData['chunk_length'] = (int) $params['chunk_length'];
+			} else {
+				return new WP_Error( 'data_error', __( 'Only integer values between 1 and 99 are allowed for chunk_length.', 'digital-license-manager' ), array( 'code' => '422' ) );
+			}
+		}
+
+		if ( array_key_exists( 'activations_limit', $params ) ) {
+			if ( is_numeric( $params['activations_limit'] ) && $params['activations_limit'] > 0 ) {
+				$updateData['activations_limit'] = (int) $params['activations_limit'];
+			} else {
+				return new WP_Error( 'data_error', __( 'Activations Limit should positive integer value larger than 0', 'digital-license-manager' ), array( 'code' => '422' ) );
+			}
+		}
+
+		if ( array_key_exists( 'expires_in', $params ) ) {
+			if ( is_numeric( $params['expires_in'] ) && $params['expires_in'] > 1 ) {
+				$updateData['expires_in'] = (int) $params['expires_in'];
+			} else {
+				return new WP_Error( 'data_error', __( 'Expires In shoudld be positive integer value larger than 1 that represents number of days', 'digital-license-manager' ), array( 'code' => '422' ) );
+			}
+		}
+
+		if ( array_key_exists( 'separator', $params ) ) {
+			if ( ! empty( $params['separator'] ) ) {
+				if ( 1 === strlen( $params['separator'] ) ) {
+					$updateData['separator'] = $params['separator'];
+				} else {
+					return new WP_Error( 'data_error', __( 'Separator should be only one character', 'digital-license-manager' ), array( 'code' => '422' ) );
+				}
+			}
+		}
+
+		if ( array_key_exists( 'prefix', $params ) ) {
+			if ( ! empty( $params['prefix'] ) ) {
+				$updateData['prefix'] = sanitize_text_field( $params['prefix'] );
+			}
+		}
+
+		if ( array_key_exists( 'suffix', $params ) ) {
+			if ( ! empty( $params['suffix'] ) ) {
+				$updateData['suffix'] = sanitize_text_field( $params['suffix'] );
 			}
 		}
 
 		// Update the generator.
-		$generator = GeneratorResourceRepository::instance()->update(
-			$id,
-			array(
-				'name'                => sanitize_text_field( $params['name'] ),
-				'charset'             => sanitize_text_field( $params['charset'] ),
-				'chunks'              => (int) sanitize_text_field( $params['chunks'] ),
-				'chunk_length'        => (int) sanitize_text_field( $params['chunk_length'] ),
-				'activations_limit' => $maxActivations,
-				'separator'           => isset( $params['separator'] ) ? sanitize_text_field( $params['separator'] ) : null,
-				'prefix'              => isset( $params['prefix'] ) ? sanitize_text_field( $params['prefix'] ) : null,
-				'suffix'              => isset( $params['suffix'] ) ? sanitize_text_field( $params['suffix'] ) : null,
-				'expires_in'          => $expiresIn
-			)
-		);
+		$generator = GeneratorResourceRepository::instance()->update( $id, $updateData );
 
 		if ( ! $generator ) {
 			return new WP_Error( 'server_error', __( 'The generator could not be created.', 'digital-license-manager' ), array( 'code' => 500 ) );

@@ -99,8 +99,9 @@ $time_format = get_option( 'time_formt' );
 
 						$classList = array(
 							'GET'  => 'text-success',
-							'PUT'  => 'text-primary',
-							'POST' => 'text-primary'
+							'PUT'  => 'text-info',
+							'POST' => 'text-primary',
+                            'DELETE' => 'text-danger',
 						);
 
 						$field = 'endpoints';
