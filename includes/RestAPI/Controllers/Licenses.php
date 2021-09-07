@@ -543,7 +543,7 @@ class Licenses extends RestController {
 		}
 
 		$result = $activation->toArray();
-		if ( ! empty( $result['licenseId'] ) ) {
+		if ( ! empty( $result['license_id'] ) ) {
 			$result['license'] = self::prepareLicense( $license, false );
 		}
 
@@ -565,7 +565,7 @@ class Licenses extends RestController {
 		$activationData = $activation->toArray();
 
 		if ( $withLicense ) {
-			unset( $activationData['licenseId'] );
+			unset( $activationData['license_id'] );
 			$license = $activation->getLicense();
 			if ( ! empty( $license ) ) {
 				$activationData['license'] = self::prepareLicense( $license, false );
