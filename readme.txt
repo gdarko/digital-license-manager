@@ -3,7 +3,7 @@ Contributors: darkog
 Tags: license key, license, key, software license, serial key, manager, woocommerce, wordpress
 Requires at least: 4.7
 Tested up to: 5.8
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -15,7 +15,7 @@ Easily manage and sell your digital licenses through your WordPress website
 
 The plugin is compatible with WooCommerce although it can be used as standalone License Manager without WooCommerce.
 
-### Features
+### ✨ Features
 
 * Manage your Licenses (status, license key, activations, etc)
 * Manage License Activations. Keeps separate records of Activations identified by unique token instead of single activations count variable.
@@ -31,7 +31,7 @@ The plugin is compatible with WooCommerce although it can be used as standalone 
 * Export licenses to PDF or CSV format. Allows column selection
 * Works even without WooCommerce. If you want to use the plugin as standalone license manager or if you have another solution for selling the keys, you can use the REST API to create licenses.
 
-### REST API
+### 📃 REST API Documentation
 
 The REST API is one of the crucial features that this plugin provides.
 
@@ -41,19 +41,19 @@ The REST API documentation can be found on the link below:
 
 <a href="https://bit.ly/dlm-api" target="_blank">See Documentation</a>
 
-### Documentation
+### 📃 All Documentation
 
 The complete documentation can be found on the link below:
 
 <a href="https://bit.ly/dlm-docs" target="_blank">See Documentation</a>
 
-### Feature Requests
+### ➕ Feature Requests
 
 Feature requests are welcome! Feel free to submit your ideas on the link below:
 
 <a href="https://github.com/gdarko/digital-license-manager/issues/new">New Feature Request</a>
 
-### Important
+### ✔ Important
 
 The plugin will create  `wp-content/uploads/dlm-files` directory which stores the cryptographic secrets that are required to decrypt the licenses. If you lose this file, you will lose your license keys as well. **Make sure you backup those files!**
 
@@ -122,8 +122,19 @@ To validate a license through the REST API, please follow this <a href="http://d
 
 == Changelog ==
 
+= 1.1.0 =
+*Release Date - 24 Sep 2021*
+
+* Add delete rest endpoint for Licenses and Generators
+* Fix license activation validate endpoint
+* Fix dlm_rest_api_pre_response filter
+* Fix Generators update endpoint
+* Improve "Re-send licenses" button in order screen
+* Improve Customer delivery email
+* Code style improvements
+
 = 1.0.0 =
-*Release Date - 19 July 2021*
+*Release Date - 19 Jul 2021*
 
 * Everything is new
 

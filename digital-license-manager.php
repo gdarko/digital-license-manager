@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Digital License Manager
  * Description: Easily manage and sell your digital licenses through your WordPress website. The plugin is compatible with WooCommerce for selling licenses and can work without it as well.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Darko Gjorgjijoski
  * Requires at least: 4.7
  * Tested up to: 5.8
@@ -14,7 +14,7 @@
 defined( 'ABSPATH' ) || exit;
 
 if ( ! defined( 'DLM_VERSION' ) ) {
-	define( 'DLM_VERSION', '1.0.0' );
+	define( 'DLM_VERSION', '1.1.0' );
 }
 
 // Sometimes we just need to get version of the base plugin, instead of hard-coding it on different places.
