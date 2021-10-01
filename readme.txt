@@ -3,7 +3,7 @@ Contributors: darkog
 Tags: license key, license, key, software license, serial key, manager, woocommerce, wordpress
 Requires at least: 4.7
 Tested up to: 5.8
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -15,7 +15,7 @@ Easily manage and sell your digital licenses through your WordPress website
 
 The plugin is compatible with WooCommerce although it can be used as standalone License Manager without WooCommerce.
 
-### ✨ Features
+### ✨ Core Features
 
 * Manage your Licenses (status, license key, activations, etc)
 * Manage License Activations. Keeps separate records of Activations identified by unique token instead of single activations count variable.
@@ -30,6 +30,24 @@ The plugin is compatible with WooCommerce although it can be used as standalone 
 * Import licenses form file
 * Export licenses to PDF or CSV format. Allows column selection
 * Works even without WooCommerce. If you want to use the plugin as standalone license manager or if you have another solution for selling the keys, you can use the REST API to create licenses.
+
+### ✨ PRO Features
+
+The PRO version focuses on making it possible to generate consistent cash flow through the integration with WooCommerce Subscriptions and provide updates through the Digital License Manager REST API to the users that purchased and activated their license. List of the additional features as follows:
+
+* WooCommerce Subscriptions integration (License renews when subscription renews)
+* Full software and software release management from the WordPress admin interface
+* Easily create software and connect it to a product, add documentation, images, etc from the WordPress admin interface
+* Easily create software releases for specific software, add changelog, etc from the WordPress admin interface
+* REST API endpoint for update check that you can utilize to check if there is a new release of a given software ID
+* REST API endpoint for update download that you can utilize to download the new release of a given software ID
+* Activate or Deactivate licenses as a Customer through My Account for the customers
+* Separate License page in My Account that shows list of Activations, Releases available for download and License information for the customers
+* Ready to use plugin updater class. Useful if you want to integrate the Licensing plugin with your premium WordPress plugins and provide updates for users that purchased license
+* Software download statistics (Coming soon)
+* PDF certificates of the licenses (Coming soon)
+
+<a href="http://bit.ly/dlmpurchase" target="_blank">Get Premium Version</a>
 
 ### 📃 REST API Documentation
 

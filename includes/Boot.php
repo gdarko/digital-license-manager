@@ -260,18 +260,23 @@ class Boot extends Singleton {
 			$newLinks = array(
 				'github' => sprintf(
 					'<a href="%s" target="_blank">%s</a>',
-					'https://github.com/gdarko/digital-license-manager',
-					'GitHub'
+					DLM_GITHUB_URL,
+					__('GitHub', 'digital-license-manager')
 				),
 				'docs'   => sprintf(
 					'<a href="%s" target="_blank">%s</a>',
-					'https://github.com/gdarko/digital-license-manager/wiki',
+					DLM_DOCUMENTATION_URL,
 					__( 'Documentation', 'digital-license-manager' )
 				),
 			);
 
 			$links = array_merge( $links, $newLinks );
 		}
+
+        $coreBasename = str_replace('-pro', '', DLM_PLUGIN_BASENAME);
+        if ($file === $coreBasename) {
+            $links[] = '<a style="font-weight:bold;color:#3eb03e;" target="_blank" href="'.DLM_PURCHASE_URL.'"><strong>'.__('Buy PRO Version', 'wp-vimeo-videos').'</strong></a>';
+        }
 
 		return $links;
 	}
