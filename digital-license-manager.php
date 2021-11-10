@@ -8,18 +8,14 @@
  * Tested up to: 5.8
  * Requires PHP: 5.6
  * WC requires at least: 2.7
- * WC tested up to: 5.4
+ * WC tested up to: 5.7
  */
 
 defined( 'ABSPATH' ) || exit;
 
 if ( ! defined( 'DLM_VERSION' ) ) {
-	define( 'DLM_VERSION', '1.1.0' );
+	define( 'DLM_VERSION', '1.1.1' );
 }
-
-define('DLM_PURCHASE_URL', 'https://bit.ly/dlmpurchase');
-define('DLM_DOCUMENTATION_URL', 'https://bit.ly/dlmdocs');
-define('DLM_GITHUB_URL', 'https://github.com/gdarko/digital-license-manager');
 
 // Sometimes we just need to get version of the base plugin, instead of hard-coding it on different places.
 // Eg. If this is used as composer package and we need to know the version in the extending package code.
@@ -27,6 +23,15 @@ if ( defined( 'DLM_SHORT_INIT' ) && DLM_SHORT_INIT ) {
 	return;
 }
 
+if ( ! defined( 'DLM_PURCHASE_URL' ) ) {
+	define( 'DLM_PURCHASE_URL', 'https://bit.ly/dlmpurchase' );
+}
+if ( ! defined( 'DLM_DOCUMENTATION_URL' ) ) {
+	define( 'DLM_DOCUMENTATION_URL', 'https://bit.ly/dlmdocs' );
+}
+if ( ! defined( 'DLM_GITHUB_URL' ) ) {
+	define( 'DLM_GITHUB_URL', 'https://github.com/gdarko/digital-license-manager' );
+}
 if ( ! defined( 'DLM_PLUGIN_FILE' ) ) {
 	define( 'DLM_PLUGIN_FILE', __FILE__ );
 }

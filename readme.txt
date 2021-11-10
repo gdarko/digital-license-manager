@@ -141,9 +141,10 @@ To validate a license through the REST API, please follow this <a href="http://d
 == Changelog ==
 
 = 1.1.1 =
-*Release Date - 01 Oct 2021*
+*Release Date - 10 Oct 2021*
 
 * Add PRO version references
+* Minor bug fixes
 
 = 1.1.0 =
 *Release Date - 24 Sep 2021*
