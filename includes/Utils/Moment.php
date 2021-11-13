@@ -61,7 +61,11 @@ class Moment {
 	 *
 	 * @return string
 	 */
-	public static function toHtml( $date_str, $expires = false, $br = false ) {
+	public static function toHtml( $date_str, $expires = false, $br = false, $never = '' ) {
+
+		if ( empty( $never ) ) {
+			$never = __( 'Never', 'digital-license-manager' );
+		}
 
 		static $dateFormat = null;
 		static $timeFormat = null;
@@ -90,8 +94,8 @@ class Moment {
 				if ( empty( $date_str ) || '0000-00-00 00:00:00' === $date_str ) {
 					return sprintf(
 						'<span class="dlm-date dlm-date-valid" title="%s">%s</span>%s',
-						__( 'Never'. 'digital-license-manager' ),
-						__( 'Never', 'digital-license-manager' ),
+						$never,
+						$never,
 						$br ? '<br/>' : ''
 					);
 

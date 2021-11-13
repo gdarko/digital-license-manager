@@ -164,7 +164,8 @@ class Licenses extends ListTable {
 
         <select name="order-id" id="filter-by-order-id">
 			<?php if ( $selected ): ?>
-                <option selected value="<?php echo esc_attr( $selected->get_id() ); ?>"><?php echo sprintf( '#%d', $selected->get_id() ); ?></option>
+                <option selected
+                        value="<?php echo esc_attr( $selected->get_id() ); ?>"><?php echo sprintf( '#%d', $selected->get_id() ); ?></option>
 			<?php endif; ?>
         </select>
 		<?php
@@ -602,7 +603,12 @@ class Licenses extends ListTable {
 	 */
 	public function column_expires_at( $item ) {
 
-		$markup = '<p class="dlm-text-center dlm-clear-spacing">' . Moment::toHtml( $item['expires_at'], true ) . '</p>';
+		$never = '';
+		if ( empty( $item['order_id'] ) ) {
+			$never = __( 'In stock, not sold yet', 'digital-license-manager' );
+		}
+
+		$markup = '<p class="dlm-text-center dlm-clear-spacing">' . Moment::toHtml( $item['expires_at'], true, false, $never ) . '</p>';
 
 		if ( $item['valid_for'] ) {
 			$markup .= sprintf(
@@ -875,8 +881,8 @@ class Licenses extends ListTable {
 		$this->verifyNonce( $nonce );
 		$this->verifySelection();
 
-		$licenseKeyIds = isset( $_REQUEST['id'] ) ? array_map('intval', (array) $_REQUEST['id']) : array();
-		$count = 0;
+		$licenseKeyIds = isset( $_REQUEST['id'] ) ? array_map( 'intval', (array) $_REQUEST['id'] ) : array();
+		$count         = 0;
 
 		foreach ( $licenseKeyIds as $licenseKeyId ) {
 			/** @var LicenseResourceModel $license */
@@ -917,7 +923,7 @@ class Licenses extends ListTable {
 		$this->verifyNonce( 'delete' );
 		$this->verifySelection();
 
-		$licenseKeyIds = isset( $_REQUEST['id'] ) ? array_map('intval', (array) $_REQUEST['id']) : array();
+		$licenseKeyIds = isset( $_REQUEST['id'] ) ? array_map( 'intval', (array) $_REQUEST['id'] ) : array();
 
 
 		foreach ( $licenseKeyIds as $licenseKeyId ) {
