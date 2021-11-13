@@ -124,16 +124,16 @@
         },
         {
             "name": "setasign/fpdf",
-            "version": "1.8.3",
+            "version": "1.8.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Setasign/FPDF.git",
-                "reference": "6a83253ece0df1c5b6c05fe7a900c660ae38afc3"
+                "reference": "b0ddd9c5b98ced8230ef38534f6f3c17308a7974"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Setasign/FPDF/zipball/6a83253ece0df1c5b6c05fe7a900c660ae38afc3",
-                "reference": "6a83253ece0df1c5b6c05fe7a900c660ae38afc3",
+                "url": "https://api.github.com/repos/Setasign/FPDF/zipball/b0ddd9c5b98ced8230ef38534f6f3c17308a7974",
+                "reference": "b0ddd9c5b98ced8230ef38534f6f3c17308a7974",
                 "shasum": ""
             },
             "require": {
@@ -164,9 +164,9 @@
                 "pdf"
             ],
             "support": {
-                "source": "https://github.com/Setasign/FPDF/tree/1.8.3"
+                "source": "https://github.com/Setasign/FPDF/tree/1.8.4"
             },
-            "time": "2021-04-20T09:49:57+00:00"
+            "time": "2021-08-30T07:50:06+00:00"
         }
     ],
     "packages-dev": [],

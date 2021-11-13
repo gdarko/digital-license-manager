@@ -21,14 +21,16 @@ defined( 'ABSPATH' ) || exit; ?>
 
 <?php do_action( 'dlm_myaccount_licenses_after_heading' ); ?>
 
-<?php foreach ( $data as $productId => $row ): ?>
+<?php
+
+foreach ( $data as $productId => $row ): ?>
     <table class="shop_table">
-        <tbody>
         <thead>
         <tr>
             <th colspan="3"><?php echo esc_html( $row['name'] ); ?></th>
         </tr>
         </thead>
+        <tbody>
 		<?php
 		/** @var LicenseResourceModel $license */
 		foreach ( $row['keys'] as $license ):
@@ -38,15 +40,16 @@ defined( 'ABSPATH' ) || exit; ?>
 				$decrypted = '';
 			}
 			$actions = apply_filters( 'dlm_myaccount_licenses_keys_row_actions', array(), $license, $decrypted, $data );
-			ksort( $actions );
+			if(is_array($actions)) {
+				ksort( $actions );
+			}
 			?>
             <tr>
-                <td colspan="<?php echo ( $license->getExpiresAt() ) ? '1' : '2'; ?>">
+                <td colspan="<?php echo ( $license && $license->getExpiresAt() ) ? '' : '2'; ?>">
                     <span class="dlm-myaccount-license-key"><?php echo esc_html( $decrypted ); ?></span>
                 </td>
 				<?php if ( $license->getExpiresAt() ): ?>
-
-                    <?php
+					<?php
 					try {
 						$date = new DateTime( $license->getExpiresAt() );
 					} catch ( Exception $e ) {
@@ -56,17 +59,17 @@ defined( 'ABSPATH' ) || exit; ?>
                     <td>
                         <span class="dlm-myaccount-license-key"><?php printf( '%s <strong>%s</strong>', $valid_until, $date ? $date->format( $date_format ) : 'N/A' ); ?></span>
                     </td>
-                    <td class="license-key-actions">
-						<?php
-						foreach ( $actions as $key => $action ) {
-							$href     = isset( $action['href'] ) ? $action['href'] : '';
-							$cssClass = isset( $action['class'] ) ? $action['class'] : '';
-							$text     = isset( $action['text'] ) ? $action['text'] : '';
-							echo sprintf( '<a href="%s" class="%s">%s</a>', $href, $cssClass, $text );
-						}
-						?>
-                    </td>
 				<?php endif; ?>
+                <td class="license-key-actions">
+					<?php
+					foreach ( $actions as $key => $action ) {
+						$href     = isset( $action['href'] ) ? $action['href'] : '';
+						$cssClass = isset( $action['class'] ) ? $action['class'] : '';
+						$text     = isset( $action['text'] ) ? $action['text'] : '';
+						echo sprintf( '<a href="%s" class="%s">%s</a>', $href, $cssClass, $text );
+					}
+					?>
+                </td>
             </tr>
 		<?php endforeach; ?>
         </tbody>
