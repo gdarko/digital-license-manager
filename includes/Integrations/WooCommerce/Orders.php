@@ -102,8 +102,9 @@ class Orders {
 				continue;
 			}
 
-			$useStock     = get_post_meta( $product->get_id(), 'dlm_licensed_product_use_stock', true );
-			$useGenerator = get_post_meta( $product->get_id(), 'dlm_licensed_product_use_generator', true );
+			$licenseSrc   = get_post_meta( $product->get_id(), 'dlm_licensed_product_licenses_source', true );
+			$useStock     = 'stock' === $licenseSrc;
+			$useGenerator = 'generators' === $licenseSrc;
 
 			// Skip this product because neither selling from stock or from
 			// generators is active.
@@ -127,8 +128,8 @@ class Orders {
 			// Set the needed delivery amount
 			$neededAmount = absint( $orderItem->get_quantity() ) * $deliveredQuantity;
 
-			// Sell license keys through available stock.
-			if ( $useStock ) {
+			if ( $useStock ) { // Sell license keys through available stock.
+
 				// Retrieve the available license keys.
 				/** @var LicenseResourceModel[] $licenseKeys */
 				$licenseKeys = LicenseResourceRepository::instance()->findAllBy(
@@ -149,45 +150,11 @@ class Orders {
 						$orderId,
 						$neededAmount
 					);
-				} // There are not enough keys.
-				else {
-					// Set the available license keys as "SOLD".
-					LicenseUtil::sellImportedLicenseKeys(
-						$licenseKeys,
-						$orderId,
-						$availableStock
-					);
-
-					// The "use generator" option is active, generate them
-					if ( $useGenerator ) {
-						$amountToGenerate = $neededAmount - $availableStock;
-						$generatorId      = get_post_meta(
-							$product->get_id(),
-							'dlm_licensed_product_assigned_generator',
-							true
-						);
-
-						// Retrieve the generator from the database and set up the args.
-						/** @var GeneratorResourceModel $generator */
-						$generator = GeneratorResourceRepository::instance()->find( $generatorId );
-						$licenses  = GeneratorUtil::generateLicenseKeys( $amountToGenerate, $generator );
-
-						if ( ! is_wp_error( $licenses ) ) {
-							// Save the license keys.
-							LicenseUtil::saveGeneratedLicenseKeys(
-								$orderId,
-								$product->get_id(),
-								$licenses,
-								LicenseStatus::SOLD,
-								$generator
-							);
-						}
-
-						// TODO: Create a backorder
-					}
+				} else {
+					$order->add_order_note( sprintf( __( 'License delivery failed: Could not find enough licenses in stock (Current stock: %d | Required %d)' ), $neededAmount, $availableStock ) );
 				}
-			} // Sell license keys through the active generator
-			else if ( ! $useStock && $useGenerator ) {
+			} else if ( $useGenerator ) { // Sell license keys through the active generator
+
 				$generatorId = get_post_meta(
 					$product->get_id(),
 					'dlm_licensed_product_assigned_generator',
@@ -206,7 +173,6 @@ class Orders {
 				$licenses = GeneratorUtil::generateLicenseKeys( $neededAmount, $generator );
 
 				if ( ! is_wp_error( $licenses ) ) {
-
 					// Save the license keys.
 					LicenseUtil::saveGeneratedLicenseKeys(
 						$orderId,
@@ -216,7 +182,6 @@ class Orders {
 						$generator
 					);
 				}
-
 			}
 
 			// Set the order as complete.
@@ -230,11 +195,7 @@ class Orders {
 				);
 			}
 
-			$orderedLicenseKeys = LicenseResourceRepository::instance()->findAllBy(
-				array(
-					'order_id' => $orderId
-				)
-			);
+			$orderedLicenseKeys = LicenseResourceRepository::instance()->findAllBy( array( 'order_id' => $orderId ) );
 
 			/** Plugin event, Type: post, Name: order_license_keys */
 			do_action(

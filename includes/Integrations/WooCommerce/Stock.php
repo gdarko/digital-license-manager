@@ -19,10 +19,7 @@ class Stock {
 	 */
 	public function __construct() {
 
-		add_filter( 'woocommerce_product_data_store_cpt_get_products_query', array(
-			$this,
-			'handleCustomQueryVar'
-		), 10, 2 );
+		add_filter( 'woocommerce_product_data_store_cpt_get_products_query', array( $this, 'handleCustomQueryVars' ), 10, 2 );
 	}
 
 	/**
@@ -106,14 +103,14 @@ class Stock {
 		// For the query to return any results, the following WooCommerce Product settings need to be enabled:
 		// 1. Inventory       -> Manage stock?
 		// 2. License Manager -> Sell license keys
-		// 3. License Manager -> Sell from stock
+		// 3. License Manager -> License keys source -> Provide licenses from stock
 		$args = array(
-			'limit'                          => - 1,
-			'orderBy'                        => 'id',
-			'order'                          => 'ASC',
-			'manage_stock'                   => true,
-			'dlm_licensed_product'           => true,
-			'dlm_licensed_product_use_stock' => true
+			'limit'                                => - 1,
+			'orderBy'                              => 'id',
+			'order'                                => 'ASC',
+			'manage_stock'                         => true,
+			'dlm_licensed_product'                 => true,
+			'dlm_licensed_product_licenses_source' => 'stock',
 		);
 
 		$products     = wc_get_products( $args );
@@ -154,7 +151,7 @@ class Stock {
 	 *
 	 * @return mixed
 	 */
-	public function handleCustomQueryVar( $query, $query_vars ) {
+	public function handleCustomQueryVars( $query, $query_vars ) {
 		if ( ! empty( $query_vars['dlm_licensed_product'] ) ) {
 			$query['meta_query'][] = array(
 				'key'   => 'dlm_licensed_product',
@@ -162,10 +159,10 @@ class Stock {
 			);
 		}
 
-		if ( ! empty( $query_vars['dlm_licensed_product_use_stock'] ) ) {
+		if ( ! empty( $query_vars['dlm_licensed_product_licenses_source'] ) ) {
 			$query['meta_query'][] = array(
-				'key'   => 'dlm_licensed_product_use_stock',
-				'value' => esc_attr( $query_vars['dlm_licensed_product_use_stock'] )
+				'key'   => 'dlm_licensed_product_licenses_source',
+				'value' => esc_attr( $query_vars['dlm_licensed_product_licenses_source'] )
 			);
 		}
 

@@ -110,10 +110,11 @@ class Boot extends Singleton {
 		/**
 		 * Page specific
 		 */
-		wp_register_script( 'dlm_licenses_page', DLM_JS_URL . 'licenses.js' );
-		wp_register_script( 'dlm_generators_page', DLM_JS_URL . 'generators.js' );
-		wp_register_script( 'dlm_activations_page', DLM_JS_URL . 'activations.js' );
-		wp_register_script( 'dlm_settings_page', DLM_JS_URL . 'settings.js' );
+		wp_register_script( 'dlm_licenses_page', DLM_JS_URL . 'licenses.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'dlm_generators_page', DLM_JS_URL . 'generators.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'dlm_activations_page', DLM_JS_URL . 'activations.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'dlm_settings_page', DLM_JS_URL . 'settings.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'dlm_products_page', DLM_JS_URL . 'products.js', array( 'jquery' ), $this->version );
 
 		/**
 		 * Global assets
@@ -136,11 +137,14 @@ class Boot extends Singleton {
 	 */
 	public function adminEnqueueScripts( $hook ) {
 
+		global $post_type;
+
 		// Conditionals
 		$isLicenses    = $hook === 'toplevel_page_dlm_licenses';
 		$isGenerators  = $hook === 'license-manager_page_dlm_generators';
 		$isActivations = $hook === 'license-manager_page_dlm_activations';
 		$isSettings    = $hook === 'license-manager_page_dlm_settings';
+		$isProducts    = in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'product' === $post_type;
 
 		/**
 		 * Global assets
@@ -245,6 +249,13 @@ class Boot extends Singleton {
 		if ( $isSettings ) {
 			wp_enqueue_script( 'dlm_settings_page' );
 		}
+
+		/**
+		 * Page: Products
+		 */
+		if ( $isProducts ) {
+			wp_enqueue_script( 'dlm_products_page' );
+		}
 	}
 
 	/**
@@ -261,7 +272,7 @@ class Boot extends Singleton {
 				'github' => sprintf(
 					'<a href="%s" target="_blank">%s</a>',
 					DLM_GITHUB_URL,
-					__('GitHub', 'digital-license-manager')
+					__( 'GitHub', 'digital-license-manager' )
 				),
 				'docs'   => sprintf(
 					'<a href="%s" target="_blank">%s</a>',
@@ -273,10 +284,10 @@ class Boot extends Singleton {
 			$links = array_merge( $links, $newLinks );
 		}
 
-        $coreBasename = str_replace('-pro', '', DLM_PLUGIN_BASENAME);
-        if ($file === $coreBasename) {
-            $links[] = '<a style="font-weight:bold;color:#3eb03e;" target="_blank" href="'.DLM_PURCHASE_URL.'"><strong>'.__('Buy PRO Version', 'wp-vimeo-videos').'</strong></a>';
-        }
+		$coreBasename = str_replace( '-pro', '', DLM_PLUGIN_BASENAME );
+		if ( $file === $coreBasename ) {
+			$links[] = '<a style="font-weight:bold;color:#3eb03e;" target="_blank" href="' . DLM_PURCHASE_URL . '"><strong>' . __( 'Buy PRO Version', 'wp-vimeo-videos' ) . '</strong></a>';
+		}
 
 		return $links;
 	}
