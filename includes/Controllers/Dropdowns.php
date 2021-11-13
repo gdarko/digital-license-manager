@@ -8,6 +8,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as License
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Utils\Hash;
+use WP_Query;
 use WP_User;
 use WP_User_Query;
 
@@ -22,6 +23,18 @@ class Dropdowns {
 	 */
 	public function __construct() {
 		add_action( 'wp_ajax_dlm_dropdown_search', array( $this, 'dropdownSearch' ), 10 );
+	}
+
+	/**
+	 * Formats post object
+	 *
+	 * @param \WP_Post $record
+	 */
+	private function formatPost( $record ) {
+		return array(
+			'id'   => $record->ID,
+			'text' => sprintf( '#%d - %s', $record->ID, $record->post_title )
+		);
 	}
 
 	/**
@@ -56,6 +69,11 @@ class Dropdowns {
 			$offset = ( $page - 1 ) * $limit;
 		}
 
+		$searchable_post_types = apply_filters( 'dlm_dropdown_searchable_post_types', array(
+			'product',
+			'shop_order'
+		) );
+
 		if ( is_numeric( $term ) ) {
 			// Search for a specific license
 			if ( $type === 'license' ) {
@@ -86,6 +104,10 @@ class Dropdowns {
 					)
 				);
 
+				if ( $users->get_total() <= $limit ) {
+					$more = false;
+				}
+
 				/** @var WP_User $user */
 				foreach ( $users->get_results() as $user ) {
 					$results[] = array(
@@ -99,82 +121,120 @@ class Dropdowns {
 						)
 					);
 				}
+			} elseif ( in_array( $type, $searchable_post_types ) ) {
+
+				global $wpdb;
+
+				$query   = $wpdb->prepare( "SELECT * FROM {$wpdb->posts} WHERE post_type=%s AND ID LIKE %s LIMIT %d OFFSET %d", $type, '%' . $term . '%', $limit, $offset );
+				$records = $wpdb->get_results( $query );
+				$total   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type=%s AND ID LIKE %s", $type, '%' . $term . '%' ) );
+
+				if ( $total <= $limit ) {
+					$more = false;
+				}
+
+				if ( ! empty( $records ) ) {
+					foreach ( $records as $record ) {
+						$results[] = $this->formatPost( $record );
+					}
+				}
+
 			} else {
 				$result = apply_filters( 'dlm_dropdown_search_single', [], $type, $term );
 				if ( ! empty( $result ) ) {
 					$results[] = $result;
 				}
 			}
-		}
+		} else {
+			if ( empty( $ids ) ) {
+				$args = array(
+					'type'     => $type,
+					'limit'    => $limit,
+					'offset'   => $offset,
+					'customer' => $term,
+				);
 
-		if ( empty( $ids ) ) {
-			$args = array(
-				'type'     => $type,
-				'limit'    => $limit,
-				'offset'   => $offset,
-				'customer' => $term,
-			);
+				// Search for licenses
+				if ( $type === 'license' ) {
+					$licenses = $this->searchLicenses( $term, $limit, $offset );
 
-			// Search for licenses
-			if ( $type === 'license' ) {
-				$licenses = $this->searchLicenses( $term, $limit, $offset );
+					if ( count( $licenses ) < $limit ) {
+						$more = false;
+					}
 
-				if ( count( $licenses ) < $limit ) {
-					$more = false;
-				}
-
-				foreach ( $licenses as $licenseId ) {
-					/** @var LicenseResourceModel $license */
-					$text      = sprintf(
-						'#%s',
-						$licenseId
+					foreach ( $licenses as $licenseId ) {
+						/** @var LicenseResourceModel $license */
+						$text      = sprintf(
+							'#%s',
+							$licenseId
+						);
+						$results[] = array(
+							'id'   => $licenseId,
+							'text' => $text
+						);
+					}
+				} // Search for users
+				elseif ( $type === 'user' ) {
+					$users = new WP_User_Query(
+						array(
+							'search'         => '*' . esc_attr( $term ) . '*',
+							'search_columns' => array(
+								'user_login',
+								'user_nicename',
+								'user_email',
+								'user_url',
+							),
+						)
 					);
-					$results[] = array(
-						'id'   => $licenseId,
-						'text' => $text
-					);
-				}
-			} // Search for users
-			elseif ( $type === 'user' ) {
-				$users = new WP_User_Query(
-					array(
-						'search'         => '*' . esc_attr( $term ) . '*',
-						'search_columns' => array(
-							'user_login',
-							'user_nicename',
-							'user_email',
-							'user_url',
+
+					if ( $users->get_total() < $limit ) {
+						$more = false;
+					}
+
+					/** @var WP_User $user */
+					foreach ( $users->get_results() as $user ) {
+						$results[] = array(
+							'id'   => $user->ID,
+							'text' => sprintf( '%s (#%d - %s)', $user->user_nicename, $user->ID, $user->user_email )
+						);
+					}
+				} else if ( in_array( $type, $searchable_post_types ) ) {
+
+					$status = 'shop_order' === $type ? 'any' : 'publish';
+
+					$query = new WP_Query( array(
+						'post_type'      => $type,
+						's'              => esc_attr( $term ),
+						'paged'          => $page,
+						'posts_per_page' => $limit,
+						'post_status'    => $status,
+					) );
+
+					if ( $query->found_posts <= $limit ) {
+						$more = false;
+					}
+
+					foreach ( $query->posts as $_post ) {
+						$results[] = $this->formatPost( $_post );
+					}
+
+				} else {
+					$result = apply_filters(
+						'dlm_dropdown_search_multiple',
+						array(
+							'records' => array(),
+							'more'    => $more
 						),
-					)
-				);
-
-				if ( $users->get_total() < $limit ) {
-					$more = false;
-				}
-
-				/** @var WP_User $user */
-				foreach ( $users->get_results() as $user ) {
-					$results[] = array(
-						'id'   => $user->ID,
-						'text' => sprintf( '%s (#%d - %s)', $user->user_nicename, $user->ID, $user->user_email )
+						$type,
+						$ids,
+						$args
 					);
-				}
-			} else {
-				$result = apply_filters(
-					'dlm_dropdown_search_multiple',
-					array(
-						'records' => array(),
-						'more'    => $more
-					),
-					$type,
-					$ids,
-					$args
-				);
-				if ( ! empty( $result['records'] ) ) {
-					$results = array_merge( $results, $result['records'] );
-				}
-				if ( isset( $result['more'] ) ) {
-					$more = $result['more'];
+					if ( ! empty( $result['records'] ) ) {
+						$results = array_merge( $results, $result['records'] );
+					}
+					if ( isset( $result['more'] ) ) {
+						$more = $result['more'];
+					}
 				}
 			}
 		}
