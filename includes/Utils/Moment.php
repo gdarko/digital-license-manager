@@ -89,7 +89,7 @@ class Moment {
 
 				if ( empty( $date_str ) || '0000-00-00 00:00:00' === $date_str ) {
 					return sprintf(
-						'<span class="dlm-date dlm-status delivered" title="%s">%s</span>%s',
+						'<span class="dlm-date dlm-date-valid" title="%s">%s</span>%s',
 						__( 'Never'. 'digital-license-manager' ),
 						__( 'Never', 'digital-license-manager' ),
 						$br ? '<br/>' : ''
@@ -97,17 +97,22 @@ class Moment {
 
 				} else {
 					$timestampNow = strtotime( 'now' ) + $offsetSeconds;
-					if ( $timestampNow > $timestampInput ) {
+					if ( $timestampNow >= $timestampInput ) {
 						return sprintf(
-							'<span class="dlm-date dlm-status expired" title="%s">%s, %s</span>%s',
+							'<span class="dlm-date dlm-date-expired" title="%s">%s, %s</span>%s',
 							__( 'Expired' ),
 							$dateInput->format( $dateFormat ),
 							$dateInput->format( $timeFormat ),
 							$br ? '<br/>' : ''
 						);
 					} else {
+
+						$diffSeconds = $timestampInput - $timestampNow;
+						$statusClass = $diffSeconds > MONTH_IN_SECONDS ? 'dlm-date-valid' : 'dlm-date-expires-soon';
+
 						return sprintf(
-							'<span class="dlm-date dlm-status delivered" title="%s">%s, %s</span>%s',
+							'<span class="dlm-date %s" title="%s">%s, %s</span>%s',
+							$statusClass,
 							__( 'Active' ),
 							$dateInput->format( $dateFormat ),
 							$dateInput->format( $timeFormat ),
