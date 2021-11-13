@@ -268,12 +268,6 @@ class License {
 				}
 			}
 			$updateData['expires_at'] = $licenseData['expires_at'];
-		} else {
-			$updateData['expires_at'] = null;
-			$validFor                 = isset( $updateData['valid_for'] ) ? $updateData['valid_for'] : '';
-			if ( is_numeric( $validFor ) && $validFor > 0 ) {
-				$licenseData['expires_at'] = Moment::addDaysInFuture( (int) $validFor, 'Y-m-d H:i:s' );
-			}
 		}
 
 		// Valid for
@@ -282,6 +276,10 @@ class License {
 				$updateData['valid_for'] = null;
 			} else {
 				$updateData['valid_for'] = (int) $licenseData['valid_for'];
+				$validFor                 = isset( $updateData['valid_for'] ) ? $updateData['valid_for'] : '';
+				if ( is_numeric( $validFor ) && $validFor > 0 ) {
+					$updateData['expires_at'] = Moment::addDaysInFuture( (int) $validFor, 'Y-m-d H:i:s' );
+				}
 			}
 		}
 
