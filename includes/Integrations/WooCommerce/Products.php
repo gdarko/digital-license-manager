@@ -16,6 +16,7 @@ defined( 'ABSPATH' ) || exit;
  * @package IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce
  */
 class Products {
+
 	/**
 	 * @var string
 	 */
@@ -39,6 +40,23 @@ class Products {
 			'variableProductDataPanel'
 		), 10, 3 );
 		add_action( 'woocommerce_save_product_variation', array( $this, 'variableProductSave' ), 10, 2 );
+		add_action( 'admin_notices', array( $this, 'adminNotices' ), 10 );
+	}
+
+	/**
+	 * Outputs the admin notices
+	 */
+	public function adminNotices() {
+		global $post_type;
+		$error = get_transient( 'dlm_error' );
+		if ( ! empty( $error ) && 'product' === $post_type ) {
+			?>
+            <div class="notice notice-error is-dismissible">
+                <p><?php echo is_wp_error( $error ) ? $error->get_error_message() : $error; ?></p>
+            </div>
+			<?php
+			delete_transient( 'dlm_error' );
+		}
 	}
 
 	/**
@@ -143,7 +161,7 @@ class Products {
 			update_post_meta( $postId, 'dlm_licensed_product_assigned_generator', $assignedGenerator );
 			// Warn the user if they don't have generator selected.
 			if ( ! $assignedGenerator ) {
-				$error = new WP_Error( 2, __( 'Assign a generator if you wish to sell automatically generated licenses for this product.', 'digital-license-manager' ) );
+				$error = new WP_Error( 2, __( '<strong>Error:</strong> Please select valid License generator in "License Manager" options.', 'digital-license-manager' ) );
 				set_transient( 'dlm_error', $error, 60 );
 			}
 		} else {
@@ -219,7 +237,7 @@ class Products {
 			update_post_meta( $variationId, 'dlm_licensed_product_assigned_generator', $assignedGenerator );
 			// Warn the user if they don't have generator selected.
 			if ( ! $assignedGenerator ) {
-				$error = new WP_Error( 2, __( 'Assign a generator if you wish to sell automatically generated licenses for this product.', 'digital-license-manager' ) );
+				$error = new WP_Error( 2, sprintf( __( '<strong>Error:</strong> Please select valid License generator in variation #%d Digital License Manager options.', 'digital-license-manager' ), $i ) );
 				set_transient( 'dlm_error', $error, 60 );
 			}
 		} else {
@@ -387,7 +405,7 @@ class Products {
 					'type'   => 'select',
 					'params' => array(
 						'id'            => 'dlm_licensed_product',
-						'label'         => esc_html__( 'Sell license keys', 'digital-license-manager' ),
+						'label'         => esc_html__( 'Sell license key', 'digital-license-manager' ),
 						'description'   => esc_html__( 'Enable license key delivery for this product', 'digital-license-manager' ),
 						'value'         => (int) $this->getMeta( $product->get_Id(), 'dlm_licensed_product', 0 ),
 						'cbvalue'       => 1,
@@ -419,7 +437,7 @@ class Products {
 					'params' => array(
 						'id'            => 'dlm_licensed_product_licenses_source',
 						'label'         => esc_html__( 'License keys source', 'digital-license-manager' ),
-						'description'   => esc_html__( 'Select the source of the license keys. If you want them to be generated with a generator select "Provide licenses by using generator" and then specify a generator below.', 'digital-license-manager' ),
+						'description'   => esc_html__( 'Select the source of the license keys. If you want them to be generated with a generator select "Provide licenses by using generator" and then specify a generator below. If you want to sell from your existing licenses make sure you have a stock of license that are marked as ACTIVE.', 'digital-license-manager' ),
 						'value'         => $licenseSource,
 						'cbvalue'       => 1,
 						'desc_tip'      => true,
