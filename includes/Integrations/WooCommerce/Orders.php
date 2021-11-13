@@ -96,7 +96,7 @@ class Orders {
 
 			// Instead of generating new license keys, the plugin will extend
 			// the expiration date of existing licenses, if configured.
-			$abortEarly = apply_filters( 'dlm_maybe_skip_subscription_renewals', $orderId, $product->get_id() );
+			$abortEarly = apply_filters( 'dlm_maybe_skip_subscription_renewals', false, $orderId, $product->get_id() );
 
 			if ( $abortEarly === true ) {
 				continue;
