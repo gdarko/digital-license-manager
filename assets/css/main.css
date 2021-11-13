@@ -209,6 +209,20 @@ table.wp-list-table.lizenzschlssel span.dlm-date {
 	color: var(--color-info);
 }
 
+.dlm-date {
+	margin-bottom: 10px !important;
+	display: block;
+}
+.dlm-date-valid {
+	color: var(--color-success);
+}
+.dlm-date-expires-soon {
+	color: var(--color-warning);
+}
+.dlm-date-expired {
+	color: var(--color-danger);
+}
+
 .table-view-list.licenses,
 .table-view-list.activations {
 	table-layout: auto;
