@@ -69,10 +69,8 @@ class Dropdowns {
 			$offset = ( $page - 1 ) * $limit;
 		}
 
-		$searchable_post_types = apply_filters( 'dlm_dropdown_searchable_post_types', array(
-			'product',
-			'shop_order'
-		) );
+		$searchable_post_types = apply_filters( 'dlm_dropdown_searchable_post_types', array() );
+		$search_query_status   = apply_filters( 'dlm_dropdown_search_query_default_status', array( 'publish' ), $type );
 
 		if ( is_numeric( $term ) ) {
 			// Search for a specific license
@@ -121,13 +119,19 @@ class Dropdowns {
 						)
 					);
 				}
-			} elseif ( in_array( $type, $searchable_post_types ) ) {
+			} elseif ( ! empty( $searchable_post_types ) && in_array( $type, $searchable_post_types ) ) {
 
 				global $wpdb;
 
-				$query   = $wpdb->prepare( "SELECT * FROM {$wpdb->posts} WHERE post_type=%s AND ID LIKE %s LIMIT %d OFFSET %d", $type, '%' . $term . '%', $limit, $offset );
+				$search_query_status_in = array_map( function ( $item ) {
+					return sprintf( "'%s'", esc_sql( $item ) );
+				}, $search_query_status );
+
+				$search_query_status_in = implode( ',', $search_query_status_in );
+
+				$query   = $wpdb->prepare( "SELECT * FROM {$wpdb->posts} WHERE post_status IN (" . $search_query_status_in . ") AND post_type=%s AND ID LIKE %s LIMIT %d OFFSET %d", $type, '%' . $term . '%', $limit, $offset );
 				$records = $wpdb->get_results( $query );
-				$total   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type=%s AND ID LIKE %s", $type, '%' . $term . '%' ) );
+				$total   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_status IN (" . $search_query_status_in . ") AND post_type=%s AND ID LIKE %s", $type, '%' . $term . '%' ) );
 
 				if ( $total <= $limit ) {
 					$more = false;
@@ -198,16 +202,14 @@ class Dropdowns {
 							'text' => sprintf( '%s (#%d - %s)', $user->user_nicename, $user->ID, $user->user_email )
 						);
 					}
-				} else if ( in_array( $type, $searchable_post_types ) ) {
-
-					$status = 'shop_order' === $type ? 'any' : 'publish';
+				} else if ( ! empty( $searchable_post_types ) && in_array( $type, $searchable_post_types ) ) {
 
 					$query = new WP_Query( array(
 						'post_type'      => $type,
 						's'              => esc_attr( $term ),
 						'paged'          => $page,
 						'posts_per_page' => $limit,
-						'post_status'    => $status,
+						'post_status'    => $search_query_status,
 					) );
 
 					if ( $query->found_posts <= $limit ) {
