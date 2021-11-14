@@ -273,7 +273,7 @@ class Generators extends DLM_REST_Controller {
 
 	public function updateGenerator( $request ) {
 
-		if ( ! $this->isRouteEnabled( $this->settings, '020' ) ) {
+		if ( ! $this->isRouteEnabled( $this->settings, '025' ) ) {
 			return $this->routeDisabledError();
 		}
 
@@ -312,7 +312,7 @@ class Generators extends DLM_REST_Controller {
 	 */
 	public function deleteGenerator( WP_REST_Request $request ) {
 
-		if ( ! $this->isRouteEnabled( $this->settings, '025' ) ) {
+		if ( ! $this->isRouteEnabled( $this->settings, '026' ) ) {
 			return $this->routeDisabledError();
 		}
 
