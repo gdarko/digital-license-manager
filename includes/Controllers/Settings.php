@@ -28,12 +28,20 @@ class Settings extends Singleton {
 	}
 
 	/**
+	 * The settings url
+	 * @return string|void
+	 */
+	public static function getSettingsUrl() {
+		return admin_url( sprintf( 'admin.php?page=%s', PageSlug::SETTINGS ) );
+	}
+
+	/**
 	 * List of tabs
 	 * @return mixed|void
 	 */
 	public function all() {
 
-		$baseUrl = admin_url( sprintf( 'admin.php?page=%s', PageSlug::SETTINGS ) );
+		$baseUrl = self::getSettingsUrl();
 		$tabList = apply_filters( 'dlm_settings_fields', array(
 			'general'  => array(
 				'name'              => __( 'General', 'digital-license-manager' ),
