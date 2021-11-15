@@ -31,6 +31,16 @@ class Migrator {
 	protected $newVersion;
 
 	/**
+	 * Migration mode UP
+	 */
+	const MODE_UP = 1;
+
+	/**
+	 * Migration mode Down
+	 */
+	const MODE_DOWN = 2;
+
+	/**
 	 * Migrator constructor.
 	 *
 	 * @param $path
@@ -47,6 +57,7 @@ class Migrator {
 	 * Performs a database upgrade.
 	 */
 	public function up() {
+		$migrationMode = self::MODE_UP;
 		$regExFileName = '/(\d{14})_(.*?)_(.*?)\.php/';
 		foreach ( glob( $this->path ) as $fileName ) {
 			if ( 'index.php' === $fileName ) {
@@ -71,6 +82,7 @@ class Migrator {
 	 * Performs a database downgrade (Currently not in use).
 	 */
 	public function down() {
+		$migrationMode = self::MODE_DOWN;
 		// TODO: Not implemented.
 	}
 

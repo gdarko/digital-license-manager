@@ -356,20 +356,6 @@ class Products {
 	}
 
 	/**
-	 * Return the license stock count
-	 *
-	 * @param $product_id
-	 *
-	 * @return false|int
-	 */
-	private function getLicenseStockCount( $product_id ) {
-		return LicenseResourceRepository::instance()->countBy( array(
-			'product_id' => $product_id,
-			'status'     => LicenseStatus::ACTIVE
-		) );
-	}
-
-	/**
 	 * Return metadata
 	 *
 	 * @param $product_id
@@ -442,7 +428,7 @@ class Products {
 						'cbvalue'       => 1,
 						'desc_tip'      => true,
 						'options'       => array(
-							'stock'      => sprintf( __( 'Provide licenses from stock (%d available)', 'digital-license-manager' ), $this->getLicenseStockCount( $product->get_id() ) ),
+							'stock'      => sprintf( __( 'Provide licenses from stock (%d available)', 'digital-license-manager' ), self::getLicenseStockCount( $product->get_id() ) ),
 							'generators' => __( 'Provide licenses by using generator', 'digital-license-manager' ),
 						),
 						'wrapper_class' => $isVariableProduct ? 'form-row form-row-first dlm-field-conditional-src' : 'dlm-field-conditional-src',
@@ -518,5 +504,19 @@ class Products {
 	 */
 	private function isVariableProduct( $product ) {
 		return ! in_array( $product->get_type(), array( 'simple', 'subscription' ) );
+	}
+
+	/**
+	 * Return the license stock count
+	 *
+	 * @param $product_id
+	 *
+	 * @return false|int
+	 */
+	public static function getLicenseStockCount( $product_id ) {
+		return LicenseResourceRepository::instance()->countBy( array(
+			'product_id' => $product_id,
+			'status'     => LicenseStatus::ACTIVE
+		) );
 	}
 }

@@ -19,7 +19,10 @@ class Stock {
 	 */
 	public function __construct() {
 
-		add_filter( 'woocommerce_product_data_store_cpt_get_products_query', array( $this, 'handleCustomQueryVars' ), 10, 2 );
+		add_filter( 'woocommerce_product_data_store_cpt_get_products_query', array(
+			$this,
+			'handleCustomQueryVars'
+		), 10, 2 );
 	}
 
 	/**
@@ -124,12 +127,7 @@ class Stock {
 		/** @var WC_Product $product */
 		foreach ( $products as $product ) {
 			$woocommerceStock = (int) $product->get_stock_quantity();
-			$licenseStock     = License::instance()->countBy(
-				array(
-					'status'     => LicenseStatus::ACTIVE,
-					'product_id' => $product->get_id()
-				)
-			);
+			$licenseStock     = Products::getLicenseStockCount( $product->get_id() );
 
 			// Nothing to do in this case
 			if ( $woocommerceStock === $licenseStock ) {
