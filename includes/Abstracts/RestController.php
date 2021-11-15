@@ -17,10 +17,10 @@ abstract class RestController extends WP_REST_Controller {
 	/**
 	 * Returns a structured response object for the API.
 	 *
-	 * @param  bool  $success  Indicates whether the request was successful or not
-	 * @param  array  $data  Contains the response data
-	 * @param  int  $code  Contains the response HTTP status code
-	 * @param  string  $route  Contains the request route name
+	 * @param bool $success Indicates whether the request was successful or not
+	 * @param array $data Contains the response data
+	 * @param int $code Contains the response HTTP status code
+	 * @param string $route Contains the request route name
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -37,7 +37,7 @@ abstract class RestController extends WP_REST_Controller {
 	/**
 	 * Prepare the error response based on WP_Error object.
 	 *
-	 * @param  WP_Error  $error
+	 * @param WP_Error $error
 	 *
 	 * @return WP_Error
 	 */
@@ -55,7 +55,7 @@ abstract class RestController extends WP_REST_Controller {
 	 *
 	 * @param $code
 	 * @param $message
-	 * @param  array  $data
+	 * @param array $data
 	 *
 	 * @return WP_Error
 	 */
@@ -68,7 +68,7 @@ abstract class RestController extends WP_REST_Controller {
 	 *
 	 * @param $code
 	 * @param $message
-	 * @param  array  $data
+	 * @param array $data
 	 *
 	 * @return WP_Error
 	 */
@@ -82,7 +82,7 @@ abstract class RestController extends WP_REST_Controller {
 	/**
 	 * Checks if the given string is a JSON object.
 	 *
-	 * @param  string  $string
+	 * @param string $string
 	 *
 	 * @return bool
 	 */
@@ -95,8 +95,8 @@ abstract class RestController extends WP_REST_Controller {
 	/**
 	 * Checks whether a specific API route is enabled.
 	 *
-	 * @param  array  $settings  Plugin settings array
-	 * @param  string  $routeId  Unique plugin API endpoint ID
+	 * @param array $settings Plugin settings array
+	 * @param string $routeId Unique plugin API endpoint ID
 	 *
 	 * @return bool
 	 */
@@ -127,7 +127,7 @@ abstract class RestController extends WP_REST_Controller {
 	/**
 	 * Converts the passed status string to a valid enumerator value.
 	 *
-	 * @param  string  $enumerator
+	 * @param string $enumerator
 	 *
 	 * @return int
 	 */
@@ -161,7 +161,7 @@ abstract class RestController extends WP_REST_Controller {
 	 * Callback method for the "permission_callback" argument of the
 	 * "register_rest_route" method.
 	 *
-	 * @param  WP_REST_Request  $request
+	 * @param WP_REST_Request $request
 	 *
 	 * @return bool|WP_Error
 	 */
@@ -178,7 +178,7 @@ abstract class RestController extends WP_REST_Controller {
 	/**
 	 * Checks if the current user has permission to perform the request.
 	 *
-	 * @param  string  $cap  Capability slug
+	 * @param string $cap Capability slug
 	 *
 	 * @return bool
 	 */
@@ -189,6 +189,34 @@ abstract class RestController extends WP_REST_Controller {
 	}
 
 	/**
+	 * Validate the current request.
+	 *
+	 * @param $request
+	 * @param $route_id
+	 * @param $capability
+	 *
+	 * @return mixed|void|WP_Error
+	 */
+	protected function validateRequest( $request, $route_id, $capability ) {
+
+		if ( ! $this->isRouteEnabled( $this->settings, $route_id ) ) {
+			return $this->routeDisabledError();
+		}
+
+		if ( ! $this->capabilityCheck( $capability ) ) {
+			return $this->responseError(
+				'permission_denied',
+				__( 'Sorry, you don\'t have access to this resource.', 'digital-license-manager' ),
+				array(
+					'status' => $this->authorizationRequiredCode()
+				)
+			);
+		}
+
+		return apply_filters( 'dlm_rest_api_' . $route_id . '_validate_request', true, $request, $capability, $this );
+	}
+
+	/**
 	 * Returns a contextual HTTP error code for authorization failure.
 	 *
 	 * @return int
@@ -196,7 +224,6 @@ abstract class RestController extends WP_REST_Controller {
 	protected function authorizationRequiredCode() {
 		return is_user_logged_in() ? 403 : 401;
 	}
-
 
 	/**
 	 * Return the request credentials
@@ -224,7 +251,7 @@ abstract class RestController extends WP_REST_Controller {
 	/**
 	 * Return the user data for the given consumer_key.
 	 *
-	 * @param  string  $consumerKey  Part of the user authentication
+	 * @param string $consumerKey Part of the user authentication
 	 *
 	 * @return array
 	 */

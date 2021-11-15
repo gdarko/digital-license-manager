@@ -56,7 +56,17 @@ class Licenses extends RestController {
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'getLicenses' ),
-					'permission_callback' => array( $this, 'permissionCallback' )
+					'permission_callback' => array( $this, 'permissionCallback' ),
+					'args'                => array(
+						'per_page' => array(
+							'description' => 'Items per page',
+							'type'        => 'integer',
+						),
+						'page'     => array(
+							'description' => 'The page number',
+							'type'        => 'integer',
+						)
+					)
 				)
 			)
 		);
@@ -206,22 +216,15 @@ class Licenses extends RestController {
 	/**
 	 * Callback for the GET licenses route. Retrieves all license keys from the database.
 	 *
+	 * @param WP_REST_Request $request
+	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
-	public function getLicenses() {
+	public function getLicenses( $request ) {
 
-		if ( ! $this->isRouteEnabled( $this->settings, '010' ) ) {
-			return $this->routeDisabledError();
-		}
-
-		if ( ! $this->capabilityCheck( 'dlm_read_licenses' ) ) {
-			return $this->responseError(
-				'cannot_view',
-				__( 'Sorry, you cannot list resources.', 'digital-license-manager' ),
-				array(
-					'status' => $this->authorizationRequiredCode()
-				)
-			);
+		$isValid = $this->validateRequest( $request, '010', 'dlm_read_licenses' );
+		if ( is_wp_error( $isValid ) ) {
+			return $isValid;
 		}
 
 		$licenses = LicenseUtil::get();
@@ -243,18 +246,9 @@ class Licenses extends RestController {
 	 */
 	public function getLicense( WP_REST_Request $request ) {
 
-		if ( ! $this->isRouteEnabled( $this->settings, '011' ) ) {
-			return $this->routeDisabledError();
-		}
-
-		if ( ! $this->capabilityCheck( 'dlm_read_licenses' ) ) {
-			return $this->responseError(
-				'cannot_view',
-				__( 'Sorry, you cannot view this resource.', 'digital-license-manager' ),
-				array(
-					'status' => $this->authorizationRequiredCode()
-				)
-			);
+		$isValid = $this->validateRequest( $request, '011', 'dlm_read_licenses' );
+		if ( is_wp_error( $isValid ) ) {
+			return $isValid;
 		}
 
 		$licenseKey = sanitize_text_field( $request->get_param( 'license_key' ) );
@@ -277,18 +271,9 @@ class Licenses extends RestController {
 	 */
 	public function createLicense( WP_REST_Request $request ) {
 
-		if ( ! $this->isRouteEnabled( $this->settings, '012' ) ) {
-			return $this->routeDisabledError();
-		}
-
-		if ( ! $this->capabilityCheck( 'dlm_create_licenses' ) ) {
-			return $this->responseError(
-				'cannot_create',
-				__( 'Sorry, you are not allowed to create resources.', 'digital-license-manager' ),
-				array(
-					'status' => $this->authorizationRequiredCode()
-				)
-			);
+		$isValid = $this->validateRequest( $request, '012', 'dlm_create_licenses' );
+		if ( is_wp_error( $isValid ) ) {
+			return $isValid;
 		}
 
 		$body = $request->get_params();
@@ -330,18 +315,9 @@ class Licenses extends RestController {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function updateLicense( WP_REST_Request $request ) {
-		if ( ! $this->isRouteEnabled( $this->settings, '013' ) ) {
-			return $this->routeDisabledError();
-		}
-
-		if ( ! $this->capabilityCheck( 'dlm_edit_licenses' ) ) {
-			return $this->responseError(
-				'cannot_edit',
-				__( 'Sorry, you are not allowed to edit resources.', 'digital-license-manager' ),
-				array(
-					'status' => $this->authorizationRequiredCode()
-				)
-			);
+		$isValid = $this->validateRequest( $request, '013', 'dlm_edit_licenses' );
+		if ( is_wp_error( $isValid ) ) {
+			return $isValid;
 		}
 
 		$urlParams = $request->get_url_params();
@@ -373,18 +349,9 @@ class Licenses extends RestController {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function deleteLicense( WP_REST_Request $request ) {
-		if ( ! $this->isRouteEnabled( $this->settings, '014' ) ) {
-			return $this->routeDisabledError();
-		}
-
-		if ( ! $this->capabilityCheck( 'dlm_delete_licenses' ) ) {
-			return $this->responseError(
-				'cannot_delete',
-				__( 'Sorry, you are not allowed to delete resources.', 'digital-license-manager' ),
-				array(
-					'status' => $this->authorizationRequiredCode()
-				)
-			);
+		$isValid = $this->validateRequest( $request, '014', 'dlm_delete_licenses' );
+		if ( is_wp_error( $isValid ) ) {
+			return $isValid;
 		}
 
 		$urlParams  = $request->get_url_params();
@@ -407,18 +374,9 @@ class Licenses extends RestController {
 	 */
 	public function activateLicense( WP_REST_Request $request ) {
 
-		if ( ! $this->isRouteEnabled( $this->settings, '015' ) ) {
-			return $this->routeDisabledError();
-		}
-
-		if ( ! $this->capabilityCheck( 'dlm_activate_licenses' ) ) {
-			return $this->responseError(
-				'cannot_edit',
-				__( 'Sorry, you are not allowed to edit this resource.', 'digital-license-manager' ),
-				array(
-					'status' => $this->authorizationRequiredCode()
-				)
-			);
+		$isValid = $this->validateRequest( $request, '015', 'dlm_activate_licenses' );
+		if ( is_wp_error( $isValid ) ) {
+			return $isValid;
 		}
 
 		$licenseKey      = sanitize_text_field( $request->get_param( 'license_key' ) );
@@ -449,18 +407,9 @@ class Licenses extends RestController {
 	 */
 	public function deactivateLicense( WP_REST_Request $request ) {
 
-		if ( ! $this->isRouteEnabled( $this->settings, '016' ) ) {
-			return $this->routeDisabledError();
-		}
-
-		if ( ! $this->capabilityCheck( 'dlm_deactivate_licenses' ) ) {
-			return $this->responseError(
-				'cannot_edit',
-				__( 'Sorry, you are not allowed to edit this resource.', 'digital-license-manager' ),
-				array(
-					'status' => $this->authorizationRequiredCode()
-				)
-			);
+		$isValid = $this->validateRequest( $request, '016', 'dlm_deactivate_licenses' );
+		if ( is_wp_error( $isValid ) ) {
+			return $isValid;
 		}
 
 		$activationToken   = sanitize_text_field( $request->get_param( 'activation_token' ) );
@@ -485,18 +434,9 @@ class Licenses extends RestController {
 	 */
 	public function validateLicense( WP_REST_Request $request ) {
 
-		if ( ! $this->isRouteEnabled( $this->settings, '017' ) ) {
-			return $this->routeDisabledError();
-		}
-
-		if ( ! $this->capabilityCheck( 'dlm_validate_licenses' ) ) {
-			return $this->responseError(
-				'cannot_view',
-				__( 'Sorry, you cannot view this resource.', 'digital-license-manager' ),
-				array(
-					'status' => $this->authorizationRequiredCode()
-				)
-			);
+		$isValid = $this->validateRequest( $request, '017', 'dlm_validate_licenses' );
+		if ( is_wp_error( $isValid ) ) {
+			return $isValid;
 		}
 
 		$urlParams = $request->get_url_params();

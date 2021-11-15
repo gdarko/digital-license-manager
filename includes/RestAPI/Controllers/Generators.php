@@ -96,7 +96,17 @@ class Generators extends DLM_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'createGenerator' ),
-					'permission_callback' => array( $this, 'permissionCallback' )
+					'permission_callback' => array( $this, 'permissionCallback' ),
+					'args'                => array(
+						'per_page' => array(
+							'description' => 'Items per page',
+							'type'        => 'integer',
+						),
+						'page' => array(
+							'description' => 'The page number',
+							'type'        => 'integer',
+						)
+					)
 				)
 			)
 		);
@@ -168,21 +178,14 @@ class Generators extends DLM_REST_Controller {
 	/**
 	 * Callback for the GET generators route. Retrieves all generators from the database.
 	 *
+	 * @param WP_REST_Request $request
+	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
-	public function getGenerators() {
-		if ( ! $this->isRouteEnabled( $this->settings, '022' ) ) {
-			return $this->routeDisabledError();
-		}
-
-		if ( ! $this->capabilityCheck( 'dlm_read_generators' ) ) {
-			return $this->responseError(
-				'cannot_view',
-				__( 'Sorry, you cannot list resources.', 'digital-license-manager' ),
-				array(
-					'status' => $this->authorizationRequiredCode()
-				)
-			);
+	public function getGenerators( $request ) {
+		$isValid = $this->validateRequest( $request, '022', 'dlm_read_generators' );
+		if ( is_wp_error( $isValid ) ) {
+			return $isValid;
 		}
 
 		$generators = GeneratorUtil::get();
@@ -207,18 +210,9 @@ class Generators extends DLM_REST_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function getGenerator( WP_REST_Request $request ) {
-		if ( ! $this->isRouteEnabled( $this->settings, '023' ) ) {
-			return $this->routeDisabledError();
-		}
-
-		if ( ! $this->capabilityCheck( 'dlm_read_generators' ) ) {
-			return $this->responseError(
-				'cannot_view',
-				__( 'Sorry, you cannot view this resource.', 'digital-license-manager' ),
-				array(
-					'status' => $this->authorizationRequiredCode()
-				)
-			);
+		$isValid = $this->validateRequest( $request, '023', 'dlm_read_generators' );
+		if ( is_wp_error( $isValid ) ) {
+			return $isValid;
 		}
 
 		$generatorId = absint( $request->get_param( 'generator_id' ) );
@@ -239,18 +233,9 @@ class Generators extends DLM_REST_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function createGenerator( WP_REST_Request $request ) {
-		if ( ! $this->isRouteEnabled( $this->settings, '024' ) ) {
-			return $this->routeDisabledError();
-		}
-
-		if ( ! $this->capabilityCheck( 'dlm_create_generators' ) ) {
-			return $this->responseError(
-				'cannot_create',
-				__( 'Sorry, you are not allowed to create resources.', 'digital-license-manager' ),
-				array(
-					'status' => $this->authorizationRequiredCode()
-				)
-			);
+		$isValid = $this->validateRequest( $request, '024', 'dlm_create_generators' );
+		if ( is_wp_error( $isValid ) ) {
+			return $isValid;
 		}
 
 		$body      = $request->get_params();
@@ -272,19 +257,9 @@ class Generators extends DLM_REST_Controller {
 	 */
 
 	public function updateGenerator( $request ) {
-
-		if ( ! $this->isRouteEnabled( $this->settings, '025' ) ) {
-			return $this->routeDisabledError();
-		}
-
-		if ( ! $this->capabilityCheck( 'dlm_edit_generators' ) ) {
-			return $this->responseError(
-				'cannot_edit',
-				__( 'Sorry, you are not allowed to edit resources.', 'digital-license-manager' ),
-				array(
-					'status' => $this->authorizationRequiredCode()
-				)
-			);
+		$isValid = $this->validateRequest( $request, '025', 'dlm_edit_generators' );
+		if ( is_wp_error( $isValid ) ) {
+			return $isValid;
 		}
 
 		// Set and sanitize the basic parameters to be used.
@@ -311,19 +286,9 @@ class Generators extends DLM_REST_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function deleteGenerator( WP_REST_Request $request ) {
-
-		if ( ! $this->isRouteEnabled( $this->settings, '026' ) ) {
-			return $this->routeDisabledError();
-		}
-
-		if ( ! $this->capabilityCheck( 'dlm_delete_generators' ) ) {
-			return $this->responseError(
-				'cannot_delete',
-				__( 'Sorry, you are not allowed to delete resources.', 'digital-license-manager' ),
-				array(
-					'status' => $this->authorizationRequiredCode()
-				)
-			);
+		$isValid = $this->validateRequest( $request, '026', 'dlm_delete_generators' );
+		if ( is_wp_error( $isValid ) ) {
+			return $isValid;
 		}
 
 		$generatorId = absint( $request->get_param( 'generator_id' ) );
@@ -344,17 +309,9 @@ class Generators extends DLM_REST_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function generateLicenseKeys( WP_REST_Request $request ) {
-
-		if ( ! $this->isRouteEnabled( $this->settings, '027' ) ) {
-			return $this->routeDisabledError();
-		}
-
-		if ( ! $this->capabilityCheck( 'dlm_create_licenses' ) ) {
-			return $this->responseError(
-				'cannot_create',
-				__( 'Sorry, you are not allowed to create resources.', 'digital-license-manager' ),
-				array( 'status' => 404 )
-			);
+		$isValid = $this->validateRequest( $request, '027', 'dlm_create_licenses' );
+		if ( is_wp_error( $isValid ) ) {
+			return $isValid;
 		}
 
 		$generatorId = null;
