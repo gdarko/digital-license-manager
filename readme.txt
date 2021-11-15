@@ -3,7 +3,7 @@ Contributors: darkog
 Tags: license key, license, key, software license, serial key, manager, woocommerce, wordpress
 Requires at least: 4.7
 Tested up to: 5.8
-Stable tag: 1.1.1
+Stable tag: 1.2.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -139,6 +139,20 @@ To validate a license through the REST API, please follow this <a href="http://d
 15. Re-send licenses via Order page
 
 == Changelog ==
+
+= 1.2.0 =
+*Release Date - 16 Nov 2021*
+
+* Complete rewrite of product edit data DLM fields
+* Added error display when validation fails upon product save
+* Fix admin dropdowns product search
+* Fix admin dropdowns order search
+* Fix license update process that removed expiration date
+* Fix purchased licenses display in the order page
+* Fix Generator REST API problems related to the delete endpoint
+* Improved the license expiration display in license table
+* Updated the product fields. Instead of use stock and use generator this is now a single dropdown.
+* Code style improvements
 
 = 1.1.1 =
 *Release Date - 10 Oct 2021*
