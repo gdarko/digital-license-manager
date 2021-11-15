@@ -13,7 +13,7 @@ if ( $migrationMode === Migrator::MODE_UP ) {
 
 	global $wpdb;
 
-	$results = $wpdb->get_results( "SELECT post_id FROM {$wpdb->postmeta} PM WHERE PM.meta_key='dlm_licensed_product' AND PM.meta_value='1'", ARRAY_A );
+	$results = $wpdb->get_results( "SELECT PM.post_id FROM {$wpdb->postmeta} PM WHERE PM.meta_key='dlm_licensed_product' AND PM.meta_value='1'", ARRAY_A );
 
 	if ( empty( $results ) ) {
 		return;
