@@ -59,7 +59,7 @@ abstract class RestController extends WP_REST_Controller {
 	 *
 	 * @return WP_Error
 	 */
-	protected function responseError( $code, $message, $data = array() ) {
+	public function responseError( $code, $message, $data = array() ) {
 		return self::_responseError( $code, $message, $data );
 	}
 
