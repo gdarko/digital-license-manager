@@ -7,7 +7,7 @@ use IdeoLogix\DigitalLicenseManager\Setup;
 defined( 'ABSPATH' ) || exit;
 
 $date_format = get_option( 'date_format' );
-$time_format = get_option( 'time_formt' );
+$time_format = get_option( 'time_format' );
 
 /** @var ApiKeyResourceModel $keyData */
 
@@ -139,7 +139,7 @@ $time_format = get_option( 'time_formt' );
 						$html .= sprintf(
 							'<p class="description" style="margin-top: 1em;"><strong>%s</strong> %s</p>',
 							__( 'Required.', 'digital-license-manager' ),
-							__( 'Select the endpoints that this key has access to.<br/> The complete <strong>API documentation</strong> can be found <a href="https://github.com/gdarko/digital-license-manager/wiki/rest-api" target="_blank" rel="noopener">here</a>.', 'digital-license-manager' )
+							__( 'Select the endpoints that this key has access to.<br/> The complete <strong>API documentation</strong> can be found <a href="https://docs.codeverve.com/digital-license-manager/rest-api/authentication/" target="_blank" rel="noopener">here</a>.', 'digital-license-manager' )
 						);
 						$html .= '</fieldset>';
 						echo $html;

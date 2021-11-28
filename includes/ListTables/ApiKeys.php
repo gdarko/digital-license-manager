@@ -191,11 +191,12 @@ class ApiKeys extends ListTable {
 	 */
 	public function column_last_access( $item ) {
 		$dateFormat = get_option( 'date_format' );
+		$timeFormat = get_option( 'time_format' );
 		if ( ! empty( $item['last_access'] ) ) {
 			$date = sprintf(
 				__( '%1$s at %2$s', 'digital-license-manager' ),
 				date_i18n( $dateFormat, strtotime( $item['last_access'] ) ),
-				date_i18n( $dateFormat, strtotime( $item['last_access'] ) )
+				date_i18n( $timeFormat, strtotime( $item['last_access'] ) )
 			);
 
 			return apply_filters( 'woocommerce_api_key_last_access_datetime', $date, $item['last_access'] );

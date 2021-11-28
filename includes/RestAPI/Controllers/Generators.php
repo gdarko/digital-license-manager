@@ -344,9 +344,9 @@ class Generators extends DLM_REST_Controller {
 			);
 		}
 
-		$save       = (bool) $body['save'];
+		$save       = isset( $body['save']) ? (bool) $body['save'] : 0;
 		$statusEnum = sanitize_text_field( $body['status'] );
-		$status     = ! empty( $statusEnum ) ? $this->getLicenseStatus( $statusEnum ) : 'inactive';
+		$status     = ! empty( $statusEnum ) ? $this->getLicenseStatus( $statusEnum ) : $this->getLicenseStatus( 'INACTIVE' );
 
 		if ( $save ) {
 
