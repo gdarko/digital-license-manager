@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 ?>
 
-<h1 class="wp-heading-inline"><?php esc_html_e( 'Generate license keys', 'digital-license-manager' ); ?></h1>
+<h1 class="wp-heading-inline"><?php esc_html_e( 'Generate Licenses', 'digital-license-manager' ); ?></h1>
 <hr class="wp-header-end">
 
 <div class="postbox">
