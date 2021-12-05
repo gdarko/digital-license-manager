@@ -7,7 +7,7 @@ namespace IdeoLogix\DigitalLicenseManager\Controllers;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
-use IdeoLogix\DigitalLicenseManager\Utils\Hash;
+use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use WP_Query;
 use WP_User;
 use WP_User_Query;
@@ -277,7 +277,7 @@ class Dropdowns {
             ORDER BY licenses.ID DESC
             LIMIT %d
             OFFSET %d
-        ", "%" . $wpdb->esc_like( Hash::license( $term ) ) . "%", intval( $term ), $limit, $offset );
+        ", "%" . $wpdb->esc_like( StringHasher::license( $term ) ) . "%", intval( $term ), $limit, $offset );
 
 		return $wpdb->get_col( $sql );
 	}

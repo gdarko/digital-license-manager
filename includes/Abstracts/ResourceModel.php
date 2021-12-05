@@ -2,7 +2,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 
-use IdeoLogix\DigitalLicenseManager\Utils\Moment;
+use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -30,6 +30,6 @@ abstract class ResourceModel {
 			return null;
 		}
 
-		return Moment::convert( $this->$column, $srcFormat, $targetFormat );
+		return DateFormatter::convert( $this->$column, $srcFormat, $targetFormat );
 	}
 }

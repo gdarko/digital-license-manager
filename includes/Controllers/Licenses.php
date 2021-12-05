@@ -6,15 +6,15 @@ use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
 use Exception;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
-use IdeoLogix\DigitalLicenseManager\Utils\Arr as ArrayUtil;
+use IdeoLogix\DigitalLicenseManager\Utils\ArrayFormatter as ArrayUtil;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\License;
-use IdeoLogix\DigitalLicenseManager\Utils\Notice as AdminNotice;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus as LicenseStatusEnum;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 
 use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
-use IdeoLogix\DigitalLicenseManager\Utils\Str;
+use IdeoLogix\DigitalLicenseManager\Utils\StringFormatter;
 
 use FPDF;
 
@@ -560,7 +560,7 @@ class Licenses {
 						$data[ $exportColumn ] = LicenseStatus::getExportLabel( $license->getStatus() );
 						break;
 					default:
-						$getter                = 'get' . Str::camelize( $exportColumn );
+						$getter                = 'get' . StringFormatter::camelize( $exportColumn );
 						$data[ $exportColumn ] = null;
 
 						if ( method_exists( $license, $getter ) ) {

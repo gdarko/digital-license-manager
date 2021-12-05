@@ -10,8 +10,8 @@ use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
-use IdeoLogix\DigitalLicenseManager\Utils\Hash;
-use IdeoLogix\DigitalLicenseManager\Utils\Notice as AdminNotice;
+use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -90,7 +90,7 @@ class Activations extends ListTable {
 		if ( array_key_exists( 's', $_REQUEST ) && ! empty( $_REQUEST['s'] ) ) {
 			$sql .= $wpdb->prepare(
 				' AND ( ' . $tblLicenses . '.hash=%s OR ' . $this->table . '.label LIKE %s )',
-				Hash::license( sanitize_text_field( $_REQUEST['s'] ) ),
+				StringHasher::license( sanitize_text_field( $_REQUEST['s'] ) ),
 				'%' . $wpdb->esc_like( sanitize_text_field( $_REQUEST['s'] ) ) . '%'
 			);
 		}

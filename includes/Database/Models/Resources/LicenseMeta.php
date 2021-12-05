@@ -2,7 +2,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Database\Models\Resources;
 
-use IdeoLogix\DigitalLicenseManager\Utils\Json;
+use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 use stdClass;
 
 defined( 'ABSPATH' ) || exit;
@@ -45,7 +45,7 @@ class LicenseMeta {
 		$this->meta_id    = (int) $licenseMeta->meta_id;
 		$this->license_id = (int) $licenseMeta->license_id;
 		$this->meta_key   = $licenseMeta->meta_key;
-		$this->meta_value = Json::decode( $licenseMeta->meta_value, true );
+		$this->meta_value = JsonFormatter::decode( $licenseMeta->meta_value, true );
 	}
 
 	/**

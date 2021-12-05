@@ -2,8 +2,8 @@
 
 namespace IdeoLogix\DigitalLicenseManager\RestAPI\Controllers;
 
-use IdeoLogix\DigitalLicenseManager\Utils\Crypto;
-use IdeoLogix\DigitalLicenseManager\Utils\Hash;
+use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
+use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\Generator as GeneratorUtil;
 use IdeoLogix\DigitalLicenseManager\Abstracts\RestController as DLM_REST_Controller;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
@@ -11,7 +11,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as Gener
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 
-use IdeoLogix\DigitalLicenseManager\Utils\Moment;
+use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -433,14 +433,14 @@ class Generators extends DLM_REST_Controller {
 
 				$expiresAt = null;
 				if ( is_numeric( $generator->getExpiresIn() ) && $generator->getExpiresIn() > 0 ) {
-					$expiresAt = Moment::addDaysInFuture( $generator->getExpiresIn(), 'Y-m-d H:i:s' );
+					$expiresAt = DateFormatter::addDaysInFuture( $generator->getExpiresIn(), 'Y-m-d H:i:s' );
 				}
 
-				$encrypted = Crypto::encrypt( $licenseKey );
+				$encrypted = CryptoHelper::encrypt( $licenseKey );
 				if ( is_wp_error( $encrypted ) ) {
 					return $this->maybeErrorResponse( $encrypted );
 				}
-				$hashed = Hash::license( $licenseKey );
+				$hashed = StringHasher::license( $licenseKey );
 
 				$data = array(
 					'license_key'       => $encrypted,

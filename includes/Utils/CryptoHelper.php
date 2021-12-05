@@ -12,7 +12,11 @@ use WP_Error;
 
 defined( 'ABSPATH' ) || exit;
 
-class Crypto extends Singleton {
+/**
+ * Class CryptoHelper
+ * @package IdeoLogix\DigitalLicenseManager\Utils
+ */
+class CryptoHelper extends Singleton {
 
 	/**
 	 * The defuse key file name.

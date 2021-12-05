@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9ffb3c3caff964d1c4a52dbe62713967",
+    "content-hash": "7db5c16756d10d24f76fe8385bec3763",
     "packages": [
         {
             "name": "defuse/php-encryption",
@@ -71,6 +71,46 @@
                 "source": "https://github.com/defuse/php-encryption/tree/v2.3.1"
             },
             "time": "2021-04-09T23:57:26+00:00"
+        },
+        {
+            "name": "ignitekit/wp-notices",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/IgniteKit/wp-notices.git",
+                "reference": "5f3e120cd8a4360cd5a9aed2b7b551e9f518ee4c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/IgniteKit/wp-notices/zipball/5f3e120cd8a4360cd5a9aed2b7b551e9f518ee4c",
+                "reference": "5f3e120cd8a4360cd5a9aed2b7b551e9f518ee4c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "IgniteKit\\WP\\Notices\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Darko Gjorgjijoski",
+                    "email": "dg@darkog.com"
+                }
+            ],
+            "description": "Easy to use dashboard notices manager for WordPress",
+            "support": {
+                "issues": "https://github.com/IgniteKit/wp-notices/issues",
+                "source": "https://github.com/IgniteKit/wp-notices/tree/1.0.1"
+            },
+            "time": "2021-03-03T08:20:22+00:00"
         },
         {
             "name": "paragonie/random_compat",

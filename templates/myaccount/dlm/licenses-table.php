@@ -21,7 +21,7 @@
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
-use IdeoLogix\DigitalLicenseManager\Utils\Moment;
+use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 
 defined( 'ABSPATH' ) || exit; ?>
 
@@ -87,7 +87,7 @@ defined( 'ABSPATH' ) || exit; ?>
                         <span><?php echo esc_attr( $activationsLimit ); ?></span>
                     </td>
                     <td>
-						<?php echo Moment::toHtml( $license->getExpiresAt(), true ); ?>
+						<?php echo DateFormatter::toHtml( $license->getExpiresAt(), true ); ?>
                     </td>
                     <td>
 						<?php echo LicenseStatus::toHtml( $license ); ?>

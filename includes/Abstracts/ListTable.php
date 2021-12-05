@@ -4,7 +4,7 @@
 namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
-use IdeoLogix\DigitalLicenseManager\Utils\Notice as AdminNotice;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );

@@ -5,9 +5,9 @@ namespace IdeoLogix\DigitalLicenseManager\Controllers;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\ApiKey as ApiKeyResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\ApiKey as ApiKeyResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
-use IdeoLogix\DigitalLicenseManager\Utils\Hash;
-use IdeoLogix\DigitalLicenseManager\Utils\Json;
-use IdeoLogix\DigitalLicenseManager\Utils\Notice as AdminNotice;
+use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
+use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -83,8 +83,8 @@ class ApiKeys {
 
 		if ( $action === 'create' ) {
 
-			$consumerKey    = 'ck_' . Hash::random();
-			$consumerSecret = 'cs_' . Hash::random();
+			$consumerKey    = 'ck_' . StringHasher::random();
+			$consumerSecret = 'cs_' . StringHasher::random();
 
 			/** @var ApiKeyResourceModel $apiKey */
 			$apiKey = ApiKeyResourceRepository::instance()->insert(
@@ -92,8 +92,8 @@ class ApiKeys {
 					'user_id'         => $userId,
 					'description'     => $description,
 					'permissions'     => $permissions,
-					'endpoints'       => Json::encode( $_POST['endpoints'] ),
-					'consumer_key'    => Hash::make( $consumerKey ),
+					'endpoints'       => JsonFormatter::encode( $_POST['endpoints'] ),
+					'consumer_key'    => StringHasher::make( $consumerKey ),
 					'consumer_secret' => $consumerSecret,
 					'truncated_key'   => substr( $consumerKey, - 7 ),
 				)
@@ -115,7 +115,7 @@ class ApiKeys {
 				$keyId,
 				array(
 					'user_id'     => $userId,
-					'endpoints'   => Json::encode( $_POST['endpoints'] ),
+					'endpoints'   => JsonFormatter::encode( $_POST['endpoints'] ),
 					'description' => $description,
 					'permissions' => $permissions
 				)

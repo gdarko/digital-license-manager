@@ -6,7 +6,7 @@ use IdeoLogix\DigitalLicenseManager\Abstracts\ResourceModel as AbstractResourceM
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\Model as ModelInterface;
 
 use \IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseRepository;
-use IdeoLogix\DigitalLicenseManager\Utils\Json;
+use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 
 /**
  * Class LicenseActivation
@@ -44,7 +44,7 @@ class LicenseActivation extends AbstractResourceModel implements ModelInterface 
 		$this->source         = (int) $activation->source;
 		$this->ip_address     = $activation->ip_address;
 		$this->user_agent     = $activation->user_agent;
-		$this->meta_data      = Json::decode( $activation->meta_data, true );
+		$this->meta_data      = JsonFormatter::decode( $activation->meta_data, true );
 		$this->created_at     = $activation->created_at;
 		$this->updated_at     = $activation->updated_at;
 		$this->deactivated_at = $activation->deactivated_at;

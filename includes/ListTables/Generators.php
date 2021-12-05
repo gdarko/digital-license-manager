@@ -7,7 +7,7 @@ use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use Exception;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Products;
-use IdeoLogix\DigitalLicenseManager\Utils\Notice as AdminNotice;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
 
 defined( 'ABSPATH' ) || exit;

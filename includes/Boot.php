@@ -12,9 +12,10 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller as WooCo
 use IdeoLogix\DigitalLicenseManager\RestAPI\Setup as RestController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Dropdowns as DropdownsController;
 
-use IdeoLogix\DigitalLicenseManager\Utils\Compat;
-use IdeoLogix\DigitalLicenseManager\Utils\Notice;
-use IdeoLogix\DigitalLicenseManager\Utils\Crypto;
+use IdeoLogix\DigitalLicenseManager\Utils\CompatibilityHelper;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
+use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeManager;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -327,14 +328,16 @@ class Boot extends Singleton {
 
 		new MenuController();
 
-		new Crypto();
-		new Notice();
+		CryptoHelper::instance();
+		NoticeFlasher::instance();
+		NoticeManager::instance();
+
 		new DropdownsController();
 		new LicenseController();
 		new GeneratorController();
 		new ApiKeyController();
 
-		if ( Compat::is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+		if ( CompatibilityHelper::is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
 			new WooCommerceController();
 		}
 		new RestController();

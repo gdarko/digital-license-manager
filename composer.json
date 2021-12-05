@@ -9,7 +9,8 @@
     "defuse/php-encryption": "^2.2",
     "setasign/fpdf": "^1.8",
     "ext-openssl": "*",
-    "ext-json": "*"
+    "ext-json": "*",
+    "ignitekit/wp-notices": "^1.0"
   },
   "config": {
     "optimize-autoloader": true

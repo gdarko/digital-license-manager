@@ -3,13 +3,13 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Utils;
 
-use IdeoLogix\DigitalLicenseManager\Utils\Crypto;
+defined( 'ABSPATH' ) || exit;
 
 /**
- * Class Hash
- * @package IdeoLogix\DigitalLicenseManager
+ * Class StringHasher
+ * @package IdeoLogix\DigitalLicenseManager\Utils
  */
-class Hash {
+class StringHasher {
 
 	/**
 	 * Return random hash
@@ -37,7 +37,7 @@ class Hash {
 	 * @return string
 	 */
 	public static function activation( $license_key ) {
-		return sha1( sprintf( '%s-%s-%s-%s', $license_key, time(), mt_rand( 0, 100000000 ), Net::clientIp() ) );
+		return sha1( sprintf( '%s-%s-%s-%s', $license_key, time(), mt_rand( 0, 100000000 ), HttpHelper::clientIp() ) );
 	}
 
 	/**
@@ -48,7 +48,7 @@ class Hash {
 	 * @return mixed|void
 	 */
 	public static function license( $license_key ) {
-		return Crypto::hash( $license_key );
+		return CryptoHelper::hash( $license_key );
 	}
 
 	/**

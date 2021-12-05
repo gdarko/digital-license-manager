@@ -3,11 +3,13 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Utils;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
- * Class Json
+ * Class JsonFormatter
  * @package IdeoLogix\DigitalLicenseManager\Utils
  */
-class Json {
+class JsonFormatter {
 
 	/**
 	 * Decodes object. If data is not valid JSON, returns data.

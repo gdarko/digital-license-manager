@@ -5,13 +5,15 @@ namespace IdeoLogix\DigitalLicenseManager\Utils;
 
 use DateTime;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
- * Class Moment
+ * Class DateFormatter
  * - Date and time related helpers.
  *
  * @package IdeoLogix\DigitalLicenseManager\Utils
  */
-class Moment {
+class DateFormatter {
 
 	/**
 	 * Converts valid_for into expires_at.

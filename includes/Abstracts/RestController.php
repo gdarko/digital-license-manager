@@ -4,8 +4,8 @@ namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
-use IdeoLogix\DigitalLicenseManager\Utils\Hash;
-use IdeoLogix\DigitalLicenseManager\Utils\Json;
+use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
+use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 use WP_Error;
 use WP_REST_Controller;
 use WP_REST_Request;
@@ -257,7 +257,7 @@ abstract class RestController extends WP_REST_Controller {
 	 */
 	public static function getUserDataByConsumerKey( $consumerKey ) {
 
-		$consumerKey = Hash::make( sanitize_text_field( $consumerKey ) );
+		$consumerKey = StringHasher::make( sanitize_text_field( $consumerKey ) );
 
 		static $cache = array();
 
@@ -274,7 +274,7 @@ abstract class RestController extends WP_REST_Controller {
 				)
 			);
 			if ( isset( $cache[ $consumerKey ]->endpoints ) ) {
-				$cache[ $consumerKey ]->endpoints = Json::decode( $cache[ $consumerKey ]->endpoints, true );
+				$cache[ $consumerKey ]->endpoints = JsonFormatter::decode( $cache[ $consumerKey ]->endpoints, true );
 			}
 		}
 

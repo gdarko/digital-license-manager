@@ -4,7 +4,7 @@
 namespace IdeoLogix\DigitalLicenseManager\Utils\Data;
 
 
-use IdeoLogix\DigitalLicenseManager\Utils\Crypto;
+use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
 use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
 use IdeoLogix\DigitalLicenseManager\Settings;
@@ -19,9 +19,9 @@ use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as L
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourcesRepository;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
 
-use IdeoLogix\DigitalLicenseManager\Utils\Hash;
-use IdeoLogix\DigitalLicenseManager\Utils\Moment;
-use IdeoLogix\DigitalLicenseManager\Utils\Net;
+use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
+use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
+use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
 
 use DateInterval;
 use DateTime;
@@ -48,7 +48,7 @@ class License {
 		/** @var LicenseResourceModel $license */
 		$license = LicenseResourceRepository::instance()->findBy(
 			array(
-				'hash' => Hash::license( $licenseKey ),
+				'hash' => StringHasher::license( $licenseKey ),
 			)
 		);
 
@@ -68,7 +68,7 @@ class License {
 	 */
 	public static function get( $query = array() ) {
 		if ( array_key_exists( 'license_key', $query ) ) {
-			$query['hash'] = Hash::license( $query['license_key'] );
+			$query['hash'] = StringHasher::license( $query['license_key'] );
 			unset( $query['license_key'] );
 		}
 
@@ -153,15 +153,15 @@ class License {
 			}
 		} else {
 			if ( is_numeric( $validFor ) && $validFor > 0 ) {
-				$expiresAt = Moment::addDaysInFuture( $validFor, 'Y-m-d H:i:s' );
+				$expiresAt = DateFormatter::addDaysInFuture( $validFor, 'Y-m-d H:i:s' );
 			}
 		}
 
-		$encryptedLicenseKey = Crypto::encrypt( $licenseKey );
+		$encryptedLicenseKey = CryptoHelper::encrypt( $licenseKey );
 		if ( is_wp_error( $encryptedLicenseKey ) ) {
 			return $encryptedLicenseKey;
 		}
-		$hashedLicenseKey = Hash::license( $licenseKey );
+		$hashedLicenseKey = StringHasher::license( $licenseKey );
 
 		$queryData = array(
 			'order_id'          => $orderId,
@@ -210,7 +210,7 @@ class License {
 		if ( is_numeric( $licenseKey ) ) {
 			$oldLicense = LicenseResourceRepository::instance()->find( $licenseKey );
 		} else {
-			$oldLicense = LicenseResourceRepository::instance()->findBy( array( 'hash' => Hash::license( $licenseKey ), ) );
+			$oldLicense = LicenseResourceRepository::instance()->findBy( array( 'hash' => StringHasher::license( $licenseKey ), ) );
 		}
 
 		if ( ! $oldLicense ) {
@@ -251,11 +251,11 @@ class License {
 				return new WP_Error( 'data_error', sprintf( __( "The license key '%s' already exists", 'digital-license-manager' ), $licenseData['license_key'] ), array( 'code' => 409 ) );
 			}
 
-			$updateData['license_key'] = Crypto::encrypt( $licenseData['license_key'] );
+			$updateData['license_key'] = CryptoHelper::encrypt( $licenseData['license_key'] );
 			if ( is_wp_error( $updateData['license_key'] ) ) {
 				return $licenseData['license_key'];
 			}
-			$updateData['hash'] = Hash::license( $licenseData['license_key'] );
+			$updateData['hash'] = StringHasher::license( $licenseData['license_key'] );
 		}
 
 		// Expires at
@@ -278,7 +278,7 @@ class License {
 				$updateData['valid_for'] = (int) $licenseData['valid_for'];
 				$validFor                 = isset( $updateData['valid_for'] ) ? $updateData['valid_for'] : '';
 				if ( is_numeric( $validFor ) && $validFor > 0 ) {
-					$updateData['expires_at'] = Moment::addDaysInFuture( (int) $validFor, 'Y-m-d H:i:s' );
+					$updateData['expires_at'] = DateFormatter::addDaysInFuture( (int) $validFor, 'Y-m-d H:i:s' );
 				}
 			}
 		}
@@ -318,7 +318,7 @@ class License {
 			return new WP_Error( 'server_error', sprintf( __( "The license key '%s' could not be updated.", 'digital-license-manager' ), $licenseKey ), array( 'code' => 500 ) );
 		}
 
-		$newLicenseHash = Hash::license( $licenseKey );
+		$newLicenseHash = StringHasher::license( $licenseKey );
 
 		if ( array_key_exists( 'hash', $updateData ) ) {
 			$newLicenseHash = $updateData['hash'];
@@ -350,7 +350,7 @@ class License {
 		/** @var LicenseResourceModel $oldLicense */
 		$oldLicense = LicenseResourceRepository::instance()->findBy(
 			array(
-				'hash' => Hash::license( $licenseKey )
+				'hash' => StringHasher::license( $licenseKey )
 			)
 		);
 
@@ -362,7 +362,7 @@ class License {
 		/** @var LicenseResourceModel $license */
 		$license = LicenseResourceRepository::instance()->deleteBy(
 			array(
-				'hash' => Hash::license( $licenseKey ),
+				'hash' => StringHasher::license( $licenseKey ),
 			)
 		);
 
@@ -388,7 +388,7 @@ class License {
 		$activationMeta  = isset( $params['meta'] ) && is_array( $params['meta'] ) ? $params['meta'] : array();
 
 		/** @var LicenseResourceModel $license */
-		$license = LicenseResourceRepository::instance()->findBy( array( 'hash' => Hash::license( $licenseKey ) ) );
+		$license = LicenseResourceRepository::instance()->findBy( array( 'hash' => StringHasher::license( $licenseKey ) ) );
 
 		if ( ! $license ) {
 			return new WP_Error( sprintf( __( "The license key '%s' could not be found", 'digital-license-manager' ), $licenseKey ) );
@@ -404,7 +404,7 @@ class License {
 
 		try {
 			/** @var LicenseResourceModel $license */
-			$license = LicenseResourceRepository::instance()->findBy( array( 'hash' => Hash::license( $licenseKey ) ) );
+			$license = LicenseResourceRepository::instance()->findBy( array( 'hash' => StringHasher::license( $licenseKey ) ) );
 		} catch ( Exception $e ) {
 			return new WP_Error( 'data_error', $e->getMessage(), array( 'status' => 404 ) );
 		}
@@ -441,10 +441,10 @@ class License {
 			/* @var LicenseActivation $licenseActivation */
 			$activationParams = array(
 				'license_id' => $license->getId(),
-				'token'      => Hash::activation( $licenseKey ),
+				'token'      => StringHasher::activation( $licenseKey ),
 				'source'     => ActivationSource::API,
-				'ip_address' => Net::clientIp(),
-				'user_agent' => Net::userAgent(),
+				'ip_address' => HttpHelper::clientIp(),
+				'user_agent' => HttpHelper::userAgent(),
 			);
 
 			// Set label
@@ -689,7 +689,7 @@ class License {
 		}
 
 		$duplicate = false;
-		$hash      = Hash::license( $licenseKey );
+		$hash      = StringHasher::license( $licenseKey );
 
 		// Add action
 		if ( is_null( $licenseKeyId ) ) {
@@ -754,14 +754,14 @@ class License {
 
 			$expiresAt = null;
 			if ( is_numeric( $cleanValidFor ) && $cleanValidFor > 0 ) {
-				$expiresAt = Moment::addDaysInFuture( $cleanValidFor, 'Y-m-d H:i:s' );
+				$expiresAt = DateFormatter::addDaysInFuture( $cleanValidFor, 'Y-m-d H:i:s' );
 			}
 
-			$encrypted = Crypto::encrypt( $licenseKey );
+			$encrypted = CryptoHelper::encrypt( $licenseKey );
 			if ( is_wp_error( $encrypted ) ) {
 				return $encrypted;
 			}
-			$hashed = Hash::license( $licenseKey );
+			$hashed = StringHasher::license( $licenseKey );
 
 			$license = LicenseResourceRepository::instance()->insert(
 				array(
@@ -835,7 +835,7 @@ class License {
 			if ( $generator->getExpiresIn() && $status == LicenseStatus::SOLD ) {
 				$expiresAt = null;
 				if ( is_numeric( $generator->getExpiresIn() ) && $generator->getExpiresIn() > 0 ) {
-					$expiresAt = Moment::addDaysInFuture( $generator->getExpiresIn(), 'Y-m-d H:i:s' );
+					$expiresAt = DateFormatter::addDaysInFuture( $generator->getExpiresIn(), 'Y-m-d H:i:s' );
 				}
 			}
 		} catch ( \Exception $e ) {
@@ -852,11 +852,11 @@ class License {
 			}
 
 			// Key doesn't exist, add it to the database table.
-			$encryptedLicenseKey = Crypto::encrypt( $licenseKey );
+			$encryptedLicenseKey = CryptoHelper::encrypt( $licenseKey );
 			if ( is_wp_error( $encryptedLicenseKey ) ) {
 				return $encryptedLicenseKey;
 			}
-			$hashedLicenseKey = Hash::license( $licenseKey );
+			$hashedLicenseKey = StringHasher::license( $licenseKey );
 
 			// Save to database.
 			LicenseResourceRepository::instance()->insert(

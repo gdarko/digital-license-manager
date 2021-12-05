@@ -3,11 +3,13 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Utils;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
- * Class Compat
+ * Class CompatibilityHelper
  * @package IdeoLogix\DigitalLicenseManager\Utils
  */
-class Compat {
+class CompatibilityHelper {
 
 	/**
 	 * Check if is plugin active

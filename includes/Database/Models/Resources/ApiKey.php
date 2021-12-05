@@ -4,7 +4,7 @@ namespace IdeoLogix\DigitalLicenseManager\Database\Models\Resources;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\ResourceModel as AbstractResourceModel;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\Model as ModelInterface;
-use IdeoLogix\DigitalLicenseManager\Utils\Json;
+use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 use stdClass;
 
 defined( 'ABSPATH' ) || exit;
@@ -74,7 +74,7 @@ class ApiKey extends AbstractResourceModel implements ModelInterface {
 		$this->user_id         = $apiKey->user_id;
 		$this->description     = $apiKey->description;
 		$this->permissions     = $apiKey->permissions;
-		$this->endpoints       = Json::decode( $apiKey->endpoints, true );
+		$this->endpoints       = JsonFormatter::decode( $apiKey->endpoints, true );
 		$this->consumer_key    = $apiKey->consumer_key;
 		$this->consumer_secret = $apiKey->consumer_secret;
 		$this->nonces          = $apiKey->nonces;

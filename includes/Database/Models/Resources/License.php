@@ -2,7 +2,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Database\Models\Resources;
 
-use IdeoLogix\DigitalLicenseManager\Utils\Crypto;
+use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourcesModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourcesRepository;
 
@@ -210,7 +210,7 @@ class License extends AbstractResourceModel implements ModelInterface {
 	 * @return string|\WP_Error
 	 */
 	public function getDecryptedLicenseKey() {
-		return Crypto::decrypt( $this->license_key );
+		return CryptoHelper::decrypt( $this->license_key );
 	}
 
 	/**

@@ -3,14 +3,14 @@
 namespace IdeoLogix\DigitalLicenseManager\ListTables;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\ListTable;
-use IdeoLogix\DigitalLicenseManager\Utils\Crypto;
+use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
-use IdeoLogix\DigitalLicenseManager\Utils\Hash;
+use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use DateTime;
 use Exception;
-use IdeoLogix\DigitalLicenseManager\Utils\Moment;
-use IdeoLogix\DigitalLicenseManager\Utils\Notice as AdminNotice;
+use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
@@ -261,7 +261,7 @@ class Licenses extends ListTable {
 			);
 		} else {
 
-			$decrypted = Crypto::decrypt( $item['license_key'] );
+			$decrypted = CryptoHelper::decrypt( $item['license_key'] );
 			if ( is_wp_error( $decrypted ) ) {
 				$decrypted = 'ERROR';
 			}
@@ -608,7 +608,7 @@ class Licenses extends ListTable {
 			$never = __( 'In stock, not sold yet', 'digital-license-manager' );
 		}
 
-		$markup = '<p class="dlm-text-center dlm-clear-spacing">' . Moment::toHtml( $item['expires_at'], true, false, $never ) . '</p>';
+		$markup = '<p class="dlm-text-center dlm-clear-spacing">' . DateFormatter::toHtml( $item['expires_at'], true, false, $never ) . '</p>';
 
 		if ( $item['valid_for'] ) {
 			$markup .= sprintf(
@@ -783,7 +783,7 @@ class Licenses extends ListTable {
 		if ( array_key_exists( 's', $_REQUEST ) && $_REQUEST['s'] ) {
 			$sql .= $wpdb->prepare(
 				' AND hash = %s',
-				Hash::license( sanitize_text_field( $_REQUEST['s'] ) )
+				StringHasher::license( sanitize_text_field( $_REQUEST['s'] ) )
 			);
 		}
 
@@ -830,7 +830,7 @@ class Licenses extends ListTable {
 		if ( array_key_exists( 's', $_REQUEST ) && $_REQUEST['s'] ) {
 			$sql .= $wpdb->prepare(
 				' AND hash = %s',
-				Hash::license( sanitize_text_field( $_REQUEST['s'] ) )
+				StringHasher::license( sanitize_text_field( $_REQUEST['s'] ) )
 			);
 		}
 

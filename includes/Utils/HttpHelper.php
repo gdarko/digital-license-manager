@@ -3,8 +3,13 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Utils;
 
+defined( 'ABSPATH' ) || exit;
 
-class Net {
+/**
+ * Class HttpHelper
+ * @package IdeoLogix\DigitalLicenseManager\Utils
+ */
+class HttpHelper {
 
 	/**
 	 * Return the client ip address

@@ -3,11 +3,13 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Utils;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
- * Class Arr
+ * Class ArrayFormatter
  * @package IdeoLogix\DigitalLicenseManager\Utils
  */
-class Arr {
+class ArrayFormatter {
 
 	/**
 	 * Return only specific parts of the data
