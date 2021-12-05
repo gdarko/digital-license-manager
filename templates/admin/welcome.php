@@ -12,7 +12,7 @@ $url_wordpress = DLM_WP_FORUM_URL;
             <div class="dgv-instructions-colf">
                 <p class="lead"><?php _e( 'Thanks for installing <strong class="green">Digital License Manager</strong>', 'digital-license-manager' ); ?></p>
                 <p class="desc"><?php _e( 'Digital License Manager provides complete <strong class="underline">licensing</strong> solution for your software and as well as selling Licenses. The plugin goal is to provide consistent support and feature releases.', 'digital-license-manager' ); ?></p>
-                <p class="desc"><?php _e( 'If you found this plugin <strong>useful</strong> for your business, we will greatly appreciate if you take a minute to <a target="_blank" title="Give this plugin a good five star rating :)" href="https://wordpress.org/support/plugin/woocommerce-polylang-integration/reviews/#new-post">rate it. &#9733;&#9733;&#9733;&#9733;&#9733;</a>', 'digital-license-manager' ); ?></p>
+                <p class="desc"><?php _e( 'If you found this plugin <strong>useful</strong> for your business, we will greatly appreciate if you take a minute to <a target="_blank" title="Give this plugin a good five star rating :)" href="https://wordpress.org/support/plugin/digital-license-manager/reviews/#new-post">rate it. &#9733;&#9733;&#9733;&#9733;&#9733;</a>', 'digital-license-manager' ); ?></p>
                 <p class="desc"><?php _e( sprintf( '<a target="_blank" class="button button-primary" title="Plugin Documentation" href="%s">Read Docs</a>', $url_docs ), 'digital-license-manager' ); ?></p>
             </div>
         </div>

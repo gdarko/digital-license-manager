@@ -640,4 +640,15 @@ class Setup {
 			),
 		) );
 	}
+
+	/**
+	 * This should only be called if you want to load the plugin text domain manually and in the init hook.
+	 * The use case of this function is only if you sue this plugin as a composer package, then it will need to be loaded manually.
+	 * @return void
+	 */
+	public static function loadTextdomain() {
+		if ( defined( 'DLM_ABSPATH' ) ) {
+			load_plugin_textdomain( 'digital-license-manager', false, DLM_ABSPATH . 'i18n/languages' );
+		}
+	}
 }

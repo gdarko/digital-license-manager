@@ -9,6 +9,8 @@
  * Requires PHP: 5.6
  * WC requires at least: 2.7
  * WC tested up to: 5.9
+ * Text Domain: digital-license-manager
+ * Domain Path: /i18n/languages/
  */
 
 defined( 'ABSPATH' ) || exit;
