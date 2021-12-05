@@ -37,6 +37,6 @@ abstract class DatabaseTable {
 	/**
 	 * @var string
 	 */
-	const PRODUCT_DOWNLOADS = 'product_downloads';
+	const PRODUCT_DOWNLOADS = 'dlm_product_downloads';
 
 }
