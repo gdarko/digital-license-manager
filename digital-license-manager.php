@@ -25,6 +25,9 @@ if ( ! defined( 'DLM_DOCUMENTATION_URL' ) ) {
 if ( ! defined( 'DLM_GITHUB_URL' ) ) {
 	define( 'DLM_GITHUB_URL', 'https://github.com/gdarko/digital-license-manager' );
 }
+if ( ! defined( 'DLM_WP_FORUM_URL' ) ) {
+	define( 'DLM_WP_FORUM_URL', 'https://wordpress.org/support/plugin/digital-license-manager' );
+}
 
 // Sometimes we just need to get version or other shared constants of the base plugin, instead of hard-coding it on different places.
 // Eg. If this is used as composer package and we need to know the version in the extending package code.

@@ -8,6 +8,7 @@ use IdeoLogix\DigitalLicenseManager\Controllers\Generators as GeneratorControlle
 use IdeoLogix\DigitalLicenseManager\Controllers\Licenses as LicenseController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Settings as SettingsController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Menus as MenuController;
+use IdeoLogix\DigitalLicenseManager\Controllers\Welcome as WelcomeController;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller as WooCommerceController;
 use IdeoLogix\DigitalLicenseManager\RestAPI\Setup as RestController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Dropdowns as DropdownsController;
@@ -336,6 +337,7 @@ class Boot extends Singleton {
 		new LicenseController();
 		new GeneratorController();
 		new ApiKeyController();
+		new WelcomeController();
 
 		if ( CompatibilityHelper::is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
 			new WooCommerceController();

@@ -74,16 +74,16 @@
         },
         {
             "name": "ignitekit/wp-notices",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IgniteKit/wp-notices.git",
-                "reference": "5f3e120cd8a4360cd5a9aed2b7b551e9f518ee4c"
+                "reference": "d9cb7f84ecffc1f05def4dffd778b137430d546d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IgniteKit/wp-notices/zipball/5f3e120cd8a4360cd5a9aed2b7b551e9f518ee4c",
-                "reference": "5f3e120cd8a4360cd5a9aed2b7b551e9f518ee4c",
+                "url": "https://api.github.com/repos/IgniteKit/wp-notices/zipball/d9cb7f84ecffc1f05def4dffd778b137430d546d",
+                "reference": "d9cb7f84ecffc1f05def4dffd778b137430d546d",
                 "shasum": ""
             },
             "require": {
@@ -108,9 +108,9 @@
             "description": "Easy to use dashboard notices manager for WordPress",
             "support": {
                 "issues": "https://github.com/IgniteKit/wp-notices/issues",
-                "source": "https://github.com/IgniteKit/wp-notices/tree/1.0.1"
+                "source": "https://github.com/IgniteKit/wp-notices/tree/1.0.2"
             },
-            "time": "2021-03-03T08:20:22+00:00"
+            "time": "2021-12-05T13:08:22+00:00"
         },
         {
             "name": "paragonie/random_compat",
