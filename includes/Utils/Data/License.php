@@ -276,7 +276,7 @@ class License {
 				$updateData['valid_for'] = null;
 			} else {
 				$updateData['valid_for'] = (int) $licenseData['valid_for'];
-				$validFor                 = isset( $updateData['valid_for'] ) ? $updateData['valid_for'] : '';
+				$validFor                = isset( $updateData['valid_for'] ) ? $updateData['valid_for'] : '';
 				if ( is_numeric( $validFor ) && $validFor > 0 ) {
 					$updateData['expires_at'] = DateFormatter::addDaysInFuture( (int) $validFor, 'Y-m-d H:i:s' );
 				}
@@ -421,18 +421,9 @@ class License {
 			return $licenseDisabled;
 		}
 
-		$timesActivated   = $license->getTimesActivated();
-		$activationsLimit = $license->getActivationsLimit();
-
-		if ( $timesActivated !== null ) {
-			$timesActivated = absint( $timesActivated );
-		}
-		if ( $activationsLimit !== null ) {
-			$activationsLimit = absint( $activationsLimit );
-		}
-
-		if ( $activationsLimit && ( $timesActivated >= $activationsLimit ) ) {
-			return new WP_Error( 'license_activation_limit_reached', sprintf( 'License Key: %s reached maximum activation count.', $licenseKey ), array( 'status' => 404 ) );
+		$validateLimit = self::validateActivationLimit( $license );
+		if ( is_wp_error( $validateLimit ) ) {
+			return $validateLimit;
 		}
 
 		// Activate the license key
@@ -533,6 +524,11 @@ class License {
 		}
 		if ( false !== $licenseDisabled = self::isLicenseDisabled( $license ) ) {
 			return $licenseDisabled;
+		}
+
+		$validateLimit = self::validateActivationLimit( $license );
+		if ( is_wp_error( $validateLimit ) ) {
+			return $validateLimit;
 		}
 
 		$updated = LicenseActivationResourcesRepository::instance()->update( $activation->getId(), array(
@@ -959,6 +955,40 @@ class License {
 					'status'     => LicenseStatus::SOLD
 				)
 			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check the activations limit.
+	 *
+	 * @param LicenseResourceModel $license
+	 *
+	 * @return bool|WP_Error
+	 */
+	private static function validateActivationLimit( $license, $licenseKey = null ) {
+
+		if ( empty( $license ) || ! ( $license instanceof LicenseResourceModel ) ) {
+			return new WP_Error( 'license_not_found', __( 'Unknown license', 'digital-license-manager-pro' ), array( 'status' => 404 ) );
+		}
+
+		$timesActivated   = $license->getTimesActivated();
+		$activationsLimit = $license->getActivationsLimit();
+
+		if ( empty( $licenseKey ) ) {
+			$licenseKey = $license->getDecryptedLicenseKey();
+		}
+
+		if ( $timesActivated !== null ) {
+			$timesActivated = absint( $timesActivated );
+		}
+		if ( $activationsLimit !== null ) {
+			$activationsLimit = absint( $activationsLimit );
+		}
+
+		if ( $activationsLimit && ( $timesActivated >= $activationsLimit ) ) {
+			return new WP_Error( 'license_activation_limit_reached', sprintf( 'License Key: %s reached maximum activation count.', $licenseKey ), array( 'status' => 404 ) );
 		}
 
 		return true;
