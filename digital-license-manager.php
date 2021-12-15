@@ -19,10 +19,10 @@ if ( ! defined( 'DLM_VERSION' ) ) {
 	define( 'DLM_VERSION', '1.2.0' );
 }
 if ( ! defined( 'DLM_PURCHASE_URL' ) ) {
-	define( 'DLM_PURCHASE_URL', 'https://bit.ly/dlmpurchase' );
+	define( 'DLM_PURCHASE_URL', 'https://codeverve.com/product/digital-license-manager-pro/' );
 }
 if ( ! defined( 'DLM_DOCUMENTATION_URL' ) ) {
-	define( 'DLM_DOCUMENTATION_URL', 'https://bit.ly/dlmdocs' );
+	define( 'DLM_DOCUMENTATION_URL', 'https://docs.codeverve.com/digital-license-manager/' );
 }
 if ( ! defined( 'DLM_GITHUB_URL' ) ) {
 	define( 'DLM_GITHUB_URL', 'https://github.com/gdarko/digital-license-manager' );

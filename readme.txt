@@ -15,7 +15,7 @@ Easily manage and sell your digital licenses through your WordPress website
 
 The plugin is compatible with WooCommerce although it can be used as standalone License Manager without WooCommerce.
 
-### ✨ Core Features
+### ✨ Free Features
 
 * Manage your Licenses (status, license key, activations, etc)
 * Manage License Activations. Keeps separate records of Activations identified by unique token instead of single activations count variable.
@@ -31,23 +31,23 @@ The plugin is compatible with WooCommerce although it can be used as standalone 
 * Export licenses to PDF or CSV format. Allows column selection
 * Works even without WooCommerce. If you want to use the plugin as standalone license manager or if you have another solution for selling the keys, you can use the REST API to create licenses.
 
-### ✨ PRO Features
+### ✨ PRO Version Features
 
 The PRO version focuses on making it possible to generate consistent cash flow through the integration with WooCommerce Subscriptions and provide updates through the Digital License Manager REST API to the users that purchased and activated their license. List of the additional features as follows:
 
-* WooCommerce Subscriptions integration (License renews when subscription renews)
-* Full software and software release management from the WordPress admin interface
-* Easily create software and connect it to a product, add documentation, images, etc from the WordPress admin interface
-* Easily create software releases for specific software, add changelog, etc from the WordPress admin interface
-* REST API endpoint for update check that you can utilize to check if there is a new release of a given software ID
-* REST API endpoint for update download that you can utilize to download the new release of a given software ID
-* Activate or Deactivate licenses as a Customer through My Account for the customers
-* Separate License page in My Account that shows list of Activations, Releases available for download and License information for the customers
-* Ready to use plugin updater class. Useful if you want to integrate the Licensing plugin with your premium WordPress plugins and provide updates for users that purchased license
+* WooCommerce Subscriptions <a href="https://docs.codeverve.com/digital-license-manager/handbook/woocommerce/subscriptions/" target="_blank" rel="noopener">support</a>. It extends existing license or generates new one upon subscription renewal based on your product settings.
+* <a href="https://docs.codeverve.com/digital-license-manager/handbook/software/managing-software/" target="_blank" rel="noopener">Software management</a>. If you sell software, you will be able to add your software, setup a gallery, support information, FAQs that appear on the product page.
+* <a href="https://docs.codeverve.com/digital-license-manager/handbook/software/manage-releases/" target="_blank" rel="noopener">Software release management</a>. Downloadable software can be distributed as a releases. For each version you create a release in the Software editor.
+* Software <a href="https://docs.codeverve.com/digital-license-manager/rest-api/software/single/" target="_blank">details REST Endpoint</a> to get information about specific software. This is useful if you want to perform update check from your premium software.
+* Software <a href="https://docs.codeverve.com/digital-license-manager/rest-api/software/download/" target="_blank">download REST Endpoint</a> to download the latest release for specific software. This is useful if you want to provide updates for your software.
+* Separate <a href="https://docs.codeverve.com/digital-license-manager/handbook/woocommerce/my-account/single-license/" target="_blank" rel="noopener">License page in My Account</a> that shows list of historical License Activations and Releases along with extended information about the License.
+* Separate Battle-tested and well-documented WordPress package to create License Activation form and provide updates through your Digital License Manager Software API. Start your WordPress theme/plugin shop today!
+* Ready to use <a href="https://docs.codeverve.com/digital-license-manager/wordpress-theme-plugin-updates/" target="_blank" rel="noopener">theme/plugin updater</a> library with integration guide. Useful if you want to integrate license activations to your plugins/themes.
+* Additional <a href="https://docs.codeverve.com/digital-license-manager/handbook/configuration/#WooCommerce" target="_blank" rel="noopener">Options</a> to enable or disable features like the "Licenses" access in My Account.
 * Software download statistics (Coming soon)
 * PDF certificates of the licenses (Coming soon)
 
-<a href="http://bit.ly/dlmpurchase" target="_blank">Get Premium Version</a>
+<a href="https://codeverve.com/product/digital-license-manager-pro/" target="_blank">Get PRO Version</a>
 
 ### 📃 REST API Documentation
 
@@ -57,13 +57,13 @@ It allows developers to create/update/activate/deactivate/validate licenses thro
 
 The REST API documentation can be found on the link below:
 
-<a href="https://bit.ly/dlm-api" target="_blank">See Documentation</a>
+<a href="https://docs.codeverve.com/digital-license-manager/rest-api/" target="_blank">See Documentation</a>
 
 ### 📃 All Documentation
 
 The complete documentation can be found on the link below:
 
-<a href="https://bit.ly/dlm-docs" target="_blank">See Documentation</a>
+<a href="https://docs.codeverve.com/digital-license-manager/handbook/woocommerce/products/" target="_blank">See Documentation</a>
 
 ### ➕ Feature Requests
 
@@ -141,15 +141,20 @@ To validate a license through the REST API, please follow this <a href="http://d
 == Changelog ==
 
 = 1.2.0 =
-*Release Date - 16 Nov 2021*
+*Release Date - 15 Dec 2021*
 
 * Complete rewrite of product edit data DLM fields
 * Added error display when validation fails upon product save
+* Added welcome notice
 * Fix admin dropdowns product search
 * Fix admin dropdowns order search
 * Fix license update process that removed expiration date
 * Fix purchased licenses display in the order page
 * Fix Generator REST API problems related to the delete endpoint
+* Fix API key last access date/time display
+* Fix a problem that skipped the creation of the product_downloads table
+* Fix activations limit calculations
+* Imrpoved REST API validation and handling
 * Improved the license expiration display in license table
 * Updated the product fields. Instead of use stock and use generator this is now a single dropdown.
 * Code style improvements
