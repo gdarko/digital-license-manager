@@ -2,12 +2,13 @@
 
 namespace IdeoLogix\DigitalLicenseManager;
 
-use IdeoLogix\DigitalLicenseManager\Controllers\Settings as SettingsController;
-use IdeoLogix\DigitalLicenseManager\Database\Migrator;
-use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\Key as DefuseCryptoKey;
 use Exception;
+use IdeoLogix\DigitalLicenseManager\Controllers\Settings as SettingsController;
+use IdeoLogix\DigitalLicenseManager\Database\Migrator;
+use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
+use IdeoLogix\DigitalLicenseManager\Utils\CompatibilityHelper;
 use WP_Roles;
 use function dbDelta;
 
@@ -27,24 +28,43 @@ class Setup {
 	/**
 	 * Installation script.
 	 *
+	 * @param $network_wide
+	 *
+	 * @return void
 	 * @throws EnvironmentIsBrokenException
-	 * @throws Exception
 	 */
-	public static function install() {
+	public static function install( $network_wide ) {
 
 		if ( defined( 'DLM_INSTALLED' ) ) {
 			return;
 		}
 
 		self::checkRequirements();
+
+		if ( $network_wide ) {
+			foreach ( CompatibilityHelper::get_site_ids() as $blog_id ) {
+				switch_to_blog( $blog_id );
+				self::installDefaults();
+				restore_current_blog();
+			}
+		} else {
+			self::installDefaults();
+		}
+
+		define( 'DLM_INSTALLED', true );
+	}
+
+	/**
+	 * Install defaults.
+	 * @return void
+	 * @throws EnvironmentIsBrokenException
+	 */
+	public static function installDefaults() {
 		self::createTables();
 		self::setDefaultFilesAndFolders();
 		self::setDefaultSettings();
 		self::createRoles();
-
 		flush_rewrite_rules();
-
-		define( 'DLM_INSTALLED', true );
 	}
 
 	/**
@@ -578,12 +598,12 @@ class Setup {
 				'method'     => 'PUT',
 				'deprecated' => false,
 			),
-            array(
-                'id'         => '014',
-                'name'       => 'v1/licenses/{license_key}',
-                'method'     => 'DELETE',
-                'deprecated' => false,
-            ),
+			array(
+				'id'         => '014',
+				'name'       => 'v1/licenses/{license_key}',
+				'method'     => 'DELETE',
+				'deprecated' => false,
+			),
 			array(
 				'id'         => '015',
 				'name'       => 'v1/licenses/activate/{license_key}',
@@ -626,12 +646,12 @@ class Setup {
 				'method'     => 'PUT',
 				'deprecated' => false,
 			),
-            array(
-                'id'         => '026',
-                'name'       => 'v1/generators/{id}',
-                'method'     => 'DELETE',
-                'deprecated' => false,
-            ),
+			array(
+				'id'         => '026',
+				'name'       => 'v1/generators/{id}',
+				'method'     => 'DELETE',
+				'deprecated' => false,
+			),
 			array(
 				'id'         => '027',
 				'name'       => 'v1/generators/{id}/generate',

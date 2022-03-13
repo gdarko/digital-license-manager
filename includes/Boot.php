@@ -4,18 +4,17 @@ namespace IdeoLogix\DigitalLicenseManager;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\Singleton;
 use IdeoLogix\DigitalLicenseManager\Controllers\ApiKeys as ApiKeyController;
+use IdeoLogix\DigitalLicenseManager\Controllers\Dropdowns as DropdownsController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Generators as GeneratorController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Licenses as LicenseController;
-use IdeoLogix\DigitalLicenseManager\Controllers\Settings as SettingsController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Menus as MenuController;
+use IdeoLogix\DigitalLicenseManager\Controllers\Settings as SettingsController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Welcome as WelcomeController;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller as WooCommerceController;
 use IdeoLogix\DigitalLicenseManager\RestAPI\Setup as RestController;
-use IdeoLogix\DigitalLicenseManager\Controllers\Dropdowns as DropdownsController;
-
 use IdeoLogix\DigitalLicenseManager\Utils\CompatibilityHelper;
-use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
 use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeManager;
 
 defined( 'ABSPATH' ) || exit;
@@ -300,18 +299,10 @@ class Boot extends Singleton {
 	 * @return void
 	 */
 	private function _initHooks() {
-		register_activation_hook(
-			DLM_PLUGIN_FILE,
-			array( '\IdeoLogix\DigitalLicenseManager\Setup', 'install' )
-		);
-		register_deactivation_hook(
-			DLM_PLUGIN_FILE,
-			array( '\IdeoLogix\DigitalLicenseManager\Setup', 'deactivate' )
-		);
-		register_uninstall_hook(
-			DLM_PLUGIN_FILE,
-			array( '\IdeoLogix\DigitalLicenseManager\Setup', 'uninstall' )
-		);
+
+		register_activation_hook( DLM_PLUGIN_FILE, array( '\IdeoLogix\DigitalLicenseManager\Setup', 'install' ) );
+		register_deactivation_hook( DLM_PLUGIN_FILE, array( '\IdeoLogix\DigitalLicenseManager\Setup', 'deactivate' ) );
+		register_uninstall_hook( DLM_PLUGIN_FILE, array( '\IdeoLogix\DigitalLicenseManager\Setup', 'uninstall' ) );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'registerAssets' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'registerAssets' ) );

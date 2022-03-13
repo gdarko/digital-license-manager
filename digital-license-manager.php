@@ -5,10 +5,10 @@
  * Version: 1.2.0
  * Author: Darko Gjorgjijoski
  * Requires at least: 4.7
- * Tested up to: 5.8
+ * Tested up to: 5.9
  * Requires PHP: 5.6
  * WC requires at least: 2.7
- * WC tested up to: 5.9
+ * WC tested up to: 6.3
  * Text Domain: digital-license-manager
  * Domain Path: /i18n/languages/
  */

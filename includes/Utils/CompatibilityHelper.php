@@ -27,4 +27,23 @@ class CompatibilityHelper {
 		}
 	}
 
+	/**
+	 * Returns list of multisite sites
+	 * @return array|int
+	 */
+	public static function get_site_ids() {
+
+		global $wp_version;
+
+		if ( version_compare( $wp_version, '4.6', '>=' ) ) {
+			$blog_ids = get_sites( [ 'fields' => 'ids' ] );
+		} else {
+			global $wpdb;
+			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
+		}
+
+		return $blog_ids;
+
+	}
+
 }
