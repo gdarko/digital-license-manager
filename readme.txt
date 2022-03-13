@@ -2,8 +2,8 @@
 Contributors: darkog
 Tags: license key, license, key, software license, serial key, manager, woocommerce, wordpress
 Requires at least: 4.7
-Tested up to: 5.8
-Stable tag: 1.2.0
+Tested up to: 5.9
+Stable tag: 1.2.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -139,6 +139,11 @@ To validate a license through the REST API, please follow this <a href="http://d
 15. Re-send licenses via Order page
 
 == Changelog ==
+
+= 1.2.1 =
+*Release Date - 03 Mar 2022*
+
+* Fix Multisite database/fileystem initial setup. Run the database/filesystem setup on each blog once the plugin is activated network wide.
 
 = 1.2.0 =
 *Release Date - 15 Dec 2021*
