@@ -2,24 +2,19 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
-use IdeoLogix\DigitalLicenseManager\ListTables\Licenses;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\ListTables\Licenses;
 use IdeoLogix\DigitalLicenseManager\Settings;
-
 use IdeoLogix\DigitalLicenseManager\Utils\Data\Generator as GeneratorUtil;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
-
-use WC_Order_Item_Product;
-use WC_Product_Simple;
 use WC_Order;
 use WC_Order_Item;
+use WC_Order_Item_Product;
 use WC_Product;
-
-use function WC;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -282,9 +277,10 @@ class Orders {
 	 *
 	 * @param int $itemId
 	 * @param WC_Order_Item_Product $item
-	 * @param WC_Product_Simple|bool $product
+	 * @param WC_Product|bool $product
 	 */
 	public function showOrderedLicenses( $itemId, $item, $product ) {
+
 		// Not a WC_Order_Item_Product object? Nothing to do...
 		if ( ! ( $item instanceof WC_Order_Item_Product ) ) {
 			return;
@@ -295,67 +291,25 @@ class Orders {
 			return;
 		}
 
-		/** @var LicenseResourceModel[] $licenses */
-		$licenses = LicenseResourceRepository::instance()->findAllBy(
+		$query = apply_filters(
+			'dlm_admin_get_order_licenses_query',
 			array(
 				'order_id'   => $item->get_order_id(),
 				'product_id' => $product->get_id()
-			)
+			),
+			$item,
+			$product
 		);
+
+		/** @var LicenseResourceModel[] $licenses */
+		$licenses = LicenseResourceRepository::instance()->findAllBy( $query );
 
 		// No license keys? Nothing to do...
 		if ( ! $licenses ) {
 			return;
 		}
 
-		$html = sprintf( '<p>%s:</p>', __( 'The following license keys have been sold by this order', 'digital-license-manager' ) );
-		$html .= '<ul class="dlm-license-list">';
-
-		if ( ! Settings::get( 'hide_license_keys' ) ) {
-			foreach ( $licenses as $license ) {
-				$decrypted = $license->getDecryptedLicenseKey();
-				$decrypted = is_wp_error( $decrypted ) ? 'ERROR' : $decrypted;
-				$html      .= sprintf( '<li></span> <code class="dlm-placeholder">%s</code></li>', $decrypted );
-			}
-
-			$html .= '</ul>';
-
-			$html .= '<span class="dlm-txt-copied-to-clipboard" style="display: none">' . __( 'Copied to clipboard', 'digital-license-manager' ) . '</span>';
-		} else {
-			foreach ( $licenses as $license ) {
-				$html .= sprintf(
-					'<li><code class="dlm-placeholder empty" data-id="%d"></code></li>',
-					$license->getId()
-				);
-			}
-
-			$html .= '</ul>';
-			$html .= '<p>';
-
-			$html .= sprintf(
-				'<a class="button dlm-license-keys-show-all" data-order-id="%d">%s</a>',
-				$item->get_order_id(),
-				__( 'Show license(s)', 'digital-license-manager' )
-			);
-
-			$html .= sprintf(
-				'<a class="button dlm-license-keys-hide-all" data-order-id="%d">%s</a>',
-				$item->get_order_id(),
-				__( 'Hide license(s)', 'digital-license-manager' )
-			);
-
-			$html .= sprintf(
-				'<img class="dlm-spinner" alt="%s" src="%s">',
-				__( 'Please wait...', 'digital-license-manager' ),
-				Licenses::SPINNER_URL
-			);
-
-			$html .= '<span class="dlm-txt-copied-to-clipboard" style="display: none">' . __( 'Copied to clipboard', 'digital-license-manager' ) . '</span>';
-
-			$html .= '</p>';
-		}
-
-		echo $html;
+		echo self::getOrderedLicensesHtml( $licenses, $item->get_order_id() );
 	}
 
 	/**
@@ -414,5 +368,65 @@ class Orders {
 		$args['data'] = $data;
 
 		return $args;
+	}
+
+	/**
+	 * Print the ordered licenses
+	 *
+	 * @param $licenses
+	 * @param $order_id
+	 *
+	 * @return void
+	 */
+	public static function getOrderedLicensesHtml( $licenses, $order_id ) {
+
+		$html = sprintf( '<p>%s:</p>', __( 'The following license keys have been sold by this order', 'digital-license-manager' ) );
+		$html .= '<ul class="dlm-license-list">';
+
+		if ( ! Settings::get( 'hide_license_keys' ) ) {
+			foreach ( $licenses as $license ) {
+				$decrypted = $license->getDecryptedLicenseKey();
+				$decrypted = is_wp_error( $decrypted ) ? 'ERROR' : $decrypted;
+				$html      .= sprintf( '<li></span> <code class="dlm-placeholder">%s</code></li>', $decrypted );
+			}
+
+			$html .= '</ul>';
+
+			$html .= '<span class="dlm-txt-copied-to-clipboard" style="display: none">' . __( 'Copied to clipboard', 'digital-license-manager' ) . '</span>';
+		} else {
+			foreach ( $licenses as $license ) {
+				$html .= sprintf(
+					'<li><code class="dlm-placeholder empty" data-id="%d"></code></li>',
+					$license->getId()
+				);
+			}
+
+			$html .= '</ul>';
+			$html .= '<p>';
+
+			$html .= sprintf(
+				'<a class="button dlm-license-keys-show-all" data-order-id="%d">%s</a>',
+				$order_id,
+				__( 'Show license(s)', 'digital-license-manager' )
+			);
+
+			$html .= sprintf(
+				'<a class="button dlm-license-keys-hide-all" data-order-id="%d">%s</a>',
+				$order_id,
+				__( 'Hide license(s)', 'digital-license-manager' )
+			);
+
+			$html .= sprintf(
+				'<img class="dlm-spinner" alt="%s" src="%s">',
+				__( 'Please wait...', 'digital-license-manager' ),
+				Licenses::SPINNER_URL
+			);
+
+			$html .= '<span class="dlm-txt-copied-to-clipboard" style="display: none">' . __( 'Copied to clipboard', 'digital-license-manager' ) . '</span>';
+
+			$html .= '</p>';
+		}
+
+		return $html;
 	}
 }
