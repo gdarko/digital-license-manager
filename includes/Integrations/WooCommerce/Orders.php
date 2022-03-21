@@ -71,6 +71,10 @@ class Orders {
 			return;
 		}
 
+		if ( apply_filters( 'dlm_skip_licenses_generation_for_order', false, $orderId ) ) {
+			return;
+		}
+
 		/** @var WC_Order $order */
 		$order = wc_get_order( $orderId );
 
@@ -91,9 +95,19 @@ class Orders {
 
 			// Instead of generating new license keys, the plugin will extend
 			// the expiration date of existing licenses, if configured.
-			$abortEarly = apply_filters( 'dlm_maybe_skip_subscription_renewals', false, $orderId, $product->get_id() );
+			$skip = apply_filters_deprecated(
+				'dlm_maybe_skip_subscription_renewals',
+				array(
+					false,
+					$orderId,
+					$product->get_id()
+				),
+				'1.2.2',
+				'dlm_skip_licenses_generation_for_order_product'
+			);
+			$skip = apply_filters( 'dlm_skip_licenses_generation_for_order_product', $skip, $orderId, $product->get_id() );
 
-			if ( $abortEarly === true ) {
+			if ( $skip ) {
 				continue;
 			}
 
@@ -192,9 +206,9 @@ class Orders {
 
 			$orderedLicenseKeys = LicenseResourceRepository::instance()->findAllBy( array( 'order_id' => $orderId ) );
 
-			/** Plugin event, Type: post, Name: order_license_keys */
+			// On event
 			do_action(
-				'dlm_event_post_order_license_keys',
+				'dlm_licenses_generated_on_order',
 				array(
 					'orderId'  => $orderId,
 					'licenses' => $orderedLicenseKeys
@@ -353,7 +367,7 @@ class Orders {
 				continue;
 			}
 
-			$orderId = apply_filters( 'dlm_get_customer_licenses_order_id', $orderId, $productId );
+			$orderId = self::getLicenseOrderId( $orderId, $productId );
 
 			/** @var LicenseResourceModel[] $licenses */
 			$licenses = LicenseResourceRepository::instance()->findAllBy( array(
@@ -376,7 +390,7 @@ class Orders {
 	 * @param $licenses
 	 * @param $order_id
 	 *
-	 * @return void
+	 * @return string
 	 */
 	public static function getOrderedLicensesHtml( $licenses, $order_id ) {
 
@@ -428,5 +442,18 @@ class Orders {
 		}
 
 		return $html;
+	}
+
+
+	/**
+	 * Returns the license order id
+	 *
+	 * @param $orderId
+	 * @param $productId
+	 *
+	 * @return mixed|void
+	 */
+	public static function getLicenseOrderId( $orderId, $productId ) {
+		return apply_filters( 'dlm_get_customer_licenses_order_id', $orderId, $productId );
 	}
 }
