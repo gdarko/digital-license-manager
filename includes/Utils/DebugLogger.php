@@ -9,7 +9,7 @@ class DebugLogger {
 	/**
 	 * Writes INFO message into logfile.
 	 *
-	 * @param $message
+	 * @param string|array|object $message
 	 *
 	 * @return bool
 	 */
@@ -20,7 +20,7 @@ class DebugLogger {
 	/**
 	 * Writes ERROR message into logfile.
 	 *
-	 * @param $message
+	 * @param string|array|object $message
 	 *
 	 * @return bool
 	 */
@@ -32,7 +32,7 @@ class DebugLogger {
 	/**
 	 * Writes WARN message into logfile.
 	 *
-	 * @param $message
+	 * @param string|array|object $message
 	 *
 	 * @return bool
 	 */
@@ -42,7 +42,11 @@ class DebugLogger {
 
 
 	/**
-	 * Writes into log file
+	 * Writes into a logfile.
+	 *
+	 * @param string|array|object $message
+	 * @param string $type
+	 *
 	 * @return bool
 	 */
 	public static function write( $message, $type = 'INFO' ) {
@@ -55,18 +59,24 @@ class DebugLogger {
 			return false;
 		}
 		$scalar = true;
-		if ( is_object( $message ) || is_array( $message ) ) {
+		if ( ! is_scalar( $message ) ) {
 			ob_start();
-			print_r( $message, true );
+			$dump_callback = apply_filters( 'dlm_log_dump_callback', 'print_r' );
+			if ( ! is_callable( $dump_callback ) ) {
+				$dump_callback = 'print_r';
+			}
+			call_user_func( $dump_callback, $message );
 			$message = ob_get_clean();
 			$scalar  = false;
+		} else if ( ! is_string( $message ) ) {
+			return false;
 		}
 		$logTime = date( 'Y-m-d H:i:s' );
 		$logType = strtoupper( $type );
 		if ( ! $scalar ) {
-			$message = sprintf( "%s - %s - %s", $logTime, $logType, "DUMP:" . PHP_EOL . $message );
+			$message = sprintf( "[%s] - %s - %s", $logTime, $logType, "DUMP:" . PHP_EOL . $message );
 		} else {
-			$message = sprintf( "%s - %s - %s", $logTime, $logType, $message );
+			$message = sprintf( "[%s] - %s - %s", $logTime, $logType, $message );
 		}
 		fwrite( $fp, $message . PHP_EOL );
 		fclose( $fp );
