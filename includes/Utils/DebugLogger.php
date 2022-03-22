@@ -47,7 +47,10 @@ class DebugLogger {
 	 */
 	public static function write( $message, $type = 'INFO' ) {
 		$logPath = self::getLogPath();
-		$fp      = fopen( $logPath, 'a+' );
+		if ( ! $logPath ) {
+			return false;
+		}
+		$fp = fopen( $logPath, 'a+' );
 		if ( ! $fp ) {
 			return false;
 		}
@@ -73,7 +76,7 @@ class DebugLogger {
 
 	/**
 	 * Returns the path of the log file
-	 * @return void
+	 * @return bool|null|string
 	 */
 	public static function getLogPath() {
 		static $logPath = null;
@@ -86,6 +89,7 @@ class DebugLogger {
 					$logPath = false;
 				}
 			} catch ( \Exception $e ) {
+				$logPath = false;
 			}
 		}
 
