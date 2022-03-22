@@ -2,8 +2,8 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 
-use IdeoLogix\DigitalLicenseManager\Enums\ColumnType as ColumnTypeEnum;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ResourceRepository as RepositoryInterface;
+use IdeoLogix\DigitalLicenseManager\Enums\ColumnType as ColumnTypeEnum;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -477,6 +477,9 @@ abstract class ResourceRepository extends Singleton implements RepositoryInterfa
 	 * @return string
 	 */
 	private function parseQueryConditions( $query ) {
+
+		$query = apply_filters( 'dlm_repository_query_conditions', $query, $this->getUnprefixedTable(), $this );
+
 		$result = '';
 		foreach ( $query as $columnName => $value ) {
 			if ( is_array( $value ) ) {
@@ -521,6 +524,15 @@ abstract class ResourceRepository extends Singleton implements RepositoryInterfa
 	 */
 	public function getTable() {
 		return $this->table;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getUnprefixedTable() {
+		global $wpdb;
+
+		return str_replace( $wpdb->prefix, '', $this->table );
 	}
 
 	/**
