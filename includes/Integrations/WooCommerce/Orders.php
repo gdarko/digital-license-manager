@@ -12,7 +12,6 @@ use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\Generator as GeneratorUtil;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
 use WC_Order;
-use WC_Order_Item;
 use WC_Order_Item_Product;
 use WC_Product;
 
@@ -23,6 +22,7 @@ defined( 'ABSPATH' ) || exit;
  * @package IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce
  */
 class Orders {
+
 	/**
 	 * OrderManager constructor.
 	 */
@@ -36,13 +36,16 @@ class Orders {
 	}
 
 	/**
-	 * Hooks the license generation method into the woocommerce order status
-	 * change hooks.
+	 * Attach license generation hooks to specific order statuses.
+	 *
+	 * @return  void
 	 */
 	private function addOrderStatusHooks() {
 		$orderStatusSettings = Settings::get( 'order_delivery_statuses', Settings::SECTION_WOOCOMMERCE );
 
-		// The order status settings haven't been configured.
+		/**
+		 * The order status settings haven't been configured.
+		 */
 		if ( empty( $orderStatusSettings ) ) {
 			return;
 		}
@@ -61,160 +64,213 @@ class Orders {
 	}
 
 	/**
-	 * Generates licenses for an order.
+	 * Generates licenses for an order, triggered on order status change.
 	 *
 	 * @param int $orderId
 	 */
 	public function generateOrderLicenses( $orderId ) {
-		// Keys have already been generated for this order.
+
+		/**
+		 * Licenses have already been generated for this order.
+		 */
 		if ( Orders::isComplete( $orderId ) ) {
 			return;
 		}
 
+		/**
+		 * Allow developers to skip the whole process for specific order.
+		 */
 		if ( apply_filters( 'dlm_skip_licenses_generation_for_order', false, $orderId ) ) {
 			return;
 		}
 
-		/** @var WC_Order $order */
-		$order = wc_get_order( $orderId );
-
-		// The given order does not exist
+		/**
+		 * Basic data sanitization
+		 *
+		 * @var WC_Order $order
+		 */
+		$order = is_numeric( $orderId ) ? wc_get_order( $orderId ) : $orderId;
 		if ( ! $order ) {
 			return;
 		}
 
-		/** @var WC_Order_Item $orderItem */
-		foreach ( $order->get_items() as $orderItem ) {
-			/** @var WC_Product $product */
+		/**
+		 * Loop through the order items and generate license keys
+		 *
+		 * @var WC_Order_Item_Product [] $items
+		 */
+		$items = $order->get_items( 'line_item' );
+		foreach ( $items as $orderItem ) {
+
 			$product = $orderItem->get_product();
 
-			// Skip this product because it's not a licensed product.
+			/**
+			 * Skip this product because it's not a licensed product.
+			 */
 			if ( ! Products::isLicensed( $product->get_id() ) ) {
 				continue;
 			}
 
-			// Instead of generating new license keys, the plugin will extend
-			// the expiration date of existing licenses, if configured.
+			/**
+			 * Allow developers to skip the whole process for specific order.
+			 */
 			$skip = apply_filters_deprecated(
 				'dlm_maybe_skip_subscription_renewals',
-				array(
-					false,
-					$orderId,
-					$product->get_id()
-				),
+				array( false, $orderId, $product->get_id() ),
 				'1.2.2',
 				'dlm_skip_licenses_generation_for_order_product'
 			);
 			$skip = apply_filters( 'dlm_skip_licenses_generation_for_order_product', $skip, $orderId, $product->get_id() );
-
 			if ( $skip ) {
 				continue;
 			}
 
-			$licenseSrc   = get_post_meta( $product->get_id(), 'dlm_licensed_product_licenses_source', true );
-			$useStock     = 'stock' === $licenseSrc;
-			$useGenerator = 'generators' === $licenseSrc;
+			/**
+			 * Generate the order licenses
+			 */
+			self::createOrderLicenses( $order, $product, $orderItem->get_quantity() );
+		}
+	}
 
-			// Skip this product because neither selling from stock or from
-			// generators is active.
-			if ( ! $useStock && ! $useGenerator ) {
-				continue;
-			}
+	/**
+	 * Create licenses
+	 *
+	 * @param $order
+	 * @param $product
+	 * @param $quantity
+	 *
+	 * @return bool
+	 */
+	public static function createOrderLicenses( $order, $product, $quantity ) {
 
-			$deliveredQuantity = absint(
-				get_post_meta(
-					$product->get_id(),
-					'dlm_licensed_product_delivered_quantity',
-					true
+		/**
+		 * Perfform basic data santiization
+		 */
+		if ( is_numeric( $order ) ) {
+			$order = wc_get_order( $order );
+		}
+		if ( is_numeric( $product ) ) {
+			$product = wc_get_product( $product );
+		}
+		$licenseSrc   = get_post_meta( $product->get_id(), 'dlm_licensed_product_licenses_source', true );
+		$useStock     = 'stock' === $licenseSrc;
+		$useGenerator = 'generators' === $licenseSrc;
+
+		/**
+		 * Skip this product because neither selling from stock or from generators is active.
+		 */
+		if ( ! $useStock && ! $useGenerator ) {
+			return false;
+		}
+
+		$deliveredQuantity = absint(
+			get_post_meta(
+				$product->get_id(),
+				'dlm_licensed_product_delivered_quantity',
+				true
+			)
+		);
+
+		/**
+		 * Determines how many times should the license key be delivered
+		 */
+		if ( ! $deliveredQuantity ) {
+			$deliveredQuantity = 1;
+		}
+
+		/**
+		 * Set the needed delivery amount
+		 */
+		$neededAmount = absint( $quantity ) * $deliveredQuantity;
+
+		if ( $useStock ) {  // Sell license keys through available stock.
+
+			/**
+			 * Retrieve the available license keys.
+			 * @var LicenseResourceModel[] $licenseKeys
+			 */
+			$licenseKeys = LicenseResourceRepository::instance()->findAllBy(
+				array(
+					'product_id' => $product->get_id(),
+					'status'     => LicenseStatus::ACTIVE
 				)
 			);
 
-			// Determines how many times should the license key be delivered
-			if ( ! $deliveredQuantity ) {
-				$deliveredQuantity = 1;
+			/**
+			 * Retrieve the current stock amount
+			 */
+			$availableStock = count( $licenseKeys );
+
+			/**
+			 * If there are enough keys, grab some and mark as "SOLD", otherwise add order notice.
+			 */
+			if ( $neededAmount <= $availableStock ) {
+				LicenseUtil::sellImportedLicenseKeys(
+					$licenseKeys,
+					$order->get_id(),
+					$neededAmount
+				);
+			} else {
+				$order->add_order_note( sprintf( __( 'License delivery failed: Could not find enough licenses in stock (Current stock: %d | Required %d)' ), $neededAmount, $availableStock ) );
 			}
 
-			// Set the needed delivery amount
-			$neededAmount = absint( $orderItem->get_quantity() ) * $deliveredQuantity;
+		} else if ( $useGenerator ) { // Sell license keys through the active generator
 
-			if ( $useStock ) { // Sell license keys through available stock.
+			$generatorId = get_post_meta( $product->get_id(), 'dlm_licensed_product_assigned_generator', true );
 
-				// Retrieve the available license keys.
-				/** @var LicenseResourceModel[] $licenseKeys */
-				$licenseKeys = LicenseResourceRepository::instance()->findAllBy(
-					array(
-						'product_id' => $product->get_id(),
-						'status'     => LicenseStatus::ACTIVE
-					)
-				);
+			/**
+			 * Retrieve the generator from the database and set up the args.
+			 * Skip the process if generator doesn't exists.
+			 * @var GeneratorResourceModel $generator
+			 */
+			$generator = GeneratorResourceRepository::instance()->find( $generatorId );
+			if ( ! $generator ) {
+				return false;
+			}
 
-				// Retrieve the current stock amount
-				$availableStock = count( $licenseKeys );
-
-				// There are enough keys.
-				if ( $neededAmount <= $availableStock ) {
-					// Set the retrieved license keys as "SOLD".
-					LicenseUtil::sellImportedLicenseKeys(
-						$licenseKeys,
-						$orderId,
-						$neededAmount
-					);
-				} else {
-					$order->add_order_note( sprintf( __( 'License delivery failed: Could not find enough licenses in stock (Current stock: %d | Required %d)' ), $neededAmount, $availableStock ) );
-				}
-			} else if ( $useGenerator ) { // Sell license keys through the active generator
-
-				$generatorId = get_post_meta(
+			/**
+			 * Run the generator and create the licenses, if everything ok, save them.
+			 */
+			$licenses = GeneratorUtil::generateLicenseKeys( $neededAmount, $generator );
+			if ( ! is_wp_error( $licenses ) ) {
+				LicenseUtil::saveGeneratedLicenseKeys(
+					$order->get_id(),
 					$product->get_id(),
-					'dlm_licensed_product_assigned_generator',
-					true
-				);
-
-				// Retrieve the generator from the database and set up the args.
-				/** @var GeneratorResourceModel $generator */
-				$generator = GeneratorResourceRepository::instance()->find( $generatorId );
-
-				// The assigned generator no longer exists
-				if ( ! $generator ) {
-					continue;
-				}
-
-				$licenses = GeneratorUtil::generateLicenseKeys( $neededAmount, $generator );
-
-				if ( ! is_wp_error( $licenses ) ) {
-					// Save the license keys.
-					LicenseUtil::saveGeneratedLicenseKeys(
-						$orderId,
-						$product->get_id(),
-						$licenses,
-						LicenseStatus::SOLD,
-						$generator
-					);
-				}
-			}
-
-			// Set the order as complete.
-			update_post_meta( $orderId, 'dlm_order_complete', 1 );
-
-			// Set status to delivered if the setting is on.
-			if ( Settings::isAutoDeliveryEnabled() ) {
-				LicenseResourceRepository::instance()->updateBy(
-					array( 'order_id' => $orderId ),
-					array( 'status' => LicenseStatus::DELIVERED )
+					$licenses,
+					LicenseStatus::SOLD,
+					$generator
 				);
 			}
+		}
 
-			$orderedLicenseKeys = LicenseResourceRepository::instance()->findAllBy( array( 'order_id' => $orderId ) );
+		/**
+		 * Flag the order as complete. Use custom flag.
+		 */
+		update_post_meta( $order->get_id(), 'dlm_order_complete', 1 );
 
-			// On event
-			do_action(
-				'dlm_licenses_generated_on_order',
-				array(
-					'orderId'  => $orderId,
-					'licenses' => $orderedLicenseKeys
-				)
+		/**
+		 * Set status to delivered if the setting is on.
+		 */
+		if ( Settings::isAutoDeliveryEnabled() ) {
+			LicenseResourceRepository::instance()->updateBy(
+				array( 'order_id' => $order->get_id() ),
+				array( 'status' => LicenseStatus::DELIVERED )
 			);
 		}
+
+		/**
+		 * Fire an action as a final step, to allow the developers to hook into.
+		 */
+		$orderedLicenses = LicenseResourceRepository::instance()->findAllBy( array( 'order_id' => $order->get_id() ) );
+		do_action(
+			'dlm_licenses_generated_on_order',
+			array(
+				'orderId'  => $order->get_id(),
+				'licenses' => $orderedLicenses
+			)
+		);
+
+		return true;
 	}
 
 	/**
@@ -443,7 +499,6 @@ class Orders {
 
 		return $html;
 	}
-
 
 	/**
 	 * Returns the license order id
