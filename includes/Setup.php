@@ -270,27 +270,26 @@ class Setup {
 	}
 
 	/**
-	 * Sets up the default folder structure and creates the default files,
-	 * if needed.
-	 *
+	 * Sets up the default folder structure and creates the default files, if needed.
+	 * @return string[]
 	 * @throws EnvironmentIsBrokenException
 	 */
 	public static function setDefaultFilesAndFolders() {
 		/**
 		 * When the cryptographic secrets are loaded into these constants,
-		 * no other files are needed.
+		 * no crypto credential files should be created.
 		 *
 		 * @see https://github.com/gdarko/digital-license-manager/wiki/security
 		 */
-		if ( defined( 'DLM_PLUGIN_SECRET' ) && defined( 'DLM_PLUGIN_DEFUSE' ) ) {
-			return;
-		}
+		$cryptoConst = defined( 'DLM_PLUGIN_SECRET' ) && defined( 'DLM_PLUGIN_DEFUSE' );
 
 		$uploads      = wp_upload_dir( null, false );
 		$mainDir      = trailingslashit( $uploads['basedir'] ) . 'dlm-files';
 		$fileHtaccess = $mainDir . '/.htaccess';
 		$fileDefuse   = $mainDir . '/defuse.txt';
 		$fileSecret   = $mainDir . '/secret.txt';
+		$fileLog      = $mainDir . '/debug.log';
+		$fileStatus   = array( 'htaccess' => null, 'defuse' => null, 'secret' => null, 'log' => null );
 
 		$oldUmask = umask( 0 );
 
@@ -312,6 +311,7 @@ class Setup {
 			if ( $fileHandle ) {
 				fwrite( $fileHandle, 'deny from all' );
 				fclose( $fileHandle );
+				$fileStatus['htaccess'] = $fileHtaccess;
 			}
 
 			@chmod( $fileHtaccess, 0664 );
@@ -321,46 +321,76 @@ class Setup {
 			if ( $permsFileHtaccess != '0664' ) {
 				@chmod( $permsFileHtaccess, 0664 );
 			}
+			$fileStatus['htaccess'] = $fileHtaccess;
 		}
 
-		// wp-contents/dlm-files/defuse.txt
-		if ( ! file_exists( $fileDefuse ) ) {
-			$defuse     = DefuseCryptoKey::createNewRandomKey();
-			$fileHandle = @fopen( $fileDefuse, 'w' );
+		if ( ! $cryptoConst ) {
+			// wp-contents/dlm-files/defuse.txt
+			if ( ! file_exists( $fileDefuse ) ) {
+				$defuse     = DefuseCryptoKey::createNewRandomKey();
+				$fileHandle = @fopen( $fileDefuse, 'w' );
 
-			if ( $fileHandle ) {
-				fwrite( $fileHandle, $defuse->saveToAsciiSafeString() );
-				fclose( $fileHandle );
+				if ( $fileHandle ) {
+					fwrite( $fileHandle, $defuse->saveToAsciiSafeString() );
+					fclose( $fileHandle );
+					$fileStatus['defuse'] = $fileDefuse;
+				}
+
+				@chmod( $fileDefuse, 0664 );
+			} else {
+				$permsFileDefuse = substr( sprintf( '%o', fileperms( $fileDefuse ) ), - 4 );
+
+				if ( $permsFileDefuse != '0664' ) {
+					@chmod( $permsFileDefuse, 0664 );
+				}
+				$fileStatus['defuse'] = $fileDefuse;
 			}
 
-			@chmod( $fileDefuse, 0664 );
-		} else {
-			$permsFileDefuse = substr( sprintf( '%o', fileperms( $fileDefuse ) ), - 4 );
+			// wp-contents/dlm-files/secret.txt
+			if ( ! file_exists( $fileSecret ) ) {
+				$fileHandle = @fopen( $fileSecret, 'w' );
 
-			if ( $permsFileDefuse != '0664' ) {
-				@chmod( $permsFileDefuse, 0664 );
+				if ( $fileHandle ) {
+					fwrite( $fileHandle, bin2hex( openssl_random_pseudo_bytes( 32 ) ) );
+					fclose( $fileHandle );
+					$fileStatus['secret'] = $fileSecret;
+				}
+
+				@chmod( $fileSecret, 0664 );
+			} else {
+				$permsFileSecret = substr( sprintf( '%o', fileperms( $fileSecret ) ), - 4 );
+
+				if ( $permsFileSecret != '0664' ) {
+					@chmod( $permsFileSecret, 0664 );
+				}
+				$fileStatus['secret'] = $fileSecret;
 			}
 		}
 
-		// wp-contents/dlm-files/secret.txt
-		if ( ! file_exists( $fileSecret ) ) {
-			$fileHandle = @fopen( $fileSecret, 'w' );
+		// wp-contents/dlm-files/debug.log
+		if ( ! file_exists( $fileLog ) ) {
+			$fileHandle = @fopen( $fileLog, 'w+' );
 
 			if ( $fileHandle ) {
-				fwrite( $fileHandle, bin2hex( openssl_random_pseudo_bytes( 32 ) ) );
 				fclose( $fileHandle );
+				$fileStatus['log'] = $fileLog;
 			}
 
-			@chmod( $fileSecret, 0664 );
+			@chmod( $fileLog, 0664 );
 		} else {
-			$permsFileSecret = substr( sprintf( '%o', fileperms( $fileSecret ) ), - 4 );
+			$permsFileSecret = substr( sprintf( '%o', fileperms( $fileLog ) ), - 4 );
 
 			if ( $permsFileSecret != '0664' ) {
 				@chmod( $permsFileSecret, 0664 );
 			}
+
+			$fileStatus['log'] = $fileLog;
 		}
 
+
 		umask( $oldUmask );
+
+		return $fileStatus;
 	}
 
 	/**
