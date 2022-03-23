@@ -464,14 +464,6 @@ class Licenses extends RestController {
 			);
 		}
 
-		if ( ! empty( $activation->getDeactivatedAt() ) ) {
-			return $this->responseError(
-				'data_error',
-				'License activation is deactivated.',
-				array( 'status' => 404 )
-			);
-		}
-
 		$license = $activation->getLicense();
 
 		if ( ! $license ) {
