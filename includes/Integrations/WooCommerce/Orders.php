@@ -270,7 +270,7 @@ class Orders {
 			)
 		);
 
-		return true;
+		return count($orderedLicenses);
 	}
 
 	/**

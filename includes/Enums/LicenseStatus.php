@@ -59,20 +59,7 @@ abstract class LicenseStatus {
 		self::INACTIVE,
 		self::DISABLED
 	);
-
-	/**
-	 * Available text representations of the enumerator
-	 *
-	 * @var array
-	 */
-	public static $enumArray = array(
-		'sold',
-		'delivered',
-		'active',
-		'inactive',
-		'disabled'
-	);
-
+	
 	/**
 	 * Key/value pairs of text representations and actual enumerator values.
 	 *
