@@ -3,7 +3,7 @@ Contributors: darkog
 Tags: license key, license, key, software license, serial key, manager, woocommerce, wordpress
 Requires at least: 4.7
 Tested up to: 5.9
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -64,6 +64,17 @@ The REST API documentation can be found on the link below:
 The complete documentation can be found on the link below:
 
 <a href="https://docs.codeverve.com/digital-license-manager/handbook/woocommerce/products/" target="_blank">See Documentation</a>
+
+### 📃 Client Libraries
+
+The following client libraries and integrations are available:
+
+* <a href="https://github.com/ideologix/dlm-php" target="_blank">PHP Library</a>
+* <a href="https://github.com/ideologix/DLM-NET" target="_blank">C# Library</a>
+* <a href="https://github.com/ideologix/dlm-python" target="_blank">Python3 Library</a>
+* <a href="https://github.com/ideologix/dlm-plugin-pro" target="_blank">Premium WordPress Updater (Requires PRO)</a>
+* <a href="https://github.com/ideologix/dlm-plugin-pro" target="_blank">Premium Plugin Example (Requires PRO)</a>
+* <a href="https://github.com/ideologix/dlm-theme-pro" target="_blank">Premium Theme Example (Requires PRO)</a>
 
 ### ➕ Feature Requests
 
@@ -139,6 +150,14 @@ To validate a license through the REST API, please follow this <a href="http://d
 15. Re-send licenses via Order page
 
 == Changelog ==
+
+= 1.2.2 =
+*Release Date - 23 Mar 2022*
+
+* Fix various notices found
+* Fix license/validate endpoint. It was returning error response when activation token is deactivated. It should return the activation object with the populated deactivated_at prperty.
+* Re-write the license generation in WooCommerce
+* Improve code, add various hooks for better extendibility.
 
 = 1.2.1 =
 *Release Date - 03 Mar 2022*
