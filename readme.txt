@@ -36,7 +36,7 @@ The plugin is compatible with WooCommerce although it can be used as standalone 
 The PRO version focuses on making it possible to generate consistent cash flow through the integration with WooCommerce Subscriptions and provide updates through the Digital License Manager REST API to the users that purchased and activated their license. List of the additional features as follows:
 
 * WooCommerce Subscriptions <a href="https://docs.codeverve.com/digital-license-manager/handbook/woocommerce/subscriptions/" target="_blank" rel="noopener">support</a>. It extends existing license or generates new one upon subscription renewal based on your product settings.
-* Subscriptions for WooCommerce support. This is free alternative to WooCommerce Subscriptions. It extends existing license or generates new one upon subscription renewal based on your product settings.
+* Subscriptions for WooCommerce support. This is free alternative to WooCommerce Subscriptions. Similarly as WooCommerce Subscriptions, it extends existing license or generates new one upon subscription renewal based on your product settings.
 * <a href="https://docs.codeverve.com/digital-license-manager/handbook/software/managing-software/" target="_blank" rel="noopener">Software management</a>. If you sell software, you will be able to add your software, setup a gallery, support information, FAQs that appear on the product page.
 * <a href="https://docs.codeverve.com/digital-license-manager/handbook/software/manage-releases/" target="_blank" rel="noopener">Software release management</a>. Downloadable software can be distributed as a releases. For each version you create a release in the Software editor.
 * Software <a href="https://docs.codeverve.com/digital-license-manager/rest-api/software/single/" target="_blank">details REST Endpoint</a> to get information about specific software. This is useful if you want to perform update check from your premium software.
@@ -72,7 +72,7 @@ The following client libraries and integrations are available:
 
 * <a href="https://github.com/ideologix/dlm-php" target="_blank">PHP Library</a>
 * <a href="https://github.com/ideologix/DLM-NET" target="_blank">C# Library</a>
-* <a href="https://github.com/ideologix/dlm-python" target="_blank">Python3 Library</a>
+* <a href="https://github.com/ideologix/dlm-python" target="_blank">Python Library</a>
 * <a href="https://github.com/ideologix/dlm-plugin-pro" target="_blank">Premium WordPress Updater (Requires PRO)</a>
 * <a href="https://github.com/ideologix/dlm-plugin-pro" target="_blank">Premium Plugin Example (Requires PRO)</a>
 * <a href="https://github.com/ideologix/dlm-theme-pro" target="_blank">Premium Theme Example (Requires PRO)</a>
