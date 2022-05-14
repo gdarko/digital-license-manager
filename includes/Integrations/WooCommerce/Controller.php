@@ -100,6 +100,6 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 	 * @return string
 	 */
 	public static function getTemplatePath() {
-		return trailingslashit( DLM_TEMPLATES_DIR ) . 'woo' . DIRECTORY_SEPARATOR;
+		return trailingslashit( DLM_TEMPLATES_DIR ) . 'woocommerce' . DIRECTORY_SEPARATOR;
 	}
 }
