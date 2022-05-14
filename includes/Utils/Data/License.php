@@ -141,7 +141,7 @@ class License {
 			return new WP_Error( 'data_error', sprintf( __( "The license key '%s' already exists", 'digital-license-manager' ), $licenseKey ), array( 'code' => 409 ) );
 		}
 
-		if ( $expiresAt !== null ) {
+		if ( !empty($expiresAt) ) {
 			try {
 				new DateTime( $expiresAt );
 			} catch ( Exception $e ) {
@@ -150,6 +150,8 @@ class License {
 		} else {
 			if ( is_numeric( $validFor ) && $validFor > 0 ) {
 				$expiresAt = DateFormatter::addDaysInFuture( $validFor, 'Y-m-d H:i:s' );
+			} else {
+				$expiresAt = null;
 			}
 		}
 
@@ -292,11 +294,7 @@ class License {
 
 		// Times activated max
 		if ( array_key_exists( 'activations_limit', $licenseData ) ) {
-			if ( $licenseData['activations_limit'] === null ) {
-				$updateData['activations_limit'] = null;
-			} else {
-				$updateData['activations_limit'] = (int) $licenseData['activations_limit'];
-			}
+			$updateData['activations_limit'] = is_numeric(  $licenseData['activations_limit'] ) ? absint(  $licenseData['activations_limit'] ) : null;
 		}
 
 		// Update the stock

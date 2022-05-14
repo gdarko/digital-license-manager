@@ -466,8 +466,9 @@ class Licenses extends ListTable {
 
 		if ( $activationsLimit === null ) {
 			return sprintf(
-				'<div class="dlm-status-inline %s"><small>%d</small> / <strong>%s</strong></div>',
+				'<div class="dlm-status-inline %s" title="%s"><small>%d</small> / <strong>%s</strong></div>',
 				'activation done',
+				__('Unlimited Activations', 'digital-license-manager'),
 				$timesActivated,
 				'&infin;'
 			);
