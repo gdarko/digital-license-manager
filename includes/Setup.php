@@ -23,7 +23,7 @@ class Setup {
 	/**
 	 * @var int
 	 */
-	const DB_VERSION = 101;
+	const DB_VERSION = 102;
 
 	/**
 	 * Installation script.
