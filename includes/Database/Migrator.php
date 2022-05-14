@@ -2,8 +2,6 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Database;
 
-use IdeoLogix\DigitalLicenseManager\Setup;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -95,5 +93,42 @@ class Migrator {
 		} else if ( $this->oldVersion > $this->newVersion ) {
 			$this->down();
 		}
+	}
+
+	/**
+	 * Drops column from database table, if it exists.
+	 *
+	 * @param string $table_name Database table name.
+	 * @param string $column_name Table column name.
+	 * @param string $drop_ddl SQL statement to drop column.
+	 *
+	 * @return bool True on success or if the column doesn't exist. False on failure.
+	 * @since 1.0.0
+	 *
+	 * @global \wpdb $wpdb WordPress database abstraction object.
+	 *
+	 */
+	public static function maybe_drop_column( $table_name, $column_name, $drop_ddl = 'ALTER TABLE {table} DROP COLUMN {column}' ) {
+		global $wpdb;
+
+		foreach ( $wpdb->get_col( "DESC $table_name", 0 ) as $column ) {
+			if ( $column === $column_name ) {
+
+				// Found it, so try to drop it.
+				$drop_ddl = str_replace( '{table}', $table_name, $drop_ddl );
+				$drop_ddl = str_replace( '{column}', $column_name, $drop_ddl );
+				$wpdb->query( $drop_ddl );
+
+				// We cannot directly tell that whether this succeeded!
+				foreach ( $wpdb->get_col( "DESC $table_name", 0 ) as $column2 ) {
+					if ( $column2 === $column_name ) {
+						return false;
+					}
+				}
+			}
+		}
+
+		// Else didn't find it.
+		return true;
 	}
 }
