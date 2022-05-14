@@ -1,8 +1,8 @@
 <?php
 /**
- * The template for the purchased license keys inside "My account"
+ * The template displays the purchased licenses in the order pages (My Account, after checkout, etc)
  *
- * This template can be overridden by copying it to yourtheme/woocommerce/myaccount/dlm/licenses-purchased.php.
+ * This template can be overridden by copying it to yourtheme/woocommerce/dlm/my-account/orders/licenses.php.
  *
  * HOWEVER, on occasion I will need to update template files and you
  * (the developer) will need to copy the new files to your theme to
@@ -10,7 +10,15 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @version 2.0.0
+ * @version 1.0.0
+ *
+ * Default variables
+ *
+ * @var string $heading
+ * @var string $valid_until
+ * @var array $data
+ * @var string $date_format
+ * @var array $args
  */
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
@@ -40,7 +48,7 @@ foreach ( $data as $productId => $row ): ?>
 				$decrypted = '';
 			}
 			$actions = apply_filters( 'dlm_myaccount_licenses_keys_row_actions', array(), $license, $decrypted, $data );
-			if(is_array($actions)) {
+			if ( is_array( $actions ) ) {
 				ksort( $actions );
 			}
 			?>

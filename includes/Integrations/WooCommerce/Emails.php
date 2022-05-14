@@ -60,7 +60,7 @@ class Emails {
 			// Send the keys out if the setting is active.
 			if ( $plainText ) {
 				wc_get_template(
-					'emails/dlm/plain/email-order-licenses.php',
+					'dlm/emails/plain/email-order-licenses.php',
 					array(
 						'heading'       => apply_filters( 'dlm_licenses_table_heading', __( 'Your digital license(s)', 'digital-license-manager' ) ),
 						'valid_until'   => apply_filters( 'dlm_licenses_table_valid_until', __( 'Valid until', 'digital-license-manager' ) ),
@@ -73,11 +73,11 @@ class Emails {
 						'args'          => apply_filters( 'dlm_template_args_email_order_licenses', array() )
 					),
 					'',
-					DLM_TEMPLATES_DIR
+					Controller::getTemplatePath()
 				);
 			} else {
 				echo wc_get_template_html(
-					'emails/dlm/email-order-licenses.php',
+					'dlm/emails/email-order-licenses.php',
 					array(
 						'heading'       => apply_filters( 'dlm_licenses_table_heading', __( 'Your digital license(s)', 'digital-license-manager' ) ),
 						'valid_until'   => apply_filters( 'dlm_licenses_table_valid_until', __( 'Valid until', 'digital-license-manager' ) ),
@@ -90,28 +90,28 @@ class Emails {
 						'args'          => apply_filters( 'dlm_template_args_email_order_licenses', array() )
 					),
 					'',
-					DLM_TEMPLATES_DIR
+					Controller::getTemplatePath()
 				);
 			}
 		} else {
 			// Only display a notice.
 			if ( $plainText ) {
 				wc_get_template(
-					'emails/dlm/plain/email-order-license-notice.php',
+					'dlm/emails/plain/email-order-license-notice.php',
 					array(
 						'args' => apply_filters( 'dlm_template_args_email_order_license_notice', array() )
 					),
 					'',
-					DLM_TEMPLATES_DIR
+					Controller::getTemplatePath()
 				);
 			} else {
 				echo wc_get_template_html(
-					'emails/dlm/email-order-license-notice.php',
+					'dlm/emails/email-order-license-notice.php',
 					array(
 						'args' => apply_filters( 'dlm_template_args_email_order_license_notice', array() )
 					),
 					'',
-					DLM_TEMPLATES_DIR
+					Controller::getTemplatePath()
 				);
 			}
 		}
@@ -152,7 +152,7 @@ class Emails {
 	public function addOrderDetails( $order, $sentToAdmin, $plainText, $email ) {
 		if ( $plainText ) {
 			wc_get_template(
-				'emails/dlm/plain/email-order-details.php',
+				'dlm/emails/plain/email-order-details.php',
 				array(
 					'order'         => $order,
 					'sent_to_admin' => false,
@@ -161,11 +161,11 @@ class Emails {
 					'args'          => apply_filters( 'dlm_template_args_emails_email_order_details', array() )
 				),
 				'',
-				DLM_TEMPLATES_DIR
+				Controller::getTemplatePath()
 			);
 		} else {
 			echo wc_get_template_html(
-				'emails/dlm/email-order-details.php',
+				'dlm/emails/email-order-details.php',
 				array(
 					'order'         => $order,
 					'sent_to_admin' => false,
@@ -174,7 +174,7 @@ class Emails {
 					'args'          => apply_filters( 'dlm_template_args_emails_email_order_details', array() )
 				),
 				'',
-				DLM_TEMPLATES_DIR
+				Controller::getTemplatePath()
 			);
 		}
 	}
@@ -197,7 +197,7 @@ class Emails {
 
 		if ( $plainText ) {
 			wc_get_template(
-				'emails/dlm/plain/email-order-licenses.php',
+				'dlm/emails/plain/email-order-licenses.php',
 				array(
 					'heading'       => apply_filters( 'dlm_licenses_table_heading', __( 'Your digital license(s)', 'digital-license-manager' ) ),
 					'valid_until'   => apply_filters( 'dlm_licenses_table_valid_until', __( 'Valid until', 'digital-license-manager' ) ),
@@ -210,11 +210,11 @@ class Emails {
 					'args'          => apply_filters( 'dlm_template_args_emails_order_license_keys', array() )
 				),
 				'',
-				DLM_TEMPLATES_DIR
+				Controller::getTemplatePath()
 			);
 		} else {
 			echo wc_get_template_html(
-				'emails/dlm/email-order-licenses.php',
+				'dlm/emails/email-order-licenses.php',
 				array(
 					'heading'       => apply_filters( 'dlm_licenses_table_heading', __( 'Your digital license(s)', 'digital-license-manager' ) ),
 					'valid_until'   => apply_filters( 'dlm_licenses_table_valid_until', __( 'Valid until', 'digital-license-manager' ) ),
@@ -227,7 +227,7 @@ class Emails {
 					'args'          => apply_filters( 'dlm_template_args_emails_order_license_keys', array() )
 				),
 				'',
-				DLM_TEMPLATES_DIR
+				Controller::getTemplatePath()
 			);
 		}
 	}

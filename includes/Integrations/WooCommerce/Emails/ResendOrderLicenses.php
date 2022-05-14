@@ -2,13 +2,14 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Emails;
 
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 use WC_Email;
 use WC_Order;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class CustomerDeliverLicenseKeys
+ * Class ResendOrderLicenses
  * @package IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Emails
  */
 class ResendOrderLicenses extends WC_Email {
@@ -21,9 +22,9 @@ class ResendOrderLicenses extends WC_Email {
 		$this->id             = 'dlm_email_customer_deliver_licenses';
 		$this->title          = __( 'Order License Keys', 'digital-license-manager' );
 		$this->description    = __( 'A manual email to send out license keys to the customer.', 'digital-license-manager' );
-		$this->template_html  = 'emails/dlm/email-customer-deliver-licenses.php';
-		$this->template_plain = 'emails/dlm/plain/email-customer-deliver-licenses.php';
-		$this->template_base  = DLM_TEMPLATES_DIR;
+		$this->template_html  = 'dlm/emails/email-customer-deliver-licenses.php';
+		$this->template_plain = 'dlm/emails/plain/email-customer-deliver-licenses.php';
+		$this->template_base  = Controller::getTemplatePath();
 		$this->customer_email = true;
 		$this->placeholders   = array(
 			'{order_date}'   => '',

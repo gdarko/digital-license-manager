@@ -2,7 +2,7 @@
 /**
  * The template which adds the license keys to the "order complete" email (HTML).
  *
- * This template can be overridden by copying it to yourtheme/woocommerce/emails/dlm/email-order-licenses.php.
+ * This template can be overridden by copying it to yourtheme/woocommerce/dlm/emails/email-order-licenses.php.
  *
  * HOWEVER, on occasion I will need to update template files and you
  * (the developer) will need to copy the new files to your theme to
@@ -10,7 +10,7 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @version 2.0.0
+ * @version 1.0.0
  */
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License;
