@@ -1,4 +1,43 @@
+.dlm-main * {
+    box-sizing: border-box;
+}
+
 .dlm-field-placeholder {
-    width: 150px;
+    width: 100px;
     height: auto !important;
 }
+
+.dlm-main, .dlm-nav {
+    max-width: 1680px;
+    width: 96%;
+    box-sizing: border-box;
+}
+
+.dlm-main {
+    padding: 20px;
+    background: #fff;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+.dlm-main h3 {
+    font-size: 18px;
+}
+
+.dlm-main h3 {
+    font-size: 17px;
+    border-bottom: 1px solid #d3d3d3;
+    padding-bottom: 14px;
+}
+.dlm-main p.submit {
+    border-top: 1px solid #d3d3d3 !important;
+    width: 100%;
+    display: block;
+    padding-top: 30px !important;
+}
+
+.dlm-nav .nav-tab-active {
+    background: #fff !important;
+}
+

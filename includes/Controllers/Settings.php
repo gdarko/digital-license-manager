@@ -259,7 +259,7 @@ class Settings extends Singleton {
 			settings_fields( sprintf( 'dlm_settings_%s_group', $tab['slug'] ) );
 			$sections = isset( $tab['sections'] ) ? $tab['sections'] : array();
 			foreach ( $sections as $page => $section ) {
-				do_settings_sections( 'dlm_' . $page );
+				$this->do_settings_sections( 'dlm_' . $page );
 			}
 			submit_button();
 			echo '</form>';
@@ -427,6 +427,45 @@ class Settings extends Singleton {
 	public function afterSanitize( $settings ) {
 		if ( isset( $settings['myaccount_endpoint'] ) ) {
 			flush_rewrite_rules( true );
+		}
+	}
+
+
+	/**
+	 * Prints out all settings sections added to a particular settings page
+	 *
+	 * Part of the Settings API. Use this in a settings page callback function
+	 * to output all the sections and fields that were added to that $page with
+	 * add_settings_section() and add_settings_field()
+	 *
+	 * @global array $wp_settings_sections Storage array of all settings sections added to admin pages.
+	 * @global array $wp_settings_fields Storage array of settings fields and info about their pages/sections.
+	 * @since 2.7.0
+	 *
+	 * @param string $page The slug name of the page whose settings sections you want to output.
+	 */
+	protected function do_settings_sections( $page ) {
+		global $wp_settings_sections, $wp_settings_fields;
+
+		if ( ! isset( $wp_settings_sections[ $page ] ) ) {
+			return;
+		}
+
+		foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
+			if ( $section['title'] ) {
+				echo "<h3>{$section['title']}</h3>\n";
+			}
+
+			if ( $section['callback'] ) {
+				call_user_func( $section['callback'], $section );
+			}
+
+			if ( ! isset( $wp_settings_fields ) || ! isset( $wp_settings_fields[ $page ] ) || ! isset( $wp_settings_fields[ $page ][ $section['id'] ] ) ) {
+				continue;
+			}
+			echo '<table class="form-table" role="presentation">';
+			do_settings_fields( $page, $section['id'] );
+			echo '</table>';
 		}
 	}
 
