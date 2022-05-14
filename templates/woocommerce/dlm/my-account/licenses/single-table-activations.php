@@ -31,7 +31,6 @@ use IdeoLogix\DigitalLicenseManager\Settings;
 /* @var LicenseActivationResourceModel[] */
 $notAvailable              = __( 'N/A', 'digital-license-manager' );
 $activations               = $license->getActivations();
-$isActivationsTableEnabled = (int) Settings::get( 'enable_activations_table', Settings::SECTION_WOOCOMMERCE );
 
 $isExpired      = $license->isExpired();
 $actionsEnabled = apply_filters( 'dlm_myaccount_license_activation_row_actions_enabled', false );

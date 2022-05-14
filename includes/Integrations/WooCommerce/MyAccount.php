@@ -182,10 +182,10 @@ class MyAccount {
 			echo wc_get_template_html(
 				'dlm/my-account/licenses/single.php',
 				array(
-					'license'    => $license,
+					'license'     => $license,
 					'license_key' => $licenseKey,
-					'product'    => ! empty( $license->getProductId() ) ? wc_get_product( $license->getProductId() ) : null,
-					'order'      => ! empty( $license->getOrderId() ) ? wc_get_order( $license->getOrderId() ) : null,
+					'product'     => ! empty( $license->getProductId() ) ? wc_get_product( $license->getProductId() ) : null,
+					'order'       => ! empty( $license->getOrderId() ) ? wc_get_order( $license->getOrderId() ) : null,
 					'date_format' => get_option( 'date_format' ),
 				),
 				'',
@@ -205,7 +205,14 @@ class MyAccount {
 	 *
 	 * @return void
 	 */
-	public function addSingleLicenseActivationsTable($license, $order, $product, $dateFormat, $licenseKey) {
+	public function addSingleLicenseActivationsTable( $license, $order, $product, $dateFormat, $licenseKey ) {
+
+		$is_enabled = (int) Settings::get( 'enable_activations_table', Settings::SECTION_WOOCOMMERCE );
+
+		if ( ! $is_enabled ) {
+			return;
+		}
+
 		echo wc_get_template_html(
 			'dlm/my-account/licenses/single-table-activations.php',
 			array(
