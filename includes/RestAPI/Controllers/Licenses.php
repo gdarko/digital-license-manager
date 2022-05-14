@@ -3,9 +3,9 @@
 namespace IdeoLogix\DigitalLicenseManager\RestAPI\Controllers;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\RestController;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseActivation as LicenseActivationResourceModel;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
 use WP_Error;
 use WP_REST_Request;
@@ -382,11 +382,16 @@ class Licenses extends RestController {
 		$licenseKey      = sanitize_text_field( $request->get_param( 'license_key' ) );
 		$activationMeta  = $request->get_param( 'meta' );
 		$activationLabel = $request->get_param( 'label' );
+		$existingToken   = $request->get_param( 'token' );
 
-		$licenseActivation = LicenseUtil::activate( $licenseKey, array(
-			'label' => $activationLabel,
-			'meta'  => $activationMeta
-		) );
+		if ( ! empty( $existingToken ) ) {
+			$licenseActivation = LicenseUtil::reactivate( $existingToken, $licenseKey );
+		} else {
+			$licenseActivation = LicenseUtil::activate( $licenseKey, array(
+				'label' => $activationLabel,
+				'meta'  => $activationMeta
+			) );
+		}
 
 		if ( is_wp_error( $licenseActivation ) ) {
 			return $this->maybeErrorResponse( $licenseActivation );

@@ -382,7 +382,7 @@ class License extends AbstractResourceModel implements ModelInterface {
 
 		$expires_at = $this->getExpiresAt();
 
-		if ( is_null( $expires_at ) ) {
+		if ( is_null( $expires_at ) | '0000-00-00 00:00:00' === $expires_at ) {
 			return false;
 		}
 

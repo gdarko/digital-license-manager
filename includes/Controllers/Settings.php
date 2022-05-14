@@ -9,7 +9,6 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\ApiKey as ApiKeyRe
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\ApiKey as ApiKeyResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Users;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
-use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
 use IdeoLogix\DigitalLicenseManager\ListTables\ApiKeys;
 
 /**
@@ -50,7 +49,7 @@ class Settings extends Singleton {
 				'priority'          => 10,
 				'sanitize_callback' => array( $this, 'sanitizeGeneral' ),
 				'sections'          => array(
-					'licenses' => array(
+					'licenses'       => array(
 						'name'     => __( 'Licenses', 'digital-license-manager' ),
 						'page'     => 'licenses',
 						'priority' => 10,
@@ -66,7 +65,7 @@ class Settings extends Singleton {
 							),
 							40 => array(
 								'id'       => 'allow_duplicates',
-								'title'    => __( 'Duplicate license keys', 'digital-license-manager' ),
+								'title'    => __( 'Duplicate licenses', 'digital-license-manager' ),
 								'callback' => array( $this, 'fieldCheckbox' ),
 								'args'     => array(
 									'label'   => __( 'Allow duplicate license keys inside the licenses database table.', 'digital-license-manager' ),
@@ -75,7 +74,23 @@ class Settings extends Singleton {
 							),
 						)
 					),
-					'rest_api' => array(
+					'certifications' => array(
+						'name'     => __( 'Certifications', 'digital-license-manager' ),
+						'page'     => 'certifications',
+						'priority' => 10,
+						'fields'   => array(
+							10 => array(
+								'id'       => 'company_logo',
+								'title'    => __( 'Company Logo', 'digital-license-manager' ),
+								'callback' => array( $this, 'fieldImageUpload' ),
+								'args'     => array(
+									'label'   => __( 'Upload a company logo that will be displayed in the certification PDF.', 'digital-license-manager' ),
+									'explain' => __( "If no logo provided, it will attempt to use the website logo that is set in 'Customize' section.", 'digital-license-manager' ),
+								)
+							)
+						)
+					),
+					'rest_api'       => array(
 						'name'     => __( 'REST API', 'digital-license-manager' ),
 						'page'     => 'rest_api',
 						'priority' => 20,
@@ -91,7 +106,7 @@ class Settings extends Singleton {
 							)
 						)
 					),
-					'other'    => array(
+					'other'          => array(
 						'name'     => __( 'Other', 'digital-license-manager' ),
 						'page'     => 'other',
 						'priority' => 30,

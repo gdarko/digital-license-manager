@@ -115,6 +115,7 @@ class Boot extends Singleton {
 		wp_register_script( 'dlm_generators_page', DLM_JS_URL . 'generators.js', array( 'jquery' ), $this->version );
 		wp_register_script( 'dlm_activations_page', DLM_JS_URL . 'activations.js', array( 'jquery' ), $this->version );
 		wp_register_script( 'dlm_settings_page', DLM_JS_URL . 'settings.js', array( 'jquery' ), $this->version );
+		wp_register_style( 'dlm_settings_page', DLM_CSS_URL . 'settings.css', array(), $this->version, 'all' );
 		wp_register_script( 'dlm_products_page', DLM_JS_URL . 'products.js', array( 'jquery' ), $this->version );
 
 		/**
@@ -248,7 +249,9 @@ class Boot extends Singleton {
 		 * Page: Settings
 		 */
 		if ( $isSettings ) {
+			wp_enqueue_media();
 			wp_enqueue_script( 'dlm_settings_page' );
+			wp_enqueue_style('dlm_settings_page');
 		}
 
 		/**

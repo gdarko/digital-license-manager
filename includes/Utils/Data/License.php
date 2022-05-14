@@ -4,29 +4,25 @@
 namespace IdeoLogix\DigitalLicenseManager\Utils\Data;
 
 
-use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
-use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
-use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
-use IdeoLogix\DigitalLicenseManager\Settings;
-
+use DateInterval;
+use DateTime;
+use Exception;
 use IdeoLogix\DigitalLicenseManager\Abstracts\ResourceModel;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus as LicenseStatusEnum;
+use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseActivation;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourcesRepository;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
-
-use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
+use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
+use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
+use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus as LicenseStatusEnum;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
+use IdeoLogix\DigitalLicenseManager\Settings;
+use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
-
-use DateInterval;
-use DateTime;
-use DateTimeZone;
-use Exception;
+use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use WC_Order;
 use WP_Error;
 
@@ -469,7 +465,7 @@ class License {
 	 *
 	 * @return bool|ResourceModel|WP_Error
 	 */
-	public static function reactivate( $activationToken ) {
+	public static function reactivate( $activationToken, $licenseKey = null ) {
 		if ( ! $activationToken ) {
 			return new WP_Error(
 				'data_error',
@@ -517,6 +513,16 @@ class License {
 				'License could not be found.',
 				array( 'status' => 404 )
 			);
+		}
+		if ( ! is_null( $licenseKey ) ) {
+			$licenseKeyDec = $license->getDecryptedLicenseKey();
+			if ( $licenseKeyDec !== $licenseKey ) {
+				return new WP_Error(
+					'data_error',
+					'License invalid. Cheati\'n huh?.',
+					array( 'status' => 404 )
+				);
+			}
 		}
 
 		if ( false !== $licenseExpired = self::hasLicenseExpired( $license ) ) {
