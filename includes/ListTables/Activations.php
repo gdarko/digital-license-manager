@@ -7,11 +7,10 @@ use Exception;
 use IdeoLogix\DigitalLicenseManager\Abstracts\ListTable;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
-use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
-use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
+use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
+use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -72,12 +71,34 @@ class Activations extends ListTable {
 		$perPage    = (int) $perPage;
 		$pageNumber = (int) $pageNumber;
 
+		$sql = $this->getRecordsQuery();
+		$sql .= " LIMIT {$perPage}";
+		$sql .= ' OFFSET ' . ( $pageNumber - 1 ) * $perPage;
+
+		$results = $wpdb->get_results( $sql, ARRAY_A );
+
+		return $results;
+	}
+
+	/**
+	 * Returns records query
+	 * @return string
+	 */
+	private function getRecordsQuery( $status = '', $count = false ) {
+
+		global $wpdb;
 		$tblLicenses = $wpdb->prefix . esc_sql( DatabaseTable::LICENSES );
-		$sql         = esc_sql( "SELECT {$this->table}.* FROM {$this->table} INNER JOIN {$tblLicenses} ON {$tblLicenses}.id={$this->table}.license_id WHERE 1 = 1" );
+
+		$what = $count ? "COUNT(*)" : " {$this->table}.*";
+		$sql  = esc_sql( "SELECT {$what} FROM {$this->table} INNER JOIN {$tblLicenses} ON {$tblLicenses}.id={$this->table}.license_id WHERE 1 = 1" );
 
 		// Applies the view filter
-		if ( $this->isViewFilterActive() ) {
-			$status = sanitize_text_field( $_GET['status'] );
+		if ( ! empty( $status ) || $this->isViewFilterActive() ) {
+
+			if ( empty( $status ) ) {
+				$status = sanitize_text_field( $_GET['status'] );
+			}
+
 			if ( 'inactive' === $status ) {
 				$sql .= $wpdb->prepare( ' AND ' . $this->table . '.deactivated_at IS NOT NULL' );
 			} else {
@@ -107,22 +128,19 @@ class Activations extends ListTable {
 
 		$sql .= ' ORDER BY ' . $this->table . '.' . ( empty( $_REQUEST['orderby'] ) ? 'id' : esc_sql( $_REQUEST['orderby'] ) );
 		$sql .= ' ' . ( empty( $_REQUEST['order'] ) ? 'DESC' : esc_sql( $_REQUEST['order'] ) );
-		$sql .= " LIMIT {$perPage}";
-		$sql .= ' OFFSET ' . ( $pageNumber - 1 ) * $perPage;
 
-		$results = $wpdb->get_results( $sql, ARRAY_A );
-
-		return $results;
+		return $sql;
 	}
 
 	/**
 	 * Retrieves the number of records in the database
 	 * @return int
 	 */
-	private function getRecordsCount() {
+	private function getRecordsCount( $status = '' ) {
 		global $wpdb;
+		$sql = $this->getRecordsQuery( $status, true );
 
-		return $wpdb->get_var( "SELECT COUNT(*) FROM {$this->table}" );
+		return $wpdb->get_var( $sql );
 	}
 
 	/**
@@ -454,6 +472,9 @@ class Activations extends ListTable {
 		$statusLinks = array();
 		$current     = ! empty( $_REQUEST['status'] ) ? $_REQUEST['status'] : 'all';
 
+		$total_active   = $this->getRecordsCount( 'active' );
+		$total_inactive = $this->getRecordsCount( 'inactive' );
+
 		// All link
 		$class              = $current == 'all' ? ' class="current"' : '';
 		$allUrl             = remove_query_arg( 'status' );
@@ -462,7 +483,7 @@ class Activations extends ListTable {
 			$allUrl,
 			$class,
 			__( 'All', 'digital-license-manager' ),
-			LicenseActivationResourceRepository::instance()->count()
+			$total_active + $total_inactive
 		);
 
 		// Active link
@@ -473,7 +494,7 @@ class Activations extends ListTable {
 			$activeUrl,
 			$class,
 			__( 'Active', 'digital-license-manager' ),
-			LicenseActivationResourceRepository::instance()->countBy( array( 'deactivated_at' => 'IS NULL' ) )
+			$total_active
 		);
 
 		// Inactive link
@@ -484,7 +505,7 @@ class Activations extends ListTable {
 			$inactiveUrl,
 			$class,
 			__( 'Inactive', 'digital-license-manager' ),
-			LicenseActivationResourceRepository::instance()->countBy( array( 'deactivated_at' => 'IS NOT NULL' ) )
+			$total_inactive
 		);
 
 		return $statusLinks;
@@ -552,7 +573,8 @@ class Activations extends ListTable {
         </label><select name="license-id" id="filter-by-license-id">
             <option></option>
 			<?php if ( $selected ): ?>
-                <option selected value="<?php echo $selected; ?>"><?php echo sprintf( '#%d', esc_attr($selected) ); ?></option>
+                <option selected
+                        value="<?php echo $selected; ?>"><?php echo sprintf( '#%d', esc_attr( $selected ) ); ?></option>
 			<?php endif; ?>
         </select>
 		<?php
@@ -572,7 +594,7 @@ class Activations extends ListTable {
         <select name="license-source" id="filter-by-source">
             <option></option>
 			<?php foreach ( ActivationSource::all() as $key => $name ): ?>
-                <option value="<?php echo $key; ?>" <?php selected( $selected, $key ); ?>><?php echo esc_attr($name); ?></option>
+                <option value="<?php echo $key; ?>" <?php selected( $selected, $key ); ?>><?php echo esc_attr( $name ); ?></option>
 			<?php endforeach; ?>
         </select>
 		<?php
