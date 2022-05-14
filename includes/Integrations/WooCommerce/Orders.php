@@ -7,6 +7,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as License
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 use IdeoLogix\DigitalLicenseManager\ListTables\Licenses;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\Generator as GeneratorUtil;
@@ -311,7 +312,7 @@ class Orders {
 		}
 
 		echo wc_get_template_html(
-			'myaccount/dlm/licenses-purchased.php',
+			'dlm/my-account/orders/licenses.php',
 			array(
 				'heading'     => apply_filters( 'dlm_licenses_table_heading', __( 'Your digital license(s)', 'digital-license-manager' ) ),
 				'valid_until' => apply_filters( 'dlm_licenses_table_valid_until', __( 'Valid until', 'digital-license-manager' ) ),
@@ -320,7 +321,7 @@ class Orders {
 				'args'        => apply_filters( 'dlm_template_args_myaccount_licenses', array() )
 			),
 			'',
-			DLM_TEMPLATES_DIR
+			Controller::getTemplatePath()
 		);
 
 	}
@@ -461,7 +462,6 @@ class Orders {
 			}
 
 			$html .= '</ul>';
-
 			$html .= '<span class="dlm-txt-copied-to-clipboard" style="display: none">' . __( 'Copied to clipboard', 'digital-license-manager' ) . '</span>';
 		} else {
 			foreach ( $licenses as $license ) {
@@ -473,27 +473,10 @@ class Orders {
 
 			$html .= '</ul>';
 			$html .= '<p>';
-
-			$html .= sprintf(
-				'<a class="button dlm-license-keys-show-all" data-order-id="%d">%s</a>',
-				$order_id,
-				__( 'Show license(s)', 'digital-license-manager' )
-			);
-
-			$html .= sprintf(
-				'<a class="button dlm-license-keys-hide-all" data-order-id="%d">%s</a>',
-				$order_id,
-				__( 'Hide license(s)', 'digital-license-manager' )
-			);
-
-			$html .= sprintf(
-				'<img class="dlm-spinner" alt="%s" src="%s">',
-				__( 'Please wait...', 'digital-license-manager' ),
-				Licenses::SPINNER_URL
-			);
-
+			$html .= sprintf( '<a class="button dlm-license-keys-show-all" data-order-id="%d">%s</a>', $order_id, __( 'Show license(s)', 'digital-license-manager' ) );
+			$html .= sprintf( '<a class="button dlm-license-keys-hide-all" data-order-id="%d">%s</a>', $order_id, __( 'Hide license(s)', 'digital-license-manager' ) );
+			$html .= sprintf( '<img class="dlm-spinner" alt="%s" src="%s">', __( 'Please wait...', 'digital-license-manager' ), Licenses::SPINNER_URL );
 			$html .= '<span class="dlm-txt-copied-to-clipboard" style="display: none">' . __( 'Copied to clipboard', 'digital-license-manager' ) . '</span>';
-
 			$html .= '</p>';
 		}
 

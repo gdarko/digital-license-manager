@@ -81,6 +81,15 @@ class Settings {
 								'explain' => __( "You might need to save your permalinks after enabling this option.", 'digital-license-manager' ),
 							)
 						),
+						20 => array(
+							'id'       => 'enable_activations_table',
+							'title'    => __( 'Activation History', 'digital-license-manager' ),
+							'callback' => array( $this, 'fieldCheckbox' ),
+							'args'     => array(
+								'label'   => __( "Enable historical records that shows previous activations in the license page in My Account dashboard.", 'digital-license-manager' ),
+								'explain' => __( "Use this option to display table that shows list of activations and labels.", 'digital-license-manager' ),
+							)
+						),
 					)
 				)
 			),

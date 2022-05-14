@@ -2,9 +2,9 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
-use IdeoLogix\DigitalLicenseManager\Utils\Data\Customer;
-use Exception;
+use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Settings;
+use IdeoLogix\DigitalLicenseManager\Utils\Data\Customer;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
 
 defined( 'ABSPATH' ) || exit;
@@ -23,6 +23,20 @@ class MyAccount {
 		add_filter( 'the_title', array( $this, 'accountItemTitles' ) );
 		add_filter( 'woocommerce_account_menu_items', array( $this, 'accountMenuItems' ), 10, 1 );
 		add_action( 'woocommerce_account_digital-licenses_endpoint', array( $this, 'digitalLicenses' ) );
+		add_filter( 'dlm_myaccount_licenses_row_actions', array( $this, 'licensesRowActions' ), 10, 3 );
+		add_filter( 'dlm_myaccount_licenses_keys_row_actions', array( $this, 'licensesRowActions' ), 10, 3 );
+		add_action( 'dlm_myaccount_licenses_single_page_content', array( $this, 'addSingleLicenseContent' ), 10, 2 );
+		add_action( 'dlm_myaccount_licenses_single_page_end', array( $this, 'addSingleLicenseActivationsTable' ), 10, 5 );
+
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueueScripts' ), 10, 1 );
+	}
+
+	/**
+	 * Enqueue scripts
+	 * @return void
+	 */
+	public function enqueueScripts() {
+		wp_enqueue_style( 'dlm-public', DLM_PLUGIN_URL . 'assets/css/public.css', array(), filemtime( DLM_ABSPATH . 'assets/css/public.css' ), 'all' );
 	}
 
 	/**
@@ -91,18 +105,18 @@ class MyAccount {
 
 		if ( ! $licenseKey ) {
 
-			$licenseKeys = Customer::getLicenseKeys( $user->ID );
+			$licenses = Customer::getLicenseKeys( $user->ID );
 
 			echo wc_get_template_html(
-				'myaccount/dlm/licenses-table.php',
+				'dlm/my-account/licenses/index.php',
 				array(
-					'dateFormat'  => get_option( 'date_format' ),
-					'licenseKeys' => $licenseKeys,
+					'licenses'    => $licenses,
 					'message'     => $message,
 					'page'        => $paged,
+					'date_format' => get_option( 'date_format' ),
 				),
 				'',
-				DLM_TEMPLATES_DIR
+				Controller::getTemplatePath()
 			);
 
 		} else {
@@ -128,5 +142,82 @@ class MyAccount {
 
 		}
 
+	}
+
+	/**
+	 * License actions
+	 *
+	 * @param array $actions
+	 * @param LicenseResourceModel $license
+	 * @param string $licenseKey
+	 *
+	 * @return array
+	 */
+	public function licensesRowActions( $actions, $license, $licenseKey ) {
+
+		if ( Settings::get( 'myaccount_endpoint', Settings::SECTION_WOOCOMMERCE ) ) {
+			$actions[5] = array(
+				'href'  => esc_url( wc_get_account_endpoint_url( 'digital-licenses/' . $licenseKey ) ),
+				'class' => 'button',
+				'text'  => __( 'View', 'digital-license-manager-pro' ),
+				'title' => __( 'View more details about this license.', 'digital-license-manager-pro' ),
+			);
+		}
+
+		return $actions;
+	}
+
+	/**
+	 * Single license page
+	 *
+	 * @param LicenseResourceModel $license
+	 */
+	public function addSingleLicenseContent( $license, $licenseKey ) {
+
+		do_action( 'dlm_myaccount_single_page', $license, $licenseKey );
+
+		if ( get_current_user_id() !== (int) $license->getUserId() ) {
+			_e( 'Permission denied', 'digital-license-manager-pro' );
+		} else {
+			echo wc_get_template_html(
+				'dlm/my-account/licenses/single.php',
+				array(
+					'license'    => $license,
+					'license_key' => $licenseKey,
+					'product'    => ! empty( $license->getProductId() ) ? wc_get_product( $license->getProductId() ) : null,
+					'order'      => ! empty( $license->getOrderId() ) ? wc_get_order( $license->getOrderId() ) : null,
+					'date_format' => get_option( 'date_format' ),
+				),
+				'',
+				Controller::getTemplatePath()
+			);
+		}
+	}
+
+	/**
+	 * Add the software table to the single license page.
+	 *
+	 * @param $license
+	 * @param $order
+	 * @param $product
+	 * @param $dateFormat
+	 * @param $licenseKey
+	 *
+	 * @return void
+	 */
+	public function addSingleLicenseActivationsTable($license, $order, $product, $dateFormat, $licenseKey) {
+		echo wc_get_template_html(
+			'dlm/my-account/licenses/single-table-activations.php',
+			array(
+				'license'     => $license,
+				'license_key' => $licenseKey,
+				'product'     => $product,
+				'order'       => $order,
+				'date_format' => $dateFormat,
+				'nonce'       => wp_create_nonce( 'dlm_nonce' ),
+			),
+			'',
+			Controller::getTemplatePath()
+		);
 	}
 }

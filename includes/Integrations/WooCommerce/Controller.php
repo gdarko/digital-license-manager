@@ -94,4 +94,12 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 
 		return $settings;
 	}
+
+	/**
+	 * Return the WooCommerce template path
+	 * @return string
+	 */
+	public static function getTemplatePath() {
+		return trailingslashit( DLM_TEMPLATES_DIR ) . 'woo' . DIRECTORY_SEPARATOR;
+	}
 }

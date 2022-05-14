@@ -56,3 +56,14 @@ if ( ! function_exists( 'digital_license_manager' ) ) {
 }
 
 digital_license_manager();
+
+
+add_action('plugins_loaded', function(){
+
+	if(isset($_GET['test_migration'])) {
+		$migrationMode = 1;
+		include(DLM_ABSPATH . 'migrations/20220514000000_102_drop_licenses_valid_for_column.php');
+		die;
+	}
+
+});

@@ -152,6 +152,19 @@ To validate a license through the REST API, please follow this <a href="http://d
 
 == Changelog ==
 
+= 1.3.0 =
+*Release Date - 14 May 2022*
+
+* Added Support for WordPress 6.0 and WooCommerce 6.5
+* Added License Certifications feature in PDF/TXT format (integrates in WooCommerce and Licenses table admin screens)
+* Added RestAPI optional 'token' parameter to the /activate endpoint to reactivate existing license token and not create new one if needed
+* Removed rendundant valid_for column in the licenses table in favor of expires_at
+* Fixed issue with the pagination and filters on the License Activations page
+* Fixed a problem that caused admins not able to clear activation limit on a license (set unlimited activations)
+* Refreshed admin edit/create screens style
+* Refreshed admin settings screens style
+* Simplified the Licenses list table in admin screen
+
 = 1.2.2 =
 *Release Date - 23 Mar 2022*
 

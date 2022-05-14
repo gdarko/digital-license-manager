@@ -2,7 +2,7 @@
 /**
  * The template for the overview of all customer licenses, across all orders, inside "My Account"
  *
- * This template can be overridden by copying it to yourtheme/woocommerce/myaccount/dlm/licenses-table.php.
+ * This template can be overridden by copying it to yourtheme/woocommerce/dlm/myaccount/licenses/index.php
  *
  * HOWEVER, on occasion I will need to update template files and you
  * (the developer) will need to copy the new files to your theme to
@@ -14,9 +14,9 @@
  *
  * Default variables
  *
- * @var $licenseKeys array
+ * @var $licenses  LicenseResourceModel[]
  * @var $page        int
- * @var $dateFormat  string
+ * @var $date_format  string
  */
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
@@ -25,17 +25,17 @@ use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 
 defined( 'ABSPATH' ) || exit; ?>
 
-<?php if ( ! empty( $licenseKeys ) ): ?>
+<?php if ( ! empty( $licenses ) ): ?>
 
 
-	<?php foreach ( $licenseKeys as $productId => $licenseKeyData ): ?>
+	<?php foreach ( $licenses as $productId => $licenseData ): ?>
 
 		<?php $product = wc_get_product( $productId ); ?>
 
         <h3 class="product-name">
 			<?php if ( $product ): ?>
                 <a href="<?php echo esc_url( get_post_permalink( $productId ) ); ?>">
-                    <span><?php echo( $licenseKeyData['name'] ); ?></span>
+                    <span><?php echo( $licenseData['name'] ); ?></span>
                 </a>
 			<?php else: ?>
                 <span><?php echo __( 'Product', 'digital-license-manager' ) . ' #' . $productId; ?></span>
@@ -57,7 +57,7 @@ defined( 'ABSPATH' ) || exit; ?>
 
 			<?php
 			/** @var LicenseResourceModel $license */
-			foreach ( $licenseKeyData['licenses'] as $license ):
+			foreach ( $licenseData['licenses'] as $license ):
 
 				$timesActivated = $license->getTimesActivated() ? $license->getTimesActivated() : '0';
 				$activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLimit() : '&infin;';

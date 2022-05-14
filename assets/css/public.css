@@ -1,0 +1,15 @@
+.dlm-list-inline {
+    display: block;
+    list-style: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+.dlm-list-inline li {
+    display: inline-block;
+}
+.dlm-inline-child .dlm-status {
+    display: inline-block !important;
+}
+.dlm-license-status .dlm-status {
+    min-width: 38%;
+}
