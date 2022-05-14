@@ -130,7 +130,7 @@
                 </tbody>
             </table>
             <p class="submit">
-                <input name="submit" id="submit" class="button button-primary" value="<?php esc_html_e('Save' ,'digital-license-manager');?>" type="submit">
+                <input name="submit" id="submit" class="button button-primary" value="<?php esc_html_e('Create' ,'digital-license-manager');?>" type="submit">
             </p>
         </form>
     </div>

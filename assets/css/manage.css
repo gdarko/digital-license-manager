@@ -1,0 +1,8 @@
+.dlm .postbox {
+    padding: 20px;
+    max-width: 1680px;
+}
+.dlm .submit {
+    border-top: 1px solid #d3d3d3 !important;
+    padding-top: 30px !important;
+}

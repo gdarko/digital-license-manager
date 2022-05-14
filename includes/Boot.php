@@ -117,6 +117,7 @@ class Boot extends Singleton {
 		wp_register_script( 'dlm_settings_page', DLM_JS_URL . 'settings.js', array( 'jquery' ), $this->version );
 		wp_register_style( 'dlm_settings_page', DLM_CSS_URL . 'settings.css', array(), $this->version, 'all' );
 		wp_register_script( 'dlm_products_page', DLM_JS_URL . 'products.js', array( 'jquery' ), $this->version );
+		wp_register_style( 'dlm_manage_page', DLM_CSS_URL . 'manage.css', array(), $this->version, 'all' );
 
 		/**
 		 * Global assets
@@ -147,6 +148,7 @@ class Boot extends Singleton {
 		$isActivations = $hook === 'license-manager_page_dlm_activations';
 		$isSettings    = $hook === 'license-manager_page_dlm_settings';
 		$isProducts    = in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'product' === $post_type;
+		$isManage      = $isLicenses || $isGenerators || $isActivations || apply_filters( 'dlm_admin_stylesheet_is_manage', false );
 
 		/**
 		 * Global assets
@@ -166,6 +168,14 @@ class Boot extends Singleton {
 				)
 			)
 		);
+
+		/**
+		 * Enqueue css on the create/edit pages
+		 */
+		if ( $isManage ) {
+			wp_enqueue_style( 'dlm_manage_page' );
+		}
+
 
 		/**
 		 * Enqueue select2
@@ -251,7 +261,7 @@ class Boot extends Singleton {
 		if ( $isSettings ) {
 			wp_enqueue_media();
 			wp_enqueue_script( 'dlm_settings_page' );
-			wp_enqueue_style('dlm_settings_page');
+			wp_enqueue_style( 'dlm_settings_page' );
 		}
 
 		/**

@@ -90,7 +90,7 @@
             </table>
 
             <p class="submit">
-                <input name="submit" id="single__submit" class="button button-primary" value="<?php esc_html_e('Add' ,'digital-license-manager');?>" type="submit">
+                <input name="submit" id="single__submit" class="button button-primary" value="<?php esc_html_e('Create' ,'digital-license-manager');?>" type="submit">
             </p>
         </form>
     </div>
