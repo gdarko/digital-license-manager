@@ -23,10 +23,10 @@ class DateFormatter {
 	 *
 	 * @return null|string
 	 */
-	public static function addDaysInFuture( $validFor, $format = 'Y-m-d H:i:s' ) {
+	public static function addDaysInFuture( $validFor, $addTo = 'now', $format = 'Y-m-d H:i:s' ) {
 		if ( ! empty( $validFor ) ) {
 			try {
-				$date         = new \DateTime( 'now', new \DateTimeZone( 'GMT' ) );
+				$date         = new \DateTime( $addTo, new \DateTimeZone( 'GMT' ) );
 				$dateInterval = new \DateInterval( 'P' . $validFor . 'D' );
 			} catch ( \Exception $e ) {
 				return null;

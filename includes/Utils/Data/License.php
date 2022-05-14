@@ -733,7 +733,7 @@ class License {
 
 			$expiresAt = null;
 			if ( is_numeric( $cleanValidFor ) && $cleanValidFor > 0 ) {
-				$expiresAt = DateFormatter::addDaysInFuture( $cleanValidFor, 'Y-m-d H:i:s' );
+				$expiresAt = DateFormatter::addDaysInFuture( $cleanValidFor, 'now', 'Y-m-d H:i:s' );
 			}
 
 			$encrypted = CryptoHelper::encrypt( $licenseKey );
@@ -813,7 +813,7 @@ class License {
 			if ( $generator->getExpiresIn() && $status == LicenseStatus::SOLD ) {
 				$expiresAt = null;
 				if ( is_numeric( $generator->getExpiresIn() ) && $generator->getExpiresIn() > 0 ) {
-					$expiresAt = DateFormatter::addDaysInFuture( $generator->getExpiresIn(), 'Y-m-d H:i:s' );
+					$expiresAt = DateFormatter::addDaysInFuture( $generator->getExpiresIn(), 'now', 'Y-m-d H:i:s' );
 				}
 			}
 		} catch ( \Exception $e ) {

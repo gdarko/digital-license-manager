@@ -433,7 +433,7 @@ class Generators extends DLM_REST_Controller {
 
 				$expiresAt = null;
 				if ( is_numeric( $generator->getExpiresIn() ) && $generator->getExpiresIn() > 0 ) {
-					$expiresAt = DateFormatter::addDaysInFuture( $generator->getExpiresIn(), 'Y-m-d H:i:s' );
+					$expiresAt = DateFormatter::addDaysInFuture( $generator->getExpiresIn(), 'now', 'Y-m-d H:i:s' );
 				}
 
 				$encrypted = CryptoHelper::encrypt( $licenseKey );
