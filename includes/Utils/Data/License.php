@@ -262,8 +262,10 @@ class License {
 				} catch ( Exception $e ) {
 					return new WP_Error( 'data_error', $e->getMessage(), array( 'code' => 422 ) );
 				}
+				$updateData['expires_at'] = $licenseData['expires_at'];
+			} else {
+				$updateData['expires_at'] = null;
 			}
-			$updateData['expires_at'] = $licenseData['expires_at'];
 		}
 
 		// Valid for
