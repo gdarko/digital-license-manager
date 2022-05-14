@@ -2,21 +2,22 @@
 
 namespace IdeoLogix\DigitalLicenseManager\ListTables;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\ListTable;
-use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
-use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
-use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
-use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use DateTime;
 use Exception;
-use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
-use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
-use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
+use IdeoLogix\DigitalLicenseManager\Abstracts\ListTable;
+use IdeoLogix\DigitalLicenseManager\Controllers\Licenses as LicensesController;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
+use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
 use IdeoLogix\DigitalLicenseManager\Settings;
+use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
+use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
+use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use WC_Product;
 use WP_User;
 
@@ -468,7 +469,7 @@ class Licenses extends ListTable {
 			return sprintf(
 				'<div class="dlm-status-inline %s" title="%s"><small>%d</small> / <strong>%s</strong></div>',
 				'activation done',
-				__('Unlimited Activations', 'digital-license-manager'),
+				__( 'Unlimited Activations', 'digital-license-manager' ),
 				$timesActivated,
 				'&infin;'
 			);
@@ -503,7 +504,7 @@ class Licenses extends ListTable {
 	 * @return string
 	 * @throws Exception
 	 */
-	public function column_created( $item ) {
+	public function column_date( $item ) {
 		$html = '';
 
 		if ( $item['created_at'] ) {
@@ -519,80 +520,9 @@ class Licenses extends ListTable {
 			);
 		}
 
-		if ( $item['created_by'] ) {
-			/** @var WP_User $user */
-			$user = get_user_by( 'id', $item['created_by'] );
-
-			if ( $user instanceof WP_User ) {
-				if ( current_user_can( 'edit_users' ) ) {
-					$html .= sprintf(
-						'<br>%s <a href="%s">%s</a>',
-						__( 'by', 'digital-license-manager' ),
-						get_edit_user_link( $user->ID ),
-						$user->display_name
-					);
-				} else {
-					$html .= sprintf(
-						'<br><span>%s %s</span>',
-						__( 'by', 'digital-license-manager' ),
-						$user->display_name
-					);
-				}
-			}
-		}
-
 		return $html;
 	}
 
-	/**
-	 * Updated column.
-	 *
-	 * @param array $item Associative array of column name and value pairs
-	 *
-	 * @return string
-	 * @throws Exception
-	 */
-	public function column_updated( $item ) {
-
-		$html = '';
-
-		if ( ! empty( $item['updated_at'] ) ) {
-			$offsetSeconds = floatval( $this->gmtOffset ) * 60 * 60;
-			$timestamp     = strtotime( $item['updated_at'] ) + $offsetSeconds;
-			$result        = date( 'Y-m-d H:i:s', $timestamp );
-			$date          = new DateTime( $result );
-
-			$html .= sprintf(
-				'<span><strong>%s, %s</strong></span>',
-				$date->format( $this->dateFormat ),
-				$date->format( $this->timeFormat )
-			);
-		}
-
-		if ( ! empty( $item['updated_by'] ) ) {
-			/** @var WP_User $user */
-			$user = get_user_by( 'id', $item['updated_by'] );
-
-			if ( $user instanceof WP_User ) {
-				if ( current_user_can( 'edit_users' ) ) {
-					$html .= sprintf(
-						'<br>%s <a href="%s">%s</a>',
-						__( 'by', 'digital-license-manager' ),
-						get_edit_user_link( $user->ID ),
-						$user->display_name
-					);
-				} else {
-					$html .= sprintf(
-						'<br><span>%s %s</span>',
-						__( 'by', 'digital-license-manager' ),
-						$user->display_name
-					);
-				}
-			}
-		}
-
-		return $html;
-	}
 
 	/**
 	 * Expires at column.
@@ -609,16 +539,7 @@ class Licenses extends ListTable {
 			$never = __( 'In stock, not sold yet', 'digital-license-manager' );
 		}
 
-		$markup = '<p class="dlm-text-center dlm-clear-spacing">' . DateFormatter::toHtml( $item['expires_at'], true, false, $never ) . '</p>';
-
-		if ( $item['valid_for'] ) {
-			$markup .= sprintf(
-				'<p class="dlm-text-center dlm-clear-spacing"><strong>%d</strong> %s - <small>%s</small></p>',
-				(int) $item['valid_for'],
-				__( 'day(s)', 'digital-license-manager' ),
-				__( 'After purchase', 'digital-license-manager' )
-			);
-		}
+		$markup = '<p class="dlm-clear-spacing">' . DateFormatter::toHtml( $item['expires_at'], true, false, $never ) . '</p>';
 
 		return $markup;
 	}
@@ -661,8 +582,7 @@ class Licenses extends ListTable {
 			'user_id'    => array( 'user_id', true ),
 			'expires_at' => array( 'expires_at', true ),
 			'status'     => array( 'status', true ),
-			'created'    => array( 'created_at', true ),
-			'updated'    => array( 'updated_at', true ),
+			'date'    => array( 'created_at', true ),
 			'activation' => array( 'activations_limit', true )
 		);
 
@@ -851,8 +771,7 @@ class Licenses extends ListTable {
 			'activation'  => __( 'Activations', 'digital-license-manager' ),
 			'expires_at'  => __( 'Expires', 'digital-license-manager' ),
 			'status'      => __( 'Status', 'digital-license-manager' ),
-			'created'     => __( 'Created', 'digital-license-manager' ),
-			'updated'     => __( 'Updated', 'digital-license-manager' )
+			'date'     => __( 'Date', 'digital-license-manager' ),
 		);
 
 		return apply_filters( 'dlm_table_licenses_column_name', $columns );

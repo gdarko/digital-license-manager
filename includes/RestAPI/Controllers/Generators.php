@@ -445,7 +445,6 @@ class Generators extends DLM_REST_Controller {
 				$data = array(
 					'license_key'       => $encrypted,
 					'hash'              => $hashed,
-					'valid_for'         => $generator->getExpiresIn(),
 					'expires_at'        => $expiresAt,
 					'source'            => LicenseSource::API,
 					'status'            => $status,

@@ -6,11 +6,9 @@ jQuery(function ($) {
     const addLicenseProduct = $('select#single__product');
     const addLicenseOrder = $('select#single__order');
     const addLicenseUser = $('select#single__user');
-    const addValidFor = $('input#single__valid_for');
     const addExpiresAt = $('input#single__expires_at');
     const editLicenseProduct = $('select#edit__product');
     const editLicenseOrder = $('select#edit__order');
-    const editValidFor = $('input#edit__valid_for');
     const editExpiresAt = $('input#edit__expires_at');
     const bulkAddSource = $('input[type="radio"].bulk__type');
     // Licenses table
@@ -150,8 +148,6 @@ jQuery(function ($) {
         editExpiresAt.datepicker({
             dateFormat: 'yy-mm-dd'
         });
-
-        onChangeValidity(editExpiresAt, editValidFor);
     }
 
     if (bulkAddSource.length > 0) {
@@ -168,50 +164,6 @@ jQuery(function ($) {
             // Display the selected row
             $('tr#bulk__source_' + value + '.bulk__source_row').removeClass('hidden');
         })
-    }
-
-    addExpiresAt.on('input', function () {
-        onChangeValidity(addExpiresAt, addValidFor);
-    });
-    addExpiresAt.on('change', function () {
-        onChangeValidity(addExpiresAt, addValidFor);
-    });
-    addValidFor.on('input', function () {
-        onChangeValidity(addExpiresAt, addValidFor);
-    });
-    addValidFor.on('change', function () {
-        onChangeValidity(addExpiresAt, addValidFor);
-    });
-    editExpiresAt.on('input', function () {
-        onChangeValidity(editExpiresAt, editValidFor);
-    });
-    editExpiresAt.on('change', function () {
-        onChangeValidity(editExpiresAt, editValidFor);
-    });
-    editValidFor.on('input', function () {
-        onChangeValidity(editExpiresAt, editValidFor);
-    });
-    editValidFor.on('change', function () {
-        onChangeValidity(editExpiresAt, editValidFor);
-    });
-
-    function onChangeValidity(expiresAt, validFor) {
-        if (expiresAt.val() && !validFor.val()) {
-            expiresAt.prop('disabled', false);
-            validFor.prop('disabled', true);
-            return;
-        }
-
-        if (!expiresAt.val() && validFor.val()) {
-            expiresAt.prop('disabled', true);
-            validFor.prop('disabled', false);
-            return;
-        }
-
-        if (!expiresAt.val() && !validFor.val()) {
-            expiresAt.prop('disabled', false);
-            validFor.prop('disabled', false);
-        }
     }
 
     if (dropdownOrders) {

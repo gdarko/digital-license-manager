@@ -70,14 +70,10 @@ class DateFormatter {
 		}
 
 		static $dateFormat = null;
-		static $timeFormat = null;
 		static $gmtOffset = null;
 
 		if ( ! $dateFormat ) {
 			$dateFormat = get_option( 'date_format' );
-		}
-		if ( ! $timeFormat ) {
-			$timeFormat = get_option( 'time_format' );
 		}
 
 		if ( ! $gmtOffset ) {
@@ -105,10 +101,9 @@ class DateFormatter {
 					$timestampNow = strtotime( 'now' ) + $offsetSeconds;
 					if ( $timestampNow >= $timestampInput ) {
 						return sprintf(
-							'<span class="dlm-date dlm-date-expired" title="%s">%s, %s</span>%s',
+							'<span class="dlm-date dlm-date-expired" title="%s">%s</span>%s',
 							__( 'Expired' ),
 							$dateInput->format( $dateFormat ),
-							$dateInput->format( $timeFormat ),
 							$br ? '<br/>' : ''
 						);
 					} else {
@@ -117,11 +112,10 @@ class DateFormatter {
 						$statusClass = $diffSeconds > MONTH_IN_SECONDS ? 'dlm-date-valid' : 'dlm-date-expires-soon';
 
 						return sprintf(
-							'<span class="dlm-date %s" title="%s">%s, %s</span>%s',
+							'<span class="dlm-date %s" title="%s">%s</span>%s',
 							$statusClass,
 							__( 'Active' ),
 							$dateInput->format( $dateFormat ),
-							$dateInput->format( $timeFormat ),
 							$br ? '<br/>' : ''
 						);
 					}
@@ -129,9 +123,8 @@ class DateFormatter {
 			}
 
 			return sprintf(
-				'<span class="dlm-date dlm-status">%s, %s</span>',
+				'<span class="dlm-date dlm-status">%s</span>',
 				$dateInput->format( $dateFormat ),
-				$dateInput->format( $timeFormat )
 			);
 		} catch ( \Exception $e ) {
 			return '';

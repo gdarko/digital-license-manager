@@ -2,21 +2,19 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
-use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
 use Exception;
-use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
-use IdeoLogix\DigitalLicenseManager\Utils\ArrayFormatter as ArrayUtil;
-use IdeoLogix\DigitalLicenseManager\Utils\Data\License;
-use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus as LicenseStatusEnum;
+use FPDF;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
-
+use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus as LicenseStatusEnum;
+use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
+use IdeoLogix\DigitalLicenseManager\Utils\ArrayFormatter as ArrayUtil;
+use IdeoLogix\DigitalLicenseManager\Utils\Data\License;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
 use IdeoLogix\DigitalLicenseManager\Utils\StringFormatter;
-
-use FPDF;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -43,6 +41,7 @@ class Licenses {
 		// Export related
 		add_action( 'dlm_export_license_keys_pdf', array( $this, 'exportLicensesPDF' ), 10, 1 );
 		add_action( 'dlm_export_license_keys_csv', array( $this, 'exportLicensesCSV' ), 10, 1 );
+		add_action( 'wp_ajax_dlm_license_certificate_export', array( $this, 'exportLicenseCertificate' ), 10 );
 	}
 
 	/**
@@ -180,7 +179,6 @@ class Licenses {
 				'product_id',
 				'user_id',
 				'expires_at',
-				'valid_for',
 				'source',
 				'activations_limit',
 			) );
@@ -224,7 +222,6 @@ class Licenses {
 				'product_id',
 				'user_id',
 				'expires_at',
-				'valid_for',
 				'source',
 				'activations_limit',
 			) );
@@ -578,6 +575,7 @@ class Licenses {
 		$filename    = date( 'YmdHis' ) . '_license_keys_export.csv';
 
 		// Disable caching
+		status_header( 200 );
 		$now = gmdate( "D, d M Y H:i:s" );
 		header( "Cache-Control: max-age=0, no-cache, must-revalidate, proxy-revalidate" );
 		header( "Last-Modified: {$now} GMT" );
@@ -677,10 +675,6 @@ class Licenses {
 				'name' => __( 'Expires at', 'digital-license-manager' )
 			),
 			array(
-				'slug' => 'valid_for',
-				'name' => __( 'Valid for', 'digital-license-manager' )
-			),
-			array(
 				'slug' => 'status',
 				'name' => __( 'Status', 'digital-license-manager' )
 			),
@@ -705,5 +699,43 @@ class Licenses {
 				'name' => __( 'Updated by', 'digital-license-manager' )
 			)
 		);
+	}
+
+	/**
+	 * Handle the license export
+	 *
+	 * @param $license
+	 *
+	 * @return void
+	 */
+	public function exportLicenseCertificate() {
+		check_admin_referer( 'dlm_export_licenses' );
+		echo 'hery.';
+	}
+
+	/**
+	 * Returns the license certificate export url
+	 *
+	 * @param $license_id
+	 *
+	 * @return string
+	 */
+	public static function getLicenseCertificateExportUrl( $license_id ) {
+		return add_query_arg(
+			array(
+				'_wpnonce' => wp_create_nonce( self::getLicenseCertificateExportNonceKey() ),
+				'action'   => 'dlm_license_certificate_export',
+				'license'  => $license_id,
+			),
+			admin_url( 'admin-ajax.php' )
+		);
+	}
+
+	/**
+	 * Returns the license certificate export nonce key
+	 * @return string
+	 */
+	public static function getLicenseCertificateExportNonceKey() {
+		return 'dlm_license_export';
 	}
 }

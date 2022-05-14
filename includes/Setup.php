@@ -168,7 +168,6 @@ class Setup {
                 `license_key` LONGTEXT NOT NULL COMMENT 'Encrypted License Key',
                 `hash` LONGTEXT NOT NULL COMMENT 'Hashed License Key ID	',
                 `expires_at` DATETIME NULL DEFAULT NULL COMMENT 'Expiration Date',
-                `valid_for` INT(32) UNSIGNED NULL DEFAULT NULL,
                 `source` VARCHAR(255) NOT NULL,
                 `status` TINYINT(1) UNSIGNED NOT NULL,
                 `activations_limit` INT(10) UNSIGNED NULL DEFAULT NULL,

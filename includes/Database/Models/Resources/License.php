@@ -58,11 +58,6 @@ class License extends AbstractResourceModel implements ModelInterface {
 	/**
 	 * @var int
 	 */
-	protected $valid_for;
-
-	/**
-	 * @var int
-	 */
 	protected $source;
 
 	/**
@@ -123,7 +118,6 @@ class License extends AbstractResourceModel implements ModelInterface {
 		$this->license_key       = $license->license_key;
 		$this->hash              = $license->hash;
 		$this->expires_at        = $license->expires_at;
-		$this->valid_for         = $license->valid_for === null ? null : (int) $license->valid_for;
 		$this->source            = $license->source === null ? null : (int) $license->source;
 		$this->status            = $license->status === null ? null : (int) $license->status;
 		$this->times_activated   = $this->getTimesActivated();
@@ -239,20 +233,6 @@ class License extends AbstractResourceModel implements ModelInterface {
 	 */
 	public function setExpiresAt( $expires_at ) {
 		$this->expires_at = $expires_at;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getValidFor() {
-		return $this->valid_for;
-	}
-
-	/**
-	 * @param int $valid_for
-	 */
-	public function setValidFor( $valid_for ) {
-		$this->valid_for = $valid_for;
 	}
 
 	/**

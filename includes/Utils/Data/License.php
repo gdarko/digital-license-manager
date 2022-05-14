@@ -93,7 +93,6 @@ class License {
 		$productId        = null;
 		$userId           = null;
 		$expiresAt        = null;
-		$validFor         = null;
 		$activationsLimit = null;
 		$source           = LicenseSource::IMPORT;
 
@@ -115,10 +114,6 @@ class License {
 
 		if ( array_key_exists( 'expires_at', $licenseData ) ) {
 			$expiresAt = $licenseData['expires_at'];
-		}
-
-		if ( array_key_exists( 'valid_for', $licenseData ) ) {
-			$validFor = is_numeric( $licenseData['valid_for'] ) ? absint( $licenseData['valid_for'] ) : null;
 		}
 
 		if ( array_key_exists( 'source', $licenseData ) ) {
@@ -148,11 +143,7 @@ class License {
 				return new WP_Error( 'data_error', $e->getMessage(), array( 'code' => 422 ) );
 			}
 		} else {
-			if ( is_numeric( $validFor ) && $validFor > 0 ) {
-				$expiresAt = DateFormatter::addDaysInFuture( $validFor, 'Y-m-d H:i:s' );
-			} else {
-				$expiresAt = null;
-			}
+			$expiresAt = null;
 		}
 
 		$encryptedLicenseKey = CryptoHelper::encrypt( $licenseKey );
@@ -168,7 +159,6 @@ class License {
 			'license_key'       => $encryptedLicenseKey,
 			'hash'              => $hashedLicenseKey,
 			'expires_at'        => $expiresAt,
-			'valid_for'         => $validFor,
 			'source'            => $source,
 			'status'            => $status,
 			'activations_limit' => $activationsLimit
@@ -267,19 +257,6 @@ class License {
 				$updateData['expires_at'] = $licenseData['expires_at'];
 			} else {
 				$updateData['expires_at'] = null;
-			}
-		}
-
-		// Valid for
-		if ( array_key_exists( 'valid_for', $licenseData ) ) {
-			if ( empty( $licenseData['valid_for'] ) ) {
-				$updateData['valid_for'] = null;
-			} else {
-				$updateData['valid_for'] = (int) $licenseData['valid_for'];
-				$validFor                = isset( $updateData['valid_for'] ) ? $updateData['valid_for'] : '';
-				if ( is_numeric( $validFor ) && $validFor > 0 ) {
-					$updateData['expires_at'] = DateFormatter::addDaysInFuture( (int) $validFor, 'Y-m-d H:i:s' );
-				}
 			}
 		}
 
@@ -772,7 +749,6 @@ class License {
 					'user_id'           => $cleanUserId,
 					'license_key'       => $encrypted,
 					'hash'              => $hashed,
-					'valid_for'         => $cleanValidFor,
 					'expires_at'        => $expiresAt,
 					'source'            => LicenseSource::IMPORT,
 					'status'            => $cleanStatus,
@@ -869,7 +845,6 @@ class License {
 					'license_key'       => $encryptedLicenseKey,
 					'hash'              => $hashedLicenseKey,
 					'expires_at'        => $expiresAt,
-					'valid_for'         => $generator->getExpiresIn(),
 					'source'            => LicenseSource::GENERATOR,
 					'status'            => $cleanStatus,
 					'activations_limit' => $generator->getActivationsLimit() ?: null

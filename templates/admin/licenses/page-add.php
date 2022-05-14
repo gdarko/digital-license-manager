@@ -20,15 +20,6 @@
                     </td>
                 </tr>
 
-                <!-- VALID FOR -->
-                <tr scope="row">
-                    <th scope="row"><label for="single__valid_for"><?php esc_html_e('Valid for (days)', 'digital-license-manager');?></label></th>
-                    <td>
-                        <input name="valid_for" id="single__valid_for" class="regular-text" type="text">
-                        <p class="description"><?php esc_html_e('Number of days for which the license key is valid after purchase. Leave blank if the license key does not expire. Cannot be used at the same time as the "Expires at" field.', 'digital-license-manager');?></p>
-                    </td>
-                </tr>
-
                 <!-- EXPIRES AT -->
                 <tr scope="row">
                     <th scope="row"><label for="single__expires_at"><?php esc_html_e('Expires at', 'digital-license-manager');?></label></th>

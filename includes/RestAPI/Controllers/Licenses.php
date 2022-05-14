@@ -282,7 +282,6 @@ class Licenses extends RestController {
 		$productId        = isset( $body['product_id'] ) ? absint( $body['product_id'] ) : null;
 		$userId           = isset( $body['user_id'] ) ? absint( $body['user_id'] ) : null;
 		$licenseKey       = isset( $body['license_key'] ) ? sanitize_text_field( $body['license_key'] ) : null;
-		$validFor         = isset( $body['valid_for'] ) ? absint( $body['valid_for'] ) : null;
 		$expiresAt        = isset( $body['expires_at'] ) ? sanitize_text_field( $body['expires_at'] ) : null;
 		$activationsLimit = isset( $body['activations_limit'] ) ? absint( $body['activations_limit'] ) : null;
 		$status           = isset( $body['status'] ) ? sanitize_text_field( $body['status'] ) : null;
@@ -291,7 +290,6 @@ class Licenses extends RestController {
 			'order_id'          => $orderId,
 			'product_id'        => $productId,
 			'user_id'           => $userId,
-			'valid_for'         => $validFor,
 			'expires_at'        => $expiresAt,
 			'source'            => LicenseSource::API,
 			'status'            => $status,
