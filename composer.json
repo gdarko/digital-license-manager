@@ -7,10 +7,10 @@
   },
   "require": {
     "defuse/php-encryption": "^2.2",
-    "setasign/fpdf": "^1.8",
     "ext-openssl": "*",
     "ext-json": "*",
-    "ignitekit/wp-notices": "^1.0"
+    "ignitekit/wp-notices": "^1.0",
+    "spipu/html2pdf": "^5.2"
   },
   "config": {
     "optimize-autoloader": true

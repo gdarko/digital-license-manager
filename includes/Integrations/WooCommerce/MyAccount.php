@@ -6,6 +6,9 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as License
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\Customer;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
+use Spipu\Html2Pdf\Exception\ExceptionFormatter;
+use Spipu\Html2Pdf\Exception\Html2PdfException;
+use Spipu\Html2Pdf\Html2Pdf;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -28,9 +31,6 @@ class MyAccount {
 		add_filter( 'dlm_myaccount_licenses_keys_row_actions', array( $this, 'licensesRowActions' ), 10, 3 );
 		add_action( 'dlm_myaccount_licenses_single_page_content', array( $this, 'addSingleLicenseContent' ), 10, 1 );
 		add_action( 'dlm_myaccount_licenses_single_page_end', array( $this, 'addSingleLicenseActivationsTable' ), 10, 5 );
-		add_action( 'dlm_myaccount_handle_action', array( $this, 'handleAdditionalAccountActions' ) );
-		add_filter( 'dlm_myaccount_whitelisted_actions', array( $this, 'whitelistAdditionalAccountActions' ) );
-
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueueScripts' ), 10, 1 );
 	}
 
@@ -125,7 +125,7 @@ class MyAccount {
 		}
 
 		$licenseID = null;
-		$paged      = 1;
+		$paged     = 1;
 
 		// Parse query parameters.
 		if ( $wp_query->query['digital-licenses'] ) {
@@ -251,7 +251,7 @@ class MyAccount {
 		}
 
 		echo wc_get_template_html(
-			'dlm/my-account/licenses/single-table-activations.php',
+			'dlm/my-account/licenses/partials/single-table-activations.php',
 			array(
 				'license'     => $license,
 				'license_key' => $licenseKey,
@@ -264,52 +264,5 @@ class MyAccount {
 			Controller::getTemplatePath()
 		);
 	}
-
-	/**
-	 * Whitelist additional account actions
-	 * @return array
-	 */
-	public function whitelistAdditionalAccountActions( $actions ) {
-		return array_merge( $actions, array(
-			'license_certificate_download',
-		) );
-	}
-
-	/**
-	 * Handle additional account actions (eg. license certificate download)
-	 * @return void
-	 */
-	public function handleAdditionalAccountActions( $action ) {
-
-		if ( 'license_certificate_download' !== $action ) {
-			return;
-		}
-
-		$errors     = array();
-		$order      = null;
-		$licenseKey = isset( $_POST['license'] ) ? sanitize_text_field( $_POST['license'] ) : null;
-		$license    = LicenseUtil::find( $licenseKey );
-
-		if ( is_wp_error( $license ) ) {
-			array_push( $errors, $license->get_error_message() );
-		} else {
-			$order = wc_get_order( $license->getOrderId() );
-			if ( empty( $order ) ) {
-				array_push( $errors, __( 'Permission denied.', 'digital-license-manager' ) );
-			}
-		}
-
-		/**
-		 *  Validate customer
-		 */
-		if ( ! $order || get_current_user_id() !== $order->get_customer_id() ) {
-			array_push( $errors, __( 'Permission denied.', 'digital-license-manager' ) );
-		}
-
-
-
-
-	}
-
 
 }

@@ -5,8 +5,6 @@ namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 use IdeoLogix\DigitalLicenseManager\Abstracts\IntegrationController as AbstractIntegrationController;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\IntegrationController as IntegrationControllerInterface;
 use IdeoLogix\DigitalLicenseManager\Settings as SettingsData;
-use WC_Order;
-use WC_Product;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -35,6 +33,10 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 		new Emails();
 		new Products();
 		new Settings();
+
+		if ( Certificates::isLicenseCertificationEnabled() ) {
+			new Certificates();
+		}
 
 		if ( SettingsData::get( 'myaccount_endpoint', SettingsData::SECTION_WOOCOMMERCE ) ) {
 			new MyAccount();

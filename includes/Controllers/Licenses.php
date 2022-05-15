@@ -3,7 +3,7 @@
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
 use Exception;
-use FPDF;
+use TCPDF;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
@@ -455,12 +455,10 @@ class Licenses {
 
 		ob_clean();
 
-		$pdf = new FPDF( 'P', 'mm', 'A4' );
+		$pdf = new TCPDF( 'P', 'mm', 'A4' );
 		$pdf->AddPage();
-		$pdf->AddFont( 'Helvetica-Bold', '', 'helveticab.php' );
-		$pdf->AddFont( 'Helvetica', '', 'helvetica.php' );
+		$pdf->AddFont( 'DejaVuSans', '', 'dejavusans.php' );
 		$pdf->AddFont( 'Courier', '', 'courier.php' );
-		$pdf->SetFont( 'Helvetica-Bold', '', 10 );
 
 		// Header
 		$pdf->Text( 10, 10, get_bloginfo( 'name' ) );
@@ -494,7 +492,7 @@ class Licenses {
 
 		foreach ( $licenseKeys as $row ) {
 			foreach ( $row as $columnName => $col ) {
-				$pdf->SetFont( 'Helvetica', '', 8 );
+				$pdf->SetFont( 'DejaVuSans', '', 8 );
 				$width = 40;
 
 				if ( $columnName == 'id' ) {
