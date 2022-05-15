@@ -47,6 +47,12 @@
       "css": "id-card-o",
       "code": 62147,
       "src": "fontawesome"
+    },
+    {
+      "uid": "k7sao112253txym1egnte7822irbyphe",
+      "css": "eye",
+      "code": 59395,
+      "src": "typicons"
     }
   ]
 }
