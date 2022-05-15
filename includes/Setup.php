@@ -64,7 +64,6 @@ class Setup {
 		self::setDefaultFilesAndFolders();
 		self::setDefaultSettings();
 		self::createRoles();
-		flush_rewrite_rules();
 	}
 
 	/**
