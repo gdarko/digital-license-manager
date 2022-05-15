@@ -196,8 +196,8 @@ class MyAccount {
 			$actions[5] = array(
 				'href'  => esc_url( wc_get_account_endpoint_url( 'digital-licenses/' . $licenseKey ) ),
 				'class' => 'button',
-				'text'  => __( 'View', 'digital-license-manager-pro' ),
-				'title' => __( 'View more details about this license.', 'digital-license-manager-pro' ),
+				'text'  => __( 'View', 'digital-license-manager' ),
+				'title' => __( 'View more details about this license.', 'digital-license-manager' ),
 			);
 		}
 
@@ -214,7 +214,7 @@ class MyAccount {
 		do_action( 'dlm_myaccount_single_page', $license, $licenseKey );
 
 		if ( get_current_user_id() !== (int) $license->getUserId() ) {
-			_e( 'Permission denied', 'digital-license-manager-pro' );
+			_e( 'Permission denied', 'digital-license-manager' );
 		} else {
 			echo wc_get_template_html(
 				'dlm/my-account/licenses/single.php',
@@ -295,7 +295,7 @@ class MyAccount {
 		} else {
 			$order = wc_get_order( $license->getOrderId() );
 			if ( empty( $order ) ) {
-				array_push( $errors, __( 'Permission denied.', 'digital-license-manager-pro' ) );
+				array_push( $errors, __( 'Permission denied.', 'digital-license-manager' ) );
 			}
 		}
 
@@ -303,7 +303,7 @@ class MyAccount {
 		 *  Validate customer
 		 */
 		if ( ! $order || get_current_user_id() !== $order->get_customer_id() ) {
-			array_push( $errors, __( 'Permission denied.', 'digital-license-manager-pro' ) );
+			array_push( $errors, __( 'Permission denied.', 'digital-license-manager' ) );
 		}
 
 

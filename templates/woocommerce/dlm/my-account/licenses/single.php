@@ -42,7 +42,7 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
 <table class="woocommerce-table woocommerce-table--order-details shop_table order_details">
     <tbody>
     <tr>
-        <th scope="row"><?php _e( 'Product', 'digital-license-manager-pro' ); ?></th>
+        <th scope="row"><?php _e( 'Product', 'digital-license-manager' ); ?></th>
         <td>
 			<?php if ( $product ): ?>
                 <a target="_blank" href="<?php echo esc_url( get_post_permalink( $product->get_id() ) ); ?>">
@@ -54,13 +54,13 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
         </td>
     </tr>
     <tr class="woocommerce-table__line-item license_keys">
-        <th scope="row"><?php _e( 'License key', 'digital-license-manager-pro' ); ?></th>
+        <th scope="row"><?php _e( 'License key', 'digital-license-manager' ); ?></th>
         <td>
 			<?php echo $license_key; ?>
         </td>
     </tr>
     <tr class="woocommerce-table__line-item activations_limit">
-        <th scope="row"><?php _e( 'Activations', 'digital-license-manager-pro' ); ?></th>
+        <th scope="row"><?php _e( 'Activations', 'digital-license-manager' ); ?></th>
         <td>
             <p>
                 <span><?php esc_html_e( $timesActivated ); ?></span>
@@ -70,7 +70,7 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
         </td>
     </tr>
     <tr class="woocommerce-table__line-item license_status">
-        <th scope="row"><?php _e( 'Status', 'digital-license-manager-pro' ); ?></th>
+        <th scope="row"><?php _e( 'Status', 'digital-license-manager' ); ?></th>
         <td class="dlm-inline-child dlm-license-status">
 			<?php
 			echo LicenseStatus::toHtml( $license, ['style' => 'inline'] );
@@ -78,7 +78,7 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
         </td>
     </tr>
     <tr class="woocommerce-table__line-item valid_until">
-        <th scope="row"><?php _e( 'Certificate', 'digital-license-manager-pro' ); ?></th>
+        <th scope="row"><?php _e( 'Certificate', 'digital-license-manager' ); ?></th>
         <td class="dlm-inline-child dlm-license-certificate">
             <form id="dlm-license-certificate-download" action="<?php echo home_url(); ?>" method="POST" class="dlm-list-inline-mb-0">
                 <input type="hidden" name="dlm_action" value="license_certificate_download">
@@ -87,7 +87,7 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
                 <ul class="dlm-list-inline dlm-list-inline-mb-0">
                     <li>
                         <button type="submit" class="button dlm-button" name="license_certificate_download" value="1">
-		                    <span class="dlm-icon-file-pdf"></span> <?php _e( 'Download', 'digital-license-manager-pro' ); ?>
+		                    <span class="dlm-icon-file-pdf"></span> <?php _e( 'Download', 'digital-license-manager' ); ?>
                         </button>
                     </li>
                 </ul>
@@ -95,7 +95,7 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
         </td>
     </tr>
     <tr class="woocommerce-table__line-item valid_until">
-        <th scope="row"><?php _e( 'Expires', 'digital-license-manager-pro' ); ?></th>
+        <th scope="row"><?php _e( 'Expires', 'digital-license-manager' ); ?></th>
         <td class="dlm-inline-child dlm-license-status">
 			<?php
 			echo DateFormatter::toHtml( $license->getExpiresAt(), ['expires' => true] );

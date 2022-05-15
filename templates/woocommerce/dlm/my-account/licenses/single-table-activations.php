@@ -37,15 +37,15 @@ $actionsEnabled = apply_filters( 'dlm_myaccount_license_activation_row_actions_e
 ?>
 
 
-<h3 class="product-name"><?php _e( 'Activations', 'digital-license-manager-pro' ); ?></h3>
+<h3 class="product-name"><?php _e( 'Activations', 'digital-license-manager' ); ?></h3>
 
 <table class="shop_table shop_table_responsive my_account_orders">
     <thead>
     <tr>
-        <th class="table-col table-col-label"><?php _e( 'Label', 'digital-license-manager-pro' ); ?></th>
-        <th class="table-col table-col-status"><?php _e( 'Status', 'digital-license-manager-pro' ); ?></th>
-        <th class="table-col table-col-source"><?php _e( 'Source', 'digital-license-manager-pro' ); ?></th>
-        <th class="table-col table-col-date"><?php _e( 'Date', 'digital-license-manager-pro' ); ?></th>
+        <th class="table-col table-col-label"><?php _e( 'Label', 'digital-license-manager' ); ?></th>
+        <th class="table-col table-col-status"><?php _e( 'Status', 'digital-license-manager' ); ?></th>
+        <th class="table-col table-col-source"><?php _e( 'Source', 'digital-license-manager' ); ?></th>
+        <th class="table-col table-col-date"><?php _e( 'Date', 'digital-license-manager' ); ?></th>
 		<?php if ( $actionsEnabled ): ?>
             <th class="table-col table-col-actions"></th>
 		<?php endif; ?>
@@ -114,7 +114,7 @@ $actionsEnabled = apply_filters( 'dlm_myaccount_license_activation_row_actions_e
 
         <tr>
             <td colspan="4">
-                <p><?php _e( 'No activations found.', 'digital-license-manager-pro' ); ?></p>
+                <p><?php _e( 'No activations found.', 'digital-license-manager' ); ?></p>
             </td>
         </tr>
 

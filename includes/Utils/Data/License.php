@@ -951,7 +951,7 @@ class License {
 	private static function validateActivationLimit( $license, $licenseKey = null ) {
 
 		if ( empty( $license ) || ! ( $license instanceof LicenseResourceModel ) ) {
-			return new WP_Error( 'license_not_found', __( 'Unknown license', 'digital-license-manager-pro' ), array( 'status' => 404 ) );
+			return new WP_Error( 'license_not_found', __( 'Unknown license', 'digital-license-manager' ), array( 'status' => 404 ) );
 		}
 
 		$timesActivated   = $license->getTimesActivated();
