@@ -56,6 +56,24 @@ class License {
 	}
 
 	/**
+	 * Retrieves a single license from the database by ID
+	 *
+	 * @param $licenseId
+	 *
+	 * @return LicenseResourceModel|WP_Error
+	 */
+	public static function findById( $licenseId ) {
+
+		/** @var LicenseResourceModel $license */
+		$license = LicenseResourceRepository::instance()->find( $licenseId );
+		if ( ! $license ) {
+			return new WP_Error( 'data_error', sprintf( __( "The license key '%s' could not be found", 'digital-license-manager' ), $licenseKey ), array( 'code' => 404 ) );
+		}
+
+		return $license;
+	}
+
+	/**
 	 * Retrieves multiple license keys by a query array.
 	 *
 	 * @param array $query Key/value pairs with the license table column names as keys

@@ -26,7 +26,7 @@ class MyAccount {
 		add_action( 'woocommerce_account_digital-licenses_endpoint', array( $this, 'digitalLicenses' ) );
 		add_filter( 'dlm_myaccount_licenses_row_actions', array( $this, 'licensesRowActions' ), 10, 3 );
 		add_filter( 'dlm_myaccount_licenses_keys_row_actions', array( $this, 'licensesRowActions' ), 10, 3 );
-		add_action( 'dlm_myaccount_licenses_single_page_content', array( $this, 'addSingleLicenseContent' ), 10, 2 );
+		add_action( 'dlm_myaccount_licenses_single_page_content', array( $this, 'addSingleLicenseContent' ), 10, 1 );
 		add_action( 'dlm_myaccount_licenses_single_page_end', array( $this, 'addSingleLicenseActivationsTable' ), 10, 5 );
 		add_action( 'dlm_myaccount_handle_action', array( $this, 'handleAdditionalAccountActions' ) );
 		add_filter( 'dlm_myaccount_whitelisted_actions', array( $this, 'whitelistAdditionalAccountActions' ) );
@@ -124,7 +124,7 @@ class MyAccount {
 			return;
 		}
 
-		$licenseKey = null;
+		$licenseID = null;
 		$paged      = 1;
 
 		// Parse query parameters.
@@ -135,12 +135,12 @@ class MyAccount {
 				if ( count( $parts ) === 2 && $parts[0] === 'page' ) {
 					$paged = (int) $parts[1];
 				} else {
-					$licenseKey = sanitize_text_field( $parts[0] );
+					$licenseID = sanitize_text_field( $parts[0] );
 				}
 			}
 		}
 
-		if ( ! $licenseKey ) {
+		if ( ! $licenseID ) {
 
 			$licenses = Customer::getLicenseKeys( $user->ID );
 
@@ -158,7 +158,7 @@ class MyAccount {
 
 		} else {
 
-			$license = LicenseUtil::find( $licenseKey );
+			$license = LicenseUtil::findById( $licenseID );
 
 			if ( is_wp_error( $license ) || $license->getUserId() != $user->ID ) {
 				echo sprintf( '<h3>%s</h3>', __( 'Not found', 'digital-license-manager' ) );
@@ -175,7 +175,7 @@ class MyAccount {
 				return;
 			}
 
-			do_action( 'dlm_myaccount_licenses_single_page_content', $license, $licenseKey );
+			do_action( 'dlm_myaccount_licenses_single_page_content', $license );
 
 		}
 
@@ -194,7 +194,7 @@ class MyAccount {
 
 		if ( Settings::get( 'myaccount_endpoint', Settings::SECTION_WOOCOMMERCE ) ) {
 			$actions[5] = array(
-				'href'  => esc_url( wc_get_account_endpoint_url( 'digital-licenses/' . $licenseKey ) ),
+				'href'  => esc_url( wc_get_account_endpoint_url( 'digital-licenses/' . $license->getId() ) ),
 				'class' => 'button',
 				'text'  => __( 'View', 'digital-license-manager' ),
 				'title' => __( 'View more details about this license.', 'digital-license-manager' ),
@@ -209,9 +209,9 @@ class MyAccount {
 	 *
 	 * @param LicenseResourceModel $license
 	 */
-	public function addSingleLicenseContent( $license, $licenseKey ) {
+	public function addSingleLicenseContent( $license ) {
 
-		do_action( 'dlm_myaccount_single_page', $license, $licenseKey );
+		do_action( 'dlm_myaccount_single_page', $license, $license );
 
 		if ( get_current_user_id() !== (int) $license->getUserId() ) {
 			_e( 'Permission denied', 'digital-license-manager' );
@@ -220,7 +220,7 @@ class MyAccount {
 				'dlm/my-account/licenses/single.php',
 				array(
 					'license'     => $license,
-					'license_key' => $licenseKey,
+					'license_key' => $license->getDecryptedLicenseKey(),
 					'product'     => ! empty( $license->getProductId() ) ? wc_get_product( $license->getProductId() ) : null,
 					'order'       => ! empty( $license->getOrderId() ) ? wc_get_order( $license->getOrderId() ) : null,
 					'date_format' => get_option( 'date_format' ),
