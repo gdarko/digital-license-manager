@@ -126,7 +126,7 @@ class Settings extends Singleton {
 			),
 			'rest_api' => array(
 				'slug'     => 'rest_api',
-				'name'     => __( 'API Keys', 'digital-license-manager' ),
+				'name'     => __( 'Rest API', 'digital-license-manager' ),
 				'url'      => add_query_arg( 'tab', 'rest_api', $baseUrl ),
 				'priority' => 20,
 				'callback' => array( $this, 'renderRestApi' ),

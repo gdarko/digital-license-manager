@@ -300,12 +300,12 @@ class Activations extends ListTable {
 		$html = '';
 		if ( ! empty( $item['deactivated_at'] ) ) {
 			$html = sprintf(
-				'<div class="dlm-status inactive"><span class="dashicons dashicons-marker"></span> %s</div>',
+				'<div class="dlm-status dlm-status-inactive"><span class="dashicons dashicons-marker"></span> %s</div>',
 				__( 'Inactive', 'digital-license-manager' )
 			);
 		} else {
 			$html = sprintf(
-				'<div class="dlm-status delivered"><span class="dashicons dashicons-marker"></span> %s</div>',
+				'<div class="dlm-status dlm-status-delivered"><span class="dashicons dashicons-marker"></span> %s</div>',
 				__( 'Active', 'digital-license-manager' )
 			);
 		}

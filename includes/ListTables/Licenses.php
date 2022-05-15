@@ -468,7 +468,7 @@ class Licenses extends ListTable {
 		if ( $activationsLimit === null ) {
 			return sprintf(
 				'<div class="dlm-status-inline %s" title="%s"><small>%d</small> / <strong>%s</strong></div>',
-				'activation done',
+				'activation dlm-status-done',
 				__( 'Unlimited Activations', 'digital-license-manager' ),
 				$timesActivated,
 				'&infin;'
@@ -477,10 +477,10 @@ class Licenses extends ListTable {
 
 		if ( $timesActivated == $activationsLimit ) {
 			$icon   = '<span class="dashicons dashicons-yes"></span>';
-			$status = 'activation done';
+			$status = 'activation dlm-status-done';
 		} else {
 			$icon   = '';
-			$status = 'activation pending';
+			$status = 'activation dlm-status-pending';
 		}
 
 		if ( $timesActivated || $activationsLimit ) {
@@ -539,7 +539,7 @@ class Licenses extends ListTable {
 			$never = __( 'In stock, not sold yet', 'digital-license-manager' );
 		}
 
-		$markup = '<p class="dlm-clear-spacing">' . DateFormatter::toHtml( $item['expires_at'], true, false, $never ) . '</p>';
+		$markup = '<p class="dlm-clear-spacing">' . DateFormatter::toHtml( $item['expires_at'], ['expires' => true, 'never' => $never] ) . '</p>';
 
 		return $markup;
 	}

@@ -1,0 +1,8 @@
+
+.dlm-icon-download:before { content: '\e800'; } /* '' */
+.dlm-icon-download-cloud:before { content: '\e801'; } /* '' */
+.dlm-icon-doc-text:before { content: '\e802'; } /* '' */
+.dlm-icon-certificate:before { content: '\f0a3'; } /* '' */
+.dlm-icon-file-pdf:before { content: '\f1c1'; } /* '' */
+.dlm-icon-id-card:before { content: '\f2c2'; } /* '' */
+.dlm-icon-id-card-o:before { content: '\f2c3'; } /* '' */

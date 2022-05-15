@@ -164,6 +164,7 @@ To validate a license through the REST API, please follow this <a href="http://d
 * Refreshed admin edit/create screens style
 * Refreshed admin settings screens style
 * Simplified the Licenses list table in admin screen
+* Simplified the WooCommerce templates directory tree
 
 = 1.2.2 =
 *Release Date - 23 Mar 2022*

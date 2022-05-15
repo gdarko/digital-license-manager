@@ -306,11 +306,6 @@ class Orders {
 			return;
 		}
 
-		// Add missing style.
-		if ( ! wp_style_is( 'dlm_main', 'enqueued' ) ) {
-			wp_enqueue_style( 'dlm_main', DLM_CSS_URL . 'main.css' );
-		}
-
 		echo wc_get_template_html(
 			'dlm/my-account/orders/licenses.php',
 			array(

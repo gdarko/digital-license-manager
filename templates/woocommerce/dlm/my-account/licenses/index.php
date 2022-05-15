@@ -87,10 +87,10 @@ defined( 'ABSPATH' ) || exit; ?>
                         <span><?php echo esc_attr( $activationsLimit ); ?></span>
                     </td>
                     <td>
-						<?php echo DateFormatter::toHtml( $license->getExpiresAt(), true ); ?>
+						<?php echo DateFormatter::toHtml( $license->getExpiresAt(), ['expires' => true] ); ?>
                     </td>
                     <td>
-						<?php echo LicenseStatus::toHtml( $license ); ?>
+						<?php echo LicenseStatus::toHtml( $license, ['style' => 'inline'] ); ?>
                     </td>
                     <td class="license-key-actions">
 						<?php

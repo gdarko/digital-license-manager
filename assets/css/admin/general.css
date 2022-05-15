@@ -1,0 +1,121 @@
+
+/* Admin tables */
+.table-view-list.licenses,
+.table-view-list.activations {
+	table-layout: auto;
+}
+
+
+/** License Key Placeholder */
+.dlm-placeholder {
+	display: inline-block;
+	font-family: Consolas, monospace;
+	font-weight: 400;
+	min-width: 150px;
+	min-height: 20px;
+	text-align: center;
+	position: relative;
+	line-height: 20px;
+	padding: 3px 10px 2px;
+	margin-left: 25px;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+	cursor: pointer;
+}
+.dlm-placeholder:hover {
+	background-image: linear-gradient(to right, #6fd4a1, #36be6c);
+	color: #ffffff;
+}
+.dlm-placeholder:before {
+	font-family: 'dashicons', sans-serif;
+	content: "\f112";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: -25px;
+	width: 25px;
+	background-color: #36be6c;
+	color: #ffffff;
+	line-height: 25px;
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px;
+}
+
+.dlm-placeholder.empty:after {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	content: 'XXXX-XXXX-XXXX-XXXX';
+	color: rgba(0,0,0,.4);
+	line-height: 25px;
+}
+.dlm-placeholder.empty:hover:after {
+	color: #ffffff;
+}
+.dlm-spinner {
+	opacity: 0;
+	margin-left: 5px;
+}
+.dlm-clipboard {
+	font-family: Consolas, monospace;
+	background-color: #f0f0f0;
+	color: #334;
+	padding: 7px 14px;
+	border: 1px solid rgba(0,0,0,.1);
+	border-radius: 3px;
+	opacity: 1;
+	-webkit-box-shadow: 2px 3px 5px rgba(0,0,0,.1);
+	box-shadow: 2px 3px 5px rgba(0,0,0,.1);
+	-webkit-transition: all .5s ease-out;
+	-o-transition: all .5s ease-out;
+	transition: all .5s ease-out;
+}
+.dlm-license-key-show,
+.dlm-license-key-hide {
+	cursor: pointer;
+}
+
+
+/** Products **/
+.button.dlm-license-keys-show-all {
+	margin-right: 5px;
+}
+
+.dlm-text-center {
+	text-align: center !important;
+}
+.dlm-clear-spacing {
+	margin:0!important;
+	padding:0 !important;
+}
+@media(min-width: 767px) {
+	.dlm-checkbox-table {
+		max-width: 50%;
+	}
+}
+
+/* Modals */
+.dlm-form-row--checkbox {
+	display: block;
+	margin-bottom: 0;
+	margin-top: 5px;
+}
+.dlm-form-row > label {
+	font-weight: bold;
+}
+
+.wrap.dlm .tablenav  .select2-container {
+	min-width:250px;
+}
+
+/* Helpers */
+.dlm-form-row-section {
+	border-top: 1px solid #e4e4e4;
+	padding-top: 15px;
+	margin-top: 19px;
+}
+.dlm-clear-margin-bottom {
+	margin-bottom: 0 !important;
+}

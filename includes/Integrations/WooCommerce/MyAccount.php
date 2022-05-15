@@ -21,14 +21,48 @@ class MyAccount {
 		add_rewrite_endpoint( 'digital-licenses', EP_ROOT | EP_PAGES );
 
 		add_filter( 'the_title', array( $this, 'accountItemTitles' ) );
+		add_action( 'template_redirect', array( $this, 'handleAccountActions' ) );
 		add_filter( 'woocommerce_account_menu_items', array( $this, 'accountMenuItems' ), 10, 1 );
 		add_action( 'woocommerce_account_digital-licenses_endpoint', array( $this, 'digitalLicenses' ) );
 		add_filter( 'dlm_myaccount_licenses_row_actions', array( $this, 'licensesRowActions' ), 10, 3 );
 		add_filter( 'dlm_myaccount_licenses_keys_row_actions', array( $this, 'licensesRowActions' ), 10, 3 );
 		add_action( 'dlm_myaccount_licenses_single_page_content', array( $this, 'addSingleLicenseContent' ), 10, 2 );
 		add_action( 'dlm_myaccount_licenses_single_page_end', array( $this, 'addSingleLicenseActivationsTable' ), 10, 5 );
+		add_action( 'dlm_myaccount_handle_action', array( $this, 'handleAdditionalAccountActions' ) );
+		add_filter( 'dlm_myaccount_whitelisted_actions', array( $this, 'whitelistAdditionalAccountActions' ) );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueueScripts' ), 10, 1 );
+	}
+
+	/**
+	 * Handle account actions
+	 * @return void
+	 */
+	public function handleAccountActions() {
+
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
+
+		if ( ! isset( $_SERVER['REQUEST_METHOD'] ) || $_SERVER['REQUEST_METHOD'] !== 'POST' ) {
+			return;
+		}
+
+		$action              = isset( $_POST['dlm_action'] ) ? sanitize_text_field( $_POST['dlm_action'] ) : '';
+		$whitelisted_actions = apply_filters( 'dlm_myaccount_whitelisted_actions', array() );
+		if ( empty( $whitelisted_actions ) || ! in_array( $action, $whitelisted_actions ) ) {
+			return;
+		}
+
+		$nonce = isset( $_POST['dlm_nonce'] ) ? sanitize_text_field( $_POST['dlm_nonce'] ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'dlm_account' ) ) {
+			wp_die( 'Link has expired. Please try again later.', 'digital-license-manager' );
+		}
+
+
+		do_action( 'dlm_myaccount_handle_action_' . $action );
+		do_action( 'dlm_myaccount_handle_action', $action );
+		exit;
 	}
 
 	/**
@@ -36,7 +70,12 @@ class MyAccount {
 	 * @return void
 	 */
 	public function enqueueScripts() {
-		wp_enqueue_style( 'dlm-public', DLM_PLUGIN_URL . 'assets/css/public.css', array(), filemtime( DLM_ABSPATH . 'assets/css/public.css' ), 'all' );
+
+		if ( ! is_account_page() ) {
+			return;
+		}
+		wp_enqueue_style( 'dlm_global' );
+		wp_enqueue_style( 'dlm_public' );
 	}
 
 	/**
@@ -75,8 +114,6 @@ class MyAccount {
 	public function digitalLicenses() {
 
 		global $wp_query;
-
-		wp_enqueue_style( 'dlm_main' );
 
 		$user             = wp_get_current_user();
 		$message          = new \stdClass();
@@ -227,4 +264,52 @@ class MyAccount {
 			Controller::getTemplatePath()
 		);
 	}
+
+	/**
+	 * Whitelist additional account actions
+	 * @return array
+	 */
+	public function whitelistAdditionalAccountActions( $actions ) {
+		return array_merge( $actions, array(
+			'license_certificate_download',
+		) );
+	}
+
+	/**
+	 * Handle additional account actions (eg. license certificate download)
+	 * @return void
+	 */
+	public function handleAdditionalAccountActions( $action ) {
+
+		if ( 'license_certificate_download' !== $action ) {
+			return;
+		}
+
+		$errors     = array();
+		$order      = null;
+		$licenseKey = isset( $_POST['license'] ) ? sanitize_text_field( $_POST['license'] ) : null;
+		$license    = LicenseUtil::find( $licenseKey );
+
+		if ( is_wp_error( $license ) ) {
+			array_push( $errors, $license->get_error_message() );
+		} else {
+			$order = wc_get_order( $license->getOrderId() );
+			if ( empty( $order ) ) {
+				array_push( $errors, __( 'Permission denied.', 'digital-license-manager-pro' ) );
+			}
+		}
+
+		/**
+		 *  Validate customer
+		 */
+		if ( ! $order || get_current_user_id() !== $order->get_customer_id() ) {
+			array_push( $errors, __( 'Permission denied.', 'digital-license-manager-pro' ) );
+		}
+
+
+
+
+	}
+
+
 }

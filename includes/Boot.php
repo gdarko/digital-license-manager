@@ -96,34 +96,51 @@ class Boot extends Singleton {
 	public function registerAssets() {
 
 		/**
+		 * Library: Fontello icons
+		 */
+		wp_register_style( 'dlm_iconfont', DLM_ASSETS_URL . 'lib/iconfont/css/digital-license-manager.css' );
+
+		/**
 		 * Library: Micromodal
 		 */
-		wp_register_style( 'dlm_micromodal', DLM_CSS_URL . 'lib/micromodal.css' );
-		wp_register_script( 'dlm_micromodal', DLM_JS_URL . 'lib/micromodal.min.js' );
+		wp_register_style( 'dlm_micromodal', DLM_ASSETS_URL . 'lib/micromodal/micromodal.css' );
+		wp_register_script( 'dlm_micromodal', DLM_ASSETS_URL . 'lib/micromodal/micromodal.min.js' );
 
 		/**
 		 * Library: Select2
 		 */
-		wp_register_style( 'dlm_select2', DLM_CSS_URL . 'lib/select2.min.css', array(), '4.0.13' );
-		wp_register_script( 'dlm_select2', DLM_JS_URL . 'lib/select2.min.js', array( 'jquery' ), '4.0.13' );
-		wp_register_style( 'dlm_select2_custom', DLM_CSS_URL . 'select2.css' );
+		wp_register_style( 'dlm_select2', DLM_ASSETS_URL . 'lib/micromodal/select2.min.css', array(), '4.0.13' );
+		wp_register_script( 'dlm_select2', DLM_ASSETS_URL . 'lib/micromodal/select2.min.js', array( 'jquery' ), '4.0.13' );
+		wp_register_style( 'dlm_select2_custom', DLM_CSS_URL . 'admin/select2.css' );
 
 		/**
 		 * Page specific
 		 */
-		wp_register_script( 'dlm_licenses_page', DLM_JS_URL . 'licenses.js', array( 'jquery' ), $this->version );
-		wp_register_script( 'dlm_generators_page', DLM_JS_URL . 'generators.js', array( 'jquery' ), $this->version );
-		wp_register_script( 'dlm_activations_page', DLM_JS_URL . 'activations.js', array( 'jquery' ), $this->version );
-		wp_register_script( 'dlm_settings_page', DLM_JS_URL . 'settings.js', array( 'jquery' ), $this->version );
-		wp_register_style( 'dlm_settings_page', DLM_CSS_URL . 'settings.css', array(), $this->version, 'all' );
-		wp_register_script( 'dlm_products_page', DLM_JS_URL . 'products.js', array( 'jquery' ), $this->version );
-		wp_register_style( 'dlm_manage_page', DLM_CSS_URL . 'manage.css', array(), $this->version, 'all' );
+		wp_register_script( 'dlm_licenses_page', DLM_JS_URL . 'admin/licenses.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'dlm_generators_page', DLM_JS_URL . 'admin/generators.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'dlm_activations_page', DLM_JS_URL . 'admin/activations.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'dlm_settings_page', DLM_JS_URL . 'admin/settings.js', array( 'jquery' ), $this->version );
+		wp_register_style( 'dlm_settings_page', DLM_CSS_URL . 'admin/settings.css', array(), $this->version, 'all' );
+		wp_register_script( 'dlm_products_page', DLM_JS_URL . 'admin/products.js', array( 'jquery' ), $this->version );
+		wp_register_style( 'dlm_manage_page', DLM_CSS_URL . 'admin/manage.css', array(), $this->version, 'all' );
 
 		/**
 		 * Global assets
 		 */
-		wp_register_style( 'dlm_main', DLM_CSS_URL . 'main.css', array(), $this->version );
-		wp_register_script( 'dlm_main', DLM_JS_URL . 'main.js', array( 'jquery' ), $this->version );
+		wp_register_style( 'dlm_global', DLM_CSS_URL . 'global.css', array(), $this->version );
+
+		/**
+		 * Global admin assets
+		 */
+		wp_register_style( 'dlm_admin', DLM_CSS_URL . 'admin/general.css', array(), $this->version );
+		wp_register_script( 'dlm_admin', DLM_JS_URL . 'admin/general.js', array( 'jquery' ), $this->version );
+
+		/**
+		 * Global public assets
+		 */
+		wp_register_style( 'dlm_public', DLM_CSS_URL . 'public/general.css', array('dlm_iconfont'), $this->version );
+		wp_register_script( 'dlm_public', DLM_JS_URL . 'public/general.js', array( 'jquery' ), $this->version );
+
 
 		/**
 		 * jQuery UI: Stylesheet
@@ -154,10 +171,15 @@ class Boot extends Singleton {
 		 * Global assets
 		 */
 		wp_enqueue_style( 'dlm_jquery-ui-datepicker' );
-		wp_enqueue_style( 'dlm_main' );
-		wp_enqueue_script( 'dlm_main' );
+		wp_enqueue_style( 'dlm_global' );
+
+		/**
+		 * Global Admin assets
+		 */
+		wp_enqueue_style( 'dlm_admin' );
+		wp_enqueue_script( 'dlm_admin' );
 		wp_localize_script(
-			'dlm_main',
+			'dlm_admin',
 			'DLM_MAIN',
 			array(
 				'show'              => wp_create_nonce( 'dlm_show_license_key' ),

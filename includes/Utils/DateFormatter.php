@@ -63,10 +63,17 @@ class DateFormatter {
 	 *
 	 * @return string
 	 */
-	public static function toHtml( $date_str, $expires = false, $br = false, $never = '' ) {
+	public static function toHtml( $date_str, $args = array() ) {
 
-		if ( empty( $never ) ) {
-			$never = __( 'Never', 'digital-license-manager' );
+		$args = wp_parse_args( $args, array(
+			'br'      => false,
+			'expires' => false,
+			'never'   => '',
+		) );
+
+
+		if ( empty( $args['never'] ) ) {
+			$args['never'] = __( 'Never', 'digital-license-manager' );
 		}
 
 		static $dateFormat = null;
@@ -87,14 +94,14 @@ class DateFormatter {
 			$datetimeString = date( 'Y-m-d H:i:s', $timestampInput );
 			$dateInput      = new DateTime( $datetimeString );
 
-			if ( $expires ) {
+			if ( $args['expires'] ) {
 
 				if ( empty( $date_str ) || '0000-00-00 00:00:00' === $date_str ) {
 					return sprintf(
 						'<span class="dlm-date dlm-date-valid" title="%s">%s</span>%s',
-						$never,
-						$never,
-						$br ? '<br/>' : ''
+						$args['never'],
+						$args['never'],
+						$args['br'] ? '<br/>' : ''
 					);
 
 				} else {
@@ -104,7 +111,7 @@ class DateFormatter {
 							'<span class="dlm-date dlm-date-expired" title="%s">%s</span>%s',
 							__( 'Expired' ),
 							$dateInput->format( $dateFormat ),
-							$br ? '<br/>' : ''
+							$args['br'] ? '<br/>' : ''
 						);
 					} else {
 
@@ -116,7 +123,7 @@ class DateFormatter {
 							$statusClass,
 							__( 'Active' ),
 							$dateInput->format( $dateFormat ),
-							$br ? '<br/>' : ''
+							$args['br'] ? '<br/>' : ''
 						);
 					}
 				}

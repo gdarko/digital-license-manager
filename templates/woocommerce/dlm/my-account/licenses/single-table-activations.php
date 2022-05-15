@@ -25,12 +25,12 @@
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseActivation as LicenseActivationResourceModel;
 use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
-use IdeoLogix\DigitalLicenseManager\Settings;
+use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 
 
 /* @var LicenseActivationResourceModel[] */
-$notAvailable              = __( 'N/A', 'digital-license-manager' );
-$activations               = $license->getActivations();
+$notAvailable = __( 'N/A', 'digital-license-manager' );
+$activations  = $license->getActivations();
 
 $isExpired      = $license->isExpired();
 $actionsEnabled = apply_filters( 'dlm_myaccount_license_activation_row_actions_enabled', false );
@@ -46,15 +46,16 @@ $actionsEnabled = apply_filters( 'dlm_myaccount_license_activation_row_actions_e
         <th class="table-col table-col-status"><?php _e( 'Status', 'digital-license-manager-pro' ); ?></th>
         <th class="table-col table-col-source"><?php _e( 'Source', 'digital-license-manager-pro' ); ?></th>
         <th class="table-col table-col-date"><?php _e( 'Date', 'digital-license-manager-pro' ); ?></th>
-	    <?php if ( $actionsEnabled ): ?>
+		<?php if ( $actionsEnabled ): ?>
             <th class="table-col table-col-actions"></th>
-	    <?php endif; ?>
+		<?php endif; ?>
     </tr>
     </thead>
     <tbody>
 	<?php if ( count( $activations ) > 0 ): ?>
 
 		<?php foreach ( $activations as $activation ): ?>
+
             <tr>
                 <td>
 					<?php
@@ -67,17 +68,16 @@ $actionsEnabled = apply_filters( 'dlm_myaccount_license_activation_row_actions_e
                 </td>
                 <td>
 					<?php
-					$deactivatedAt = $activation->getDeactivatedAt();
-					if ( $deactivatedAt ) {
-						echo sprintf(
-							'<div class="dlm-status inactive">%s</div>',
-							__( 'Inactive', 'digital-license-manager' )
-						);
+					if ( $activation->getDeactivatedAt() ) {
+						echo LicenseStatus::statusToHtml( 'disabled', [
+							'style' => 'inline',
+							'text'  => __( 'Not Active', 'digital-license-manager' )
+						] );
 					} else {
-						echo sprintf(
-							'<div class="dlm-status delivered">%s</div>',
-							__( 'Active', 'digital-license-manager' )
-						);
+						echo LicenseStatus::statusToHtml( 'delivered', [
+							'style' => 'inline',
+							'text'  => __( 'Active', 'digital-license-manager' )
+						] );
 					}
 					?>
                 </td>
@@ -103,18 +103,21 @@ $actionsEnabled = apply_filters( 'dlm_myaccount_license_activation_row_actions_e
                 </td>
 				<?php if ( $actionsEnabled ): ?>
                     <td>
-                        <?php do_action('dlm_myaccount_license_activation_row_actions',  $license, $activation, $license_key ); ?>
+						<?php do_action( 'dlm_myaccount_license_activation_row_actions', $license, $activation, $license_key ); ?>
                     </td>
 				<?php endif; ?>
             </tr>
+
 		<?php endforeach; ?>
 
 	<?php else: ?>
+
         <tr>
             <td colspan="4">
                 <p><?php _e( 'No activations found.', 'digital-license-manager-pro' ); ?></p>
             </td>
         </tr>
+
 	<?php endif; ?>
 
     </tbody>
