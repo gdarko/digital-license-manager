@@ -6,9 +6,6 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as License
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\Customer;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
-use Spipu\Html2Pdf\Exception\ExceptionFormatter;
-use Spipu\Html2Pdf\Exception\Html2PdfException;
-use Spipu\Html2Pdf\Html2Pdf;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -84,11 +81,13 @@ class MyAccount {
 	public function accountItemTitles( $title ) {
 		global $wp_query;
 
-		if ( isset( $wp_query->query_vars['digital-licenses'] ) && in_the_loop() ) {
+		$in_the_loop = in_the_loop();
+
+		if ( isset( $wp_query->query_vars['digital-licenses'] ) && $in_the_loop ) {
 			return __( 'Licenses', 'digital-license-manager' );
 		}
 
-		return $title;
+		return apply_filters( 'dlm_myaccount_endpoint_title', $title, $in_the_loop );
 	}
 
 	/**
@@ -102,6 +101,8 @@ class MyAccount {
 		$customItems = array(
 			'digital-licenses' => __( 'Licenses', 'digital-license-manager' )
 		);
+
+		$customItems = apply_filters( 'dlm_myaccount_menu_items', $customItems );
 
 		$customItems = array_slice( $items, 0, 2, true ) + $customItems + array_slice( $items, 2, count( $items ), true );
 
@@ -142,7 +143,7 @@ class MyAccount {
 
 		if ( ! $licenseID ) {
 
-			$licenses = Customer::getLicenseKeys( $user->ID );
+			$licenses = Customer::getLicenses( $user->ID );
 
 			echo wc_get_template_html(
 				'dlm/my-account/licenses/index.php',
@@ -194,7 +195,7 @@ class MyAccount {
 
 		if ( Settings::get( 'myaccount_endpoint', Settings::SECTION_WOOCOMMERCE ) ) {
 			$actions[5] = array(
-				'href'  => esc_url( wc_get_account_endpoint_url( 'digital-licenses/' . $license->getId() ) ),
+				'href'  => esc_url( Controller::getAccountLicenseUrl( $license->getId() ) ),
 				'class' => 'button',
 				'text'  => __( 'View', 'digital-license-manager' ),
 				'title' => __( 'View more details about this license.', 'digital-license-manager' ),

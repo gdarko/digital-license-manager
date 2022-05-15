@@ -7,7 +7,6 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as License
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
-use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 use IdeoLogix\DigitalLicenseManager\ListTables\Licenses;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\Generator as GeneratorUtil;
@@ -300,7 +299,7 @@ class Orders {
 			'data'  => null
 		);
 
-		$customerLicenseKeys = Orders::getLicenseKeys( $args );
+		$customerLicenseKeys = Orders::getLicenses( $args );
 
 		if ( ! $customerLicenseKeys['data'] ) {
 			return;
@@ -400,8 +399,7 @@ class Orders {
 	 *
 	 * @return array
 	 */
-	public static function getLicenseKeys( $args ) {
-
+	public static function getLicenses( $args ) {
 		/** @var WC_Order $order */
 		$order = $args['order'];
 		$data  = array();
@@ -434,6 +432,18 @@ class Orders {
 		$args['data'] = $data;
 
 		return $args;
+	}
+
+	/**
+	 * Retrieves ordered license keys.
+	 *
+	 * @param array $args
+	 * @deprecated 1.3.0
+	 *
+	 * @return array
+	 */
+	public static function getLicenseKeys( $args ) {
+		return self::getLicenses( $args );
 	}
 
 	/**

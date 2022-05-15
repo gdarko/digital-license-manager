@@ -28,7 +28,7 @@
 			<input type="hidden" name="license" value="<?php echo $license_key; ?>">
 			<ul class="dlm-list-inline dlm-list-inline-mb-0">
 				<li>
-					<button type="submit" class="button dlm-button" name="license_certificate_download" value="1">
+					<button type="submit" class="woocommerce-button button dlm-button" name="license_certificate_download" value="1">
 						<span class="dlm-icon-file-pdf"></span> <?php _e( 'Download', 'digital-license-manager' ); ?>
 					</button>
 				</li>

@@ -92,7 +92,7 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
 </table>
 
 <p>
-    <a href="<?php echo esc_url( $order->get_view_order_url() ); ?>" class="button"><?php _e( 'View Order', 'digital-license-manager' ); ?></a>
+    <a href="<?php echo esc_url( $order->get_view_order_url() ); ?>" class="woocommerce-button button dlm-button"><?php _e( 'View Order', 'digital-license-manager' ); ?></a>
 </p>
 
 

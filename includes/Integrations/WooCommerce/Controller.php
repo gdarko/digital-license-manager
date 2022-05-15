@@ -104,4 +104,15 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 	public static function getTemplatePath() {
 		return trailingslashit( DLM_TEMPLATES_DIR ) . 'woocommerce' . DIRECTORY_SEPARATOR;
 	}
+
+	/**
+	 * Return license url
+	 *
+	 * @param $license
+	 *
+	 * @return string|null
+	 */
+	public static function getAccountLicenseUrl( $license_id ) {
+		return esc_url( wc_get_account_endpoint_url( 'digital-licenses/' . $license_id ) );
+	}
 }

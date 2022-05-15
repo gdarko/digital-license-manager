@@ -172,6 +172,7 @@ class Boot extends Singleton {
 		 */
 		wp_enqueue_style( 'dlm_jquery-ui-datepicker' );
 		wp_enqueue_style( 'dlm_global' );
+		wp_enqueue_style( 'dlm_iconfont' );
 
 		/**
 		 * Global Admin assets

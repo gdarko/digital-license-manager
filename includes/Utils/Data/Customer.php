@@ -6,7 +6,6 @@ namespace IdeoLogix\DigitalLicenseManager\Utils\Data;
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
-use WC_Order;
 
 /**
  * Class Customer
@@ -19,9 +18,9 @@ class Customer {
 	 *
 	 * @param int $userId
 	 *
-	 * @return WC_Order[]
+	 * @return array
 	 */
-	public static function getLicenseKeys( $userId ) {
+	public static function getLicenses( $userId ) {
 
 		if ( ! function_exists( 'wc_get_product' ) ) {
 			return array();
@@ -70,6 +69,19 @@ class Customer {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Retrieves all license keys for a user and groups them by product
+	 *
+	 * @param int $userId
+	 *
+	 * @deprecated 1.3.0
+	 *
+	 * @return array
+	 */
+	public static function getLicenseKeys( $userId ) {
+		return self::getLicenses( $userId );
 	}
 
 }

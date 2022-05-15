@@ -166,7 +166,9 @@ if ( empty( $expiresAt ) || '0000-00-00 00:00:00' === $expiresAt ) {
             </table>
 
             <p class="submit">
-                <input name="submit" id="edit__submit" class="button button-primary" value="<?php esc_html_e( 'Update', 'digital-license-manager' ); ?>" type="submit">
+                <button name="submit" id="edit__submit" class="button button-primary" value="1" type="submit">
+	                <?php esc_html_e( 'Update', 'digital-license-manager' ); ?>
+                </button>
             </p>
         </form>
     </div>

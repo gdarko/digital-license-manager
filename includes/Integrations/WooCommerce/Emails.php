@@ -51,7 +51,7 @@ class Emails {
 			'data'  => null
 		);
 
-		$customerLicenseKeys = Orders::getLicenseKeys( $args );
+		$customerLicenseKeys = Orders::getLicenses( $args );
 		if ( empty( $customerLicenseKeys['data'] ) ) {
 			return;
 		}
@@ -193,7 +193,7 @@ class Emails {
 			'data'  => null
 		);
 
-		$customerLicenseKeys = Orders::getLicenseKeys( $args );
+		$customerLicenseKeys = Orders::getLicenses( $args );
 
 		if ( $plainText ) {
 			wc_get_template(
