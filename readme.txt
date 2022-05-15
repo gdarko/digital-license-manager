@@ -1,9 +1,9 @@
 ﻿=== Digital License Manager ===
-Contributors: darkog
+Contributors: darkog, codeverve
 Tags: license key, license, key, software license, serial key, manager, woocommerce, wordpress
 Requires at least: 4.7
-Tested up to: 5.9
-Stable tag: 1.2.2
+Tested up to: 6.0
+Stable tag: 1.3.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -22,7 +22,9 @@ The plugin is compatible with WooCommerce although it can be used as standalone 
 * Manage License Generators. Makes it possible to generate Licenses by specific rules (separator, chunks, length, allowed characters, prefix, suffix etc)
 * Assign Generators to one or more WooCommerce products to generate Licenses based on the rules of the Generator when the product is purchased on certain Order status
 * Automatically generate, sell and deliver keys through WooCommerce. Supports both Simple and Variable products.
-* Brings separate page for Licenses in MyAccount when using with WooCommerce
+* License Certificates in PDF format available to users that purchased a License in My Account page when using with WooCommerce
+* Separate page for Licenses in MyAccount when using with WooCommerce
+* Separate page for each License in My Account when using with WooCommerce
 * The purchased Licenses are included in the WooCommerce Emails (completed order, etc)
 * License delivery Order statuses can be selected from the plugin Settings
 * Create, update, activate, deactivate and validate licenses through the REST API
@@ -41,7 +43,6 @@ The PRO version focuses on making it possible to generate consistent cash flow t
 * <a href="https://docs.codeverve.com/digital-license-manager/handbook/software/manage-releases/" target="_blank" rel="noopener">Software release management</a>. Downloadable software can be distributed as a releases. For each version you create a release in the Software editor.
 * Software <a href="https://docs.codeverve.com/digital-license-manager/rest-api/software/single/" target="_blank">details REST Endpoint</a> to get information about specific software. This is useful if you want to perform update check from your premium software.
 * Software <a href="https://docs.codeverve.com/digital-license-manager/rest-api/software/download/" target="_blank">download REST Endpoint</a> to download the latest release for specific software. This is useful if you want to provide updates for your software.
-* Separate <a href="https://docs.codeverve.com/digital-license-manager/handbook/woocommerce/my-account/single-license/" target="_blank" rel="noopener">License page in My Account</a> that shows list of historical License Activations and Releases along with extended information about the License.
 * Separate Battle-tested and well-documented WordPress package to create License Activation form and provide updates through your Digital License Manager Software API. Start your WordPress theme/plugin shop today!
 * Ready to use <a href="https://docs.codeverve.com/digital-license-manager/wordpress-theme-plugin-updates/" target="_blank" rel="noopener">theme/plugin updater</a> library with integration guide. Useful if you want to integrate license activations to your plugins/themes.
 * Additional <a href="https://docs.codeverve.com/digital-license-manager/handbook/configuration/#WooCommerce" target="_blank" rel="noopener">Options</a> to enable or disable features like the "Licenses" access in My Account.
@@ -153,11 +154,13 @@ To validate a license through the REST API, please follow this <a href="http://d
 == Changelog ==
 
 = 1.3.0 =
-*Release Date - 14 May 2022*
+*Release Date - 16 May 2022*
 
 * Added Support for WordPress 6.0 and WooCommerce 6.5
-* Added License Certifications feature in PDF/TXT format (integrates in WooCommerce and Licenses table admin screens)
+* Added License Certifications feature in PDF format (integrates in WooCommerce and Licenses table admin screens)
 * Added RestAPI optional 'token' parameter to the /activate endpoint to reactivate existing license token and not create new one if needed
+* Added Single License page in My Account
+* Added License Activation log in My Account single License page
 * Removed rendundant valid_for column in the licenses table in favor of expires_at
 * Fixed issue with the pagination and filters on the License Activations page
 * Fixed a problem that caused admins not able to clear activation limit on a license (set unlimited activations)
@@ -165,6 +168,7 @@ To validate a license through the REST API, please follow this <a href="http://d
 * Refreshed admin settings screens style
 * Simplified the Licenses list table in admin screen
 * Simplified the WooCommerce templates directory tree
+* Improved the css/js resource queuing
 
 = 1.2.2 =
 *Release Date - 23 Mar 2022*
