@@ -5,9 +5,9 @@ namespace IdeoLogix\DigitalLicenseManager\Controllers;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\ApiKey as ApiKeyResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\ApiKey as ApiKeyResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
-use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
+use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 
 defined( 'ABSPATH' ) || exit;
 

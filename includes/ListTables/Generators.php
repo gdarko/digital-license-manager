@@ -2,13 +2,13 @@
 
 namespace IdeoLogix\DigitalLicenseManager\ListTables;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
-use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use Exception;
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Products;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
 
 defined( 'ABSPATH' ) || exit;
 

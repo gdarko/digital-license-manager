@@ -6,8 +6,6 @@ namespace IdeoLogix\DigitalLicenseManager\Utils\Data;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
-
-use Exception;
 use WP_Error;
 
 

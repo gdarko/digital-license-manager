@@ -2,15 +2,15 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
+use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Products;
 use IdeoLogix\DigitalLicenseManager\ListTables\Activations;
 use IdeoLogix\DigitalLicenseManager\ListTables\Generators;
 use IdeoLogix\DigitalLicenseManager\ListTables\Licenses;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 
 defined( 'ABSPATH' ) || exit;
 

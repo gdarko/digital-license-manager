@@ -2,8 +2,6 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use WC_Product;
 

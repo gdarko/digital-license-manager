@@ -2,9 +2,8 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
-use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
-
+use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\Generator as GeneratorUtil;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;

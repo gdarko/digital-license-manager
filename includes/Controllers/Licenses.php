@@ -3,7 +3,6 @@
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
 use Exception;
-use TCPDF;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
@@ -15,6 +14,7 @@ use IdeoLogix\DigitalLicenseManager\Utils\Data\License;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
 use IdeoLogix\DigitalLicenseManager\Utils\StringFormatter;
+use TCPDF;
 
 defined( 'ABSPATH' ) || exit;
 

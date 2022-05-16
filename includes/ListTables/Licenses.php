@@ -5,7 +5,6 @@ namespace IdeoLogix\DigitalLicenseManager\ListTables;
 use DateTime;
 use Exception;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
-use IdeoLogix\DigitalLicenseManager\Controllers\Licenses as LicensesController;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourceRepository;

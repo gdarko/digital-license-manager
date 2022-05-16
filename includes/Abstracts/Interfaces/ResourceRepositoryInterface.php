@@ -2,9 +2,6 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces;
 
-use stdClass;
-use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel as AbstractResourceModel;
-
 defined('ABSPATH') || exit;
 
 interface ResourceRepositoryInterface

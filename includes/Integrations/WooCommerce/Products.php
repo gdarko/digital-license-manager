@@ -2,10 +2,9 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use WP_Error;
 use WP_Post;
 

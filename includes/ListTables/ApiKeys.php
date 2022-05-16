@@ -4,10 +4,10 @@ namespace IdeoLogix\DigitalLicenseManager\ListTables;
 
 use Exception;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\ApiKey as ApiKeyResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\ApiKey as ApiKeyResourceRepository;
 
 defined( 'ABSPATH' ) || exit;
 

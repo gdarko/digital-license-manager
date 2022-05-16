@@ -3,7 +3,6 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 
-use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {

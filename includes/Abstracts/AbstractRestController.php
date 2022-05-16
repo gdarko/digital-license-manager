@@ -3,9 +3,8 @@
 namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
-use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
+use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use WP_Error;
 use WP_REST_Controller;
 use WP_REST_Request;

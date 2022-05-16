@@ -2,12 +2,12 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Utils;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\Singleton;
+use Defuse\Crypto\Crypto as DefuseCrypto;
 use Defuse\Crypto\Exception\BadFormatException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use Defuse\Crypto\Key;
-use Defuse\Crypto\Crypto as DefuseCrypto;
 use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
+use Defuse\Crypto\Key;
+use IdeoLogix\DigitalLicenseManager\Abstracts\Singleton;
 use WP_Error;
 
 defined( 'ABSPATH' ) || exit;
