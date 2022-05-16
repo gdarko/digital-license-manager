@@ -69,7 +69,9 @@ class NoticeFlasher extends Singleton {
 		$messages = get_transient( 'dlm_notice_' . $level );
 
 		if ( $messages && is_array( $messages ) ) {
-			$messages[] = $message;
+			if ( ! in_array( $message, $messages ) ) {
+				$messages[] = $message;
+			}
 		} else {
 			$messages = array( $message );
 		}
