@@ -14,7 +14,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  * Class ListTable
  * @package IdeoLogix\DigitalLicenseManager\Abstracts
  */
-abstract class ListTable extends \WP_List_Table {
+abstract class AbstractListTable extends \WP_List_Table {
 
 	/**
 	 * The Database table

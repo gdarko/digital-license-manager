@@ -2,8 +2,8 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\IntegrationController as AbstractIntegrationController;
-use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\IntegrationController as IntegrationControllerInterface;
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractIntegrationController;
+use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\IntegrationControllerInterface;
 use IdeoLogix\DigitalLicenseManager\Settings as SettingsData;
 
 defined( 'ABSPATH' ) || exit;

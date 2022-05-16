@@ -6,7 +6,7 @@ use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 
 defined( 'ABSPATH' ) || exit;
 
-abstract class ResourceModel {
+abstract class AbstractResourceModel {
 	/**
 	 * Returns the class properties as an array.
 	 *

@@ -3,7 +3,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\SettingsFields;
+use IdeoLogix\DigitalLicenseManager\Abstracts\SettingsFieldsTrait;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Singleton;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\ApiKey as ApiKeyResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\ApiKey as ApiKeyResourceRepository;
@@ -17,7 +17,7 @@ use IdeoLogix\DigitalLicenseManager\ListTables\ApiKeys;
  */
 class Settings extends Singleton {
 
-	use SettingsFields;
+	use SettingsFieldsTrait;
 
 	/**
 	 * Settings constructor.

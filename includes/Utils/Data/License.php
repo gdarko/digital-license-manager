@@ -7,7 +7,7 @@ namespace IdeoLogix\DigitalLicenseManager\Utils\Data;
 use DateInterval;
 use DateTime;
 use Exception;
-use IdeoLogix\DigitalLicenseManager\Abstracts\ResourceModel;
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseActivation;
@@ -458,7 +458,7 @@ class License {
 	 *
 	 * @param $activationToken
 	 *
-	 * @return bool|ResourceModel|WP_Error
+	 * @return bool|AbstractResourceModel|WP_Error
 	 */
 	public static function reactivate( $activationToken, $licenseKey = null ) {
 		if ( ! $activationToken ) {
@@ -554,7 +554,7 @@ class License {
 	 *
 	 * @param $activationToken
 	 *
-	 * @return bool|ResourceModel|WP_Error
+	 * @return bool|AbstractResourceModel|WP_Error
 	 */
 	public static function deactivate( $activationToken ) {
 

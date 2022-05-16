@@ -2,11 +2,12 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Class IntegrationController
  * @package IdeoLogix\DigitalLicenseManager\Abstracts
  * @copyright IDEOLOGIX MEDIA
  */
-abstract class IntegrationController {}
+abstract class AbstractIntegrationController {
+}

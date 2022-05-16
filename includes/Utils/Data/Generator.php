@@ -3,7 +3,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Utils\Data;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\ResourceModel;
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
 
@@ -77,7 +77,7 @@ class Generator {
 	 *
 	 * @param array $params
 	 *
-	 * @return bool|ResourceModel|GeneratorResourceModel|WP_Error
+	 * @return bool|AbstractResourceModel|GeneratorResourceModel|WP_Error
 	 */
 	public static function create( $params = array() ) {
 
@@ -153,7 +153,7 @@ class Generator {
 	 * @param $id
 	 * @param $params
 	 *
-	 * @return bool|ResourceModel|GeneratorResourceModel|WP_Error
+	 * @return bool|AbstractResourceModel|GeneratorResourceModel|WP_Error
 	 */
 	public static function update( $id, $params ) {
 

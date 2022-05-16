@@ -2,17 +2,16 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Database\Models\Resources;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\ResourceModel as AbstractResourceModel;
-use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\Model as ModelInterface;
-
-use \IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseRepository;
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
+use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ResourceModelInterface;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseRepository;
 use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 
 /**
  * Class LicenseActivation
  * @package IdeoLogix\DigitalLicenseManager\Database\Models\Resources
  */
-class LicenseActivation extends AbstractResourceModel implements ModelInterface {
+class LicenseActivation extends AbstractResourceModel implements ResourceModelInterface {
 
 	protected $id;
 	protected $token;

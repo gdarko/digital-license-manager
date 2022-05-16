@@ -4,7 +4,7 @@ namespace IdeoLogix\DigitalLicenseManager\ListTables;
 
 use DateTime;
 use Exception;
-use IdeoLogix\DigitalLicenseManager\Abstracts\ListTable;
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
 use IdeoLogix\DigitalLicenseManager\Controllers\Licenses as LicensesController;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
@@ -27,7 +27,7 @@ defined( 'ABSPATH' ) || exit;
  * Class Licenses
  * @package IdeoLogix\DigitalLicenseManager\ListTables
  */
-class Licenses extends ListTable {
+class Licenses extends AbstractListTable {
 	/**
 	 * Path to spinner image.
 	 */

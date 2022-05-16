@@ -7,7 +7,7 @@ namespace IdeoLogix\DigitalLicenseManager\Abstracts;
  * Trait SettingsFields
  * @package IdeoLogix\DigitalLicenseManager\Abstracts
  */
-trait SettingsFields {
+trait SettingsFieldsTrait {
 
 	/**
 	 * Sanitize settings, cast to array if not already.

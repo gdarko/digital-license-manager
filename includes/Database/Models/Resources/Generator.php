@@ -2,8 +2,8 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Database\Models\Resources;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\ResourceModel as AbstractResourceModel;
-use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\Model as ModelInterface;
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
+use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ResourceModelInterface;
 use stdClass;
 
 defined( 'ABSPATH' ) || exit;
@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
  * Class Generator
  * @package IdeoLogix\DigitalLicenseManager\Database\Models\Resources
  */
-class Generator extends AbstractResourceModel implements ModelInterface {
+class Generator extends AbstractResourceModel implements ResourceModelInterface {
 
 	/**
 	 * @var int

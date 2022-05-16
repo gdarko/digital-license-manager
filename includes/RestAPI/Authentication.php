@@ -2,7 +2,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\RestAPI;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\RestController;
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractRestController;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use stdClass;
 use WP_Error;
@@ -145,7 +145,7 @@ class Authentication {
 
 		$this->authMethod = 'basic_auth';
 
-		$credentials    = RestController::getCredentials();
+		$credentials    = AbstractRestController::getCredentials();
 		$consumerKey    = isset( $credentials['consumer_key'] ) ? $credentials['consumer_key'] : null;
 		$consumerSecret = isset( $credentials['consumer_secret'] ) ? $credentials['consumer_secret'] : null;
 
@@ -163,7 +163,7 @@ class Authentication {
 		}
 
 		// Get user data.
-		$this->user = RestController::getUserDataByConsumerKey( $consumerKey );
+		$this->user = AbstractRestController::getUserDataByConsumerKey( $consumerKey );
 
 		if ( empty( $this->user ) ) {
 			$this->setError(
@@ -315,6 +315,6 @@ class Authentication {
 	 * @return WP_Error
 	 */
 	protected function responseError( $code, $message, $data = array() ) {
-		return RestController::_responseError( $code, $message, $data );
+		return AbstractRestController::_responseError( $code, $message, $data );
 	}
 }

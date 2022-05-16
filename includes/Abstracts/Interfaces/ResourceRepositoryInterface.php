@@ -3,11 +3,11 @@
 namespace IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces;
 
 use stdClass;
-use IdeoLogix\DigitalLicenseManager\Abstracts\ResourceModel as AbstractResourceModel;
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel as AbstractResourceModel;
 
 defined('ABSPATH') || exit;
 
-interface ResourceRepository
+interface ResourceRepositoryInterface
 {
     /**
      * @param array $data

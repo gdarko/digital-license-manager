@@ -4,7 +4,7 @@ namespace IdeoLogix\DigitalLicenseManager\ListTables;
 
 use DateTime;
 use Exception;
-use IdeoLogix\DigitalLicenseManager\Abstracts\ListTable;
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
  * Class Activations
  * @package IdeoLogix\DigitalLicenseManager\ListTables
  */
-class Activations extends ListTable {
+class Activations extends AbstractListTable {
 
 	/**
 	 *  Whether user can activate records

@@ -2,7 +2,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\ListTables;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\ListTable;
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use Exception;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  * Class Generators
  * @package IdeoLogix\DigitalLicenseManager\ListTables
  */
-class Generators extends ListTable {
+class Generators extends AbstractListTable {
 
 	/**
 	 * GeneratorsList constructor.

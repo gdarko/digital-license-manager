@@ -2,10 +2,10 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\ResourceRepository as AbstractResourceRepository;
-use IdeoLogix\DigitalLicenseManager\Enums\ColumnType as ColumnTypeEnum;
-use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ResourceRepository as ResourceRepositoryInterface;
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ResourceRepositoryInterface;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\ApiKey as ApiKeyResourceModel;
+use IdeoLogix\DigitalLicenseManager\Enums\ColumnType as ColumnTypeEnum;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 
 defined( 'ABSPATH' ) || exit;

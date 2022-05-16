@@ -2,14 +2,14 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Database\Models\Resources;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\ResourceModel as AbstractResourceModel;
-use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\Model as ModelInterface;
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
+use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ResourceModelInterface;
 use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 use stdClass;
 
 defined( 'ABSPATH' ) || exit;
 
-class ApiKey extends AbstractResourceModel implements ModelInterface {
+class ApiKey extends AbstractResourceModel implements ResourceModelInterface {
 	/**
 	 * @var int
 	 */

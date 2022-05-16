@@ -2,7 +2,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\SettingsFields;
+use IdeoLogix\DigitalLicenseManager\Abstracts\SettingsFieldsTrait;
 
 /**
  * Class Settings
@@ -10,7 +10,7 @@ use IdeoLogix\DigitalLicenseManager\Abstracts\SettingsFields;
  */
 class Settings {
 
-	use SettingsFields;
+	use SettingsFieldsTrait;
 
 	/**
 	 * Settings constructor.

@@ -2,7 +2,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\RestAPI\Controllers;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\RestController;
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractRestController;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseActivation as LicenseActivationResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
  * Class Licenses
  * @package IdeoLogix\DigitalLicenseManager\RestAPI\V1
  */
-class Licenses extends RestController {
+class Licenses extends AbstractRestController {
 
 	/**
 	 * @var string

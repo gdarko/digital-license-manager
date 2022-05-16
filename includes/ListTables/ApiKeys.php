@@ -3,7 +3,7 @@
 namespace IdeoLogix\DigitalLicenseManager\ListTables;
 
 use Exception;
-use IdeoLogix\DigitalLicenseManager\Abstracts\ListTable;
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  * Class APIKeys
  * @package IdeoLogix\DigitalLicenseManager\ListTables
  */
-class ApiKeys extends ListTable {
+class ApiKeys extends AbstractListTable {
 
 	/**
 	 * Class constructor.

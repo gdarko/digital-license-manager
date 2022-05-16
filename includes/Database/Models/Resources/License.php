@@ -2,14 +2,13 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Database\Models\Resources;
 
-use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourcesModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourcesRepository;
-
-use IdeoLogix\DigitalLicenseManager\Abstracts\ResourceModel as AbstractResourceModel;
-use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\Model as ModelInterface;
 use DateTime;
 use DateTimeZone;
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
+use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ResourceModelInterface;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourcesModel;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourcesRepository;
+use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
 use stdClass;
 
 defined( 'ABSPATH' ) || exit;
@@ -18,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  * Class License
  * @package IdeoLogix\DigitalLicenseManager\Database\Models\Resources
  */
-class License extends AbstractResourceModel implements ModelInterface {
+class License extends AbstractResourceModel implements ResourceModelInterface {
 
 	/**
 	 * @var int

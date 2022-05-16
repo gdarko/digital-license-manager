@@ -13,7 +13,7 @@ use WP_REST_Response;
 
 defined( 'ABSPATH' ) || exit;
 
-abstract class RestController extends WP_REST_Controller {
+abstract class AbstractRestController extends WP_REST_Controller {
 	/**
 	 * Returns a structured response object for the API.
 	 *

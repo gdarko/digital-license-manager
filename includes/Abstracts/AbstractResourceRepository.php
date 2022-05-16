@@ -2,12 +2,12 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ResourceRepository as RepositoryInterface;
+use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ResourceRepositoryInterface;
 use IdeoLogix\DigitalLicenseManager\Enums\ColumnType as ColumnTypeEnum;
 
 defined( 'ABSPATH' ) || exit;
 
-abstract class ResourceRepository extends Singleton implements RepositoryInterface {
+abstract class AbstractResourceRepository extends Singleton implements ResourceRepositoryInterface {
 	/**
 	 * @var string
 	 */
@@ -130,7 +130,7 @@ abstract class ResourceRepository extends Singleton implements RepositoryInterfa
 	 *
 	 * @param array $data
 	 *
-	 * @return bool|ResourceModel
+	 * @return bool|AbstractResourceModel
 	 */
 	public function insert( $data ) {
 		global $wpdb;
@@ -160,7 +160,7 @@ abstract class ResourceRepository extends Singleton implements RepositoryInterfa
 	 *
 	 * @param int $id
 	 *
-	 * @return bool|ResourceModel
+	 * @return bool|AbstractResourceModel
 	 */
 	public function find( $id ) {
 		if ( ! class_exists( $this->model ) ) {
@@ -188,7 +188,7 @@ abstract class ResourceRepository extends Singleton implements RepositoryInterfa
 	 *
 	 * @param array $query
 	 *
-	 * @return bool|ResourceModel
+	 * @return bool|AbstractResourceModel
 	 */
 	public function findBy( $query ) {
 		if ( ! class_exists( $this->model ) || ! $query || ! is_array( $query ) || count( $query ) <= 0 ) {
@@ -213,7 +213,7 @@ abstract class ResourceRepository extends Singleton implements RepositoryInterfa
 	/**
 	 * Retrieves all table rows as an array.
 	 *
-	 * @return bool|ResourceModel[]
+	 * @return bool|AbstractResourceModel[]
 	 */
 	public function findAll() {
 		global $wpdb;
@@ -239,7 +239,7 @@ abstract class ResourceRepository extends Singleton implements RepositoryInterfa
 	 * @param null|string $orderBy
 	 * @param null|string $sort
 	 *
-	 * @return bool|ResourceModel[]
+	 * @return bool|AbstractResourceModel[]
 	 */
 	public function findAllBy( $query, $orderBy = null, $sort = null, $offset = - 1, $limit = - 1 ) {
 		if ( ! class_exists( $this->model ) || ! $query || ! is_array( $query ) || count( $query ) <= 0 ) {
@@ -283,7 +283,7 @@ abstract class ResourceRepository extends Singleton implements RepositoryInterfa
 	 * @param int $id
 	 * @param array $data
 	 *
-	 * @return bool|ResourceModel
+	 * @return bool|AbstractResourceModel
 	 */
 	public function update( $id, $data ) {
 		global $wpdb;

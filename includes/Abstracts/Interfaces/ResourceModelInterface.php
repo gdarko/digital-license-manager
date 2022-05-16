@@ -4,7 +4,7 @@ namespace IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces;
 
 defined('ABSPATH') || exit();
 
-interface Model
+interface ResourceModelInterface
 {
     /**
      * @return array

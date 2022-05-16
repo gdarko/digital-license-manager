@@ -2,11 +2,11 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Database\Models\Resources;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\ResourceModel as AbstractResourceModel;
-use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\Model as ModelInterface;
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
+use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ResourceModelInterface;
 use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 
-class ProductDownload extends AbstractResourceModel implements ModelInterface {
+class ProductDownload extends AbstractResourceModel implements ResourceModelInterface {
 
 	protected $id;
 	protected $license_id;
@@ -30,14 +30,14 @@ class ProductDownload extends AbstractResourceModel implements ModelInterface {
 		}
 
 		$this->id            = (int) $activation->id;
-		$this->license_id     = (int) $activation->license_id;
-		$this->activation_id  = (int) $activation->activation_id;
+		$this->license_id    = (int) $activation->license_id;
+		$this->activation_id = (int) $activation->activation_id;
 		$this->source        = $activation->source;
-		$this->ip_address     = $activation->ip_address;
-		$this->user_agent     = $activation->user_agent;
-		$this->meta_data      = JsonFormatter::decode( $activation->meta_data, true );
-		$this->created_at     = $activation->created_at;
-		$this->updated_at     = $activation->updated_at;
+		$this->ip_address    = $activation->ip_address;
+		$this->user_agent    = $activation->user_agent;
+		$this->meta_data     = JsonFormatter::decode( $activation->meta_data, true );
+		$this->created_at    = $activation->created_at;
+		$this->updated_at    = $activation->updated_at;
 
 	}
 
