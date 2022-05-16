@@ -52,6 +52,8 @@ class Setup {
 		}
 
 		define( 'DLM_INSTALLED', true );
+
+		update_option( 'dlm_needs_permalinks_flush', 1 );
 	}
 
 	/**

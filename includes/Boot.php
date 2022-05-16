@@ -138,7 +138,7 @@ class Boot extends Singleton {
 		/**
 		 * Global public assets
 		 */
-		wp_register_style( 'dlm_public', DLM_CSS_URL . 'public/general.css', array('dlm_iconfont'), $this->version );
+		wp_register_style( 'dlm_public', DLM_CSS_URL . 'public/general.css', array( 'dlm_iconfont' ), $this->version );
 		wp_register_script( 'dlm_public', DLM_JS_URL . 'public/general.js', array( 'jquery' ), $this->version );
 
 
@@ -198,7 +198,6 @@ class Boot extends Singleton {
 		if ( $isManage ) {
 			wp_enqueue_style( 'dlm_manage_page' );
 		}
-
 
 		/**
 		 * Enqueue select2
@@ -379,6 +378,11 @@ class Boot extends Singleton {
 	 */
 	public function adminInit() {
 		SettingsController::instance()->register();
+
+		if ( get_option( 'dlm_needs_permalinks_flush' ) ) {
+			flush_rewrite_rules( false );
+			delete_option( 'dlm_needs_permalinks_flush' );
+		}
 	}
 
 	/**
