@@ -19,7 +19,7 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 	public function __construct() {
 		$this->bootstrap();
 
-		add_action( 'dlm_settings_defaults_general', array( $this, 'settingsGeneralDefaults' ), 10, 1 );
+		add_filter( 'dlm_default_settings', array( $this, 'defaultWooCommerceSettings' ), 10, 1 );
 		add_filter( 'dlm_dropdown_searchable_post_types', array( $this, 'dropdownSearchablePostTypes' ), 10, 1 );
 		add_filter( 'dlm_dropdown_search_query_default_status', array( $this, 'dropdownSearchQDefaultStatus' ), 10, 2 );
 	}
@@ -82,17 +82,30 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 	 * Default settings
 	 *
 	 * @param $settings
+	 *
+	 * @return array
 	 */
-	public function settingsGeneralDefaults( $settings ) {
-		$settings['auto_delivery']           = 1;
-		$settings['order_delivery_statuses'] = array(
-			'wc-completed'  => array(
-				'send' => '1'
-			),
-			'wc-processing' => array(
-				'send' => '1',
-			)
-		);
+	public function defaultWooCommerceSettings( $settings ) {
+
+		if ( ! isset( $settings[ SettingsData::SECTION_WOOCOMMERCE ] ) ) {
+
+			$default_settings = array(
+				'myaccount_endpoint'       => 1,
+				'auto_delivery'            => 1,
+				'enable_activations_table' => 1,
+				'enable_certificates'      => 1,
+				'order_delivery_statuses'  => array(
+					'wc-completed'  => array(
+						'send' => '1'
+					),
+					'wc-processing' => array(
+						'send' => '1',
+					)
+				)
+			);
+
+			$settings[ SettingsData::SECTION_WOOCOMMERCE ] = apply_filters( 'dlm_default_woocommerce_settings', $default_settings );
+		}
 
 		return $settings;
 	}

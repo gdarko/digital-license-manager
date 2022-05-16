@@ -395,22 +395,24 @@ class Setup {
 	 * Set the default plugin options.
 	 */
 	public static function setDefaultSettings() {
-		$defaultSettingsGeneral  = array(
-			'hide_license_keys' => 0,
-			'disable_api_ssl'   => 0,
-			'safeguard_data'    => 1,
+
+		$default_settings = array(
+			'dlm_settings_general' => array(
+				'hide_license_keys' => 0,
+				'disable_api_ssl'   => 0,
+				'safeguard_data'    => 1,
+			)
 		);
-		$defaultSettingsFrontend = array(
-			'myaccount_endpoint' => '1',
-		);
-		if ( ! get_option( 'dlm_settings_general' ) ) {
-			update_option( 'dlm_settings_general', apply_filters( 'dlm_settings_defaults_general', $defaultSettingsGeneral ) );
+
+		$default_settings = apply_filters( 'dlm_default_settings', $default_settings );
+
+		foreach ( $default_settings as $section => $settings ) {
+			if ( ! get_option( $section ) ) {
+				update_option( $section, apply_filters( $section . '_defaults', $settings ) );
+			}
 		}
-		if ( ! get_option( 'dlm_settings_frontend' ) ) {
-			update_option( 'dlm_settings_frontend', apply_filters( 'dlm_settings_defaults_frontend', $defaultSettingsFrontend ) );
-		}
+
 		update_option( 'dlm_db_version', self::DB_VERSION );
-		flush_rewrite_rules( true );
 	}
 
 	/**
