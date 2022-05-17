@@ -1,19 +1,21 @@
 ﻿=== Digital License Manager ===
 Contributors: darkog, codeverve
-Tags: license key, license, key, software license, serial key, manager, woocommerce, wordpress
+Tags: license key, license manager, software license, serial key, woocommerce, wordpress
 Requires at least: 4.7
 Tested up to: 6.0
 Stable tag: 1.3.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Easily manage and sell your digital licenses through your WordPress website
+Manage and sell your digital licenses keys through your WordPress or WooCommerce website
 
 == Description ==
 
 **Digital License Manager is licensing plugin for WordPress that can be used to keep track of and sell your licenses form your site. Supported and maintained by friendly team behind. 😎**
 
 The plugin is compatible with WooCommerce although it can be used as standalone License Manager without WooCommerce.
+
+As of version 1.3.0 we created a tool to migrate from "License Manager From"
 
 ### ✨ Free Features
 
@@ -161,6 +163,8 @@ To validate a license through the REST API, please follow this <a href="http://d
 * Added RestAPI optional 'token' parameter to the /activate endpoint to reactivate existing license token and not create new one if needed
 * Added Single License page in My Account
 * Added License Activation log in My Account single License page
+* Added Migration tools for migrating from "License Manager for Woocommerce" and "WooCommerce Serial Numbers"
+* Added permalinks flush mechanism to flush permalinks after plugin activation. Fixes issues with 404 pages in WooCommerce "My Account"
 * Removed rendundant valid_for column in the licenses table in favor of expires_at
 * Fixed issue with the pagination and filters on the License Activations page
 * Fixed a problem that caused admins not able to clear activation limit on a license (set unlimited activations)
@@ -169,6 +173,8 @@ To validate a license through the REST API, please follow this <a href="http://d
 * Simplified the Licenses list table in admin screen
 * Simplified the WooCommerce templates directory tree
 * Improved the css/js resource queuing
+* Improved PHP 8.1 compatibility
+* Refactor the Abstracts/Interfaces naming to support PSR standard
 
 = 1.2.2 =
 *Release Date - 23 Mar 2022*

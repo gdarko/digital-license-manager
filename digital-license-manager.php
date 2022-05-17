@@ -14,6 +14,8 @@
  * Domain Path: /i18n/languages/
  */
 
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourcesRepository;
+
 defined( 'ABSPATH' ) || exit;
 
 if ( ! defined( 'DLM_VERSION' ) ) {
