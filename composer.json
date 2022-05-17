@@ -10,19 +10,21 @@
     "ext-json": "*",
     "defuse/php-encryption": "^2.2",
     "ignitekit/wp-notices": "^1.0",
-    "spipu/html2pdf": "^5.2"
+    "spipu/html2pdf": "^5.2",
+    "tecnickcom/tcpdf": "^6.4"
   },
   "config": {
     "optimize-autoloader": true
   },
   "scripts": {
     "clean-up": [
-      "composer reinstall spipu/html2pdf --no-scripts",
+      "composer reinstall tecnickcom/tcpdf --no-scripts",
+      "rm -rf _tmp",
       "mkdir -p _tmp",
       "cp -r vendor/tecnickcom/tcpdf/fonts _tmp/fonts",
       "rm -rf vendor/tecnickcom/tcpdf/fonts/*",
-      "cp _tmp/fonts/dejavusans.* vendor/tecnickcom/tcpdf/fonts",
       "cp _tmp/fonts/courier.* vendor/tecnickcom/tcpdf/fonts",
+      "cp _tmp/fonts/helvetica.* vendor/tecnickcom/tcpdf/fonts",
       "rm -rf _tmp"
     ],
     "post-install-cmd": [

@@ -457,9 +457,9 @@ class Licenses {
 
 		$pdf = new TCPDF( 'P', 'mm', 'A4' );
 		$pdf->AddPage();
-		$pdf->AddFont( 'DejaVuSans', '', 'dejavusans.php' );
+		$pdf->AddFont( 'Helvetica', '', 'helvetica.php' );
 		$pdf->AddFont( 'Courier', '', 'courier.php' );
-		$pdf->setFont('DejaVuSans');
+		$pdf->setFont('Helvetica');
 
 		// Header
 		$pdf->Text( 10, 10, get_bloginfo( 'name' ) );
