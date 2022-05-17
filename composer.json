@@ -6,13 +6,30 @@
     }
   },
   "require": {
-    "defuse/php-encryption": "^2.2",
     "ext-openssl": "*",
     "ext-json": "*",
+    "defuse/php-encryption": "^2.2",
     "ignitekit/wp-notices": "^1.0",
     "spipu/html2pdf": "^5.2"
   },
   "config": {
     "optimize-autoloader": true
+  },
+  "scripts": {
+    "clean-up": [
+      "composer reinstall spipu/html2pdf --no-scripts",
+      "mkdir -p _tmp",
+      "cp -r vendor/tecnickcom/tcpdf/fonts _tmp/fonts",
+      "rm -rf vendor/tecnickcom/tcpdf/fonts/*",
+      "cp _tmp/fonts/dejavusans.* vendor/tecnickcom/tcpdf/fonts",
+      "cp _tmp/fonts/courier.* vendor/tecnickcom/tcpdf/fonts",
+      "rm -rf _tmp"
+    ],
+    "post-install-cmd": [
+      "@clean-up"
+    ],
+    "post-update-cmd": [
+      "@clean-up"
+    ]
   }
 }
