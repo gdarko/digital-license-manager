@@ -25,7 +25,7 @@
 		<form id="dlm-license-certificate-download" action="<?php echo home_url(); ?>" method="POST" class="dlm-list-inline-mb-0">
 			<input type="hidden" name="dlm_action" value="license_certificate_download">
 			<input type="hidden" name="dlm_nonce" value="<?php echo wp_create_nonce('dlm_account'); ?>">
-			<input type="hidden" name="license" value="<?php echo $license_key; ?>">
+			<input type="hidden" name="license" value="<?php echo esc_attr($license_key); ?>">
 			<ul class="dlm-list-inline dlm-list-inline-mb-0">
 				<li>
 					<button type="submit" class="woocommerce-button button dlm-button" name="license_certificate_download" value="1">

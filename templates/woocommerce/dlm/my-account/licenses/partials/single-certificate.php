@@ -26,15 +26,15 @@
         <div style="margin-bottom: 35px;">
             <img alt="Logo" src="<?php echo esc_attr( $logo ); ?>" style="max-width: 400px;">
         </div>
-    <?php else: ?>
-        <h3><?php echo $title; ?></h3>
+	<?php else: ?>
+        <h3><?php echo esc_html( $title ); ?></h3>
 	<?php endif; ?>
     <div style="border: 1px solid #ccc;padding:20px; width:800px; margin-top: 30px;">
         <h1 style="font-size: 32px;margin-top: 0; margin-bottom: 30px;">
 			<?php esc_html_e( 'License Certificate', 'digital-license-manager' ); ?>
         </h1>
         <p style="font-size: 16px; margin-bottom: 20px; margin-top:0;">
-			<?php printf( __( ' This document certifies the purchase of license key for: <strong>%s</strong>.', 'digital-license-manager' ), esc_attr( $license_product_name ) ); ?>
+			<?php printf( __( ' This document certifies the purchase of license key for: <strong>%s</strong>.', 'digital-license-manager' ), esc_attr( wp_strip_all_tags( $license_product_name ) ) ); ?>
         </p>
         <p style="font-size: 16px; margin-bottom: 20px; margin-top:0;">
 			<?php esc_html_e( 'Details of the license can be accessed from your dashboard page.', 'digital-license-manger' ); ?>
@@ -45,7 +45,7 @@
 				<?php foreach ( $license_details as $detail ): ?>
                     <tr>
                         <th><?php echo esc_html( $detail['title'] ); ?>:</th>
-                        <td><?php echo esc_html( $detail['value'] ); ?></td>
+                        <td><?php echo esc_html( wp_strip_all_tags( $detail['value'] ) ); ?></td>
                     </tr>
 				<?php endforeach; ?>
                 </tbody>

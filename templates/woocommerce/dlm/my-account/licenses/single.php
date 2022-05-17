@@ -55,7 +55,7 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
     <tr class="woocommerce-table__line-item license_keys">
         <th scope="row"><?php _e( 'License key', 'digital-license-manager' ); ?></th>
         <td>
-			<?php echo $license_key; ?>
+			<?php echo esc_html($license_key); ?>
         </td>
     </tr>
     <tr class="woocommerce-table__line-item activations_limit">
@@ -64,7 +64,7 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
             <p>
                 <span><?php esc_html_e( $timesActivated ); ?></span>
                 <span>/</span>
-                <span><?php echo $activationsLimit; ?></span>
+                <span><?php echo esc_attr($activationsLimit); ?></span>
             </p>
         </td>
     </tr>

@@ -71,9 +71,9 @@ foreach ( $data as $productId => $row ): ?>
                 <td class="license-key-actions">
 					<?php
 					foreach ( $actions as $key => $action ) {
-						$href     = isset( $action['href'] ) ? $action['href'] : '';
-						$cssClass = isset( $action['class'] ) ? $action['class'] : '';
-						$text     = isset( $action['text'] ) ? $action['text'] : '';
+						$href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
+						$cssClass = isset( $action['class'] ) ? esc_attr( $action['class'] ) : '';
+						$text     = isset( $action['text'] ) ? esc_html( $action['text'] ) : '';
 						echo sprintf( '<a href="%s" class="%s">%s</a>', $href, $cssClass, $text );
 					}
 					?>

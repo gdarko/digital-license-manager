@@ -87,18 +87,18 @@ defined( 'ABSPATH' ) || exit; ?>
                         <span><?php echo esc_attr( $activationsLimit ); ?></span>
                     </td>
                     <td>
-						<?php echo DateFormatter::toHtml( $license->getExpiresAt(), ['expires' => true] ); ?>
+						<?php echo DateFormatter::toHtml( $license->getExpiresAt(), [ 'expires' => true ] ); ?>
                     </td>
                     <td>
-						<?php echo LicenseStatus::toHtml( $license, ['style' => 'inline'] ); ?>
+						<?php echo LicenseStatus::toHtml( $license, [ 'style' => 'inline' ] ); ?>
                     </td>
                     <td class="license-key-actions">
 						<?php
 						foreach ( $actions as $key => $action ) {
-							$href     = isset( $action['href'] ) ? $action['href'] : '';
-							$cssClass = isset( $action['class'] ) ? $action['class'] : '';
-							$text     = isset( $action['text'] ) ? $action['text'] : '';
-							$title    = isset( $action['title'] ) ? 'title="' . $action['title'] . '"' : '';
+							$href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
+							$cssClass = isset( $action['class'] ) ? esc_attr( $action['class'] ) : '';
+							$text     = isset( $action['text'] ) ? esc_html( $action['text'] ) : '';
+							$title    = isset( $action['title'] ) ? 'title="' . esc_attr( $action['title'] ) . '"' : '';
 							echo sprintf( '<a href="%s" %s class="%s">%s</a>', $href, $title, $cssClass, $text );
 						}
 						?>

@@ -63,7 +63,7 @@ $actionsEnabled = apply_filters( 'dlm_myaccount_license_activation_row_actions_e
 					if ( empty( $label ) ) {
 						$label = substr( $activation->getToken(), 0, 12 );
 					}
-					echo $label;
+					echo esc_html($label);
 					?>
                 </td>
                 <td>

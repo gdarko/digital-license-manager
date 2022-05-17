@@ -8,10 +8,10 @@ $modal_id = 'dlm-license-export';
 $columns = \IdeoLogix\DigitalLicenseManager\Controllers\Licenses::exportColumns();
 ?>
 
-<div class="modal micromodal-slide" id="<?php echo $modal_id; ?>" aria-hidden="true">
+<div class="modal micromodal-slide" id="<?php echo esc_attr($modal_id); ?>" aria-hidden="true">
     <div class="modal__overlay" tabindex="-1" data-micromodal-close>
         <form method="POST" action="<?php echo admin_url( 'admin-post.php' ); ?>" id="dlm-license-export-form">
-            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="<?php echo $modal_id; ?>-title">
+            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="<?php echo esc_attr($modal_id); ?>-title">
                 <header class="modal__header">
                     <h2 class="modal__title" id="<?php echo esc_attr($modal_id); ?>-title">
 						<?php _e( 'Export Licenses', 'digital-license-manager' ); ?>
@@ -24,7 +24,7 @@ $columns = \IdeoLogix\DigitalLicenseManager\Controllers\Licenses::exportColumns(
 						<?php foreach ( $columns as $column ): ?>
                             <p class="dlm-checkbox-row">
                                 <label>
-                                    <input type="checkbox" name="dlm_export_columns[]" checked value="<?php echo $column['slug']; ?>"> <?php echo $column['name']; ?>
+                                    <input type="checkbox" name="dlm_export_columns[]" checked value="<?php echo esc_attr($column['slug']); ?>"> <?php echo esc_html($column['name']); ?>
                                 </label>
                             </p>
 						<?php endforeach; ?>
