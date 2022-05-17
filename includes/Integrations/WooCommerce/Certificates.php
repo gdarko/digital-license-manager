@@ -223,8 +223,11 @@ class Certificates {
 		 */
 		try {
 			$html2pdf = new Html2Pdf( 'L', 'A4', 'EN' );
+			$html2pdf->addFont( 'DejaVuSans', '', 'dejavusans.php' );
+			$html2pdf->addFont( 'Courier', '', 'courier.php' );
+			$html2pdf->setDefaultFont('DejaVuSans');
 			$html2pdf->writeHTML( $content );
-			$html2pdf->output( 'final.pdf' );
+			$html2pdf->output( 'license-certificate-'.$license->getId().'.pdf', 'D' );
 		} catch ( Html2PdfException $e ) {
 			$html2pdf->clean();
 			$formatter = new ExceptionFormatter( $e );

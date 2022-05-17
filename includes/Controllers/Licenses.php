@@ -459,6 +459,7 @@ class Licenses {
 		$pdf->AddPage();
 		$pdf->AddFont( 'DejaVuSans', '', 'dejavusans.php' );
 		$pdf->AddFont( 'Courier', '', 'courier.php' );
+		$pdf->setFont('DejaVuSans');
 
 		// Header
 		$pdf->Text( 10, 10, get_bloginfo( 'name' ) );
