@@ -37,7 +37,7 @@ class StringHasher {
 	 * @return string
 	 */
 	public static function activation( $license_key ) {
-		return sha1( sprintf( '%s-%s-%s-%s', $license_key, time(), mt_rand( 0, 100000000 ), HttpHelper::clientIp() ) );
+		return sha1( sprintf( '%s%s%s%s', $license_key, self::random(), mt_rand( 10000, 1000000 ), HttpHelper::clientIp() ) );
 	}
 
 	/**

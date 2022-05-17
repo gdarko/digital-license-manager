@@ -154,7 +154,7 @@ class License {
 			return new WP_Error( 'data_error', sprintf( __( "The license key '%s' already exists", 'digital-license-manager' ), $licenseKey ), array( 'code' => 409 ) );
 		}
 
-		if ( !empty($expiresAt) ) {
+		if ( ! empty( $expiresAt ) ) {
 			try {
 				new DateTime( $expiresAt );
 			} catch ( Exception $e ) {
@@ -289,7 +289,7 @@ class License {
 
 		// Times activated max
 		if ( array_key_exists( 'activations_limit', $licenseData ) ) {
-			$updateData['activations_limit'] = is_numeric(  $licenseData['activations_limit'] ) ? absint(  $licenseData['activations_limit'] ) : null;
+			$updateData['activations_limit'] = is_numeric( $licenseData['activations_limit'] ) ? absint( $licenseData['activations_limit'] ) : null;
 		}
 
 		// Update the stock
@@ -369,11 +369,10 @@ class License {
 	 *
 	 * @param string $licenseKey The license key to be activated.
 	 * @param array $params
-	 * @param null|string $token
 	 *
 	 * @return LicenseActivation|WP_Error
 	 */
-	public static function activate( $licenseKey, $params, $token = null ) {
+	public static function activate( $licenseKey, $params ) {
 
 		$activationLabel = isset( $params['label'] ) ? $params['label'] : '';
 		$activationMeta  = isset( $params['meta'] ) && is_array( $params['meta'] ) ? $params['meta'] : array();
@@ -420,10 +419,15 @@ class License {
 		// Activate the license key
 		try {
 
+			$newToken = self::generateActivationToken( $licenseKey );
+			if ( is_null( $newToken ) ) {
+				return new WP_Error( 'data_error', sprintf( 'Unable to generate activation token hash for license: %s', $licenseKey ), array( 'status' => 404 ) );
+			}
+
 			/* @var LicenseActivation $licenseActivation */
 			$activationParams = array(
 				'license_id' => $license->getId(),
-				'token'      => StringHasher::activation( $licenseKey ),
+				'token'      => $newToken,
 				'source'     => ActivationSource::API,
 				'ip_address' => HttpHelper::clientIp(),
 				'user_agent' => HttpHelper::userAgent(),
@@ -991,5 +995,31 @@ class License {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Generates activation token
+	 *
+	 * @param $licenseKey
+	 *
+	 * @return string|null
+	 */
+	public static function generateActivationToken( $licenseKey ) {
+		$token    = StringHasher::activation( $licenseKey );
+		$reps     = 0;
+		$max_reps = 20;
+		while ( true ) {
+			if ( (int) LicenseActivationResourcesRepository::instance()->countBy( [ 'token' => $token ] ) === 0 ) {
+				break;
+			} else if ( $reps > $max_reps ) {
+				$token = null; // Do not enter in infinite loop.
+				break;
+			} else {
+				$token = StringHasher::activation( $licenseKey );
+			}
+			$reps ++;
+		}
+
+		return $token;
 	}
 }
