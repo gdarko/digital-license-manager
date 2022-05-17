@@ -7,3 +7,4 @@ vendor/*
 .idea
 .idea/*
 /composer.phar
+composer.lock
