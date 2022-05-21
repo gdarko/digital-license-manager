@@ -49,7 +49,7 @@ class Settings extends Singleton {
 				'priority'          => 10,
 				'sanitize_callback' => array( $this, 'sanitizeGeneral' ),
 				'sections'          => array(
-					'licenses'       => array(
+					'licenses' => array(
 						'name'     => __( 'Licenses', 'digital-license-manager' ),
 						'page'     => 'licenses',
 						'priority' => 10,
@@ -74,9 +74,9 @@ class Settings extends Singleton {
 							),
 						)
 					),
-					'certifications' => array(
-						'name'     => __( 'Certifications', 'digital-license-manager' ),
-						'page'     => 'certifications',
+					'branding' => array(
+						'name'     => __( 'Branding', 'digital-license-manager' ),
+						'page'     => 'branding',
 						'priority' => 10,
 						'fields'   => array(
 							10 => array(
@@ -90,7 +90,7 @@ class Settings extends Singleton {
 							)
 						)
 					),
-					'rest_api'       => array(
+					'rest_api' => array(
 						'name'     => __( 'REST API', 'digital-license-manager' ),
 						'page'     => 'rest_api',
 						'priority' => 20,
@@ -106,7 +106,7 @@ class Settings extends Singleton {
 							)
 						)
 					),
-					'other'          => array(
+					'other'    => array(
 						'name'     => __( 'Other', 'digital-license-manager' ),
 						'page'     => 'other',
 						'priority' => 30,
@@ -130,6 +130,13 @@ class Settings extends Singleton {
 				'url'      => add_query_arg( 'tab', 'rest_api', $baseUrl ),
 				'priority' => 20,
 				'callback' => array( $this, 'renderRestApi' ),
+			),
+			'help'     => array(
+				'name'     => __( 'Help', 'digital-license-manager' ),
+				'slug'     => 'help',
+				'url'      => add_query_arg( 'tab', 'help', $baseUrl ),
+				'priority' => 30,
+				'callback' => array( $this, 'renderHelpTab' )
 			),
 
 		), $baseUrl );
@@ -432,17 +439,29 @@ class Settings extends Singleton {
 
 
 	/**
+	 * Renders the help tab
+	 * @return void
+	 */
+	public function renderHelpTab() {
+		include_once DLM_ABSPATH . 'templates/admin/settings/page-help.php';
+	}
+
+
+	/**
+	 * Note: Modified version of WordPress do_settings_sections()
+	 *
 	 * Prints out all settings sections added to a particular settings page
 	 *
 	 * Part of the Settings API. Use this in a settings page callback function
 	 * to output all the sections and fields that were added to that $page with
 	 * add_settings_section() and add_settings_field()
 	 *
-	 * @global array $wp_settings_sections Storage array of all settings sections added to admin pages.
+	 * @param string $page The slug name of the page whose settings sections you want to output.
+	 *
 	 * @global array $wp_settings_fields Storage array of settings fields and info about their pages/sections.
 	 * @since 2.7.0
 	 *
-	 * @param string $page The slug name of the page whose settings sections you want to output.
+	 * @global array $wp_settings_sections Storage array of all settings sections added to admin pages.
 	 */
 	protected function do_settings_sections( $page ) {
 		global $wp_settings_sections, $wp_settings_fields;
