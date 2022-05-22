@@ -10,18 +10,23 @@ namespace IdeoLogix\DigitalLicenseManager\Enums;
 abstract class ActivationSource {
 
 	/**
-	 * Enumerator value used for generators.
+	 * Enumerator value
 	 *
 	 * @var int
 	 */
 	const WEB = 1;
 
 	/**
-	 * Enumerator value used for generators.
+	 * Enumerator value
 	 *
 	 * @var int
 	 */
 	const API = 2;
+
+	/**
+	 * Enumerator value
+	 */
+	const MIGRATION = 3;
 
 
 	/**
@@ -37,6 +42,8 @@ abstract class ActivationSource {
 			$str = __( 'Web', 'digital-license-manager' );
 		} else if ( $src === self::API ) {
 			$str = __( 'API', 'digital-license-manager' );
+		} else if ( $src === self::MIGRATION ) {
+			$str = __( 'Migration', 'digital-license-manager' );
 		} else {
 			$str = __( 'Other', 'digital-license-manager' );
 		}

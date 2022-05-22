@@ -59,3 +59,16 @@ if ( ! function_exists( 'digital_license_manager' ) ) {
 }
 
 digital_license_manager();
+
+
+add_action('init', function(){
+
+	if(isset($_GET['testtesttest'])) {
+		$lll = new \IdeoLogix\DigitalLicenseManager\Tools\Migration\Migrators\LMFW();
+		echo '<pre>';
+		$lll->test();
+		echo '</pre>';
+		die;
+	}
+
+});

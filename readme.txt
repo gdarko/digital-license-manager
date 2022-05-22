@@ -156,7 +156,7 @@ To validate a license through the REST API, please follow this <a href="http://d
 == Changelog ==
 
 = 1.3.0 =
-*Release Date - 16 May 2022*
+*Release Date - 22 May 2022*
 
 * Added Support for WordPress 6.0 and WooCommerce 6.5
 * Added License Certifications feature in PDF format (integrates in WooCommerce and Licenses table admin screens)
@@ -165,6 +165,7 @@ To validate a license through the REST API, please follow this <a href="http://d
 * Added License Activation log in My Account single License page
 * Added Migration tools for migrating from "License Manager for Woocommerce" and "WooCommerce Serial Numbers"
 * Added permalinks flush mechanism to flush permalinks after plugin activation. Fixes issues with 404 pages in WooCommerce "My Account"
+* Added "Help" page in "Settings"
 * Removed rendundant valid_for column in the licenses table in favor of expires_at
 * Fixed issue with the pagination and filters on the License Activations page
 * Fixed a problem that caused admins not able to clear activation limit on a license (set unlimited activations)
@@ -175,6 +176,7 @@ To validate a license through the REST API, please follow this <a href="http://d
 * Improved the css/js resource queuing
 * Improved PHP 8.1 compatibility
 * Refactor the Abstracts/Interfaces naming to support PSR standard
+* Upgraded jQuery UI css version to v1.13.1
 
 = 1.2.2 =
 *Release Date - 23 Mar 2022*

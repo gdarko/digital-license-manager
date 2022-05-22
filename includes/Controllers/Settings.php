@@ -3,6 +3,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractTool;
 use IdeoLogix\DigitalLicenseManager\Abstracts\SettingsFieldsTrait;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Singleton;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\ApiKey as ApiKeyResourceModel;
@@ -10,12 +11,22 @@ use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\ApiKey as Ap
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Users;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\ListTables\ApiKeys;
+use IdeoLogix\DigitalLicenseManager\Tools\Migration\Migration;
 
 /**
  * Class Settings
  * @package IdeoLogix\DigitalLicenseManager\Controllers
  */
 class Settings extends Singleton {
+
+	/**
+	 * List of allowed tools.
+	 * @var string[]
+	 */
+	protected $tools = [
+		'migration' => Migration::class
+	];
+
 
 	use SettingsFieldsTrait;
 
@@ -24,14 +35,8 @@ class Settings extends Singleton {
 	 */
 	public function __construct() {
 		add_action( 'dlm_settings_sanitized', array( $this, 'afterSanitize' ), 10, 2 );
-	}
+		add_action( 'wp_ajax_dlm_handle_tool_process', array( $this, 'handleToolProcess' ), 50 );
 
-	/**
-	 * The settings url
-	 * @return string|void
-	 */
-	public static function getSettingsUrl() {
-		return admin_url( sprintf( 'admin.php?page=%s', PageSlug::SETTINGS ) );
 	}
 
 	/**
@@ -131,11 +136,18 @@ class Settings extends Singleton {
 				'priority' => 20,
 				'callback' => array( $this, 'renderRestApi' ),
 			),
+			'tools'    => array(
+				'name'     => __( 'Tools', 'digital-license-manager' ),
+				'slug'     => 'tools',
+				'url'      => add_query_arg( 'tab', 'tools', $baseUrl ),
+				'priority' => 30,
+				'callback' => array( $this, 'renderToolsTab' )
+			),
 			'help'     => array(
 				'name'     => __( 'Help', 'digital-license-manager' ),
 				'slug'     => 'help',
 				'url'      => add_query_arg( 'tab', 'help', $baseUrl ),
-				'priority' => 30,
+				'priority' => 40,
 				'callback' => array( $this, 'renderHelpTab' )
 			),
 
@@ -437,6 +449,14 @@ class Settings extends Singleton {
 		}
 	}
 
+	/**
+	 * Renders the tools tab
+	 * @return void
+	 */
+	public function renderToolsTab() {
+		$tools = $this->tools;
+		include_once DLM_ABSPATH . 'templates/admin/settings/page-tools.php';
+	}
 
 	/**
 	 * Renders the help tab
@@ -446,6 +466,61 @@ class Settings extends Singleton {
 		include_once DLM_ABSPATH . 'templates/admin/settings/page-help.php';
 	}
 
+
+	/**
+	 * Handles tool process
+	 * @return void
+	 */
+	public function handleToolProcess() {
+		if ( ! check_ajax_referer( 'dlm-migration', '_wpnonce', false ) ) {
+			wp_send_json_error( [ 'message' => __( 'Permission denied.' ) ] );
+			exit;
+		} else {
+
+			$tool_id = isset( $_POST['tool'] ) ? sanitize_text_field( $_POST['tool'] ) : null;
+			if ( is_null( $tool_id ) || ! isset( $this->tools[ $tool_id ] ) ) {
+				wp_send_json_error( [ 'message' => __( 'Unknown tool selected.' ) ] );
+				exit;
+			}
+
+			$step       = isset( $_POST['step'] ) ? intval( $_POST['step'] ) : null;
+			$page       = isset( $_POST['page'] ) ? intval( $_POST['page'] ) : null;
+			$identifier = isset( $_POST['identifier'] ) ? sanitize_text_field( $_POST['identifier'] ) : null;
+
+			/* @var AbstractTool $tool */
+			$tool = new $this->tools[ $tool_id ]();
+
+
+			$init = isset( $_POST['init'] ) ? (int) $_POST['init'] : 0;
+			if ( $init ) {
+
+				$availability = $tool->checkAvailability( $identifier );
+
+				if ( ! is_wp_error( $availability ) ) {
+					wp_send_json_success();
+				} else {
+					wp_send_json_error( [ 'message' => $availability->get_error_message() ] );
+				}
+
+			} else {
+
+				$next = $tool->getNextStep( $step, $page, $identifier );
+
+				if ( is_wp_error( $next ) ) {
+					wp_send_json_error( [ 'message' => $next->get_error_message() ] );
+					exit;
+				} else {
+
+					$result               = $tool->doStep( $step, $page, $identifier );
+					$next['step_message'] = is_wp_error( $result ) ? $result->get_error_message() : sprintf( __( 'Page %d of step %d completed successfully.' ), $page, $step );
+					wp_send_json_success( $next );
+
+					exit;
+				}
+			}
+		}
+
+	}
 
 	/**
 	 * Note: Modified version of WordPress do_settings_sections()
@@ -486,6 +561,15 @@ class Settings extends Singleton {
 			do_settings_fields( $page, $section['id'] );
 			echo '</table>';
 		}
+	}
+
+
+	/**
+	 * The settings url
+	 * @return string|void
+	 */
+	public static function getSettingsUrl() {
+		return admin_url( sprintf( 'admin.php?page=%s', PageSlug::SETTINGS ) );
 	}
 
 }

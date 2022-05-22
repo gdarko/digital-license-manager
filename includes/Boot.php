@@ -109,8 +109,8 @@ class Boot extends Singleton {
 		/**
 		 * Library: Select2
 		 */
-		wp_register_style( 'dlm_select2', DLM_ASSETS_URL . 'lib/micromodal/select2.min.css', array(), '4.0.13' );
-		wp_register_script( 'dlm_select2', DLM_ASSETS_URL . 'lib/micromodal/select2.min.js', array( 'jquery' ), '4.0.13' );
+		wp_register_style( 'dlm_select2', DLM_ASSETS_URL . 'lib/select2/select2.min.css', array(), '4.0.13' );
+		wp_register_script( 'dlm_select2', DLM_ASSETS_URL . 'lib/select2/select2.min.js', array( 'jquery' ), '4.0.13' );
 		wp_register_style( 'dlm_select2_custom', DLM_CSS_URL . 'admin/select2.css' );
 
 		/**
@@ -123,6 +123,8 @@ class Boot extends Singleton {
 		wp_register_style( 'dlm_settings_page', DLM_CSS_URL . 'admin/settings.css', array(), $this->version, 'all' );
 		wp_register_script( 'dlm_products_page', DLM_JS_URL . 'admin/products.js', array( 'jquery' ), $this->version );
 		wp_register_style( 'dlm_manage_page', DLM_CSS_URL . 'admin/manage.css', array(), $this->version, 'all' );
+		wp_register_script( 'dlm_migration_page', DLM_JS_URL . 'admin/migration.js', array( 'jquery' ), $this->version );
+
 
 		/**
 		 * Global assets
@@ -145,7 +147,7 @@ class Boot extends Singleton {
 		/**
 		 * jQuery UI: Stylesheet
 		 */
-		wp_register_style( 'dlm_jquery-ui-datepicker', DLM_CSS_URL . 'lib/jquery-ui.min.css', array(), '1.12.1' );
+		wp_register_style( 'dlm_jquery-ui-datepicker', DLM_ASSETS_URL . 'lib/jquery-ui/jquery-ui.min.css', array(), '1.13.1' );
 	}
 
 	/**
@@ -284,6 +286,13 @@ class Boot extends Singleton {
 			wp_enqueue_media();
 			wp_enqueue_script( 'dlm_settings_page' );
 			wp_enqueue_style( 'dlm_settings_page' );
+			if ( isset( $_GET['tab'] ) && 'tools' === $_GET['tab'] ) {
+				wp_enqueue_script( 'dlm_migration_page' );
+				wp_localize_script( 'dlm_migration_page', 'DLM_Migration', array(
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
+					'nonce'    => wp_create_nonce( 'dlm-migration' ),
+				) );
+			}
 		}
 
 		/**
