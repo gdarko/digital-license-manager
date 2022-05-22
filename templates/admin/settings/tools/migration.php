@@ -15,6 +15,9 @@ defined( 'ABSPATH' ) || exit;
 			<?php endforeach; ?>
         </select>
     </div>
+    <div class="dlm-tool-form-row">
+        <label><input type="checkbox" name="preserve_ids" value="1"> <?php _e( 'Preserve old IDs. Important: By using this option your existing Digital License Manager database will be wiped to free it up for the original IDs. Check this box if you agree.', 'digital-license-manager' ); ?></label>
+    </div>
     <div class="dlm-tool-form-row dlm-tool-form-row-progress" style="display: none;">
         <div class="dlm-tool-progress-bar">
             <p class="dlm-tool-progress-bar-inner">&nbsp;</p>
@@ -59,7 +62,7 @@ defined( 'ABSPATH' ) || exit;
         background-color: #73d95b;
         height: 100%;
         font-size: 0px;
-        transition:width 600ms linear;
+        transition: width 600ms linear;
     }
 
     .dlm-tool-progress-info {

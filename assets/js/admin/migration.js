@@ -58,7 +58,7 @@
                     var percent = response.data.percent;
 
                     $progressbarValue.css('width', percent + '%');
-                    $progressInfoValue.text(message);
+                    $progressInfoValue.text(message + ' ' + '('+percent+'%)');
 
                     if (next_step > 0 && next_page > 0) {
                         setTimeout(function () {

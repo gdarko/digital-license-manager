@@ -29,13 +29,145 @@ class LMFW extends AbstractToolMigrator {
 	 * @return array|\WP_Error
 	 */
 	public function getSteps() {
+
+		$default_per_page = 25;
+
+		$tables = $this->getTables();
+
+		$query_prod = $this->getProducts( 1, $default_per_page, 'ids' );
+		$query_ord  = $this->getOrders( 1, $default_per_page, 'ids' );
+
+
 		return [
-			1 => array( 'name' => 'Licenses', 'pages' => 3 ),
-			2 => array( 'name' => 'Generators', 'pages' => 4 ),
-			3 => array( 'name' => 'API Keys', 'pages' => 5 ),
-			4 => array( 'name' => 'Products', 'pages' => 6 ),
-			5 => array( 'name' => 'Orders', 'pages' => 7 )
+			1 => array(
+				'name'  => 'Licenses',
+				'pages' => $this->getPageCount( $this->getRecordsCount( $tables['licenses'] ), $default_per_page )
+			),
+			2 => array(
+				'name'  => 'Generators',
+				'pages' => $this->getPageCount( $this->getRecordsCount( $tables['generators'] ), $default_per_page )
+			),
+			3 => array(
+				'name'  => 'API Keys',
+				'pages' => $this->getPageCount( $this->getRecordsCount( $tables['api_keys'] ), $default_per_page )
+			),
+			4 => array(
+				'name'  => 'Products',
+				'pages' => $this->getPageCount( $query_prod['total'], $default_per_page )
+			),
+			5 => array(
+				'name'  => 'Orders',
+				'pages' => $this->getPageCount( $query_ord['total'], $default_per_page )
+			),
+			/*6 => array(
+				'name'  => 'Settings',
+				'pages' => 1
+			)*/
 		];
+	}
+
+	/**
+	 * Return the tables
+	 * @return string[]
+	 */
+	protected function getTables() {
+		global $wpdb;
+
+		return [
+			'licenses'     => $wpdb->prefix . 'lmfwc_licenses',
+			'generators'   => $wpdb->prefix . 'lmfwc_generators',
+			'api_keys'     => $wpdb->prefix . 'lmfwc_api_keys',
+			'license_meta' => $wpdb->prefix . 'lmfwc_licenses_meta',
+		];
+	}
+
+	/**
+	 * Return the orders
+	 *
+	 * @param $page
+	 * @param $per_page
+	 * @param string $return
+	 *
+	 * @return array|\WP_Error
+	 */
+	public function getProducts( $page, $per_page, $return = 'objects' ) {
+
+		if ( ! function_exists( '\wc_get_products' ) ) {
+			return new \WP_Error( 'WooCommerce is not active.' );
+		}
+
+		$args = array(
+			'meta_key'     => 'dlm_licensed_product',
+			'meta_value'   => 1,
+			'meta_compare' => '=',
+			'type'         => array( 'simple', 'variation' ),
+			'paginate'     => true,
+			'limit'        => $per_page,
+			'page'         => $page,
+			'return'       => $return,
+		);
+
+		$query = (array) \wc_get_products( $args );
+
+		return $query;
+	}
+
+	/**
+	 * Return the orders
+	 *
+	 * @param $page
+	 * @param $per_page
+	 * @param string $return
+	 *
+	 * @return array|\WP_Error
+	 */
+	public function getOrders( $page, $per_page, $return = 'objects' ) {
+
+		if ( ! function_exists( '\wc_get_orders' ) ) {
+			return new \WP_Error( 'WooCommerce is not active.' );
+		}
+
+		$args = array(
+			'status'       => 'any',
+			'meta_key'     => 'lmfwc_order_complete',
+			'meta_value'   => 1,
+			'meta_compare' => '=',
+			'paginate'     => true,
+			'limit'        => $per_page,
+			'page'         => $page,
+			'return'       => $return
+		);
+
+		$query = (array) \wc_get_orders( $args );
+
+		return $query;
+	}
+
+	/**
+	 * Get page count
+	 * @return float
+	 */
+	public function getPageCount( $total, $per_page = 20 ) {
+		if ( $total <= $per_page ) {
+			return 1;
+		} else {
+			return (int) ceil( $total / $per_page );
+		}
+	}
+
+	/**
+	 * Return the database results
+	 *
+	 * @param $table
+	 * @param $page
+	 * @param $per_page
+	 *
+	 * @return int
+	 */
+	protected function getRecordsCount( $table ) {
+		global $wpdb;
+
+		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM %s", $table ) );
 	}
 
 	/**
@@ -85,7 +217,7 @@ class LMFW extends AbstractToolMigrator {
 
 				foreach ( $old_rows as $row ) {
 
-					$license_key = $this->decrypt( $row['license_ley'] );
+					$license_key = $this->decrypt( $row['license_key'] );
 					$expires_at  = ( empty( $row['expires_at'] )
 					                 && ! empty( $row['valid_for'] )
 					                 && ! empty( $row['created_at'] ) ) ? DateFormatter::addDaysInFuture( $row['valid_for'], $row['created_at'], 'Y-m-d H:i:s' ) : $row['expires_at'];
@@ -119,7 +251,7 @@ class LMFW extends AbstractToolMigrator {
 							for ( $i = 0; $i < $row['times_activated_max']; $i ++ ) {
 								LicenseActivationResourceRepository::instance()->insert( array(
 									'token'      => LicenseUtil::generateActivationToken( $license_key ),
-									'license_id' => $new_row->id,
+									'license_id' => $new_row->getId(),
 									'label'      => __( 'Untitled' ),
 									'source'     => ActivationSource::MIGRATION,
 								) );
@@ -131,7 +263,7 @@ class LMFW extends AbstractToolMigrator {
 							foreach ( $old_meta_rows as $old_meta_row ) {
 								unset( $old_meta_row['meta_id'] );
 								if ( ! $preserve_ids ) {
-									$old_meta_row['license_id'] = $new_row->id;
+									$old_meta_row['license_id'] = $new_row->getId();
 								}
 								LicenseMetaResourceRepository::instance()->insert( $old_meta_row );
 							}
@@ -139,7 +271,7 @@ class LMFW extends AbstractToolMigrator {
 
 						if ( ! $preserve_ids ) {
 							LicenseMetaResourceRepository::instance()->insert( array(
-								'license_id' => $new_row->id,
+								'license_id' => $new_row->getId(),
 								'meta_key'   => 'migrated_from',
 								'meta_value' => $row['id'],
 							) );
@@ -163,6 +295,10 @@ class LMFW extends AbstractToolMigrator {
 						]
 					] );
 				}
+
+				delete_transient( 'dlm_generator_map' );
+
+				$generator_map = [];
 
 				foreach ( $old_rows as $row ) {
 
@@ -188,8 +324,13 @@ class LMFW extends AbstractToolMigrator {
 						$new_row_data['id'] = $row['id'];
 					}
 
-					GeneratorResourceRepository::instance()->insert( $new_row_data );
+					$new_row = GeneratorResourceRepository::instance()->insert( $new_row_data );
+					if ( ! empty( $new_row ) ) {
+						$generator_map[ $row['id'] ] = $new_row->getId();
+					}
 				}
+
+				set_transient( 'dlm_generator_map', $generator_map, HOUR_IN_SECONDS * 24 );
 
 				break;
 			case 3:
@@ -258,6 +399,45 @@ class LMFW extends AbstractToolMigrator {
 				break;
 			case 4:
 
+				$query = $this->getProducts( $page, $per_page );
+				if ( ! empty( $query['products'] ) ) {
+					$generator_map = get_transient( 'dlm_generator_map' );
+					foreach ( $query['products'] as $product ) {
+						/* @var \WC_Product $product */
+						$quantity      = (int) get_post_meta( $product->get_id(), 'lmfwc_licensed_product_delivered_quantity', true );
+						$useGenerator  = (int) get_post_meta( $product->get_id(), 'lmfwc_licensed_product_use_generator', true );
+						$generator     = (int) get_post_meta( $product->get_id(), 'lmfwc_licensed_product_assigned_generator', true );
+						$generator_new = isset( $generator_map[ $generator ] ) ? (int) $generator_map[ $generator ] : $generator;
+						$product->update_meta_data( 'dlm_licensed_product', 1 );
+						$product->update_meta_data( 'dlm_licensed_product_delivered_quantity', $quantity );
+						if ( $useGenerator && $generator_new ) {
+							$product->update_meta_data( 'dlm_licensed_product_licenses_source', 'generators' );
+							$product->update_meta_data( 'dlm_licensed_product_assigned_generator', $generator_new );
+						} else {
+							$product->update_meta_data( 'dlm_licensed_product_licenses_source', 'stock' );
+						}
+						$product->save_meta_data();
+					}
+				}
+				break;
+
+			case 5:
+
+				$query = $this->getOrders( $page, $per_page );
+				if ( ! empty( $query['orders'] ) ) {
+					foreach ( $query['orders'] as $order ) {
+						/* @var \WC_Order $order */
+						$order->update_meta_data( 'dlm_order_complete', 1 );
+						$order->save_meta_data();
+					}
+				}
+
+				break;
+			case 6:
+
+				$settings_general      = (array) get_option( 'lmfwc_settings_general', array() );
+				$settings_order_status = (array) get_option( 'lmfwc_settings_order_status', array() );
+
 				break;
 
 		}
@@ -268,10 +448,86 @@ class LMFW extends AbstractToolMigrator {
 	}
 
 	/**
+	 * Return the database results
+	 *
+	 * @param $table
+	 * @param $page
+	 * @param $per_page
+	 *
+	 * @return array[]
+	 */
+	protected function getRecords( $table, $page, $per_page ) {
+		global $wpdb;
+
+		$offset = $page <= 1 ? 0 : ( $page - 1 ) * $per_page;
+		$query  = $wpdb->prepare( "SELECT * FROM {$table} LIMIT %d, %d", $offset, $per_page );
+
+		return $wpdb->get_results( $query, ARRAY_A );
+	}
+
+	/**
+	 * Decrypt license
+	 *
+	 * @param $license_key
+	 *
+	 * @return string
+	 * @throws \Defuse\Crypto\Exception\BadFormatException
+	 * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+	 * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
+	 */
+	protected function decrypt( $license_key ) {
+		return \Defuse\Crypto\Crypto::decrypt( $license_key, Key::loadFromAsciiSafeString( $this->find3rdPartyDefuse() ) );
+	}
+
+	/**
+	 * Get encryption defuse key.
+	 * @return string|null
+	 */
+	protected function find3rdPartyDefuse() {
+
+		if ( defined( 'LMFWC_PLUGIN_DEFUSE' ) ) {
+			return LMFWC_PLUGIN_DEFUSE;
+		}
+
+		if ( is_null( $this->upload_dir ) ) {
+			$this->upload_dir = wp_upload_dir()['basedir'] . '/lmfwc-files/';
+		}
+
+		if ( file_exists( $this->upload_dir . 'defuse.txt' ) ) {
+			return (string) file_get_contents( $this->upload_dir . 'defuse.txt' );
+		}
+
+		return null;
+	}
+
+	/**
+	 * Return the database results
+	 *
+	 * @param $table
+	 * @param $page
+	 * @param $per_page
+	 *
+	 * @return array[]
+	 */
+	protected function getLicenseMeta( $license_id ) {
+		global $wpdb;
+
+		$tables = $this->getTables();
+		$table  = $tables['license_meta'];
+		$query  = $wpdb->prepare( "SELECT * FROM {$table} WHERE license_id=%d", $license_id );
+
+		return $wpdb->get_results( $query, ARRAY_A );
+	}
+
+	/**
 	 * Check if the it is possible to faciliate migration
 	 * @return bool|\WP_Error
 	 */
 	public function checkAvailability() {
+
+		if ( ! function_exists( '\WC' ) ) {
+			return new \WP_Error( __( 'Please activate WooCommerce before starting with migration', 'digital-license-manager' ) );
+		}
 
 		global $wpdb;
 
@@ -300,28 +556,6 @@ class LMFW extends AbstractToolMigrator {
 
 	}
 
-
-	/**
-	 * Get encryption defuse key.
-	 * @return string|null
-	 */
-	protected function find3rdPartyDefuse() {
-
-		if ( defined( 'LMFWC_PLUGIN_DEFUSE' ) ) {
-			return LMFWC_PLUGIN_DEFUSE;
-		}
-
-		if ( is_null( $this->upload_dir ) ) {
-			$this->upload_dir = wp_upload_dir()['basedir'] . '/lmfwc-files/';
-		}
-
-		if ( file_exists( $this->upload_dir . 'defuse.txt' ) ) {
-			return (string) file_get_contents( $this->upload_dir . 'defuse.txt' );
-		}
-
-		return null;
-	}
-
 	/**
 	 * Get encryption secret key
 	 */
@@ -342,96 +576,9 @@ class LMFW extends AbstractToolMigrator {
 		return null;
 	}
 
-	/**
-	 * Return the database results
-	 *
-	 * @param $table
-	 * @param $page
-	 * @param $per_page
-	 *
-	 * @return array[]
-	 */
-	protected function getRecords( $table, $page, $per_page ) {
-		global $wpdb;
-
-		$offset = ( $page - 1 ) * $per_page;
-		$query  = $wpdb->prepare( "SELECT * FROM {$table} LIMIT %d, %d", $offset, $per_page );
-
-		return $wpdb->get_results( $query, ARRAY_A );
-	}
-
-	/**
-	 * Return the database results
-	 *
-	 * @param $table
-	 * @param $page
-	 * @param $per_page
-	 *
-	 * @return array[]
-	 */
-	protected function getLicenseMeta( $license_id ) {
-		global $wpdb;
-
-		$tables = $this->getTables();
-		$table  = $tables['license_meta'];
-		$query  = $wpdb->prepare( "SELECT * FROM {$table} WHERE license_id=%d", $license_id );
-
-		return $wpdb->get_results( $query, ARRAY_A );
-	}
-
-	/**
-	 * Return the database results
-	 *
-	 * @param $table
-	 * @param $page
-	 * @param $per_page
-	 *
-	 * @return int
-	 */
-	protected function getRecordsCount( $table ) {
-		global $wpdb;
-
-		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table}" ) );
-	}
-
-	/**
-	 * Return the tables
-	 * @return string[]
-	 */
-	protected function getTables() {
-		global $wpdb;
-
-		return [
-			'licenses'     => $wpdb->prefix . 'lmfwc_licenses',
-			'generators'   => $wpdb->prefix . 'lmfwc_generators',
-			'api_keys'     => $wpdb->prefix . 'lmfwc_api_keys',
-			'license_meta' => $wpdb->prefix . 'lmfwc_licenses_meta',
-		];
-	}
-
-
-	/**
-	 * Decrypt license
-	 *
-	 * @param $license_key
-	 *
-	 * @return string
-	 * @throws \Defuse\Crypto\Exception\BadFormatException
-	 * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-	 * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
-	 */
-	protected function decrypt( $license_key ) {
-		return \Defuse\Crypto\Crypto::decrypt( $license_key, Key::loadFromAsciiSafeString( $this->find3rdPartyDefuse() ) );
-	}
-
-
 	public function test() {
-		$license = $this->decrypt( 'def50200bc45ee1a86c42673a0f7b7d835d4e00ae186b6fc02dc8659f20a9aa1896f987be981000e158e6a08c16f048d34f1f79361d633ed6946e15d843fa08c675f3588fa1eb6edbfe94a89b4cc8dee51158834c997018e6b624cece7340724f306319138e5b3' );
-		var_dump( $license );
-		var_dump( CryptoHelper::hash( $license ) );
-		var_dump( CryptoHelper::encrypt( $license ) );
-		var_dump( CryptoHelper::decrypt( CryptoHelper::encrypt( $license ) ) );
-
-
+		$data2 = $this->getProducts( 1, 3 );
+		var_dump( $data2 );
+		echo 'done';
 	}
 }
