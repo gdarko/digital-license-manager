@@ -16,7 +16,10 @@ defined( 'ABSPATH' ) || exit;
         </select>
     </div>
     <div class="dlm-tool-form-row">
-        <label><input type="checkbox" name="preserve_ids" value="1"> <?php _e( 'Preserve old IDs. Important: By using this option your existing Digital License Manager database will be wiped to free it up for the original IDs. Check this box if you agree.', 'digital-license-manager' ); ?></label>
+        <label>
+            <input type="checkbox" name="preserve_ids" value="1">
+            <small style="color:red;"><?php _e( 'Preserve old IDs. If checked, your existing Digital License Manager database will be wiped to remove/free used IDs. Use this ONLY if you are absolutely sure what you are doing and if your app depend on the existing license/generator IDs.', 'digital-license-manager' ); ?></small>
+        </label>
     </div>
     <div class="dlm-tool-form-row dlm-tool-form-row-progress" style="display: none;">
         <div class="dlm-tool-progress-bar">
@@ -29,44 +32,3 @@ defined( 'ABSPATH' ) || exit;
         <button type="submit" class="button button-small button-primary"><?php _e( 'Migrate', 'digital-license-manager' ); ?></button>
     </div>
 </form>
-
-
-<style>
-
-    .dlm-tool-form-row {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-
-    .dlm-tool-form-row label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-
-    .dlm-tool-progress-info, .dlm-tool-progress-bar, .dlm-tool-form-row #identifier {
-        max-width: 360px;
-        width: 100%;
-    }
-
-    .dlm-tool-progress-bar {
-        position: relative;
-        height: 20px;
-        border: 1px solid #cccccc;
-    }
-
-    .dlm-tool-progress-bar-inner {
-        position: absolute;
-        left: 0;
-        top: 0;
-        background-color: #73d95b;
-        height: 100%;
-        font-size: 0px;
-        transition: width 600ms linear;
-    }
-
-    .dlm-tool-progress-info {
-        text-align: center;
-        font-size: 12px;
-    }
-</style>

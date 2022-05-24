@@ -1,15 +1,14 @@
 (function ($) {
 
-    function migration_init($form, callback) {
+    function tools_init($form, callback) {
 
         var data = $form.serializeArray();
         data.push({name: 'init', value: 1});
 
-
         $.ajax({
             type: 'POST',
             cache: false,
-            url: DLM_Migration.ajax_url + '?action=dlm_handle_tool_process&_wpnonce=' + DLM_Migration.nonce,
+            url: DLM_Tools.ajax_url + '?action=dlm_handle_tool_process&_wpnonce=' + DLM_Tools.nonce,
             data: data,
             success: function (response) {
                 if (response.success) {
@@ -25,7 +24,7 @@
 
     }
 
-    function migration_process($form, step, page) {
+    function tools_process($form, step, page) {
 
         var data = $form.serializeArray();
 
@@ -47,28 +46,27 @@
         $.ajax({
             type: 'POST',
             cache: false,
-            url: DLM_Migration.ajax_url + '?action=dlm_handle_tool_process&_wpnonce=' + DLM_Migration.nonce,
+            url: DLM_Tools.ajax_url + '?action=dlm_handle_tool_process&_wpnonce=' + DLM_Tools.nonce,
             data: data,
             success: function (response) {
                 if (response.success) {
-
                     var next_step = response.data.next_step;
                     var next_page = response.data.next_page;
                     var message = response.data.message;
                     var percent = response.data.percent;
 
                     $progressbarValue.css('width', percent + '%');
-                    $progressInfoValue.text(message + ' ' + '('+percent+'%)');
+                    $progressInfoValue.text(message + ' ' + '(' + percent + '%)');
 
                     if (next_step > 0 && next_page > 0) {
                         setTimeout(function () {
-                            migration_process($form, next_step, next_page)
+                            tools_process($form, next_step, next_page)
                         }, 2000);
                     } else {
                         // Remove navigation prompt
                         window.onbeforeunload = null;
                         $submitButton.removeClass('disabled');
-                        alert('Process finished.');
+                        $submitButton.hide();
                     }
                 }
             },
@@ -84,8 +82,8 @@
 
         var $self = $(this);
 
-        migration_init($self, function () {
-            migration_process($self, 1, 0);
+        tools_init($self, function () {
+            tools_process($self, 1, 0);
         });
 
         return false;

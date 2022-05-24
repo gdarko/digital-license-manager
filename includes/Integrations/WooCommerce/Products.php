@@ -19,12 +19,12 @@ class Products {
 	/**
 	 * @var string
 	 */
-	const ADMIN_TAB_NAME = 'license_manager_tab';
+	const ADMIN_TAB_NAME = 'digital-license-manager';
 
 	/**
 	 * @var string
 	 */
-	const ADMIN_TAB_TARGET = 'license_manager_product_data';
+	const ADMIN_TAB_TARGET = 'digital-license-manager-data';
 
 	/**
 	 * ProductData constructor.
@@ -34,10 +34,7 @@ class Products {
 		add_filter( 'woocommerce_product_data_tabs', array( $this, 'productTab' ), 10, 1 );
 		add_action( 'woocommerce_product_data_panels', array( $this, 'productTabDataPanel' ), 10, 1 );
 		add_action( 'save_post_product', array( $this, 'productSave' ), 10, 1 );
-		add_action( 'woocommerce_product_after_variable_attributes', array(
-			$this,
-			'variableProductDataPanel'
-		), 10, 3 );
+		add_action( 'woocommerce_product_after_variable_attributes', array( $this, 'variableProductDataPanel' ), 10, 3 );
 		add_action( 'woocommerce_save_product_variation', array( $this, 'variableProductSave' ), 10, 2 );
 		add_action( 'admin_notices', array( $this, 'adminNotices' ), 10 );
 	}
@@ -69,7 +66,7 @@ class Products {
 			'<style>#woocommerce-product-data ul.wc-tabs li.%s_options a:before { font-family: %s; content: "%s"; }</style>',
 			self::ADMIN_TAB_NAME,
 			'dashicons',
-			'\f160'
+			'\f112'
 		);
 	}
 
@@ -390,7 +387,7 @@ class Products {
 					'type'   => 'select',
 					'params' => array(
 						'id'            => 'dlm_licensed_product',
-						'label'         => esc_html__( 'Sell license key', 'digital-license-manager' ),
+						'label'         => esc_html__( 'Sell license keys', 'digital-license-manager' ),
 						'description'   => esc_html__( 'Enable license key delivery for this product', 'digital-license-manager' ),
 						'value'         => (int) $this->getMeta( $product->get_Id(), 'dlm_licensed_product', 0 ),
 						'cbvalue'       => 1,

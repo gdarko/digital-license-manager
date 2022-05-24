@@ -123,7 +123,8 @@ class Boot extends Singleton {
 		wp_register_style( 'dlm_settings_page', DLM_CSS_URL . 'admin/settings.css', array(), $this->version, 'all' );
 		wp_register_script( 'dlm_products_page', DLM_JS_URL . 'admin/products.js', array( 'jquery' ), $this->version );
 		wp_register_style( 'dlm_manage_page', DLM_CSS_URL . 'admin/manage.css', array(), $this->version, 'all' );
-		wp_register_script( 'dlm_migration_page', DLM_JS_URL . 'admin/migration.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'dlm_tools_page', DLM_JS_URL . 'admin/tools.js', array( 'jquery' ), $this->version );
+		wp_register_style( 'dlm_tools_page', DLM_CSS_URL . 'admin/tools.css', array(), $this->version, 'all' );
 
 
 		/**
@@ -287,10 +288,11 @@ class Boot extends Singleton {
 			wp_enqueue_script( 'dlm_settings_page' );
 			wp_enqueue_style( 'dlm_settings_page' );
 			if ( isset( $_GET['tab'] ) && 'tools' === $_GET['tab'] ) {
-				wp_enqueue_script( 'dlm_migration_page' );
-				wp_localize_script( 'dlm_migration_page', 'DLM_Migration', array(
+				wp_enqueue_script( 'dlm_tools_page' );
+				wp_enqueue_style( 'dlm_tools_page' );
+				wp_localize_script( 'dlm_tools_page', 'DLM_Tools', array(
 					'ajax_url' => admin_url( 'admin-ajax.php' ),
-					'nonce'    => wp_create_nonce( 'dlm-migration' ),
+					'nonce'    => wp_create_nonce( 'dlm-tools' ),
 				) );
 			}
 		}

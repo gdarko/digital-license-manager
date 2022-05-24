@@ -36,7 +36,6 @@ class Settings extends Singleton {
 	public function __construct() {
 		add_action( 'dlm_settings_sanitized', array( $this, 'afterSanitize' ), 10, 2 );
 		add_action( 'wp_ajax_dlm_handle_tool_process', array( $this, 'handleToolProcess' ), 50 );
-
 	}
 
 	/**
@@ -278,7 +277,7 @@ class Settings extends Singleton {
 			settings_fields( sprintf( 'dlm_settings_%s_group', $tab['slug'] ) );
 			$sections = isset( $tab['sections'] ) ? $tab['sections'] : array();
 			foreach ( $sections as $page => $section ) {
-				$this->do_settings_sections( 'dlm_' . $page );
+				$this->doSettingsSections( 'dlm_' . $page );
 			}
 			submit_button();
 			echo '</form>';
@@ -472,7 +471,7 @@ class Settings extends Singleton {
 	 * @return void
 	 */
 	public function handleToolProcess() {
-		if ( ! check_ajax_referer( 'dlm-migration', '_wpnonce', false ) ) {
+		if ( ! check_ajax_referer( 'dlm-tools', '_wpnonce', false ) || ! current_user_can( 'dlm_manage_settings' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Permission denied.' ) ] );
 			exit;
 		} else {
@@ -538,7 +537,7 @@ class Settings extends Singleton {
 	 *
 	 * @global array $wp_settings_sections Storage array of all settings sections added to admin pages.
 	 */
-	protected function do_settings_sections( $page ) {
+	protected function doSettingsSections( $page ) {
 		global $wp_settings_sections, $wp_settings_fields;
 
 		if ( ! isset( $wp_settings_sections[ $page ] ) ) {
@@ -558,7 +557,7 @@ class Settings extends Singleton {
 				continue;
 			}
 			echo '<table class="form-table" role="presentation">';
-			do_settings_fields( $page, $section['id'] );
+			\do_settings_fields( $page, $section['id'] );
 			echo '</table>';
 		}
 	}

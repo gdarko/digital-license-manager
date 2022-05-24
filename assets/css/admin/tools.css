@@ -1,0 +1,40 @@
+.dlm-tool-form-row {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.dlm-tool-form-row label span, .dlm-tool-form-row label small {
+    font-weight: normal;
+}
+
+.dlm-tool-form-row label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.dlm-tool-progress-info, .dlm-tool-progress-bar, .dlm-tool-form-row #identifier {
+    max-width: 360px;
+    width: 100%;
+}
+
+.dlm-tool-progress-bar {
+    position: relative;
+    height: 20px;
+    border: 1px solid #cccccc;
+}
+
+.dlm-tool-progress-bar-inner {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: #73d95b;
+    height: 100%;
+    font-size: 0px;
+    transition: width 600ms linear;
+}
+
+.dlm-tool-progress-info {
+    text-align: center;
+    font-size: 12px;
+}
