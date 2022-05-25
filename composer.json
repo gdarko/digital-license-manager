@@ -18,14 +18,7 @@
   },
   "scripts": {
     "clean-up": [
-      "composer reinstall tecnickcom/tcpdf --no-scripts",
-      "rm -rf _tmp",
-      "mkdir -p _tmp",
-      "cp -r vendor/tecnickcom/tcpdf/fonts _tmp/fonts",
-      "rm -rf vendor/tecnickcom/tcpdf/fonts/*",
-      "cp _tmp/fonts/courier.* vendor/tecnickcom/tcpdf/fonts",
-      "cp _tmp/fonts/helvetica.* vendor/tecnickcom/tcpdf/fonts",
-      "rm -rf _tmp"
+      "bash scripts/clean_up.sh"
     ],
     "post-install-cmd": [
       "@clean-up"

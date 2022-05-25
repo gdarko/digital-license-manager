@@ -24,4 +24,4 @@ zip -r digital-license-manager.zip digital-license-manager \
 -x "digital-license-manager/composer.lock" \
 -x "digital-license-manager/phpunit.xml.dist"
 
-echo "NEW VERSION READY"
+echo "New version ready."
