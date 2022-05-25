@@ -83,7 +83,7 @@
         var $self = $(this);
 
         tools_init($self, function () {
-            tools_process($self, 1, 0);
+            tools_process($self, 1, 1);
         });
 
         return false;
