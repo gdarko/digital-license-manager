@@ -16,7 +16,6 @@ Manage and sell your digital licenses keys through your WordPress or WooCommerce
 
 The plugin is compatible with WooCommerce although it can be used as standalone License Manager without WooCommerce.
 
-As of version 1.3.0 we created a tool to migrate from "License Manager From"
 
 ### ✨ Free Features
 
@@ -137,6 +136,10 @@ To deactivate a license through the REST API, please follow this <a href="http:/
 
 To validate a license through the REST API, please follow this <a href="http://docs.codeverve.com/digital-license-manager/rest-api/licenses/validate/" target="_blank">guide</a>.
 
+= I am using "License Manager for WooCommerce", how to migrate to Digital License Manager?
+
+To migrate to Digital License Manager, please navigate to "License Manager" > "Settings" > "Tools" and here you can find the migration tool. This will copy your data to Digital License Manager supported format. If you used the REST API, we will be providing a fallback REST API for license activation/deactivation/validation endpoints that will be the same url structure as the "License Manager for WooCommerce" but utilize our backend APIs for backwards compatibility. Stay tuned!
+
 == Screenshots ==
 
 1. Licenses - Overview page
@@ -158,7 +161,7 @@ To validate a license through the REST API, please follow this <a href="http://d
 == Changelog ==
 
 = 1.3.0 =
-*Release Date - 22 May 2022*
+*Release Date - 25 May 2022*
 
 * Added Support for WordPress 6.0 and WooCommerce 6.5
 * Added License Certifications feature in PDF format (integrates in WooCommerce and Licenses table admin screens)
