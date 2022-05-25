@@ -1,20 +1,15 @@
 <?php
 /**
  * Plugin Name: Digital License Manager
- * Description: Easily manage and sell your digital licenses through your WordPress website. Compatible with WooCommerce for selling licenses, also works without it.
+ * Description: Easily manage and sell your license keys on your website. Compatible with WooCommerce for selling licenses but also works without it.
  * Version: 1.3.0
  * Author: Darko Gjorgjijoski
  * Author URI: https://darkog.com/
- * Requires at least: 4.7
- * Tested up to: 6.0
- * Requires PHP: 5.6
- * WC requires at least: 2.7
- * WC tested up to: 6.5
  * Text Domain: digital-license-manager
  * Domain Path: /i18n/languages/
+ * WC requires at least: 2.7
+ * WC tested up to: 6.5
  */
-
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourcesRepository;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -59,16 +54,3 @@ if ( ! function_exists( 'digital_license_manager' ) ) {
 }
 
 digital_license_manager();
-
-
-add_action('init', function(){
-
-	if(isset($_GET['testtesttest'])) {
-		$lll = new \IdeoLogix\DigitalLicenseManager\Tools\Migration\Migrators\LMFW();
-		echo '<pre>';
-		$lll->test();
-		echo '</pre>';
-		die;
-	}
-
-});

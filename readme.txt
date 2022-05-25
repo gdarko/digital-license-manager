@@ -2,6 +2,7 @@
 Contributors: darkog, codeverve
 Tags: license key, license manager, software license, serial key, woocommerce, wordpress
 Requires at least: 4.7
+Requires PHP: 5.6
 Tested up to: 6.0
 Stable tag: 1.3.0
 License: GPLv3
@@ -24,15 +25,16 @@ As of version 1.3.0 we created a tool to migrate from "License Manager From"
 * Manage License Generators. Makes it possible to generate Licenses by specific rules (separator, chunks, length, allowed characters, prefix, suffix etc)
 * Assign Generators to one or more WooCommerce products to generate Licenses based on the rules of the Generator when the product is purchased on certain Order status
 * Automatically generate, sell and deliver keys through WooCommerce. Supports both Simple and Variable products.
-* License Certificates in PDF format available to users that purchased a License in My Account page when using with WooCommerce
 * Separate page for Licenses in MyAccount when using with WooCommerce
 * Separate page for each License in My Account when using with WooCommerce
+* License Certificates in PDF format downloadable from the single License page in My Account page when using with WooCommerce
 * The purchased Licenses are included in the WooCommerce Emails (completed order, etc)
 * License delivery Order statuses can be selected from the plugin Settings
 * Create, update, activate, deactivate and validate licenses through the REST API
 * Create and update generators through the REST API
 * Import licenses form file
 * Export licenses to PDF or CSV format. Allows column selection
+* Migration tool for migrating from other plugins
 * Works even without WooCommerce. If you want to use the plugin as standalone license manager or if you have another solution for selling the keys, you can use the REST API to create licenses.
 
 ### ✨ PRO Version Features
@@ -163,10 +165,10 @@ To validate a license through the REST API, please follow this <a href="http://d
 * Added RestAPI optional 'token' parameter to the /activate endpoint to reactivate existing license token and not create new one if needed
 * Added Single License page in My Account
 * Added License Activation log in My Account single License page
-* Added Migration tools for migrating from "License Manager for Woocommerce" and "WooCommerce Serial Numbers"
+* Added Migration tool for migrating from "License Manager for Woocommerce"
 * Added permalinks flush mechanism to flush permalinks after plugin activation. Fixes issues with 404 pages in WooCommerce "My Account"
 * Added "Help" page in "Settings"
-* Removed rendundant valid_for column in the licenses table in favor of expires_at
+* Removed redundant valid_for column in the licenses table in favor of expires_at
 * Fixed issue with the pagination and filters on the License Activations page
 * Fixed a problem that caused admins not able to clear activation limit on a license (set unlimited activations)
 * Refreshed admin edit/create screens style
