@@ -22,6 +22,7 @@ zip -r digital-license-manager.zip digital-license-manager \
 -x "digital-license-manager/.travis.yml" \
 -x "digital-license-manager/composer.json" \
 -x "digital-license-manager/composer.lock" \
--x "digital-license-manager/phpunit.xml.dist"
+-x "digital-license-manager/phpunit.xml.dist" \
+-x "digital-license-manager/README.md";
 
 echo "New version ready."
