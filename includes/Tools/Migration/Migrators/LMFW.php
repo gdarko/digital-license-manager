@@ -248,7 +248,7 @@ class LMFW extends AbstractToolMigrator {
 					if ( ! empty( $new_row ) ) {
 
 						if ( ! empty( $row['times_activated'] ) ) {
-							for ( $i = 0; $i < $row['times_activated_max']; $i ++ ) {
+							for ( $i = 0; $i < $row['times_activated']; $i ++ ) {
 								LicenseActivationResourceRepository::instance()->insert( array(
 									'token'      => LicenseUtil::generateActivationToken( $license_key ),
 									'license_id' => $new_row->getId(),
