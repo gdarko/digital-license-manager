@@ -3,7 +3,11 @@
 BASEDIR=$(dirname "$0")
 cd $BASEDIR
 
-if [[ ! -f "../vendor/tecnickcom/tcpdf/fonts/.reduced" ]]; then
+fonts_count=$(ls -l ../vendor/tecnickcom/tcpdf/fonts/ | wc -l)
+
+echo "Found $fonts_count fonts. Cleaning up..."
+
+if [ $fonts_count -gt 3 ]; then
     rm -rf _tmp
     mkdir _tmp
     cp -r ../vendor/tecnickcom/tcpdf/fonts _tmp/fonts
@@ -11,7 +15,6 @@ if [[ ! -f "../vendor/tecnickcom/tcpdf/fonts/.reduced" ]]; then
     cp _tmp/fonts/courier.* ../vendor/tecnickcom/tcpdf/fonts
     cp _tmp/fonts/helvetica.* ../vendor/tecnickcom/tcpdf/fonts
     rm -rf _tmp
-    touch ../vendor/tecnickcom/tcpdf/fonts/.reduced
     echo 'Clean up done.';
 else
     echo "Clean up not needed."
