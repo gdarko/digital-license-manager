@@ -83,9 +83,12 @@ The following client libraries and integrations are available:
 
 ### ➕ Issues / Feature Requests
 
-The development is done on our <a href="https://github.com/gdarko/digital-license-manager/issues/new">Github Repository</a>, feel free to contribute.
+The development can be tracked on our <a href="https://github.com/gdarko/digital-license-manager">Github Repository</a>.
 
-<a href="https://github.com/gdarko/digital-license-manager/issues/new">New Feature Request</a>
+Any contributions are welcome! Feel free to submit pull requests or report issues.
+
+* <a href="https://github.com/gdarko/digital-license-manager">Digital License Manager on Github</a>
+
 
 ### ✔ Important Note
 
