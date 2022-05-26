@@ -81,13 +81,13 @@ The following client libraries and integrations are available:
 * <a href="https://github.com/ideologix/dlm-plugin-pro" target="_blank">Premium Plugin Example (Requires PRO)</a>
 * <a href="https://github.com/ideologix/dlm-theme-pro" target="_blank">Premium Theme Example (Requires PRO)</a>
 
-### ➕ Feature Requests
+### ➕ Issues / Feature Requests
 
-Feature requests are welcome! Feel free to submit your ideas on the link below:
+The development is done on our <a href="https://github.com/gdarko/digital-license-manager/issues/new">Github Repository</a>, feel free to contribute.
 
 <a href="https://github.com/gdarko/digital-license-manager/issues/new">New Feature Request</a>
 
-### ✔ Important
+### ✔ Important Note
 
 The plugin will create  `wp-content/uploads/dlm-files` directory which stores the cryptographic secrets that are required to decrypt the licenses. If you lose this file, you will lose your license keys as well. **Make sure you backup those files!**
 
