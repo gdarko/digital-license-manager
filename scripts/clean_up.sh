@@ -15,6 +15,7 @@ if [ $fonts_count -gt 3 ]; then
     cp _tmp/fonts/courier.* ../vendor/tecnickcom/tcpdf/fonts
     cp _tmp/fonts/helvetica.* ../vendor/tecnickcom/tcpdf/fonts
     rm -rf ../vendor/tecnickcom/tcpdf/examples
+    rm -rf ../vendor/spipu/html2pdf/examples
     rm -rf _tmp
     echo 'Clean up done.';
 else
