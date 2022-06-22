@@ -100,9 +100,9 @@ class Activations extends AbstractListTable {
 			}
 
 			if ( 'inactive' === $status ) {
-				$sql .= $wpdb->prepare( ' AND ' . $this->table . '.deactivated_at IS NOT NULL' );
+				$sql .= esc_sql( ' AND ' . $this->table . '.deactivated_at IS NOT NULL' );
 			} else {
-				$sql .= $wpdb->prepare( ' AND ' . $this->table . '.deactivated_at IS NULL' );
+				$sql .= esc_sql( ' AND ' . $this->table . '.deactivated_at IS NULL' );
 			}
 
 		}
