@@ -54,7 +54,7 @@ if [ ! $(git tag -l "$NEWVERSION1") ]; then
 
   echo "Pushing latest commit to origin, with tags"
   git push origin master
-  git push origin master --tags
+  git push origin "$NEWVERSION1"
 else
   echo "Git tag already exists. Skipping"
 fi
