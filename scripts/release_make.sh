@@ -43,10 +43,10 @@ else
   echo "Versions match in README.txt and PHP file. Let's proceed..."
 fi
 
+COMMITMSG="Version $NEWVERSION1"
+
 cd $PLUGIN_DIR
 if [ ! $(git tag -l "$NEWVERSION1") ]; then
-  echo -e "Enter a commit message for this new version: \c"
-  read COMMITMSG
   git commit -am "$COMMITMSG"
 
   echo "Tagging new version in git"

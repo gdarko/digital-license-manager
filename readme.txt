@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce, w
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 6.0
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -162,6 +162,11 @@ To migrate to Digital License Manager, please navigate to "License Manager" > "S
 15. Re-send licenses via Order page
 
 == Changelog ==
+
+= 1.3.1 =
+*Release Date - 26 Jun 2022*
+
+* Fix PHP warning on Admin > Activations page
 
 = 1.3.0 =
 *Release Date - 25 May 2022*

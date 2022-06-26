@@ -24,7 +24,7 @@ Need help? Please consult our [documentation](https://docs.codeverve.com/digital
 To create a release file, run: 
 
 ```
-bash scripts/prepare_release.sh
+bash scripts/release_prepare.sh
 ```
 
 ### Cleaning up
