@@ -65,7 +65,7 @@ svn co $SVNURL $SVNPATH
 # If SVN tag does not exists, create it.
 if [ ! -d "$SVNPATH/tags/$NEWVERSION1" ]; then
 
-  echo "Changing directory to SVN and committing to trunk"
+  echo "Changing directory to SVN and committing to trunk..."
   cd $SVNPATH/trunk/
 
   # re-construct PLUGIN_SLUG dir
