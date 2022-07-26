@@ -21,7 +21,7 @@ if ( $migrationMode === Migrator::MODE_UP ) {
 
 	foreach ( $results as $result ) {
 
-		$use_stock     = get_post_meta( $results['post_id'], 'dlm_licensed_product_use_stock', true );
+		$use_stock     = get_post_meta( $result['post_id'], 'dlm_licensed_product_use_stock', true );
 		$use_generator = get_post_meta( $result['post_id'], 'dlm_licensed_product_use_generator', true );
 
 		if ( $use_stock || $use_generator ) {
