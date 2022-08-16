@@ -192,7 +192,7 @@ class Products {
 				$field_id                = $field['params']['id'];
 				$field['params']['id']   = esc_attr( $field_id . '_' . $loop );
 				$field['params']['name'] = esc_attr( $field_id . '[' . $loop . ']' );
-				if ( $field['params']['custom_attributes']['data-conditional-source'] ) {
+				if ( isset( $field['params']['custom_attributes']['data-conditional-source'] ) ) {
 					$field['params']['custom_attributes']['data-conditional-source'] = esc_attr( $field['params']['custom_attributes']['data-conditional-source'] . '_' . $loop );
 				}
 				if ( function_exists( 'woocommerce_wp_' . $field['type'] ) ) {
