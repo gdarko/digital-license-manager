@@ -385,7 +385,8 @@ class Settings extends Singleton {
 					$field_args          = isset( $field['args'] ) ? $field['args'] : array();
 					$field_args['key']   = $option_name;
 					$field_args['field'] = $field['id'];
-					$field_args['value'] = isset( $settings[ $slug ][ $field['id'] ] ) ? $settings[ $slug ][ $field['id'] ] : null;
+					$default             = $field['default'] ?? null;
+					$field_args['value'] = isset( $settings[ $slug ][ $field['id'] ] ) ? $settings[ $slug ][ $field['id'] ] : $default;
 					if ( ! is_null( $field_callback ) ) {
 						add_settings_field(
 							$field['id'],
