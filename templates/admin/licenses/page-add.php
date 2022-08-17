@@ -25,7 +25,7 @@
                     <th scope="row"><label for="single__expires_at"><?php esc_html_e('Expires at', 'digital-license-manager');?></label></th>
                     <td>
                         <input name="expires_at" id="single__expires_at" class="regular-text" type="text">
-                        <p class="description"><?php esc_html_e('The exact date this license key expires on. Leave blank if the license key does not expire. Cannot be used at the same time as the "Valid for (days)" field.', 'digital-license-manager');?></p>
+                        <p class="description"><?php esc_html_e('The exact date at midnight UTC that this license key expires on. Leave blank if the license key does not expire. Cannot be used at the same time as the "Valid for (days)" field.', 'digital-license-manager');?></p>
                     </td>
                 </tr>
 

@@ -52,7 +52,7 @@ if ( empty( $expiresAt ) || '0000-00-00 00:00:00' === $expiresAt ) {
                     </th>
                     <td>
                         <input name="expires_at" id="edit__expires_at" class="regular-text" type="text" value="<?php echo esc_html( $expiresAt ); ?>">
-                        <p class="description"><?php esc_html_e( 'The exact date this license key expires on. Leave blank if the license key does not expire. Cannot be used at the same time as the "Valid for (days)" field.', 'digital-license-manager' ); ?></p>
+                        <p class="description"><?php esc_html_e( 'The exact date at midnight UTC that this license key expires on. Leave blank if the license key does not expire. Cannot be used at the same time as the "Valid for (days)" field.', 'digital-license-manager' ); ?></p>
                     </td>
                 </tr>
 
