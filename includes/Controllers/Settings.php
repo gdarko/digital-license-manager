@@ -123,7 +123,8 @@ class Settings extends Singleton {
 									'label'   => __( "Enable this option to safe guard the data on plugin removal/uninstallation.", 'digital-license-manager' ),
 									'explain' => __( "If enabled your data will NOT be removed once this plugin is uninstalled. This is usually prefered option in case you want to use the plugin again in future.", 'digital-license-manager' ),
 								)
-							)
+							),
+							20 => $this->getExpirationFormatField(),
 						),
 					)
 				),
@@ -164,6 +165,33 @@ class Settings extends Singleton {
 
 		return $tabList;
 
+	}
+
+	/**
+	 * Returns an array of setting field arguments for the expiration format.
+	 *
+	 * @return array
+	 */
+	protected function getExpirationFormatField() {
+
+		return array(
+			'id'       => 'expiration_format',
+			'title'    => __( 'Expiration format', 'digital-license-manager' ),
+			'callback' => array( $this, 'fieldText' ),
+			'args'     => array(
+				'explain'   => sprintf(
+					/* translators: %1$s: date format merge code, %2$s: time format merge code, %3$s: general settings URL, %4$s: link to date and time formatting documentation */
+					__( '%1$s and %2$s will be replaced by formats from <a href="%3$s">Administration > Settings > General</a>. %4$s', 'digital-license-manager' ),
+					'{{DATE_FORMAT}}',
+					'{{TIME_FORMAT}}',
+					esc_url( admin_url( 'options-general.php' ) ),
+					__( '<a href="https://wordpress.org/support/article/formatting-date-and-time/">Documentation on date and time formatting</a>.' ),
+				),
+				'label_for' => 'expiration_format',
+				'size'      => 40,
+			),
+			'default'  => '{{DATE_FORMAT}}, {{TIME_FORMAT}} T',
+		);
 	}
 
 	/**
@@ -410,6 +438,12 @@ class Settings extends Singleton {
 	 * @return array
 	 */
 	public function sanitizeGeneral( $settings ) {
+
+		// Ensure that the expiration format is not empty.
+		if ( empty( $settings['expiration_format'] ) ) {
+			$expiration_format_field       = $this->getExpirationFormatField();
+			$settings['expiration_format'] = $expiration_format_field['default'];
+		}
 
 		do_action( 'dlm_settings_sanitized', $settings );
 
