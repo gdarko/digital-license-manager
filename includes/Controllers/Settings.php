@@ -181,7 +181,7 @@ class Settings extends Singleton {
 			'args'     => array(
 				'explain'   => sprintf(
 					/* translators: %1$s: date format merge code, %2$s: time format merge code, %3$s: general settings URL, %4$s: link to date and time formatting documentation */
-					__( '%1$s and %2$s will be replaced by formats from <a href="%3$s">Administration > Settings > General</a>. %4$s', 'digital-license-manager' ),
+					__( '<code>%1$s</code> and <code>%2$s</code> will be replaced by formats from <a href="%3$s">Administration > Settings > General</a>. %4$s', 'digital-license-manager' ),
 					'{{DATE_FORMAT}}',
 					'{{TIME_FORMAT}}',
 					esc_url( admin_url( 'options-general.php' ) ),
