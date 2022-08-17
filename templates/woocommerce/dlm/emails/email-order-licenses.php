@@ -27,7 +27,6 @@ defined( 'ABSPATH' ) || exit;
 <div style="margin-bottom: 40px;">
 	<?php foreach ( $data as $row ): ?>
         <table class="td" cellspacing="0" style="width: 100%; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;" border="1">
-            <tbody>
             <thead>
             <tr>
                 <th class="td" scope="col" style="text-align: left;" colspan="2">
@@ -35,6 +34,7 @@ defined( 'ABSPATH' ) || exit;
                 </th>
             </tr>
             </thead>
+			<tbody>
 			<?php
 			/** @var License $license */
 			foreach ( $row['keys'] as $license ):
