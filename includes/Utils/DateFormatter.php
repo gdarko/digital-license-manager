@@ -4,6 +4,7 @@
 namespace IdeoLogix\DigitalLicenseManager\Utils;
 
 use DateTime;
+use IdeoLogix\DigitalLicenseManager\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,6 +15,15 @@ defined( 'ABSPATH' ) || exit;
  * @package IdeoLogix\DigitalLicenseManager\Utils
  */
 class DateFormatter {
+
+	/**
+	 * The expiration date and time format.
+	 *
+	 * @see https://www.php.net/manual/datetime.format.php
+	 *
+	 * @var string
+	 */
+	protected static $expiration_format;
 
 	/**
 	 * Converts valid_for into expires_at.
@@ -52,6 +62,36 @@ class DateFormatter {
 		$dt = \DateTime::createFromFormat( $srcFormat, $value );
 
 		return 'system' === $targetFormat ? $dt->format( get_option( 'date_format' ) ) : $dt->format( $targetFormat );
+	}
+
+	/**
+	 * Returns a format string for expiration dates.
+	 *
+	 * @return string
+	 */
+	public static function getExpirationFormat() {
+
+		if ( empty( self::$expiration_format ) ) {
+
+			$expiration_format = Settings::get( 'expiration_format' );
+			if ( false === $expiration_format ) {
+				$expiration_format = '{{DATE_FORMAT}}, {{TIME_FORMAT}} T';
+			}
+
+			if ( strpos( $expiration_format, '{{DATE_FORMAT}}' ) !== false ) {
+				$date_format       = get_option( 'date_format', 'F j, Y' );
+				$expiration_format = str_replace( '{{DATE_FORMAT}}', $date_format, $expiration_format );
+			}
+
+			if ( strpos( $expiration_format, '{{TIME_FORMAT}}' ) !== false ) {
+				$time_format       = get_option( 'time_format', 'g:i a' );
+				$expiration_format = str_replace( '{{TIME_FORMAT}}', $time_format, $expiration_format );
+			}
+
+			self::$expiration_format = $expiration_format;
+		}
+
+		return self::$expiration_format;
 	}
 
 	/**
