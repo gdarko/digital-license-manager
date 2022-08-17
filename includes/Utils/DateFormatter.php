@@ -116,66 +116,47 @@ class DateFormatter {
 			$args['never'] = __( 'Never', 'digital-license-manager' );
 		}
 
-		static $dateFormat = null;
-		static $gmtOffset = null;
+		$timestampInput = strtotime( $date_str );
 
-		if ( ! $dateFormat ) {
-			$dateFormat = get_option( 'date_format' );
-		}
+		if ( $args['expires'] ) {
 
-		if ( ! $gmtOffset ) {
-			$gmtOffset = get_option( 'gmt_offset' );
-		}
+			if ( empty( $date_str ) || '0000-00-00 00:00:00' === $date_str ) {
+				return sprintf(
+					'<span class="dlm-date dlm-date-valid" title="%s">%s</span>%s',
+					$args['never'],
+					$args['never'],
+					$args['br'] ? '<br/>' : ''
+				);
 
-		try {
-
-			$offsetSeconds  = floatval( $gmtOffset ) * 60 * 60;
-			$timestampInput = strtotime( $date_str ) + $offsetSeconds;
-			$datetimeString = date( 'Y-m-d H:i:s', $timestampInput );
-			$dateInput      = new DateTime( $datetimeString );
-
-			if ( $args['expires'] ) {
-
-				if ( empty( $date_str ) || '0000-00-00 00:00:00' === $date_str ) {
+			} else {
+				$timestampNow = strtotime( 'now' );
+				if ( $timestampNow >= $timestampInput ) {
 					return sprintf(
-						'<span class="dlm-date dlm-date-valid" title="%s">%s</span>%s',
-						$args['never'],
-						$args['never'],
+						'<span class="dlm-date dlm-date-expired" title="%s">%s</span>%s',
+						__( 'Expired' ),
+						wp_date( DateFormatter::getExpirationFormat(), $timestampInput ),
 						$args['br'] ? '<br/>' : ''
 					);
-
 				} else {
-					$timestampNow = strtotime( 'now' ) + $offsetSeconds;
-					if ( $timestampNow >= $timestampInput ) {
-						return sprintf(
-							'<span class="dlm-date dlm-date-expired" title="%s">%s</span>%s',
-							__( 'Expired' ),
-							$dateInput->format( $dateFormat ),
-							$args['br'] ? '<br/>' : ''
-						);
-					} else {
 
-						$diffSeconds = $timestampInput - $timestampNow;
-						$statusClass = $diffSeconds > MONTH_IN_SECONDS ? 'dlm-date-valid' : 'dlm-date-expires-soon';
+					$diffSeconds = $timestampInput - $timestampNow;
+					$statusClass = $diffSeconds > MONTH_IN_SECONDS ? 'dlm-date-valid' : 'dlm-date-expires-soon';
 
-						return sprintf(
-							'<span class="dlm-date %s" title="%s">%s</span>%s',
-							$statusClass,
-							__( 'Active' ),
-							$dateInput->format( $dateFormat ),
-							$args['br'] ? '<br/>' : ''
-						);
-					}
+					return sprintf(
+						'<span class="dlm-date %s" title="%s">%s</span>%s',
+						$statusClass,
+						__( 'Active' ),
+						wp_date( DateFormatter::getExpirationFormat(), $timestampInput ),
+						$args['br'] ? '<br/>' : ''
+					);
 				}
 			}
-
-			return sprintf(
-				'<span class="dlm-date dlm-status">%s</span>',
-				$dateInput->format( $dateFormat ),
-			);
-		} catch ( \Exception $e ) {
-			return '';
 		}
+
+		return sprintf(
+			'<span class="dlm-date dlm-status">%s</span>',
+			wp_date( DateFormatter::getExpirationFormat(), $timestampInput ),
+		);
 	}
 
 }

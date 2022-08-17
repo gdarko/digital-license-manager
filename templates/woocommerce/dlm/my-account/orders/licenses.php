@@ -22,6 +22,7 @@
  */
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
+use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 
 defined( 'ABSPATH' ) || exit; ?>
 
@@ -58,14 +59,10 @@ foreach ( $data as $productId => $row ): ?>
                 </td>
 				<?php if ( $license->getExpiresAt() ): ?>
 					<?php
-					try {
-						$date = new DateTime( $license->getExpiresAt() );
-					} catch ( Exception $e ) {
-						$date = null;
-					}
+					$date = wp_date( DateFormatter::getExpirationFormat(), strtotime( $license->getExpiresAt() ) );
 					?>
                     <td>
-                        <span class="dlm-myaccount-license-key"><?php printf( '%s <strong>%s</strong>', $valid_until, $date ? $date->format( $date_format ) : 'N/A' ); ?></span>
+                        <span class="dlm-myaccount-license-key"><?php printf( '%s <strong>%s</strong>', $valid_until, $date ); ?></span>
                     </td>
 				<?php endif; ?>
                 <td class="license-key-actions">

@@ -11,6 +11,7 @@ use IdeoLogix\DigitalLicenseManager\ListTables\Licenses;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\Generator as GeneratorUtil;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
+use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 use WC_Order;
 use WC_Order_Item_Product;
 use WC_Product;
@@ -311,7 +312,7 @@ class Orders {
 				'heading'     => apply_filters( 'dlm_licenses_table_heading', __( 'Your digital license(s)', 'digital-license-manager' ) ),
 				'valid_until' => apply_filters( 'dlm_licenses_table_valid_until', __( 'Valid until', 'digital-license-manager' ) ),
 				'data'        => $customerLicenseKeys['data'],
-				'date_format' => get_option( 'date_format' ),
+				'date_format' => DateFormatter::getExpirationFormat(),
 				'args'        => apply_filters( 'dlm_template_args_myaccount_licenses', array() )
 			),
 			'',

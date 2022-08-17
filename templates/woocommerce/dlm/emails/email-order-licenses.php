@@ -14,6 +14,7 @@
  */
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License;
+use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -48,14 +49,11 @@ defined( 'ABSPATH' ) || exit;
                     </td>
 
 					<?php if ( $license->getExpiresAt() ): ?><?php
-						try {
-							$date = new DateTime( $license->getExpiresAt() );
-						} catch ( Exception $e ) {
-						}
+						$date = wp_date( DateFormatter::getExpirationFormat(), strtotime( $license->getExpiresAt() ) );
 						?>
                         <td class="td" style="text-align: left; vertical-align: middle; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;">
                             <code><?php
-								printf( '%s <strong>%s</strong>', $valid_until, $date->format( $date_format ) );
+								printf( '%s <strong>%s</strong>', $valid_until, $date );
 								?></code>
                         </td>
 					<?php endif; ?>
