@@ -76,6 +76,7 @@ class Settings extends Singleton {
 									'explain' => __( 'If enabled the system will store new license keys in the database, even if the same key exist.', 'digital-license-manager' ),
 								)
 							),
+							50 => $this->getExpirationFormatField(),
 						)
 					),
 					'branding' => array(
@@ -124,7 +125,6 @@ class Settings extends Singleton {
 									'explain' => __( "If enabled your data will NOT be removed once this plugin is uninstalled. This is usually prefered option in case you want to use the plugin again in future.", 'digital-license-manager' ),
 								)
 							),
-							20 => $this->getExpirationFormatField(),
 						),
 					)
 				),
@@ -176,7 +176,7 @@ class Settings extends Singleton {
 
 		return array(
 			'id'       => 'expiration_format',
-			'title'    => __( 'Expiration format', 'digital-license-manager' ),
+			'title'    => __( 'License expiration format', 'digital-license-manager' ),
 			'callback' => array( $this, 'fieldText' ),
 			'args'     => array(
 				'explain'   => sprintf(
