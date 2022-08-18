@@ -105,7 +105,7 @@ if ( empty( $expiresAt ) || '0000-00-00 00:00:00' === $expiresAt ) {
 							}
 							?>
                         </select>
-                        <p class="description"><?php esc_html_e( 'The product to which the license keys will be assigned.', 'digital-license-manager' ); ?></p>
+                        <p class="description"><?php esc_html_e( 'The order to which the license keys will be assigned.', 'digital-license-manager' ); ?></p>
                     </td>
                 </tr>
 
