@@ -648,7 +648,11 @@ class License {
 		if ( $license->isExpired() ) {
 			return new WP_Error(
 				'license_expired',
-				sprintf( 'The license Key expired on %s (UTC).', $license->getExpiresAt() ),
+				sprintf(
+					/* translators: %s: expiration date */
+					__( 'The license key expired at %s.', 'digital-license-manager' ),
+					wp_date( DateFormatter::getExpirationFormat(), strtotime( $license->getExpiresAt() ) )
+				),
 				array( 'status' => 405 )
 			);
 		}

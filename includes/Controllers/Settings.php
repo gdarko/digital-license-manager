@@ -76,6 +76,7 @@ class Settings extends Singleton {
 									'explain' => __( 'If enabled the system will store new license keys in the database, even if the same key exist.', 'digital-license-manager' ),
 								)
 							),
+							50 => $this->getExpirationFormatField(),
 						)
 					),
 					'branding' => array(
@@ -123,7 +124,7 @@ class Settings extends Singleton {
 									'label'   => __( "Enable this option to safe guard the data on plugin removal/uninstallation.", 'digital-license-manager' ),
 									'explain' => __( "If enabled your data will NOT be removed once this plugin is uninstalled. This is usually prefered option in case you want to use the plugin again in future.", 'digital-license-manager' ),
 								)
-							)
+							),
 						),
 					)
 				),
@@ -164,6 +165,33 @@ class Settings extends Singleton {
 
 		return $tabList;
 
+	}
+
+	/**
+	 * Returns an array of setting field arguments for the expiration format.
+	 *
+	 * @return array
+	 */
+	protected function getExpirationFormatField() {
+
+		return array(
+			'id'       => 'expiration_format',
+			'title'    => __( 'License expiration format', 'digital-license-manager' ),
+			'callback' => array( $this, 'fieldText' ),
+			'args'     => array(
+				'explain'   => sprintf(
+					/* translators: %1$s: date format merge code, %2$s: time format merge code, %3$s: general settings URL, %4$s: link to date and time formatting documentation */
+					__( '<code>%1$s</code> and <code>%2$s</code> will be replaced by formats from <a href="%3$s">Administration > Settings > General</a>. %4$s', 'digital-license-manager' ),
+					'{{DATE_FORMAT}}',
+					'{{TIME_FORMAT}}',
+					esc_url( admin_url( 'options-general.php' ) ),
+					__( '<a href="https://wordpress.org/support/article/formatting-date-and-time/">Documentation on date and time formatting</a>.' ),
+				),
+				'label_for' => 'expiration_format',
+				'size'      => 40,
+			),
+			'default'  => '{{DATE_FORMAT}}, {{TIME_FORMAT}} T',
+		);
 	}
 
 	/**
@@ -385,7 +413,8 @@ class Settings extends Singleton {
 					$field_args          = isset( $field['args'] ) ? $field['args'] : array();
 					$field_args['key']   = $option_name;
 					$field_args['field'] = $field['id'];
-					$field_args['value'] = isset( $settings[ $slug ][ $field['id'] ] ) ? $settings[ $slug ][ $field['id'] ] : null;
+					$default             = $field['default'] ?? null;
+					$field_args['value'] = isset( $settings[ $slug ][ $field['id'] ] ) ? $settings[ $slug ][ $field['id'] ] : $default;
 					if ( ! is_null( $field_callback ) ) {
 						add_settings_field(
 							$field['id'],
@@ -409,6 +438,12 @@ class Settings extends Singleton {
 	 * @return array
 	 */
 	public function sanitizeGeneral( $settings ) {
+
+		// Ensure that the expiration format is not empty.
+		if ( empty( $settings['expiration_format'] ) ) {
+			$expiration_format_field       = $this->getExpirationFormatField();
+			$settings['expiration_format'] = $expiration_format_field['default'];
+		}
 
 		do_action( 'dlm_settings_sanitized', $settings );
 

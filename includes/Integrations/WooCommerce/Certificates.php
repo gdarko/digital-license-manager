@@ -5,6 +5,7 @@ namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
+use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Html2Pdf;
@@ -118,6 +119,12 @@ class Certificates {
 		/**
 		 * Setup the license details
 		 */
+		$expiry_date = $license->getExpiresAt();
+		if ( empty( $expiry_date ) ) {
+			$expiry_date = __( 'Valid Permanently', 'digital-license-manager' );
+		} else {
+			$expiry_date = wp_date( DateFormatter::getExpirationFormat(), strtotime( $expiry_date ) );
+		}
 		$license_details = array(
 			array(
 				'title' => __( 'License ID', 'digital-license-manager' ),
@@ -129,7 +136,7 @@ class Certificates {
 			),
 			array(
 				'title' => __( 'Expiry Date', 'digital-license-manager' ),
-				'value' => empty( $license->getExpiresAt() ) ? __( 'Valid Permanently', 'digital-license-manager' ) : date_i18n( wc_date_format(), strtotime( $license->getExpiresAt() ) ),
+				'value' => $expiry_date,
 			)
 		);
 		if ( $customer ) {

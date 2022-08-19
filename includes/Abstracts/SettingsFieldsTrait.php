@@ -112,4 +112,41 @@ trait SettingsFieldsTrait {
         return ob_get_clean();
 	}
 
+	/**
+	 * Renders a text input field.
+	 *
+	 * @param array $args {
+	 *     Optional arguments.
+	 *
+	 *     @type string $explain A description of the setting.
+	 *     @type string $field   The setting identifier in the option group.
+	 *     @type string $key     The option group name.
+	 *     @type int    $size    The size, in characters, of the text field. Defaults to 20.
+	 *     @type string $value   The setting's value.
+	 * }
+	 */
+	public function fieldText( $args ) {
+
+		$args  = wp_parse_args(
+			$args,
+			array(
+				'explain' => '', // Should be HTML escaped.
+				'field'   => '',
+				'key'     => '',
+				'size'    => '20',
+				'value'   => '',
+			)
+		);
+		$html  = sprintf(
+			'<input type="text" id="%s" name="%s[%s]" value="%s" size="%s">',
+			$args['field'],
+			$args['key'],
+			$args['field'],
+			esc_attr( $args['value'] ),
+			$args['size']
+		);
+		$html .= "<p class='description'>{$args['explain']}</p>";
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $html;
+	}
 }
