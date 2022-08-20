@@ -60,6 +60,9 @@ else
 fi
 
 echo "Creating local copy of SVN repo ..."
+if [ -d "$SVNPATH" ]; then
+  rm -rf $SVNPATH
+fi
 svn co $SVNURL $SVNPATH
 
 # If SVN tag does not exists, create it.
@@ -78,8 +81,18 @@ if [ ! -d "$SVNPATH/tags/$NEWVERSION1" ]; then
   # Update all the files that are not set to be ignored
   echo -e "Enter a SVN username: \c"
   read SVNUSER
-  svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2}' | xargs svn del
-  svn status | grep -v "^.[ \t]*\..*" | grep "^?"  | awk '{print $2}' | xargs svn add
+  DELETED_FILES=$(svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2}')
+  if [ ! -z "$DELETED_FILES" ]
+  then
+      echo $DELETED_FILES | xargs svn del
+  fi
+  UPDATED_FILES=$(svn status | grep -v "^.[ \t]*\..*" | grep "^?"  | awk '{print $2}')
+  if [ ! -z "$UPDATED_FILES" ]
+  then
+      echo $UPDATED_FILES | xargs svn add
+  fi
+
+  # Commit the changes to svn repository
   svn commit --username=$SVNUSER -m "$COMMITMSG"
 
   echo "Creating new SVN tag & committing it"
