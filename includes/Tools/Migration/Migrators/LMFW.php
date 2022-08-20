@@ -444,7 +444,7 @@ class LMFW extends AbstractToolMigrator {
 
 			}
 		} catch ( \Exception $e ) {
-			return ( new \WP_Error( 'conversio_error', sprintf( __( 'Error: %s', 'digital-license-manager' ), $e->getMessage() ) ) );
+			return ( new \WP_Error( 'step_error', sprintf( __( 'Error: %s', 'digital-license-manager' ), $e->getMessage() ) ) );
 		}
 
 		return true;
