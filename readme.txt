@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce, w
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 6.0
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -162,6 +162,15 @@ To migrate to Digital License Manager, please navigate to "License Manager" > "S
 15. Re-send licenses via Order page
 
 == Changelog ==
+
+= 1.3.3 =
+*Release Date - 20 Aug 2022*
+
+* Added option to specify license expiration date/time format in Settings. Props <a href="https://github.com/gdarko/digital-license-manager/pull/6">@pondermatic</a>
+* Fixed issues related to license expiration date/time output consistency. Props <a href="https://github.com/gdarko/digital-license-manager/pull/6">@pondermatic</a>
+* Fixed issues with PHP warnings. Props <a href="https://github.com/gdarko/digital-license-manager/pull/6">@pondermatic</a>
+* Fixed issues in "License Manager for WooCommerce" data migration tool, related to unhandled PHP exceptions.
+* Fixed several typos in "License Manager for WooCommerce" data migration tool.
 
 = 1.3.2 =
 *Release Date - 26 Jul 2022*
