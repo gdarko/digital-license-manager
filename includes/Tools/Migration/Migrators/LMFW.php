@@ -185,6 +185,7 @@ class LMFW extends AbstractToolMigrator {
 	 * Initializes the process
 	 *
 	 * @param $step
+	 * @param $page
 	 * @param array $data
 	 *
 	 * @return bool|\WP_Error
@@ -199,247 +200,251 @@ class LMFW extends AbstractToolMigrator {
 
 		$tables = $this->getTables();
 
-		switch ( $step ) {
+		try {
+			switch ( $step ) {
 
-			/**
-			 * Licenses
-			 */
-			case 1:
-				$old_rows = $this->getRecords( $tables['licenses'], $page, $per_page );
-				if ( $preserve_ids ) {
-					LicenseResourceRepository::instance()->deleteBy( [
-						'id' => [
-							'compare' => '>',
-							'value'   => 0,
-						]
-					] );
-				}
-
-				foreach ( $old_rows as $row ) {
-
-					$license_key = $this->decrypt( $row['license_key'] );
-					$expires_at  = ( empty( $row['expires_at'] )
-					                 && ! empty( $row['valid_for'] )
-					                 && ! empty( $row['created_at'] ) ) ? DateFormatter::addDaysInFuture( $row['valid_for'], $row['created_at'], 'Y-m-d H:i:s' ) : $row['expires_at'];
-
-
-					$new_row_data = array(
-						'order_id'          => $row['order_id'],
-						'product_id'        => $row['product_id'],
-						'user_id'           => $row['user_id'],
-						'license_key'       => CryptoHelper::encrypt( $license_key ),
-						'hash'              => CryptoHelper::hash( $license_key ),
-						'expires_at'        => $expires_at,
-						'source'            => LicenseSource::MIGRATION,
-						'status'            => $row['status'],
-						'activations_limit' => $row['times_activated_max'],
-						'created_at'        => $row['created_at'],
-						'created_by'        => $row['created_by'],
-						'updated_at'        => $row['updated_at'],
-						'updated_by'        => $row['updated_by'],
-					);
-
+				/**
+				 * Licenses
+				 */
+				case 1:
+					$old_rows = $this->getRecords( $tables['licenses'], $page, $per_page );
 					if ( $preserve_ids ) {
-						$new_row_data['id'] = $row['id'];
+						LicenseResourceRepository::instance()->deleteBy( [
+							'id' => [
+								'compare' => '>',
+								'value'   => 0,
+							]
+						] );
 					}
 
-					$new_row = LicenseResourceRepository::instance()->insert( $new_row_data );
+					foreach ( $old_rows as $row ) {
 
-					if ( ! empty( $new_row ) ) {
+						$license_key = $this->decrypt( $row['license_key'] );
+						$expires_at  = ( empty( $row['expires_at'] )
+						                 && ! empty( $row['valid_for'] )
+						                 && ! empty( $row['created_at'] ) ) ? DateFormatter::addDaysInFuture( $row['valid_for'], $row['created_at'], 'Y-m-d H:i:s' ) : $row['expires_at'];
 
-						if ( ! empty( $row['times_activated'] ) ) {
-							for ( $i = 0; $i < $row['times_activated']; $i ++ ) {
-								LicenseActivationResourceRepository::instance()->insert( array(
-									'token'      => LicenseUtil::generateActivationToken( $license_key ),
+
+						$new_row_data = array(
+							'order_id'          => $row['order_id'],
+							'product_id'        => $row['product_id'],
+							'user_id'           => $row['user_id'],
+							'license_key'       => CryptoHelper::encrypt( $license_key ),
+							'hash'              => CryptoHelper::hash( $license_key ),
+							'expires_at'        => $expires_at,
+							'source'            => LicenseSource::MIGRATION,
+							'status'            => $row['status'],
+							'activations_limit' => $row['times_activated_max'],
+							'created_at'        => $row['created_at'],
+							'created_by'        => $row['created_by'],
+							'updated_at'        => $row['updated_at'],
+							'updated_by'        => $row['updated_by'],
+						);
+
+						if ( $preserve_ids ) {
+							$new_row_data['id'] = $row['id'];
+						}
+
+						$new_row = LicenseResourceRepository::instance()->insert( $new_row_data );
+
+						if ( ! empty( $new_row ) ) {
+
+							if ( ! empty( $row['times_activated'] ) ) {
+								for ( $i = 0; $i < $row['times_activated']; $i ++ ) {
+									LicenseActivationResourceRepository::instance()->insert( array(
+										'token'      => LicenseUtil::generateActivationToken( $license_key ),
+										'license_id' => $new_row->getId(),
+										'label'      => __( 'Untitled' ),
+										'source'     => ActivationSource::MIGRATION,
+									) );
+								}
+							}
+
+							$old_meta_rows = $this->getLicenseMeta( $row['id'] );
+							if ( ! empty( $old_meta_rows ) ) {
+								foreach ( $old_meta_rows as $old_meta_row ) {
+									unset( $old_meta_row['meta_id'] );
+									if ( ! $preserve_ids ) {
+										$old_meta_row['license_id'] = $new_row->getId();
+									}
+									LicenseMetaResourceRepository::instance()->insert( $old_meta_row );
+								}
+							}
+
+							if ( ! $preserve_ids ) {
+								LicenseMetaResourceRepository::instance()->insert( array(
 									'license_id' => $new_row->getId(),
-									'label'      => __( 'Untitled' ),
-									'source'     => ActivationSource::MIGRATION,
+									'meta_key'   => 'migrated_from',
+									'meta_value' => $row['id'],
 								) );
 							}
+
+						}
+					}
+
+					break;
+
+				/**
+				 * Generators
+				 */
+				case 2:
+					$old_rows = $this->getRecords( $tables['generators'], $page, $per_page );
+					if ( $preserve_ids ) {
+						GeneratorResourceRepository::instance()->deleteBy( [
+							'id' => [
+								'compare' => '>',
+								'value'   => 0,
+							]
+						] );
+					}
+
+					delete_transient( 'dlm_generator_map' );
+
+					$generator_map = [];
+
+					foreach ( $old_rows as $row ) {
+
+						$new_row_data = array(
+							'name'              => $row['name'],
+							'charset'           => $row['charset'],
+							'chunks'            => $row['chunks'],
+							'chunk_length'      => $row['chunk_length'],
+							'activations_limit' => $row['times_activated_max'],
+							'separator'         => $row['separator'],
+							'prefix'            => $row['prefix'],
+							'suffix'            => $row['suffix'],
+							'expires_in'        => $row['expires_in'],
+							'created_at'        => $row['created_at'],
+							'created_by'        => $row['created_by'],
+							'updated_at'        => $row['updated_at'],
+							'updated_by'        => $row['updated_by'],
+
+
+						);
+
+						if ( $preserve_ids ) {
+							$new_row_data['id'] = $row['id'];
 						}
 
-						$old_meta_rows = $this->getLicenseMeta( $row['id'] );
-						if ( ! empty( $old_meta_rows ) ) {
-							foreach ( $old_meta_rows as $old_meta_row ) {
-								unset( $old_meta_row['meta_id'] );
-								if ( ! $preserve_ids ) {
-									$old_meta_row['license_id'] = $new_row->getId();
-								}
-								LicenseMetaResourceRepository::instance()->insert( $old_meta_row );
+						$new_row = GeneratorResourceRepository::instance()->insert( $new_row_data );
+						if ( ! empty( $new_row ) ) {
+							$generator_map[ $row['id'] ] = $new_row->getId();
+						}
+					}
+
+					set_transient( 'dlm_generator_map', $generator_map, HOUR_IN_SECONDS * 24 );
+
+					break;
+				case 3:
+
+					$old_rows = $this->getRecords( $tables['api_keys'], $page, $per_page );
+					if ( $preserve_ids ) {
+						ApiKeyResourceRepository::instance()->deleteBy( [
+							'id' => [
+								'compare' => '>',
+								'value'   => 0,
+							]
+						] );
+					}
+
+					foreach ( $old_rows as $row ) {
+
+						$new_row_data = array(
+							'user_id'         => $row['user_id'],
+							'description'     => $row['description'],
+							'permissions'     => $row['permissions'],
+							'consumer_key'    => $row['consumer_key'],
+							'consumer_secret' => $row['consumer_secret'],
+							'nonces'          => $row['nonces'],
+							'truncated_key'   => $row['truncated_key'],
+							'last_access'     => $row['last_access'],
+							'created_at'      => $row['created_at'],
+							'created_by'      => $row['created_by'],
+							'updated_at'      => $row['updated_at'],
+							'updated_by'      => $row['updated_by'],
+						);
+
+
+						if ( $preserve_ids ) {
+							$new_row_data['id'] = $row['id'];
+						}
+
+						$new_endpoints    = array();
+						$settings_general = get_option( 'lmfwc_settings_general', array() );
+						if ( ! empty( $settings_general['lmfwc_enabled_api_routes'] ) ) {
+							$map = [
+								'010' => '010',
+								'011' => '011',
+								'012' => '012',
+								'013' => '013',
+								'015' => '014',
+								'016' => '015',
+								'017' => '016',
+								'022' => '017',
+								'023' => '018',
+								'024' => '019',
+								'025' => '020',
+							];
+							foreach ( $map as $dlm_id => $lmfwc_id ) {
+								$value                    = isset( $settings_general['lmfwc_enabled_api_routes'][ $lmfwc_id ] ) ? $settings_general['lmfwc_enabled_api_routes'][ $lmfwc_id ] : 0;
+								$new_endpoints[ $dlm_id ] = $value;
+							}
+							if ( ! empty( $new_endpoints ) ) {
+								$new_row_data['endpoints'] = $new_endpoints;
 							}
 						}
 
-						if ( ! $preserve_ids ) {
-							LicenseMetaResourceRepository::instance()->insert( array(
-								'license_id' => $new_row->getId(),
-								'meta_key'   => 'migrated_from',
-								'meta_value' => $row['id'],
-							) );
+						ApiKeyResourceRepository::instance()->insert( $new_row_data );
+					}
+
+
+					break;
+				case 4:
+
+					$query = $this->getProducts( $page, $per_page );
+					if ( ! empty( $query['products'] ) ) {
+						$generator_map = get_transient( 'dlm_generator_map' );
+						foreach ( $query['products'] as $product ) {
+							/* @var \WC_Product $product */
+							$quantity      = (int) get_post_meta( $product->get_id(), 'lmfwc_licensed_product_delivered_quantity', true );
+							$useGenerator  = (int) get_post_meta( $product->get_id(), 'lmfwc_licensed_product_use_generator', true );
+							$generator     = (int) get_post_meta( $product->get_id(), 'lmfwc_licensed_product_assigned_generator', true );
+							$generator_new = isset( $generator_map[ $generator ] ) ? (int) $generator_map[ $generator ] : $generator;
+							$product->update_meta_data( 'dlm_licensed_product', 1 );
+							$product->update_meta_data( 'dlm_licensed_product_delivered_quantity', $quantity );
+							if ( $useGenerator && $generator_new ) {
+								$product->update_meta_data( 'dlm_licensed_product_licenses_source', 'generators' );
+								$product->update_meta_data( 'dlm_licensed_product_assigned_generator', $generator_new );
+							} else {
+								$product->update_meta_data( 'dlm_licensed_product_licenses_source', 'stock' );
+							}
+							$product->save_meta_data();
 						}
-
 					}
-				}
+					break;
 
-				break;
+				case 5:
 
-			/**
-			 * Generators
-			 */
-			case 2:
-				$old_rows = $this->getRecords( $tables['generators'], $page, $per_page );
-				if ( $preserve_ids ) {
-					GeneratorResourceRepository::instance()->deleteBy( [
-						'id' => [
-							'compare' => '>',
-							'value'   => 0,
-						]
-					] );
-				}
-
-				delete_transient( 'dlm_generator_map' );
-
-				$generator_map = [];
-
-				foreach ( $old_rows as $row ) {
-
-					$new_row_data = array(
-						'name'              => $row['name'],
-						'charset'           => $row['charset'],
-						'chunks'            => $row['chunks'],
-						'chunk_length'      => $row['chunk_length'],
-						'activations_limit' => $row['times_activated_max'],
-						'separator'         => $row['separator'],
-						'prefix'            => $row['prefix'],
-						'suffix'            => $row['suffix'],
-						'expires_in'        => $row['expires_in'],
-						'created_at'        => $row['created_at'],
-						'created_by'        => $row['created_by'],
-						'updated_at'        => $row['updated_at'],
-						'updated_by'        => $row['updated_by'],
-
-
-					);
-
-					if ( $preserve_ids ) {
-						$new_row_data['id'] = $row['id'];
-					}
-
-					$new_row = GeneratorResourceRepository::instance()->insert( $new_row_data );
-					if ( ! empty( $new_row ) ) {
-						$generator_map[ $row['id'] ] = $new_row->getId();
-					}
-				}
-
-				set_transient( 'dlm_generator_map', $generator_map, HOUR_IN_SECONDS * 24 );
-
-				break;
-			case 3:
-
-				$old_rows = $this->getRecords( $tables['api_keys'], $page, $per_page );
-				if ( $preserve_ids ) {
-					ApiKeyResourceRepository::instance()->deleteBy( [
-						'id' => [
-							'compare' => '>',
-							'value'   => 0,
-						]
-					] );
-				}
-
-				foreach ( $old_rows as $row ) {
-
-					$new_row_data = array(
-						'user_id'         => $row['user_id'],
-						'description'     => $row['description'],
-						'permissions'     => $row['permissions'],
-						'consumer_key'    => $row['consumer_key'],
-						'consumer_secret' => $row['consumer_secret'],
-						'nonces'          => $row['nonces'],
-						'truncated_key'   => $row['truncated_key'],
-						'last_access'     => $row['last_access'],
-						'created_at'      => $row['created_at'],
-						'created_by'      => $row['created_by'],
-						'updated_at'      => $row['updated_at'],
-						'updated_by'      => $row['updated_by'],
-					);
-
-
-					if ( $preserve_ids ) {
-						$new_row_data['id'] = $row['id'];
-					}
-
-					$new_endpoints    = array();
-					$settings_general = get_option( 'lmfwc_settings_general', array() );
-					if ( ! empty( $settings_general['lmfwc_enabled_api_routes'] ) ) {
-						$map = [
-							'010' => '010',
-							'011' => '011',
-							'012' => '012',
-							'013' => '013',
-							'015' => '014',
-							'016' => '015',
-							'017' => '016',
-							'022' => '017',
-							'023' => '018',
-							'024' => '019',
-							'025' => '020',
-						];
-						foreach ( $map as $dlm_id => $lmfwc_id ) {
-							$value                    = isset( $settings_general['lmfwc_enabled_api_routes'][ $lmfwc_id ] ) ? $settings_general['lmfwc_enabled_api_routes'][ $lmfwc_id ] : 0;
-							$new_endpoints[ $dlm_id ] = $value;
-						}
-						if ( ! empty( $new_endpoints ) ) {
-							$new_row_data['endpoints'] = $new_endpoints;
+					$query = $this->getOrders( $page, $per_page );
+					if ( ! empty( $query['orders'] ) ) {
+						foreach ( $query['orders'] as $order ) {
+							/* @var \WC_Order $order */
+							$order->update_meta_data( 'dlm_order_complete', 1 );
+							$order->save_meta_data();
 						}
 					}
 
-					ApiKeyResourceRepository::instance()->insert( $new_row_data );
-				}
+					break;
+				case 6:
 
+					$settings_general      = (array) get_option( 'lmfwc_settings_general', array() );
+					$settings_order_status = (array) get_option( 'lmfwc_settings_order_status', array() );
 
-				break;
-			case 4:
+					break;
 
-				$query = $this->getProducts( $page, $per_page );
-				if ( ! empty( $query['products'] ) ) {
-					$generator_map = get_transient( 'dlm_generator_map' );
-					foreach ( $query['products'] as $product ) {
-						/* @var \WC_Product $product */
-						$quantity      = (int) get_post_meta( $product->get_id(), 'lmfwc_licensed_product_delivered_quantity', true );
-						$useGenerator  = (int) get_post_meta( $product->get_id(), 'lmfwc_licensed_product_use_generator', true );
-						$generator     = (int) get_post_meta( $product->get_id(), 'lmfwc_licensed_product_assigned_generator', true );
-						$generator_new = isset( $generator_map[ $generator ] ) ? (int) $generator_map[ $generator ] : $generator;
-						$product->update_meta_data( 'dlm_licensed_product', 1 );
-						$product->update_meta_data( 'dlm_licensed_product_delivered_quantity', $quantity );
-						if ( $useGenerator && $generator_new ) {
-							$product->update_meta_data( 'dlm_licensed_product_licenses_source', 'generators' );
-							$product->update_meta_data( 'dlm_licensed_product_assigned_generator', $generator_new );
-						} else {
-							$product->update_meta_data( 'dlm_licensed_product_licenses_source', 'stock' );
-						}
-						$product->save_meta_data();
-					}
-				}
-				break;
-
-			case 5:
-
-				$query = $this->getOrders( $page, $per_page );
-				if ( ! empty( $query['orders'] ) ) {
-					foreach ( $query['orders'] as $order ) {
-						/* @var \WC_Order $order */
-						$order->update_meta_data( 'dlm_order_complete', 1 );
-						$order->save_meta_data();
-					}
-				}
-
-				break;
-			case 6:
-
-				$settings_general      = (array) get_option( 'lmfwc_settings_general', array() );
-				$settings_order_status = (array) get_option( 'lmfwc_settings_order_status', array() );
-
-				break;
-
+			}
+		} catch ( \Exception $e ) {
+			return ( new \WP_Error( 'conversio_error', sprintf( __( 'Error: %s', 'digital-license-manager' ), $e->getMessage() ) ) );
 		}
 
 		return true;
