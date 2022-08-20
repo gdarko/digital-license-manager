@@ -116,7 +116,6 @@ class DateFormatter {
 			$args['never'] = __( 'Never', 'digital-license-manager' );
 		}
 
-		$timestampInput = strtotime( $date_str );
 
 		if ( $args['expires'] ) {
 
@@ -129,6 +128,7 @@ class DateFormatter {
 				);
 
 			} else {
+				$timestampInput = strtotime( $date_str );
 				$timestampNow = strtotime( 'now' );
 				if ( $timestampNow >= $timestampInput ) {
 					return sprintf(
@@ -154,8 +154,10 @@ class DateFormatter {
 		}
 
 		return sprintf(
-			'<span class="dlm-date dlm-status">%s</span>',
-			wp_date( DateFormatter::getExpirationFormat(), $timestampInput ),
+			'<span class="dlm-date dlm-date-valid" title="%s">%s</span>%s',
+			$args['never'],
+			$args['never'],
+			$args['br'] ? '<br/>' : ''
 		);
 	}
 
