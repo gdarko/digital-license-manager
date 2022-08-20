@@ -125,13 +125,13 @@ abstract class AbstractTool {
 				$next_step         = $step;
 				$data['next_step'] = $next_step;
 				$data['next_page'] = $next_page;
-				$data['message']   = sprintf( __( 'Pricessing %s (%d/%d)', 'digital-license-manager' ), $steps[ $next_step ]['name'], $next_page, $steps[ $next_step ]['pages'] );
+				$data['message']   = sprintf( __( 'Processing %s (%d/%d)', 'digital-license-manager' ), $steps[ $next_step ]['name'], $next_page, $steps[ $next_step ]['pages'] );
 			} else if ( isset( $steps[ $step + 1 ] ) ) {
 				$next_page         = 1;
 				$next_step         = $step + 1;
 				$data['next_step'] = $next_step;
 				$data['next_page'] = $next_page;
-				$data['message']   = sprintf( __( 'Pricessing %s (%d/%d)', 'digital-license-manager' ), $steps[ $next_step ]['name'], $next_page, $steps[ $next_step ]['pages'] );
+				$data['message']   = sprintf( __( 'Processing %s (%d/%d)', 'digital-license-manager' ), $steps[ $next_step ]['name'], $next_page, $steps[ $next_step ]['pages'] );
 
 			} else {
 				$data['next_step'] = - 1;
