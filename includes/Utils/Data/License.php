@@ -304,7 +304,7 @@ class License {
 
 		// Update the stock
 		if ( $oldLicense->getProductId() !== null && $oldLicense->getStatus() === LicenseStatusEnum::ACTIVE ) {
-			Stock::decrease( $oldLicense->getCreatedAt() );
+			Stock::decrease( $oldLicense->getProductId() );
 		}
 
 		/** @var LicenseResourceModel $license */
@@ -809,7 +809,7 @@ class License {
 	 *
 	 * @return array|bool|WP_Error
 	 */
-	public static function saveGeneratedLicenseKeys( $orderId, $productId, $licenseKeys, $status, $generator, $validFor ) {
+	public static function saveGeneratedLicenseKeys( $orderId, $productId, $licenseKeys, $status, $generator, $validFor = null ) {
 
 		$cleanLicenseKeys = array();
 		$cleanOrderId     = ( $orderId ) ? absint( $orderId ) : null;
