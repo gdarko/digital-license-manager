@@ -10,7 +10,10 @@ if [[ -f "$PLUGIN_DIR/composer.json" ]]; then
   composer install --no-dev
 fi
 
-rm "$PLUGINS_ROOT_DIR/$PLUGIN_SLUG.zip"
+if [ -f "$PLUGINS_ROOT_DIR/$PLUGIN_SLUG.zip" ]; then
+  rm "$PLUGINS_ROOT_DIR/$PLUGIN_SLUG.zip"
+fi
+
 cd $PLUGINS_ROOT_DIR
 
 zip -r "$PLUGIN_SLUG.zip" "$PLUGIN_SLUG" \
