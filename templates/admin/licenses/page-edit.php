@@ -52,7 +52,10 @@ if ( empty( $expiresAt ) || '0000-00-00 00:00:00' === $expiresAt ) {
                     </th>
                     <td>
                         <input name="expires_at" id="edit__expires_at" class="regular-text" type="text" value="<?php echo esc_html( $expiresAt ); ?>">
-                        <p class="description"><?php esc_html_e( 'The exact date at midnight UTC that this license key expires on. Leave blank if the license key does not expire. Cannot be used at the same time as the "Valid for (days)" field.', 'digital-license-manager' ); ?></p>
+                        <p class="description">
+                            <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
+                            <?php esc_html_e( 'The exact date at midnight UTC that this license key expires on. Leave blank if the license key does not expire.', 'digital-license-manager' ); ?>
+                        </p>
                     </td>
                 </tr>
 
@@ -63,7 +66,10 @@ if ( empty( $expiresAt ) || '0000-00-00 00:00:00' === $expiresAt ) {
                     </th>
                     <td>
                         <input name="activations_limit" id="edit__activations_limit" class="regular-text" type="number" value="<?php echo esc_html( $license->getActivationsLimit() ); ?>">
-                        <p class="description"><?php esc_html_e( 'Define how many times the license can be marked as "activated". Leave blank for unlimited activations.', 'digital-license-manager' ); ?></p>
+                        <p class="description">
+                            <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
+                            <?php esc_html_e( 'Define how many times the license can be marked as "activated". Leave blank for unlimited activations.', 'digital-license-manager' ); ?>
+                        </p>
                     </td>
                 </tr>
 
@@ -81,6 +87,35 @@ if ( empty( $expiresAt ) || '0000-00-00 00:00:00' === $expiresAt ) {
 							<?php endforeach; ?>
                         </select>
                         <p class="description"><?php esc_html_e( 'Define the initial license status. Set "Active" to make this license available for stock purchases.', 'digital-license-manager' ); ?></p>
+                    </td>
+                </tr>
+
+                <!-- PRODUCT -->
+                <tr scope="row">
+                    <th scope="row">
+                        <label for="edit__product"><?php esc_html_e( 'Product', 'digital-license-manager' ); ?></label>
+                    </th>
+                    <td>
+                        <select name="product_id" id="edit__product" class="regular-text">
+			                <?php
+			                if ( $license->getProductId() ) {
+				                /** @var WC_Order $order */
+				                $product = wc_get_product( $license->getProductId() );
+				                if ( $product ) {
+					                echo sprintf(
+						                '<option value="%d" selected="selected">(#%d) %s</option>',
+						                $product->get_id(),
+						                $product->get_id(),
+						                $product->get_formatted_name()
+					                );
+				                }
+			                }
+			                ?>
+                        </select>
+                        <p class="description">
+                            <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
+			                <?php esc_html_e( 'The product to which the license keys will be assigned. Useful if selling from stock.', 'digital-license-manager' ); ?>
+                        </p>
                     </td>
                 </tr>
 
@@ -106,33 +141,10 @@ if ( empty( $expiresAt ) || '0000-00-00 00:00:00' === $expiresAt ) {
 							}
 							?>
                         </select>
-                        <p class="description"><?php esc_html_e( 'The order to which the license keys will be assigned.', 'digital-license-manager' ); ?></p>
-                    </td>
-                </tr>
-
-                <!-- PRODUCT -->
-                <tr scope="row">
-                    <th scope="row">
-                        <label for="edit__product"><?php esc_html_e( 'Product', 'digital-license-manager' ); ?></label>
-                    </th>
-                    <td>
-                        <select name="product_id" id="edit__product" class="regular-text">
-							<?php
-							if ( $license->getProductId() ) {
-								/** @var WC_Order $order */
-								$product = wc_get_product( $license->getProductId() );
-								if ( $product ) {
-									echo sprintf(
-										'<option value="%d" selected="selected">(#%d) %s</option>',
-										$product->get_id(),
-										$product->get_id(),
-										$product->get_formatted_name()
-									);
-								}
-							}
-							?>
-                        </select>
-                        <p class="description"><?php esc_html_e( 'The product to which the license keys will be assigned.', 'digital-license-manager' ); ?></p>
+                        <p class="description">
+                            <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
+                            <?php esc_html_e( 'The order to which the license keys will be assigned.', 'digital-license-manager' ); ?>
+                        </p>
                     </td>
                 </tr>
 
@@ -159,7 +171,10 @@ if ( empty( $expiresAt ) || '0000-00-00 00:00:00' === $expiresAt ) {
 							}
 							?>
                         </select>
-                        <p class="description"><?php esc_html_e( 'The user to which the license keys will be assigned.', 'digital-license-manager' ); ?></p>
+                        <p class="description">
+                            <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
+                            <?php esc_html_e( 'The user to which the license keys will be assigned.', 'digital-license-manager' ); ?>
+                        </p>
                     </td>
                 </tr>
 

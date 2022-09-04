@@ -25,7 +25,10 @@
                     <th scope="row"><label for="single__expires_at"><?php esc_html_e('Expires at', 'digital-license-manager');?></label></th>
                     <td>
                         <input name="expires_at" id="single__expires_at" class="regular-text" type="text">
-                        <p class="description"><?php esc_html_e('The exact date at midnight UTC that this license key expires on. Leave blank if the license key does not expire. Cannot be used at the same time as the "Valid for (days)" field.', 'digital-license-manager');?></p>
+                        <p class="description">
+                            <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
+                            <?php esc_html_e('The exact date at midnight UTC that this license key expires on. Leave blank if the license key does not expire.', 'digital-license-manager');?>
+                        </p>
                     </td>
                 </tr>
 
@@ -34,7 +37,10 @@
                     <th scope="row"><label for="single__activations_limit"><?php esc_html_e('Max activations', 'digital-license-manager');?></label></th>
                     <td>
                         <input name="activations_limit" id="single__activations_limit" class="regular-text" type="number">
-                        <p class="description"><?php esc_html_e( 'Define how many times the license can be marked as "activated". Leave blank for unlimited activations.', 'digital-license-manager' ); ?></p>
+                        <p class="description">
+                            <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
+                            <?php esc_html_e( 'Define how many times the license can be marked as "activated". Leave blank for unlimited activations.', 'digital-license-manager' ); ?>
+                        </p>
                     </td>
                 </tr>
 
@@ -50,21 +56,28 @@
                     </td>
                 </tr>
 
-                <!-- ORDER -->
-                <tr scope="row">
-                    <th scope="row"><label for="single__order"><?php esc_html_e('Order', 'digital-license-manager');?></label></th>
-                    <td>
-                        <select name="order_id" id="single__order" class="regular-text"></select>
-                        <p class="description"><?php esc_html_e('The order to which the license keys will be assigned.', 'digital-license-manager');?></p>
-                    </td>
-                </tr>
-
                 <!-- PRODUCT -->
                 <tr scope="row">
                     <th scope="row"><label for="single__product"><?php esc_html_e('Product', 'digital-license-manager');?></label></th>
                     <td>
                         <select name="product_id" id="single__product" class="regular-text"></select>
-                        <p class="description"><?php esc_html_e('The product to which the license keys will be assigned.', 'digital-license-manager');?></p>
+                        <p class="description">
+                            <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
+			                <?php esc_html_e('The product to which the license keys will be assigned. Useful if selling from stock.', 'digital-license-manager');?>
+                        </p>
+                    </td>
+                </tr>
+
+
+                <!-- ORDER -->
+                <tr scope="row">
+                    <th scope="row"><label for="single__order"><?php esc_html_e('Order', 'digital-license-manager');?></label></th>
+                    <td>
+                        <select name="order_id" id="single__order" class="regular-text"></select>
+                        <p class="description">
+                            <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
+                            <?php esc_html_e('The order to which the license keys will be assigned.', 'digital-license-manager');?>
+                        </p>
                     </td>
                 </tr>
 
@@ -73,7 +86,10 @@
                     <th scope="row"><label for="single__user"><?php esc_html_e('Customer', 'digital-license-manager');?></label></th>
                     <td>
                         <select name="user_id" id="single__user" class="regular-text"></select>
-                        <p class="description"><?php esc_html_e('The user to which the license keys will be assigned.', 'digital-license-manager');?></p>
+                        <p class="description">
+                            <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
+                            <?php esc_html_e('The user to which the license keys will be assigned.', 'digital-license-manager');?>
+                        </p>
                     </td>
                 </tr>
 
