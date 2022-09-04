@@ -107,6 +107,7 @@ class Generators {
 		$generatorId = absint( $_POST['generator_id'] );
 		$amount      = absint( $_POST['amount'] );
 		$status      = absint( $_POST['status'] );
+		$validFor    = sanitize_text_field( $_POST['valid_for'] );
 		$orderId     = null;
 		$productId   = null;
 
@@ -167,7 +168,7 @@ class Generators {
 
 		if ( ! is_wp_error( $licenses ) ) {
 			// Save the license keys.
-			$status = LicenseUtil::saveGeneratedLicenseKeys( $orderId, $productId, $licenses, $status, $generator );
+			$status = LicenseUtil::saveGeneratedLicenseKeys( $orderId, $productId, $licenses, $status, $generator, $validFor );
 			if ( is_wp_error( $status ) ) {
 				NoticeFlasher::error( $status->get_error_message() );
 			} else {

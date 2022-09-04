@@ -67,6 +67,11 @@ class License extends AbstractResourceModel implements ResourceModelInterface {
 	/**
 	 * @var int
 	 */
+	protected $valid_for;
+
+	/**
+	 * @var int
+	 */
 	protected $times_activated;
 
 	/**
@@ -121,6 +126,7 @@ class License extends AbstractResourceModel implements ResourceModelInterface {
 		$this->status            = $license->status === null ? null : (int) $license->status;
 		$this->times_activated   = $this->getTimesActivated();
 		$this->activations_limit = $license->activations_limit === null ? null : (int) $license->activations_limit;
+		$this->valid_for         = $license->valid_for === null ? null : (int) $license->valid_for;
 		$this->is_expired        = $this->isExpired();
 		$this->created_at        = $license->created_at;
 		$this->created_by        = $license->created_by === null ? null : (int) $license->created_by;
@@ -351,6 +357,24 @@ class License extends AbstractResourceModel implements ResourceModelInterface {
 	 */
 	public function setUpdatedBy( $updated_by ) {
 		$this->updated_by = $updated_by;
+	}
+
+	/**
+	 * Returns number of days the license is valid after is sold from stock.
+	 * This should be set before the licenses are sold from stock.
+	 * @return int|null
+	 */
+	public function getValidFor() {
+		return $this->valid_for;
+	}
+
+	/**
+	 * @param int $valid_for
+	 *
+	 * @return void
+	 */
+	public function setValidFor( $valid_for ) {
+		$this->valid_for = $valid_for;
 	}
 
 	/**

@@ -80,6 +80,7 @@ if ( empty( $expiresAt ) || '0000-00-00 00:00:00' === $expiresAt ) {
                                 </option>
 							<?php endforeach; ?>
                         </select>
+                        <p class="description"><?php esc_html_e( 'Define the initial license status. Set "Active" to make this license available for stock purchases.', 'digital-license-manager' ); ?></p>
                     </td>
                 </tr>
 
@@ -159,6 +160,20 @@ if ( empty( $expiresAt ) || '0000-00-00 00:00:00' === $expiresAt ) {
 							?>
                         </select>
                         <p class="description"><?php esc_html_e( 'The user to which the license keys will be assigned.', 'digital-license-manager' ); ?></p>
+                    </td>
+                </tr>
+
+                <!-- Valid For -->
+                <tr scope="row">
+                    <th scope="row">
+                        <label for="valid_for"><?php esc_html_e('Valid for (days)', 'digital-license-manager');?></label>
+                    </th>
+                    <td>
+                        <input name="valid_for" id="valid_for" class="regular-text" type="text" value="<?php echo esc_html($license->getValidFor()); ?>">
+                        <p class="description" id="tagline-description">
+                            <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
+                            <span><?php _e('Applies only for licenses purchased from stock. Total expiration time added after the license is purcahsed.', 'digital-license-manager');?></span>
+                        </p>
                     </td>
                 </tr>
 

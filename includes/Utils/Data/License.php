@@ -250,6 +250,16 @@ class License {
 			}
 		}
 
+		// Valid for
+		if ( array_key_exists( 'valid_for', $licenseData ) ) {
+			if ( empty($licenseData['valid_for']) ) {
+				$updateData['valid_for'] = null;
+			} else {
+				$updateData['valid_for'] = (int) $licenseData['valid_for'];
+			}
+		}
+
+
 		// License key
 		if ( array_key_exists( 'license_key', $licenseData ) ) {
 			// Check for possible duplicates
@@ -649,7 +659,7 @@ class License {
 			return new WP_Error(
 				'license_expired',
 				sprintf(
-					/* translators: %s: expiration date */
+				/* translators: %s: expiration date */
 					__( 'The license key expired at %s.', 'digital-license-manager' ),
 					wp_date( DateFormatter::getExpirationFormat(), strtotime( $license->getExpiresAt() ) )
 				),
@@ -800,15 +810,17 @@ class License {
 	 * @param string[] $licenseKeys License keys to be stored
 	 * @param int $status License key status
 	 * @param GeneratorResourceModel $generator
+	 * @param int $validFor
 	 *
 	 * @return array|bool|WP_Error
 	 */
-	public static function saveGeneratedLicenseKeys( $orderId, $productId, $licenseKeys, $status, $generator ) {
+	public static function saveGeneratedLicenseKeys( $orderId, $productId, $licenseKeys, $status, $generator, $validFor ) {
 
 		$cleanLicenseKeys = array();
 		$cleanOrderId     = ( $orderId ) ? absint( $orderId ) : null;
 		$cleanProductId   = ( $productId ) ? absint( $productId ) : null;
 		$cleanStatus      = ( $status ) ? absint( $status ) : null;
+		$validFor         = is_numeric( $validFor ) && absint($validFor) > 0 ? absint( $validFor ) : null;
 		$userId           = null;
 
 		if ( ! $cleanStatus || ! in_array( $cleanStatus, LicenseStatus::$status ) ) {
@@ -873,7 +885,8 @@ class License {
 					'expires_at'        => $expiresAt,
 					'source'            => LicenseSource::GENERATOR,
 					'status'            => $cleanStatus,
-					'activations_limit' => $generator->getActivationsLimit() ?: null
+					'activations_limit' => $generator->getActivationsLimit() ?: null,
+					'valid_for'         => $validFor,
 				)
 			);
 		}
@@ -891,7 +904,8 @@ class License {
 				$cleanProductId,
 				$newKeys,
 				$cleanStatus,
-				$generator
+				$generator,
+				$validFor
 			);
 		} else {
 			// Keys have been generated and saved, this order is now complete.
@@ -938,7 +952,7 @@ class License {
 
 		for ( $i = 0; $i < $cleanAmount; $i ++ ) {
 			$license   = $cleanLicenseKeys[ $i ];
-			$validFor  = (int) $license->getValidFor();
+			$validFor  = (int) $license->getValidFor(); // In days.
 			$expiresAt = $license->getExpiresAt();
 
 			if ( $validFor ) {

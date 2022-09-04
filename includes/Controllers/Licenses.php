@@ -224,6 +224,7 @@ class Licenses {
 				'expires_at',
 				'source',
 				'activations_limit',
+				'valid_for',
 			) );
 			$license     = LicenseUtil::update( $licenseId, $licenseData );
 			if ( is_wp_error( $license ) ) {

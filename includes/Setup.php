@@ -23,7 +23,7 @@ class Setup {
 	/**
 	 * @var int
 	 */
-	const DB_VERSION = 102;
+	const DB_VERSION = 103;
 
 	/**
 	 * Installation script.
@@ -168,6 +168,7 @@ class Setup {
                 `user_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
                 `license_key` LONGTEXT NOT NULL COMMENT 'Encrypted License Key',
                 `hash` LONGTEXT NOT NULL COMMENT 'Hashed License Key ID	',
+                `valid_for` INT(10) UNSIGNED NULL DEFAULT NULL COMMENT 'Valid for X time (when ordered from stock)',
                 `expires_at` DATETIME NULL DEFAULT NULL COMMENT 'Expiration Date',
                 `source` VARCHAR(255) NOT NULL,
                 `status` TINYINT(1) UNSIGNED NOT NULL,

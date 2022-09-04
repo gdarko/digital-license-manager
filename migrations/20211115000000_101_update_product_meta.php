@@ -16,8 +16,10 @@ if ( $migrationMode === Migrator::MODE_UP ) {
 	$results = $wpdb->get_results( "SELECT PM.post_id FROM {$wpdb->postmeta} PM WHERE PM.meta_key='dlm_licensed_product' AND PM.meta_value='1'", ARRAY_A );
 
 	if ( empty( $results ) ) {
-		return;
+		return false;
 	}
+
+	$total = 0;
 
 	foreach ( $results as $result ) {
 
@@ -47,6 +49,12 @@ if ( $migrationMode === Migrator::MODE_UP ) {
 			// Remove the metadata
 			delete_post_meta( $result['post_id'], 'dlm_licensed_product_use_stock' );
 			delete_post_meta( $result['post_id'], 'dlm_licensed_product_use_generator' );
+
+			$total ++;
 		}
 	}
+
+	return $total > 0;
 }
+
+return false;

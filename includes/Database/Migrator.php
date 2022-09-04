@@ -131,4 +131,5 @@ class Migrator {
 		// Else didn't find it.
 		return true;
 	}
+
 }

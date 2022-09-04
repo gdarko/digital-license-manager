@@ -49,26 +49,28 @@ defined( 'ABSPATH' ) || exit;
                     </td>
                 </tr>
 
+                <!-- AMOUNT -->
+                <tr scope="row">
+                    <th scope="row">
+                        <label for="valid__for"><?php esc_html_e( 'Valid for', 'digital-license-manager' ); ?></label>
+                    </th>
+                    <td>
+                        <input name="valid_for" id="valid__for" class="regular-text" type="number">
+                        <p class="description"><?php esc_html_e( 'Define in days how much time the license will be valid after purchase from stock. (Applies to orders from stock)', 'digital-license-manager' ); ?></p>
+                    </td>
+                </tr>
+
                 <!-- STATUS -->
                 <tr scope="row">
                     <th scope="row"><label for="edit__status"><?php esc_html_e( 'Status', 'digital-license-manager' ); ?></label>
                     </th>
                     <td>
                         <select id="edit__status" name="status" class="regular-text">
-							<?php foreach ( $statusOptions as $option ): ?>
+			                <?php foreach ( $statusOptions as $option ): ?>
                                 <option value="<?php echo esc_html( $option['value'] ); ?>"><?php echo esc_html( $option['name'] ); ?></option>
-							<?php endforeach; ?>
+			                <?php endforeach; ?>
                         </select>
-                    </td>
-                </tr>
-
-                <!-- ORDER -->
-                <tr scope="row">
-                    <th scope="row"><label for="generate__order"><?php esc_html_e( 'Order', 'digital-license-manager' ); ?></label>
-                    </th>
-                    <td>
-                        <select name="order_id" id="generate__order" class="regular-text"></select>
-                        <p class="description"><?php esc_html_e( 'The order to which the license keys will be assigned.', 'digital-license-manager' ); ?></p>
+                        <p class="description"><?php esc_html_e( 'Define the initial license status. Set "Active" to make this license available for stock purchases.', 'digital-license-manager' ); ?></p>
                     </td>
                 </tr>
 
@@ -79,6 +81,16 @@ defined( 'ABSPATH' ) || exit;
                     <td>
                         <select name="product_id" id="generate__product" class="regular-text"></select>
                         <p class="description"><?php esc_html_e( 'The product to which the license keys will be assigned.', 'digital-license-manager' ); ?></p>
+                    </td>
+                </tr>
+
+                <!-- ORDER -->
+                <tr scope="row">
+                    <th scope="row"><label for="generate__order"><?php esc_html_e( 'Order', 'digital-license-manager' ); ?></label>
+                    </th>
+                    <td>
+                        <select name="order_id" id="generate__order" class="regular-text"></select>
+                        <p class="description"><?php esc_html_e( 'The order to which the license keys will be assigned.', 'digital-license-manager' ); ?></p>
                     </td>
                 </tr>
 
