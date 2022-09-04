@@ -51,10 +51,10 @@ defined('ABSPATH') || exit;
 
                 <!-- TIMES ACTIVATED MAX -->
                 <tr scope="row">
-                    <th scope="row"><label><?php esc_html_e('Maximum activation count', 'digital-license-manager');?></label></th>
+                    <th scope="row"><label><?php esc_html_e('Max activations', 'digital-license-manager');?></label></th>
                     <td>
                         <input name="activations_limit" id="activations_limit" class="regular-text" type="number" value="<?php echo esc_html($generator->getActivationsLimit()); ?>">
-                        <p class="description" id="tagline-description"><?php esc_html_e('Define how many times the license key can be marked as "activated" by using the REST API. Leave blank if you do not use the API.', 'digital-license-manager');?></p>
+                        <p class="description"><?php esc_html_e( 'Define how many times the license can be marked as "activated". Leave blank for unlimited activations.', 'digital-license-manager' ); ?></p>
                     </td>
                 </tr>
 

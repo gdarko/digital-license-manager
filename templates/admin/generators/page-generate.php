@@ -27,7 +27,7 @@ defined( 'ABSPATH' ) || exit;
                 <tr scope="row">
                     <th scope="row">
                         <label for="generate__generator"><?php esc_html_e( 'Generator', 'digital-license-manager' ); ?></label>
-                        <span class="text-danger">*</span></label>
+                        <span class="text-danger">*</span>
                     </th>
                     <td>
                         <select id="generate__generator" name="generator_id" class="regular-text">

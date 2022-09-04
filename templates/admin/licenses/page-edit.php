@@ -59,11 +59,11 @@ if ( empty( $expiresAt ) || '0000-00-00 00:00:00' === $expiresAt ) {
                 <!-- TIMES ACTIVATED MAX -->
                 <tr scope="row">
                     <th scope="row">
-                        <label for="edit__activations_limit"><?php esc_html_e( 'Maximum activation count', 'digital-license-manager' ); ?></label>
+                        <label for="edit__activations_limit"><?php esc_html_e( 'Max activations', 'digital-license-manager' ); ?></label>
                     </th>
                     <td>
                         <input name="activations_limit" id="edit__activations_limit" class="regular-text" type="number" value="<?php echo esc_html( $license->getActivationsLimit() ); ?>">
-                        <p class="description"><?php esc_html_e( 'Define how many times the license key can be marked as "activated" by using the REST API. Leave blank if you do not use the API.', 'digital-license-manager' ); ?></p>
+                        <p class="description"><?php esc_html_e( 'Define how many times the license can be marked as "activated". Leave blank for unlimited activations.', 'digital-license-manager' ); ?></p>
                     </td>
                 </tr>
 
