@@ -81,7 +81,7 @@ class Products {
 		$tabs[ self::ADMIN_TAB_NAME ] = array(
 			'label'    => __( 'License Manager', 'digital-license-manager' ),
 			'target'   => self::ADMIN_TAB_TARGET,
-			'class'    => array( 'show_if_simple', 'show_if_variable', 'show_if_variable-subscription' ),
+			'class'    => array( 'show_if_simple', 'show_if_variable' ),
 			'priority' => 21
 		);
 
