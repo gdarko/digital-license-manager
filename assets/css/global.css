@@ -142,3 +142,21 @@
 .dlm-date-expired {
     color: var(--color-danger);
 }
+
+
+/** Badges **/
+.dlm-badge {
+    display: inline-block;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    text-align: center;
+    padding: 2px;
+    margin-left: .5em;
+    cursor: default;
+}
+.dlm-badge.info {
+    background-color: var(--color-success);
+    color: #ffffff;
+}
