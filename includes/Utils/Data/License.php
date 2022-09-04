@@ -252,7 +252,7 @@ class License {
 
 		// Valid for
 		if ( array_key_exists( 'valid_for', $licenseData ) ) {
-			if ( empty($licenseData['valid_for']) ) {
+			if ( empty( $licenseData['valid_for'] ) ) {
 				$updateData['valid_for'] = null;
 			} else {
 				$updateData['valid_for'] = (int) $licenseData['valid_for'];
@@ -767,11 +767,6 @@ class License {
 		// Add the keys to the database table.
 		foreach ( $cleanLicenseKeys as $licenseKey ) {
 
-			$expiresAt = null;
-			if ( is_numeric( $cleanValidFor ) && $cleanValidFor > 0 ) {
-				$expiresAt = DateFormatter::addDaysInFuture( $cleanValidFor, 'now', 'Y-m-d H:i:s' );
-			}
-
 			$encrypted = CryptoHelper::encrypt( $licenseKey );
 			if ( is_wp_error( $encrypted ) ) {
 				return $encrypted;
@@ -785,9 +780,9 @@ class License {
 					'user_id'           => $cleanUserId,
 					'license_key'       => $encrypted,
 					'hash'              => $hashed,
-					'expires_at'        => $expiresAt,
 					'source'            => LicenseSource::IMPORT,
 					'status'            => $cleanStatus,
+					'valid_for'         => $cleanValidFor,
 					'activations_limit' => $cleanActivationsLimit,
 				)
 			);
@@ -820,7 +815,7 @@ class License {
 		$cleanOrderId     = ( $orderId ) ? absint( $orderId ) : null;
 		$cleanProductId   = ( $productId ) ? absint( $productId ) : null;
 		$cleanStatus      = ( $status ) ? absint( $status ) : null;
-		$validFor         = is_numeric( $validFor ) && absint($validFor) > 0 ? absint( $validFor ) : null;
+		$validFor         = is_numeric( $validFor ) && absint( $validFor ) > 0 ? absint( $validFor ) : null;
 		$userId           = null;
 
 		if ( ! $cleanStatus || ! in_array( $cleanStatus, LicenseStatus::$status ) ) {

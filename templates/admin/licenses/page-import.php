@@ -57,7 +57,10 @@
                     <th scope="row"><label for="bulk__valid_for"><?php esc_html_e('Valid for (days)', 'digital-license-manager');?></label></th>
                     <td>
                         <input name="valid_for" id="bulk__valid_for" class="regular-text" type="text">
-                        <p class="description"><?php esc_html_e('Number of days for which the license key is valid after purchase. Leave blank if the license key does not expire.', 'digital-license-manager');?></p>
+                        <p class="description" id="tagline-description">
+                            <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
+                            <span><?php _e('Applies only for licenses purchased from stock. Total expiration time added after the license is purcahsed.', 'digital-license-manager');?></span>
+                        </p>
                     </td>
                 </tr>
 
@@ -82,21 +85,21 @@
                     </td>
                 </tr>
 
-                <!-- ORDER -->
-                <tr scope="row">
-                    <th scope="row"><label for="bulk__order"><?php esc_html_e('Order', 'digital-license-manager');?></label></th>
-                    <td>
-                        <select name="order_id" id="bulk__order" class="regular-text"></select>
-                        <p class="description"><?php esc_html_e('The order to which the license keys will be assigned.', 'digital-license-manager');?></p>
-                    </td>
-                </tr>
-
                 <!-- PRODUCT -->
                 <tr scope="row">
                     <th scope="row"><label for="bulk__product"><?php esc_html_e('Product', 'digital-license-manager');?></label></th>
                     <td>
                         <select name="product_id" id="bulk__product" class="regular-text"></select>
                         <p class="description"><?php esc_html_e('The product to which the license keys will be assigned.', 'digital-license-manager');?></p>
+                    </td>
+                </tr>
+
+                <!-- ORDER -->
+                <tr scope="row">
+                    <th scope="row"><label for="bulk__order"><?php esc_html_e('Order', 'digital-license-manager');?></label></th>
+                    <td>
+                        <select name="order_id" id="bulk__order" class="regular-text"></select>
+                        <p class="description"><?php esc_html_e('The order to which the license keys will be assigned.', 'digital-license-manager');?></p>
                     </td>
                 </tr>
 
