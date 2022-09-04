@@ -39,7 +39,7 @@
                 <tr scope="row">
                     <th scope="row">
                         <label for="charset"><?php esc_html_e('Character map', 'digital-license-manager');?></label>
-                        <span class="text-danger">*</span></label>
+                        <span class="text-danger">*</span>
                     </th>
                     <td>
                         <input name="charset" id="charset" class="regular-text" type="text">
@@ -54,7 +54,7 @@
                 <tr scope="row">
                     <th scope="row">
                         <label for="chunks"><?php esc_html_e('Number of chunks', 'digital-license-manager');?></label>
-                        <span class="text-danger">*</span></label>
+                        <span class="text-danger">*</span>
                     </th>
                     <td>
                         <input name="chunks" id="chunks" class="regular-text" type="text">
@@ -69,7 +69,7 @@
                 <tr scope="row">
                     <th scope="row">
                         <label for="chunk_length"><?php esc_html_e('Chunk length', 'digital-license-manager');?></label>
-                        <span class="text-danger">*</span></label>
+                        <span class="text-danger">*</span>
                     </th>
                     <td>
                         <input name="chunk_length" id="chunk_length" class="regular-text" type="text">
