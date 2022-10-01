@@ -139,32 +139,42 @@ class Products {
 			return;
 		}
 
+		$product = wc_get_product( $postId );
+		if ( ! $product ) {
+			return;
+		}
+
 		// Update licensed product flag, according to checkbox.
 		$licensedProduct = ! empty( $_POST['dlm_licensed_product'] ) ? (int) $_POST['dlm_licensed_product'] : 0;
-		update_post_meta( $postId, 'dlm_licensed_product', $licensedProduct );
+		$product->update_meta_data( 'dlm_licensed_product', $licensedProduct );
 
 		// Update delivered quantity, according to field.
 		$deliveredQuantity = ! empty( $_POST['dlm_licensed_product_delivered_quantity'] ) ? (int) $_POST['dlm_licensed_product_delivered_quantity'] : 0;
-		update_post_meta( $postId, 'dlm_licensed_product_delivered_quantity', $deliveredQuantity ? $deliveredQuantity : 1 );
+		$product->update_meta_data( 'dlm_licensed_product_delivered_quantity', $deliveredQuantity ? $deliveredQuantity : 1 );
 
 		// Update the licenses source, according to field.
 		$licensesSource = ! empty( $_POST['dlm_licensed_product_licenses_source'] ) ? sanitize_text_field( $_POST['dlm_licensed_product_licenses_source'] ) : 'stock';
-		update_post_meta( $postId, 'dlm_licensed_product_licenses_source', $licensesSource );
+		$product->update_meta_data( 'dlm_licensed_product_licenses_source', $licensesSource );
 
 		// Update the assigned generator id, according to select field.
 		if ( 'generators' === $licensesSource ) {
 			$assignedGenerator = ! empty( $_POST['dlm_licensed_product_assigned_generator'] ) ? (int) $_POST['dlm_licensed_product_assigned_generator'] : 0;
-			update_post_meta( $postId, 'dlm_licensed_product_assigned_generator', $assignedGenerator );
+			$product->update_meta_data( 'dlm_licensed_product_assigned_generator', $assignedGenerator );
+
 			// Warn the user if they don't have generator selected.
 			if ( ! $assignedGenerator ) {
 				$error = new WP_Error( 2, __( '<strong>Error:</strong> Please select valid License generator in "License Manager" options.', 'digital-license-manager' ) );
 				set_transient( 'dlm_error', $error, 60 );
 			}
 		} else {
-			delete_post_meta( $postId, 'dlm_licensed_product_assigned_generator' );
+			$product->delete_meta_data( 'dlm_licensed_product_assigned_generator' );
 		}
 
-		do_action( 'dlm_product_save', $postId );
+		do_action( 'dlm_before_product_save', $postId, $product );
+
+		$product->save();
+
+		do_action( 'dlm_product_save', $postId, $product );
 	}
 
 	/**
@@ -215,32 +225,42 @@ class Products {
 	 */
 	public function variableProductSave( $variationId, $i ) {
 
+		$variation = wc_get_product( $variationId );
+		if ( ! $variation ) {
+			return;
+		}
+
 		// Update licensed product flag, according to checkbox.
 		$licensedProduct = ! empty( $_POST['dlm_licensed_product'][ $i ] ) ? (int) $_POST['dlm_licensed_product'][ $i ] : 0;
-		update_post_meta( $variationId, 'dlm_licensed_product', $licensedProduct );
+		$variation->update_meta_data( 'dlm_licensed_product', $licensedProduct );
 
 		// Update delivered quantity, according to field.
 		$deliveredQuantity = ! empty( $_POST['dlm_licensed_product_delivered_quantity'][ $i ] ) ? (int) $_POST['dlm_licensed_product_delivered_quantity'][ $i ] : 0;
-		update_post_meta( $variationId, 'dlm_licensed_product_delivered_quantity', $deliveredQuantity ? $deliveredQuantity : 1 );
+		$variation->update_meta_data( 'dlm_licensed_product_delivered_quantity', $deliveredQuantity ? $deliveredQuantity : 1 );
 
 		// Update the licenses source, according to field.
 		$licensesSource = ! empty( $_POST['dlm_licensed_product_licenses_source'][ $i ] ) ? sanitize_text_field( $_POST['dlm_licensed_product_licenses_source'][ $i ] ) : 'stock';
-		update_post_meta( $variationId, 'dlm_licensed_product_licenses_source', $licensesSource );
+		$variation->update_meta_data( 'dlm_licensed_product_licenses_source', $licensesSource );
 
 		// Update the assigned generator id, according to select field.
 		if ( 'generators' === $licensesSource ) {
 			$assignedGenerator = ! empty( $_POST['dlm_licensed_product_assigned_generator'][ $i ] ) ? (int) $_POST['dlm_licensed_product_assigned_generator'][ $i ] : 0;
-			update_post_meta( $variationId, 'dlm_licensed_product_assigned_generator', $assignedGenerator );
+			$variation->update_meta_data( 'dlm_licensed_product_assigned_generator', $assignedGenerator );
+
 			// Warn the user if they don't have generator selected.
 			if ( ! $assignedGenerator ) {
 				$error = new WP_Error( 2, sprintf( __( '<strong>Error:</strong> Please select valid License generator in variation #%d Digital License Manager options.', 'digital-license-manager' ), $i ) );
 				set_transient( 'dlm_error', $error, 60 );
 			}
 		} else {
-			delete_post_meta( $variationId, 'dlm_licensed_product_assigned_generator' );
+			$variation->delete_meta_data( 'dlm_licensed_product_assigned_generator' );
 		}
 
-		do_action( 'dlm_variable_product_save', $variationId, $i );
+		do_action( 'dlm_before_variable_product_save', $variationId, $i, $variation );
+
+		$variation->save();
+
+		do_action( 'dlm_variable_product_save', $variationId, $i, $variation );
 	}
 
 	/**
@@ -251,7 +271,10 @@ class Products {
 	 * @return bool
 	 */
 	public static function isLicensed( $productId ) {
-		if ( get_post_meta( $productId, 'dlm_licensed_product', true ) ) {
+
+		$product = wc_get_product( $productId );
+
+		if ( $product->get_meta( 'dlm_licensed_product', true ) ) {
 			return true;
 		}
 
@@ -361,7 +384,13 @@ class Products {
 	 * @return mixed|string
 	 */
 	private function getMeta( $product_id, $key, $default = '' ) {
-		$value = get_post_meta( $product_id, $key, true );
+
+		$product = wc_get_product( $product_id );
+		if ( ! $product ) {
+			return $default;
+		}
+
+		$value = $product->get_meta( $key, true );
 		if ( empty( $value ) ) {
 			return $default;
 		}

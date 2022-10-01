@@ -153,7 +153,7 @@ class Orders {
 		if ( is_numeric( $product ) ) {
 			$product = wc_get_product( $product );
 		}
-		$licenseSrc   = get_post_meta( $product->get_id(), 'dlm_licensed_product_licenses_source', true );
+		$licenseSrc   = $product->get_meta( 'dlm_licensed_product_licenses_source', true );
 		$useStock     = 'stock' === $licenseSrc;
 		$useGenerator = 'generators' === $licenseSrc;
 
@@ -165,11 +165,7 @@ class Orders {
 		}
 
 		$deliveredQuantity = absint(
-			get_post_meta(
-				$product->get_id(),
-				'dlm_licensed_product_delivered_quantity',
-				true
-			)
+			$product->get_meta( 'dlm_licensed_product_delivered_quantity', true )
 		);
 
 		/**
@@ -217,7 +213,7 @@ class Orders {
 
 		} else if ( $useGenerator ) { // Sell license keys through the active generator
 
-			$generatorId = get_post_meta( $product->get_id(), 'dlm_licensed_product_assigned_generator', true );
+			$generatorId = $product->get_meta( 'dlm_licensed_product_assigned_generator', true );
 
 			/**
 			 * Retrieve the generator from the database and set up the args.
@@ -247,7 +243,8 @@ class Orders {
 		/**
 		 * Flag the order as complete. Use custom flag.
 		 */
-		update_post_meta( $order->get_id(), 'dlm_order_complete', 1 );
+		$order->update_meta_data( 'dlm_order_complete', 1 );
+		$order->save();
 
 		/**
 		 * Set status to delivered if the setting is on.
@@ -271,7 +268,7 @@ class Orders {
 			)
 		);
 
-		return count($orderedLicenses);
+		return count( $orderedLicenses );
 	}
 
 	/**
@@ -386,7 +383,10 @@ class Orders {
 	 * @return bool
 	 */
 	public static function isComplete( $orderId ) {
-		if ( ! get_post_meta( $orderId, 'dlm_order_complete' ) ) {
+
+		$order = wc_get_order($orderId);
+
+		if ( ! $order->get_meta('dlm_order_complete', true) ) {
 			return false;
 		}
 
@@ -439,9 +439,10 @@ class Orders {
 	 * Retrieves ordered license keys.
 	 *
 	 * @param array $args
-	 * @deprecated 1.3.0
 	 *
 	 * @return array
+	 * @deprecated 1.3.0
+	 *
 	 */
 	public static function getLicenseKeys( $args ) {
 		return self::getLicenses( $args );
