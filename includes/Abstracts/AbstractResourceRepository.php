@@ -378,9 +378,11 @@ abstract class AbstractResourceRepository extends Singleton implements ResourceR
 		}
 
 		global $wpdb;
-		$ids      = implode( ',', array_map( array( $this, 'sqlINValues' ), $ids ) );
-		$sqlQuery = $wpdb->prepare( "DELETE FROM {$this->table} WHERE {$this->primaryKey} IN (" . $ids . ")" );
-
+		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+		$sqlQuery = $wpdb->prepare(
+			"DELETE FROM {$this->table} WHERE {$this->primaryKey} IN ($placeholders)",
+			$ids
+		);
 
 		$result = $wpdb->query( $sqlQuery );
 
