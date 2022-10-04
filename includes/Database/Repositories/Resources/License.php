@@ -34,6 +34,7 @@ class License extends AbstractResourceRepository implements ResourceRepositoryIn
 			'expires_at'        => ColumnTypeEnum::DATETIME,
 			'source'            => ColumnTypeEnum::TINYINT,
 			'status'            => ColumnTypeEnum::TINYINT,
+			'valid_for'         => ColumnTypeEnum::INT,
 			'times_activated'   => ColumnTypeEnum::INT,
 			'activations_limit' => ColumnTypeEnum::INT,
 		);
