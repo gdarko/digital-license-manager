@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce, w
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 6.0
-Stable tag: 1.3.3
+Stable tag: 1.3.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -162,6 +162,19 @@ To migrate to Digital License Manager, please navigate to "License Manager" > "S
 15. Re-send licenses via Order page
 
 == Changelog ==
+
+= 1.3.4 =
+*Release Date - 04 Oct 2022*
+
+* Fix conflict with WooCommerce subscriptions in the product editor
+* Add valid_for that tells how many days the license will be valid after purchased from *stock*
+* Improve license create/edit screen field labels wording
+* Fix invalid markup on the generator create/edit pages in admin
+* Fix generator title badges in the generators list table in admin
+* Fix license import functionality, do not set expiry date immediately and make use of the valid_for property
+* Fix potential issue with stock decreasing and set validFor=null in save license procedure in admin
+* Fix issue warning thrown when deleting licenses in the admin side, props @pondermatic
+* Replaced WordPress meta function calls with WooCommerce product/order meta functions calls to comply with upcoming WooCommerce custom tables database implementation
 
 = 1.3.3 =
 *Release Date - 20 Aug 2022*
