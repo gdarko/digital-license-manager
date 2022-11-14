@@ -3,8 +3,8 @@ Contributors: darkog, codeverve
 Tags: license key, license manager, software license, serial key, woocommerce, wordpress
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 6.0
-Stable tag: 1.3.4
+Tested up to: 6.1
+Stable tag: 1.3.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -14,7 +14,7 @@ Manage and sell your digital licenses keys through your WordPress or WooCommerce
 
 **Digital License Manager is licensing plugin for WordPress that can be used to keep track of and sell your licenses form your site. Supported and maintained by friendly team behind. 😎**
 
-The plugin is compatible with WooCommerce although it can be used as standalone License Manager without WooCommerce.
+The plugin is compatible with WooCommerce, although it can be used as standalone License Manager without WooCommerce.
 
 
 ### ✨ Free Features
@@ -162,6 +162,14 @@ To migrate to Digital License Manager, please navigate to "License Manager" > "S
 15. Re-send licenses via Order page
 
 == Changelog ==
+
+= 1.3.5 =
+*Release Date - 14 Nov 2022*
+
+* Add support for assinging product variations to Licenses when selling from stock
+* Rewrite stock syncrhonization functionality
+* Test with the latest WooCommerce version
+* Test with the latest WordPress version
 
 = 1.3.4 =
 *Release Date - 04 Oct 2022*
