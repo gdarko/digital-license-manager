@@ -814,13 +814,13 @@ class Licenses extends AbstractListTable {
 				// License was active, but no longer is
 				if ( $license->getStatus() === LicenseStatus::ACTIVE && $status !== LicenseStatus::ACTIVE ) {
 					// Update the stock
-					Stock::decrease( $license->getProductId() );
+					Stock::syncrhonizeProductStock($license->getProductId());
 				}
 
 				// License was not active, but is now
 				if ( $license->getStatus() !== LicenseStatus::ACTIVE && $status === LicenseStatus::ACTIVE ) {
 					// Update the stock
-					Stock::increase( $license->getProductId() );
+                    Stock::syncrhonizeProductStock($license->getProductId());
 				}
 			}
 
@@ -844,7 +844,7 @@ class Licenses extends AbstractListTable {
 
 		$licenseKeyIds = isset( $_REQUEST['id'] ) ? array_map( 'intval', (array) $_REQUEST['id'] ) : array();
 
-
+        $count = 0;
 		foreach ( $licenseKeyIds as $licenseKeyId ) {
 			/** @var LicenseResourceModel $license */
 			$license = LicenseResourceRepository::instance()->find( $licenseKeyId );
@@ -855,7 +855,7 @@ class Licenses extends AbstractListTable {
 			if ( $result ) {
 				// Update the stock
 				if ( $license->getProductId() !== null && $license->getStatus() === LicenseStatus::ACTIVE ) {
-					Stock::decrease( $license->getProductId() );
+					Stock::syncrhonizeProductStock($license->getProductId());
 				}
 
 				$count += $result;

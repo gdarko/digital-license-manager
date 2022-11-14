@@ -120,7 +120,7 @@ class Licenses {
 		if ( $result['failed'] == 0 && $result['added'] > 0 ) {
 			// Update the stock
 			if ( $status === LicenseStatusEnum::ACTIVE ) {
-				Stock::increase( $productId, $result['added'] );
+				Stock::syncrhonizeProductStock($productId);
 			}
 
 			// Display a success message
@@ -143,7 +143,7 @@ class Licenses {
 		if ( $result['failed'] > 0 && $result['added'] > 0 ) {
 			// Update the stock
 			if ( $status === LicenseStatusEnum::ACTIVE ) {
-				Stock::increase( $productId, $result['added'] );
+				Stock::syncrhonizeProductStock($productId);
 			}
 
 			// Display a warning message

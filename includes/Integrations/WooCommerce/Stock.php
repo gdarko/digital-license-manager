@@ -128,27 +128,53 @@ class Stock {
 		/** @var WC_Product $product */
 		foreach ( $products as $product ) {
 
-			$woocommerceStock = (int) $product->get_stock_quantity();
-			$licenseStock     = License::getLicensesStockCount( $product->get_id() );
-
-			// Nothing to do in this case
-			if ( $woocommerceStock === $licenseStock ) {
-				continue;
-			}
-
-			// Update the stock
-			$product->set_manage_stock( true );
-			if ( $licenseStock > 0 ) {
-				$product->set_stock_status( 'instock' );
-			} else {
-				$product->set_stock_status( 'outofstock' );
-			}
-			$product->set_stock_quantity( $licenseStock );
-			$product->save();
+			self::syncrhonizeProductStock( $product );
 			$synchronized ++;
 		}
 
 		return $synchronized;
+	}
+
+	/**
+	 * Syncrhonize a single product stock and the number of licenses assigned to it.
+	 * Basically, copy the number of licenses assigned to the product and are marked as "ACTIVE" to the stock quantity number.
+	 *
+	 * @param $product
+	 *
+	 * @return bool|void
+	 */
+	public static function syncrhonizeProductStock( $product ) {
+
+		if ( is_numeric( $product ) ) {
+			$product = wc_get_product( $product );
+		}
+
+		if ( ! $product ) {
+			return false;
+		}
+
+		if ( ! $product->get_manage_stock() ) {
+			return false;
+		}
+
+		$woocommerceStock = (int) $product->get_stock_quantity();
+		$licenseStock     = License::getLicensesStockCount( $product->get_id() );
+
+		// Nothing to do in this case
+		if ( $woocommerceStock === $licenseStock ) {
+			return true;
+		}
+
+		// Update the stock
+		if ( $licenseStock > 0 ) {
+			$product->set_stock_status( 'instock' );
+		} else {
+			$product->set_stock_status( 'outofstock' );
+		}
+		$product->set_stock_quantity( $licenseStock );
+		$product->save();
+
+		return true;
 	}
 
 	/**

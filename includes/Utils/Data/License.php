@@ -190,7 +190,7 @@ class License {
 
 		// Update the stock
 		if ( $license->getProductId() !== null && $license->getStatus() === LicenseStatusEnum::ACTIVE ) {
-			Stock::increase( $license->getProductId() );
+			Stock::syncrhonizeProductStock($license->getProductId());
 		}
 
 		return $license;
@@ -303,7 +303,7 @@ class License {
 
 		// Update the stock
 		if ( $oldLicense->getProductId() !== null && $oldLicense->getStatus() === LicenseStatusEnum::ACTIVE ) {
-			Stock::decrease( $oldLicense->getProductId() );
+			Stock::syncrhonizeProductStock($oldLicense->getProductId());
 		}
 
 		/** @var LicenseResourceModel $license */
@@ -333,7 +333,8 @@ class License {
 
 		// Update the stock
 		if ( $newLicense->getProductId() !== null && $newLicense->getStatus() === LicenseStatusEnum::ACTIVE ) {
-			Stock::increase( $newLicense->getProductId() );
+			Stock::syncrhonizeProductStock($newLicense->getProductId());
+
 		}
 
 		return $newLicense;
@@ -356,7 +357,7 @@ class License {
 
 		// Update the stock
 		if ( $oldLicense && $oldLicense->getProductId() !== null && $oldLicense->getStatus() === LicenseStatusEnum::ACTIVE ) {
-			Stock::decrease( $oldLicense->getProductId() );
+			Stock::syncrhonizeProductStock($oldLicense->getProductId());
 		}
 
 		/** @var LicenseResourceModel $license */
@@ -978,6 +979,8 @@ class License {
 	 */
 	public static function assignLicensesFromStock( $product, $order, $amount ) {
 
+		$product = is_numeric($product) ? wc_get_product($product) : $product;
+
 		$order = is_numeric( $order ) ? wc_get_order( $order ) : $order;
 		if ( ! $order ) {
 			return new WP_Error( 'data_error', __( 'Invalid order provided.', 'digital-license-manager' ), array( 'code' => 422 ) );
@@ -997,7 +1000,7 @@ class License {
 			return new WP_Error( 'data_error', sprintf( __( 'Required amout of %d licenses was not found in stock.', 'digital-license-manager' ), $amount ), array( 'code' => 422 ) );
 		}
 
-		
+
 		$assignedLicenses = [];
 		for ( $i = 0; $i < $amount; $i ++ ) {
 			$license   = $licenses[ $i ];
@@ -1015,7 +1018,7 @@ class License {
 					}
 				}
 			}
-			
+
 			LicenseResourceRepository::instance()->update(
 				$license->getId(),
 				array(
@@ -1025,10 +1028,13 @@ class License {
 					'status'     => LicenseStatusEnum::SOLD
 				)
 			);
-			
+
+			Stock::syncrhonizeProductStock( $product );
+
+
 			$assignedLicenses[] = $license;
 		}
-		
+
 		return $assignedLicenses;
 	}
 
