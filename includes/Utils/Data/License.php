@@ -15,7 +15,6 @@ use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as L
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourcesRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus as LicenseStatusEnum;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
 use IdeoLogix\DigitalLicenseManager\Settings;
@@ -67,7 +66,7 @@ class License {
 		/** @var LicenseResourceModel $license */
 		$license = LicenseResourceRepository::instance()->find( $licenseId );
 		if ( ! $license ) {
-			return new WP_Error( 'data_error', sprintf( __( "The license key '%s' could not be found", 'digital-license-manager' ), $licenseKey ), array( 'code' => 404 ) );
+			return new WP_Error( 'data_error', sprintf( __( "The license id '%s' could not be found", 'digital-license-manager' ), $licenseId ), array( 'code' => 404 ) );
 		}
 
 		return $license;
@@ -471,6 +470,7 @@ class License {
 	 * Reactivate license
 	 *
 	 * @param $activationToken
+	 * @param null $licenseKey
 	 *
 	 * @return bool|AbstractResourceModel|WP_Error
 	 */
@@ -678,7 +678,7 @@ class License {
 	 * @return false|WP_Error
 	 */
 	public static function isLicenseDisabled( $license ) {
-		if ( $license->getStatus() === LicenseStatus::DISABLED ) {
+		if ( $license->getStatus() === LicenseStatusEnum::DISABLED ) {
 			return new WP_Error(
 				'license_disabled',
 				'The license Key is disabled.',
@@ -752,7 +752,7 @@ class License {
 			return new WP_Error( 'data_error', __( 'License Keys must be provided as array', 'digital-license-manager' ), array( 'code' => 422 ) );
 		}
 
-		if ( ! $cleanStatus || ! in_array( $cleanStatus, LicenseStatus::$status ) ) {
+		if ( ! $cleanStatus || ! in_array( $cleanStatus, LicenseStatusEnum::$status ) ) {
 			return new WP_Error( 'data_error', __( 'License Status is invalid', 'digital-license-manager' ), array( 'code' => 422 ) );
 		}
 
@@ -818,7 +818,7 @@ class License {
 		$validFor         = is_numeric( $validFor ) && absint( $validFor ) > 0 ? absint( $validFor ) : null;
 		$userId           = null;
 
-		if ( ! $cleanStatus || ! in_array( $cleanStatus, LicenseStatus::$status ) ) {
+		if ( ! $cleanStatus || ! in_array( $cleanStatus, LicenseStatusEnum::$status ) ) {
 			return new WP_Error( 'data_error', __( 'License Status is invalid', 'digital-license-manager' ), array( 'code' => 422 ) );
 		}
 
@@ -843,7 +843,7 @@ class License {
 
 		try {
 			$expiresAt = null;
-			if ( $generator->getExpiresIn() && $status == LicenseStatus::SOLD ) {
+			if ( $generator->getExpiresIn() && $status == LicenseStatusEnum::SOLD ) {
 				$expiresAt = null;
 				if ( is_numeric( $generator->getExpiresIn() ) && $generator->getExpiresIn() > 0 ) {
 					$expiresAt = DateFormatter::addDaysInFuture( $generator->getExpiresIn(), 'now', 'Y-m-d H:i:s' );
@@ -911,6 +911,128 @@ class License {
 	}
 
 	/**
+	 * Queries available licenses for selling from stock
+	 *
+	 * @param $product
+	 * @param $params
+	 *
+	 * @return bool|AbstractResourceModel[]
+	 */
+	public static function getStockLicensesQuery( $product, $params = [] ) {
+
+		$product_id = is_object( $product ) ? $product->get_id() : $product;
+		$query_args = wp_parse_args( $params, array(
+			'product_id' => $product_id,
+			'status'     => LicenseStatusEnum::ACTIVE
+		) );
+
+		return apply_filters( 'dlm_license_stock_query', $product, $query_args );
+	}
+
+	/**
+	 * Returns a count for licenses available in stock
+	 *
+	 * @param $product
+	 * @param $params
+	 *
+	 * @return false|int
+	 */
+	public static function getLicensesStockCount( $product, $params = [] ) {
+		$query_args = self::getStockLicensesQuery( $product, $params );
+
+		return LicenseResourceRepository::instance()->countBy( $query_args );
+	}
+
+	/**
+	 * Queries licenses from available stock
+	 *
+	 * @param $product
+	 * @param $params
+	 *
+	 * @return bool|AbstractResourceModel[]
+	 */
+	public static function getLicensesFromStock( $product, $amount = - 1, $params = [] ) {
+
+		$product_id = is_object( $product ) ? $product->get_id() : intval( $product );
+
+		return LicenseResourceRepository::instance()->findAllBy(
+			array(
+				'product_id' => $product_id,
+				'status'     => LicenseStatusEnum::ACTIVE
+			),
+			null,
+			null,
+			- 1,
+			$amount
+		);
+	}
+
+	/**
+	 * Assign licenses from stock
+	 *
+	 * @param $product
+	 * @param $order
+	 * @param $amount
+	 *
+	 * @return LicenseResourceModel[]|WP_Error
+	 */
+	public static function assignLicensesFromStock( $product, $order, $amount ) {
+
+		$order = is_numeric( $order ) ? wc_get_order( $order ) : $order;
+		if ( ! $order ) {
+			return new WP_Error( 'data_error', __( 'Invalid order provided.', 'digital-license-manager' ), array( 'code' => 422 ) );
+		}
+
+		$orderId      = $order->get_id();
+		$orderUserId = $order->get_user_id();
+		$amount        = is_numeric( $amount ) ? intval( $amount ) : 0;
+
+		if ( ! $amount ) {
+			return new WP_Error( 'data_error', __( 'Amount is invalid.', 'digital-license-manager' ), array( 'code' => 422 ) );
+		}
+
+		$licenses = self::getLicensesFromStock( $product, $amount );
+
+		if ( ! is_array( $licenses ) || count( $licenses ) <= 0 ) {
+			return new WP_Error( 'data_error', sprintf( __( 'Required amout of %d licenses was not found in stock.', 'digital-license-manager' ), $amount ), array( 'code' => 422 ) );
+		}
+
+		
+		$assignedLicenses = [];
+		for ( $i = 0; $i < $amount; $i ++ ) {
+			$license   = $licenses[ $i ];
+			$validFor  = (int) $license->getValidFor(); // In days.
+			$expiresAt = $license->getExpiresAt();
+
+			if ( $validFor ) {
+				try {
+					$date         = new DateTime();
+					$dateInterval = new DateInterval( 'P' . $validFor . 'D' );
+					$expiresAt    = $date->add( $dateInterval )->format( 'Y-m-d H:i:s' );
+				} catch ( Exception $e ) {
+					if ( empty( $expiresAt ) ) {
+						return new WP_Error( 'data_error', __( 'Valid for is not set or invalid.', 'digital-license-manager' ), array( 'code' => 422 ) );
+					}
+				}
+			}
+			
+			LicenseResourceRepository::instance()->update(
+				$license->getId(),
+				array(
+					'order_id'   => $orderId,
+					'user_id'    => $orderUserId,
+					'expires_at' => $expiresAt,
+					'status'     => LicenseStatusEnum::SOLD
+				)
+			);
+			
+			$assignedLicenses[] = $license;
+		}
+		
+		return $assignedLicenses;
+	}
+
+	/**
 	 * Mark imported license keys as sold
 	 *
 	 * @param LicenseResourceModel[] $licenses License key resource models
@@ -918,8 +1040,13 @@ class License {
 	 * @param int $amount Amount to be marked as sold
 	 *
 	 * @return bool|WP_Error
+	 * @deprecated 1.3.5
+	 *
 	 */
 	public static function sellImportedLicenseKeys( $licenses, $orderId, $amount ) {
+
+		_deprecated_function( 'sellImportedLicenseKeys', '1.3.5', 'assignLicensesFromStock' );
+
 		$cleanLicenseKeys = $licenses;
 		$cleanOrderId     = $orderId ? absint( $orderId ) : null;
 		$cleanAmount      = $amount ? absint( $amount ) : null;
@@ -968,7 +1095,7 @@ class License {
 					'order_id'   => $cleanOrderId,
 					'user_id'    => $userId,
 					'expires_at' => $expiresAt,
-					'status'     => LicenseStatus::SOLD
+					'status'     => LicenseStatusEnum::SOLD
 				)
 			);
 		}

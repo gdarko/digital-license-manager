@@ -10,6 +10,7 @@ use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\ListTables\Licenses;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\Generator as GeneratorUtil;
+use IdeoLogix\DigitalLicenseManager\Utils\Data\License;
 use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 use WC_Order;
@@ -183,28 +184,17 @@ class Orders {
 		if ( $useStock ) {  // Sell license keys through available stock.
 
 			/**
-			 * Retrieve the available license keys.
-			 * @var LicenseResourceModel[] $licenseKeys
-			 */
-			$licenseKeys = LicenseResourceRepository::instance()->findAllBy(
-				array(
-					'product_id' => $product->get_id(),
-					'status'     => LicenseStatus::ACTIVE
-				)
-			);
-
-			/**
 			 * Retrieve the current stock amount
 			 */
-			$availableStock = count( $licenseKeys );
+			$availableStock = License::getLicensesStockCount( $product );
 
 			/**
 			 * If there are enough keys, grab some and mark as "SOLD", otherwise add order notice.
 			 */
 			if ( $neededAmount <= $availableStock ) {
-				LicenseUtil::sellImportedLicenseKeys(
-					$licenseKeys,
-					$order->get_id(),
+				LicenseUtil::assignLicensesFromStock(
+					$product,
+					$order,
 					$neededAmount
 				);
 			} else {
@@ -217,7 +207,7 @@ class Orders {
 
 			/**
 			 * Retrieve the generator from the database and set up the args.
-			 * Skip the process if generator doesn't exists.
+			 * Skip the process if generator doesn't exist.
 			 * @var GeneratorResourceModel $generator
 			 */
 			$generator = GeneratorResourceRepository::instance()->find( $generatorId );
