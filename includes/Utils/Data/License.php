@@ -926,7 +926,7 @@ class License {
 			'status'     => LicenseStatusEnum::ACTIVE
 		) );
 
-		return apply_filters( 'dlm_license_stock_query', $product, $query_args );
+		return apply_filters( 'dlm_license_stock_query', $query_args, $product, $params );
 	}
 
 	/**

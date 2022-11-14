@@ -3,6 +3,7 @@
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
 use IdeoLogix\DigitalLicenseManager\Settings;
+use IdeoLogix\DigitalLicenseManager\Utils\Data\License;
 use WC_Product;
 
 defined( 'ABSPATH' ) || exit;
@@ -105,14 +106,16 @@ class Stock {
 		// 1. Inventory       -> Manage stock?
 		// 2. License Manager -> Sell license keys
 		// 3. License Manager -> License keys source -> Provide licenses from stock
-		$args = array(
+		$args = [
 			'limit'                                => - 1,
+			'type'                                 => [ 'simple', 'subscription', 'variation' ],
 			'orderBy'                              => 'id',
 			'order'                                => 'ASC',
 			'manage_stock'                         => true,
-			'dlm_licensed_product'                 => true,
+			'dlm_licensed_product'                 => '1',
 			'dlm_licensed_product_licenses_source' => 'stock',
-		);
+		];
+
 
 		$products     = wc_get_products( $args );
 		$synchronized = 0;
@@ -124,8 +127,9 @@ class Stock {
 
 		/** @var WC_Product $product */
 		foreach ( $products as $product ) {
+
 			$woocommerceStock = (int) $product->get_stock_quantity();
-			$licenseStock     = Products::getLicenseStockCount( $product->get_id() );
+			$licenseStock     = License::getLicensesStockCount( $product->get_id() );
 
 			// Nothing to do in this case
 			if ( $woocommerceStock === $licenseStock ) {
@@ -133,6 +137,12 @@ class Stock {
 			}
 
 			// Update the stock
+			$product->set_manage_stock( true );
+			if ( $licenseStock > 0 ) {
+				$product->set_stock_status( 'instock' );
+			} else {
+				$product->set_stock_status( 'outofstock' );
+			}
 			$product->set_stock_quantity( $licenseStock );
 			$product->save();
 			$synchronized ++;

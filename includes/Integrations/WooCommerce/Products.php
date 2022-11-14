@@ -5,6 +5,7 @@ namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Utils\Data\License;
 use WP_Error;
 use WP_Post;
 
@@ -453,7 +454,7 @@ class Products {
 						'cbvalue'       => 1,
 						'desc_tip'      => true,
 						'options'       => array(
-							'stock'      => sprintf( __( 'Provide licenses from stock (%d available)', 'digital-license-manager' ), self::getLicenseStockCount( $product->get_id() ) ),
+							'stock'      => sprintf( __( 'Provide licenses from stock (%d available)', 'digital-license-manager' ), License::getLicensesStockCount( $product->get_id() ) ),
 							'generators' => __( 'Provide licenses by using generator', 'digital-license-manager' ),
 						),
 						'wrapper_class' => $isVariableProduct ? 'form-row form-row-first dlm-field-conditional-src' : 'dlm-field-conditional-src',
@@ -539,9 +540,8 @@ class Products {
 	 * @return false|int
 	 */
 	public static function getLicenseStockCount( $product_id ) {
-		return LicenseResourceRepository::instance()->countBy( array(
-			'product_id' => $product_id,
-			'status'     => LicenseStatus::ACTIVE
-		) );
+		_deprecated_function( __METHOD__, '1.3.5', 'Utils\Data\License::getLicensesStockCount()' );
+
+		return License::getLicensesStockCount( $product_id );
 	}
 }

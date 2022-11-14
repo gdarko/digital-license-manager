@@ -2,7 +2,7 @@
 /* @var int $migrationMode */
 
 use IdeoLogix\DigitalLicenseManager\Database\Migrator;
-use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Products;
+use IdeoLogix\DigitalLicenseManager\Utils\Data\License;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -30,7 +30,7 @@ if ( $migrationMode === Migrator::MODE_UP ) {
 
 			// What if both are checked?
 			if ( $use_generator && $use_stock ) {
-				$current_stock     = Products::getLicenseStockCount( $result['post_id'] );
+				$current_stock     = License::getLicensesStockCount( $result['post_id'] );
 				$current_generator = get_post_meta( $result['post_id'], 'dlm_licensed_product_assigned_generator', true );
 				if ( is_numeric( $current_generator ) && $current_generator > 0 ) {
 					$use_stock = 0;
