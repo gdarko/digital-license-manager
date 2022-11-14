@@ -8,7 +8,7 @@ Stable tag: 1.3.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Manage and sell your digital licenses keys through your WordPress or WooCommerce website
+Sell and manage your digital licenses through your WordPress or WooCommerce website
 
 == Description ==
 
