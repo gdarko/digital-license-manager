@@ -23,6 +23,7 @@ class Dropdowns {
 	 */
 	public function __construct() {
 		add_action( 'wp_ajax_dlm_dropdown_search', array( $this, 'dropdownSearch' ), 10 );
+		add_filter( 'woocommerce_product_data_store_cpt_get_products_query', [ $this, 'handleSearchParameter' ], 10, 2 );
 	}
 
 	/**
@@ -119,6 +120,21 @@ class Dropdowns {
 						)
 					);
 				}
+			} elseif ( $type === 'product' ) {
+
+				$products = [];
+				$product  = wc_get_product( $term );
+				if ( ! empty( $product ) ) {
+					$products[] = $product;
+					foreach ( $product->get_children() as $child ) {
+						$products[] = wc_get_product( $child );
+					}
+				}
+				foreach ( $products as $product ) {
+					$results[] = $this->formatProduct( $product );
+				}
+				$more = false;
+
 			} elseif ( ! empty( $searchable_post_types ) && in_array( $type, $searchable_post_types ) ) {
 
 				global $wpdb;
@@ -150,93 +166,127 @@ class Dropdowns {
 				}
 			}
 		} else {
-			if ( empty( $ids ) ) {
-				$args = array(
-					'type'     => $type,
-					'limit'    => $limit,
-					'offset'   => $offset,
-					'customer' => $term,
+			$args = array(
+				'type'     => $type,
+				'limit'    => $limit,
+				'offset'   => $offset,
+				'customer' => $term,
+			);
+
+			// Search for licenses
+			if ( $type === 'license' ) {
+				$licenses = $this->searchLicenses( $term, $limit, $offset );
+
+				if ( count( $licenses ) < $limit ) {
+					$more = false;
+				}
+
+				foreach ( $licenses as $licenseId ) {
+					/** @var LicenseResourceModel $license */
+					$text      = sprintf(
+						'#%s',
+						$licenseId
+					);
+					$results[] = array(
+						'id'   => $licenseId,
+						'text' => $text
+					);
+				}
+			} // Search for users
+			elseif ( $type === 'user' ) {
+				$users = new WP_User_Query(
+					array(
+						'search'         => '*' . esc_attr( $term ) . '*',
+						'search_columns' => array(
+							'user_login',
+							'user_nicename',
+							'user_email',
+							'user_url',
+						),
+					)
 				);
 
-				// Search for licenses
-				if ( $type === 'license' ) {
-					$licenses = $this->searchLicenses( $term, $limit, $offset );
+				if ( $users->get_total() < $limit ) {
+					$more = false;
+				}
 
-					if ( count( $licenses ) < $limit ) {
-						$more = false;
-					}
-
-					foreach ( $licenses as $licenseId ) {
-						/** @var LicenseResourceModel $license */
-						$text      = sprintf(
-							'#%s',
-							$licenseId
-						);
-						$results[] = array(
-							'id'   => $licenseId,
-							'text' => $text
-						);
-					}
-				} // Search for users
-				elseif ( $type === 'user' ) {
-					$users = new WP_User_Query(
-						array(
-							'search'         => '*' . esc_attr( $term ) . '*',
-							'search_columns' => array(
-								'user_login',
-								'user_nicename',
-								'user_email',
-								'user_url',
-							),
-						)
+				/** @var WP_User $user */
+				foreach ( $users->get_results() as $user ) {
+					$results[] = array(
+						'id'   => $user->ID,
+						'text' => sprintf( '%s (#%d - %s)', $user->user_nicename, $user->ID, $user->user_email )
 					);
+				}
+			} else if ( $type === 'product' ) {
 
-					if ( $users->get_total() < $limit ) {
-						$more = false;
+				$all = wc_get_products( [
+					'limit'  => - 1,
+					'return' => 'ids',
+				] );
+
+				$total = count( $all );
+
+				$query = new \WC_Product_Query( [
+					'page'   => $page,
+					'limit'  => $limit,
+					'search' => $term
+				] );
+
+				foreach ( $query->get_products() as $product ) {
+					/* @var \WC_Product $product */
+					$results[] = $this->formatProduct( $product );
+					$children  = $product->get_children();
+					if ( ! empty( $children ) ) {
+						foreach ( $children as $child ) {
+							$childProduct = wc_get_product( $child );
+							if ( $childProduct ) {
+								$results[] = $this->formatProduct( $childProduct );
+							}
+						}
 					}
+				}
 
-					/** @var WP_User $user */
-					foreach ( $users->get_results() as $user ) {
-						$results[] = array(
-							'id'   => $user->ID,
-							'text' => sprintf( '%s (#%d - %s)', $user->user_nicename, $user->ID, $user->user_email )
-						);
-					}
-				} else if ( ! empty( $searchable_post_types ) && in_array( $type, $searchable_post_types ) ) {
-
-					$query = new WP_Query( array(
-						'post_type'      => $type,
-						's'              => esc_attr( $term ),
-						'paged'          => $page,
-						'posts_per_page' => $limit,
-						'post_status'    => $search_query_status,
-					) );
-
-					if ( $query->found_posts <= $limit ) {
-						$more = false;
-					}
-
-					foreach ( $query->posts as $_post ) {
-						$results[] = $this->formatPost( $_post );
-					}
-
+				$currentTotal = $page * $limit;
+				if ( $currentTotal < $total) {
+					$more = true;
 				} else {
-					$result = apply_filters(
-						'dlm_dropdown_search_multiple',
-						array(
-							'records' => array(),
-							'more'    => $more
-						),
-						$type,
-						$ids,
-						$args
-					);
-					if ( ! empty( $result['records'] ) ) {
-						$results = array_merge( $results, $result['records'] );
-					}
-					if ( isset( $result['more'] ) ) {
-						$more = $result['more'];
-					}
+					$more = false;
+				}
+
+			} else if ( ! empty( $searchable_post_types ) && in_array( $type, $searchable_post_types ) ) {
+
+				$query = new WP_Query( array(
+					'post_type'      => $type,
+					's'              => esc_attr( $term ),
+					'paged'          => $page,
+					'posts_per_page' => $limit,
+					'post_status'    => $search_query_status,
+				) );
+
+				if ( $query->found_posts <= $limit ) {
+					$more = false;
+				}
+
+				foreach ( $query->posts as $_post ) {
+					$results[] = $this->formatPost( $_post );
+				}
+
+			} else {
+				$result = apply_filters(
+					'dlm_dropdown_search_multiple',
+					array(
+						'records' => array(),
+						'more'    => $more
+					),
+					$type,
+					$ids,
+					$args
+				);
+				if ( ! empty( $result['records'] ) ) {
+					$results = array_merge( $results, $result['records'] );
+				}
+				if ( isset( $result['more'] ) ) {
+					$more = $result['more'];
 				}
 			}
 		}
@@ -280,5 +330,52 @@ class Dropdowns {
         ", "%" . $wpdb->esc_like( StringHasher::license( $term ) ) . "%", intval( $term ), $limit, $offset );
 
 		return $wpdb->get_col( $sql );
+	}
+
+	/**
+	 * Format products
+	 *
+	 * @param \WC_Product $product
+	 *
+	 * @return array
+	 */
+	private function formatProduct( $product ) {
+
+		$type = '';
+		if ( $product->is_type( 'variable' ) ) {
+			$type .= ' (' . __( 'Variable', 'digital-license-manager' ).')';
+		} else if ( $product->is_type( 'variation' ) ) {
+			$type .= ' (' . __( 'Variation', 'digital-license-manager' ).')';
+		}
+
+		if($product->is_type( 'variation' )) {
+			$id = $product->get_parent_id();
+			$title = wp_strip_all_tags($product->get_formatted_name());
+		} else {
+			$title = $product->get_name();
+			$id = $product->get_id();
+		}
+
+
+		return [
+			'id'   => $product->get_id(),
+			'text' => sprintf( '#%d - %s%s', $id, $title, $type )
+		];
+	}
+
+	/**
+	 * Handles search parameter for products
+	 *
+	 * @param $query
+	 * @param $query_vars
+	 *
+	 * @return mixed
+	 */
+	public function handleSearchParameter( $query, $query_vars ) {
+		if ( isset( $query_vars['search'] ) && ! empty( $query_vars['search'] ) ) {
+			$query['s'] = esc_attr( $query_vars['search'] );
+		}
+
+		return $query;
 	}
 }
