@@ -391,7 +391,14 @@ class License {
 		$license = LicenseResourceRepository::instance()->findBy( array( 'hash' => StringHasher::license( $licenseKey ) ) );
 
 		if ( ! $license ) {
-			return new WP_Error( sprintf( __( "The license key '%s' could not be found", 'digital-license-manager' ), $licenseKey ) );
+			return new WP_Error(
+				'data_error',
+				sprintf(
+					__( "The license key '%s' could not be found", 'digital-license-manager' ),
+					$licenseKey
+				),
+				array( 'status' => 404 )
+			);
 		}
 
 		if ( ! $licenseKey ) {
