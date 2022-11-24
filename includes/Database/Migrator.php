@@ -17,16 +17,22 @@ class Migrator {
 	protected $path;
 
 	/**
-	 * The OLD database version
+	 * The current database version
 	 * @var string
 	 */
-	protected $oldVersion;
+	protected $current_version;
 
 	/**
 	 * The NEW database version
 	 * @var string
 	 */
-	protected $newVersion;
+	protected $new_version;
+
+	/**
+	 * Db option
+	 * @var string
+	 */
+	protected $db_option;
 
 	/**
 	 * Migration mode UP
@@ -42,56 +48,43 @@ class Migrator {
 	 * Migrator constructor.
 	 *
 	 * @param $path
-	 * @param $oldVersion
+	 * @param $dbOption
 	 * @param $newVersion
 	 */
-	public function __construct( $path, $oldVersion, $newVersion ) {
-		$this->path       = $path;
-		$this->oldVersion = $oldVersion;
-		$this->newVersion = $newVersion;
+	public function __construct( $path, $db_option, $new_version ) {
+		$this->path            = $path;
+		$this->new_version     = $new_version;
+		$this->current_version = get_option( $db_option );
+		$this->db_option       = $db_option;
 	}
 
 	/**
 	 * Performs a database upgrade.
 	 */
 	public function up() {
-		$migrationMode = self::MODE_UP;
-		$regExFileName = '/(\d{14})_(.*?)_(.*?)\.php/';
+		$migrationMode = Migrator::MODE_UP;
 		foreach ( glob( $this->path ) as $fileName ) {
-			if ( 'index.php' === $fileName ) {
-				continue;
-			}
-			if ( preg_match( $regExFileName, basename( $fileName ), $match ) ) {
+			if ( preg_match( '/(\d{14})_(.*?)_(.*?)\.php/', $fileName, $match ) ) {
 				$fileBasename    = $match[0];
 				$fileDateTime    = $match[1];
 				$fileVersion     = $match[2];
 				$fileDescription = $match[3];
-				global $wpdb;
-				if ( ( (int) $fileVersion <= $this->newVersion ) && (int) $fileVersion > $this->oldVersion ) {
+				if ( ( (int) $fileVersion <= $this->new_version ) && (int) $fileVersion > $this->current_version ) {
 					require_once $fileName;
+					update_option( $this->db_option, $fileVersion );
 				}
 			}
 		}
-
-		update_option( 'dlm_db_version', $this->newVersion, true );
-	}
-
-	/**
-	 * Performs a database downgrade (Currently not in use).
-	 */
-	public function down() {
-		$migrationMode = self::MODE_DOWN;
-		// TODO: Not implemented.
 	}
 
 	/**
 	 * Run the database migrator
 	 */
 	public function run() {
-		if ( $this->oldVersion < $this->newVersion ) {
+		if ( $this->current_version < $this->new_version ) {
 			$this->up();
-		} else if ( $this->oldVersion > $this->newVersion ) {
-			$this->down();
+		} else {
+			// TODO: Implement
 		}
 	}
 

@@ -127,11 +127,8 @@ class Setup {
 	 * Migration script.
 	 */
 	public static function migrate() {
-		$currentDatabaseVersion = get_option( 'dlm_db_version' );
-		if ( $currentDatabaseVersion != self::DB_VERSION ) {
-			$migrator = new Migrator( DLM_MIGRATIONS_DIR . '*.php', $currentDatabaseVersion, self::DB_VERSION );
-			$migrator->run();
-		}
+		$migrator = new Migrator( DLM_MIGRATIONS_DIR . '*.php', 'dlm_db_version', self::DB_VERSION );
+		$migrator->run();
 	}
 
 	/**
