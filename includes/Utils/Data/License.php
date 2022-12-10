@@ -707,7 +707,7 @@ class License {
 	 */
 	public static function isKeyDuplicate( $licenseKey, $licenseKeyId = null ) {
 
-		if ( Settings::get( 'allow_duplicates', Settings::SECTION_GENERAL ) ) {
+		if ( intval( Settings::get( 'allow_duplicates', Settings::SECTION_GENERAL ) ) ) {
 			return false;
 		}
 
@@ -773,11 +773,14 @@ class License {
 
 		$result['added']  = 0;
 		$result['failed'] = 0;
+		$result['duplicates'] = 0;
 
-		$origLicensesCount = count($cleanLicenseKeys);
-		$licenseKeys = array_unique($licenseKeys); // filter for duplicates
-		$currLicensesCount = count($licenseKeys);
-		$result['duplicates'] = $origLicensesCount - $currLicensesCount;
+		if ( ! intval( Settings::get( 'allow_duplicates', Settings::SECTION_GENERAL ) ) ) {
+			$origLicensesCount    = count( $cleanLicenseKeys );
+			$licenseKeys          = array_unique( $licenseKeys ); // filter for duplicates
+			$currLicensesCount    = count( $licenseKeys );
+			$result['duplicates'] = $origLicensesCount - $currLicensesCount;
+		}
 
 		// Add the keys to the database table.
 		foreach ( $cleanLicenseKeys as $licenseKey ) {

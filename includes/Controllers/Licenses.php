@@ -51,9 +51,11 @@ class Licenses {
 
 		check_admin_referer( 'dlm_import_license_keys' );
 
+		$backUrl = sprintf( 'admin.php?page=%s&action=import', PageSlug::LICENSES );
+
 		if ( ! current_user_can( 'dlm_create_licenses' ) ) {
 			AdminNotice::error( __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
-			wp_redirect( sprintf( 'admin.php?page=%s&action=import', PageSlug::LICENSES ) );
+			wp_redirect( $backUrl );
 			exit();
 		}
 
@@ -86,8 +88,6 @@ class Licenses {
 			$licenseKeys = $this->parseImportClipboard();
 		}
 
-		$backUrl = sprintf( 'admin.php?page=%s&action=import', PageSlug::LICENSES );
-
 		if ( ! is_array( $licenseKeys )) {
 			AdminNotice::error( __( 'There was a problem importing the license keys. Invalid format provided.', 'digital-license-manager' ) );
 			wp_redirect( $backUrl );
@@ -117,7 +117,7 @@ class Licenses {
 		);
 		if ( is_wp_error( $result ) ) {
 			AdminNotice::error( __( $result->get_error_message(), 'digital-license-manager' ) );
-			wp_redirect( sprintf( 'admin.php?page=%s&action=import', PageSlug::LICENSES ) );
+			wp_redirect( $backUrl );
 			exit();
 		}
 
@@ -125,7 +125,6 @@ class Licenses {
 		$message  = '';
 		$callback = '';
 		$resync   = false;
-		$backTo   = sprintf( 'admin.php?page=%s&action=import', PageSlug::LICENSES );
 
 		if ( $result['failed'] == 0 && $result['added'] == 0 ) {
 			$callback = 'error';
@@ -161,7 +160,7 @@ class Licenses {
 		}
 
 		call_user_func( [ AdminNotice::class, $callback ], $message );
-		wp_redirect( $backTo );
+		wp_redirect( $backUrl );
 		exit();
 
 	}
