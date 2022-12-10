@@ -3,7 +3,6 @@
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Emails\ResendOrderLicenses;
-use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Emails\Templates;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use WC_Email;
 use WC_Order;
