@@ -324,8 +324,9 @@ class Licenses {
 		$licenseKeys          = null;
 		$ext                  = pathinfo( $_FILES['file']['name'], PATHINFO_EXTENSION );
 		$mimes                = array( 'application/vnd.ms-excel', 'text/plain', 'text/csv', 'text/tsv' );
-		$fileName             = $_FILES['file']['tmp_name'];
-		$filePath             = DLM_ASSETS_DIR . $tmp_file;
+		$fileName              = $_FILES['file']['tmp_name'];
+		$uploads              = wp_upload_dir( null, false );
+		$filePath              = trailingslashit( $uploads['basedir'] ) . $tmp_file;
 
 		/**
 		 * Validate the file extension
@@ -352,7 +353,8 @@ class Licenses {
 		 * Handle txt and csv types
 		 */
 		if ( $ext == 'txt' ) {
-			$licenseKeys = file( DLM_ASSETS_DIR . $tmp_file, FILE_IGNORE_NEW_LINES );
+			$licenseKeys = file( $filePath, FILE_IGNORE_NEW_LINES );
+			unlink($filePath);
 			if ( ! is_array( $licenseKeys ) ) {
 				AdminNotice::error( __( 'Invalid file content.', 'digital-license-manager' ) );
 				wp_redirect(
@@ -374,6 +376,9 @@ class Licenses {
 
 				fclose( $handle );
 			}
+			unlink($filePath);
+		} else {
+			unlink($filePath);
 		}
 
 		/**
@@ -403,11 +408,6 @@ class Licenses {
 				exit();
 			}
 		}
-
-		/**
-		 * Delete the temporary file now that we're done.
-		 */
-		unlink( $tmp_file );
 
 		return $licenseKeys;
 	}
