@@ -159,7 +159,9 @@ class Licenses {
 			Stock::syncrhonizeProductStock( $productId );
 		}
 
-		call_user_func( [ AdminNotice::class, $callback ], $message );
+		if ( method_exists( AdminNotice::class, $callback ) ) {
+			call_user_func( [ AdminNotice::class, $callback ], $message );
+		}
 		wp_redirect( $backUrl );
 		exit();
 
