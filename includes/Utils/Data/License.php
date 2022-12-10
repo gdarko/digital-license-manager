@@ -765,12 +765,19 @@ class License {
 		}
 
 		foreach ( $licenseKeys as $licenseKey ) {
+			if(empty($licenseKey)) {
+				continue;
+			}
 			array_push( $cleanLicenseKeys, sanitize_text_field( $licenseKey ) );
 		}
 
 		$result['added']  = 0;
 		$result['failed'] = 0;
 
+		$origLicensesCount = count($cleanLicenseKeys);
+		$licenseKeys = array_unique($licenseKeys); // filter for duplicates
+		$currLicensesCount = count($licenseKeys);
+		$result['duplicates'] = $origLicensesCount - $currLicensesCount;
 
 		// Add the keys to the database table.
 		foreach ( $cleanLicenseKeys as $licenseKey ) {

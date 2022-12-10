@@ -86,11 +86,22 @@ class Licenses {
 			$licenseKeys = $this->parseImportClipboard();
 		}
 
-		if ( ! is_array( $licenseKeys ) || count( $licenseKeys ) === 0 ) {
-			AdminNotice::error( __( 'There was a problem importing the license keys.', 'digital-license-manager' ) );
-			wp_redirect( sprintf( 'admin.php?page=%s&action=import', PageSlug::LICENSES ) );
+		$backUrl = sprintf( 'admin.php?page=%s&action=import', PageSlug::LICENSES );
+
+		if ( ! is_array( $licenseKeys )) {
+			AdminNotice::error( __( 'There was a problem importing the license keys. Invalid format provided.', 'digital-license-manager' ) );
+			wp_redirect( $backUrl );
 			exit();
 		}
+
+		$curLicensesCount = count($licenseKeys);
+
+		if($curLicensesCount <= 0) {
+			AdminNotice::error( __( 'No valid license keys found from import.', 'digital-license-manager' ) );
+			wp_redirect( $backUrl );
+			exit();
+		}
+
 		$validFor       = isset( $_POST['valid_for'] ) ? intval( $_POST['valid_for'] ) : null;
 		$maxActivations = isset( $_POST['activations_limit'] ) ? intval( $_POST['activations_limit'] ) : null;
 
@@ -111,52 +122,48 @@ class Licenses {
 		}
 
 		// Redirect according to $result.
+		$message  = '';
+		$callback = '';
+		$resync   = false;
+		$backTo   = sprintf( 'admin.php?page=%s&action=import', PageSlug::LICENSES );
+
 		if ( $result['failed'] == 0 && $result['added'] == 0 ) {
-			AdminNotice::error( __( 'There was a problem importing the license keys.', 'digital-license-manager' ) );
-			wp_redirect( sprintf( 'admin.php?page=%s&action=import', PageSlug::LICENSES ) );
-			exit();
-		}
-
-		if ( $result['failed'] == 0 && $result['added'] > 0 ) {
-			// Update the stock
-			if ( $status === LicenseStatusEnum::ACTIVE ) {
-				Stock::syncrhonizeProductStock($productId);
+			$callback = 'error';
+			$message = __( 'No valid license keys were found to be imported.', 'digital-license-manager' );
+		} else if ( $result['failed'] == 0 && $result['added'] > 0 ) {
+			if ( ! empty( $result['duplicates'] ) ) {
+				$callback = 'warning';
+				$message = sprintf( __( '%d license key(s) added successfully and %d duplicate key(s) ignored.', 'digital-license-manager' ), (int) $result['added'], (int) $result['duplicates'] );
+			} else {
+				$callback = 'success';
+				$message = sprintf( __( '%d license key(s) added successfully.', 'digital-license-manager' ), (int) $result['added'] );
 			}
-
-			// Display a success message
-			AdminNotice::success(
-				sprintf(
-					__( '%d license key(s) added successfully.', 'digital-license-manager' ),
-					(int) $result['added']
-				)
-			);
-			wp_redirect( sprintf( 'admin.php?page=%s&action=import', PageSlug::LICENSES ) );
-			exit();
-		}
-
-		if ( $result['failed'] > 0 && $result['added'] == 0 ) {
-			AdminNotice::error( __( 'There was a problem importing the license keys.', 'digital-license-manager' ) );
-			wp_redirect( sprintf( 'admin.php?page=%s&action=import', PageSlug::LICENSES ) );
-			exit();
-		}
-
-		if ( $result['failed'] > 0 && $result['added'] > 0 ) {
-			// Update the stock
-			if ( $status === LicenseStatusEnum::ACTIVE ) {
-				Stock::syncrhonizeProductStock($productId);
+			$resync = true;
+		} else if ( $result['failed'] > 0 && $result['added'] == 0 ) {
+			$callback = 'error';
+			if ( ! empty( $result['duplicates'] ) ) {
+				$message = sprintf( __( 'No licence key(s) imported successfully, %d failed to import and %d duplicate key(s) were found.', 'digital-license-manager' ), (int) $result['failed'], (int) $result['duplicates'] );
+			} else {
+				$message = sprintf( __( 'No licence key(s) imported successfully, %d failed to import.', 'digital-license-manager' ), (int) $result['failed'] );
 			}
-
-			// Display a warning message
-			AdminNotice::warning(
-				sprintf(
-					__( '%d key(s) have been imported, while %d key(s) were not imported.', 'digital-license-manager' ),
-					(int) $result['added'],
-					(int) $result['failed']
-				)
-			);
-			wp_redirect( sprintf( 'admin.php?page=%s&action=import', PageSlug::LICENSES ) );
-			exit();
+		} else if ( $result['failed'] > 0 && $result['added'] > 0 ) {
+			$callback = 'warning';
+			if ( ! empty( $result['duplicates'] ) ) {
+				$message = sprintf( __( '%d key(s) have been imported, while %d key(s) were not imported and %d duplicate key(s) ignored.', 'digital-license-manager' ), (int) $result['added'], (int) $result['failed'], (int) $result['duplicates'] );
+			} else {
+				$message = sprintf( __( '%d key(s) have been imported, while %d key(s) were not imported.', 'digital-license-manager' ), (int) $result['added'], (int) $result['failed'] );
+			}
+			$resync = true;
 		}
+
+		if ( $resync && $status === LicenseStatusEnum::ACTIVE ) {
+			Stock::syncrhonizeProductStock( $productId );
+		}
+
+		call_user_func( [ AdminNotice::class, $callback ], $message );
+		wp_redirect( $backTo );
+		exit();
+
 	}
 
 	/**
