@@ -20,6 +20,19 @@
                     </td>
                 </tr>
 
+                <!-- STATUS -->
+                <tr scope="row">
+                    <th scope="row"><label for="edit__status"><?php esc_html_e('Status', 'digital-license-manager');?></label></th>
+                    <td>
+                        <select id="edit__status" name="status" class="regular-text">
+			                <?php foreach($statusOptions as $option): ?>
+                                <option value="<?php echo esc_html($option['value']); ?>"><?php echo esc_html($option['name']); ?></option>
+			                <?php endforeach; ?>
+                        </select>
+                        <p class="description"><?php esc_html_e( 'Define the initial license status. Set "Active" to make this license available for stock purchases.', 'digital-license-manager' ); ?></p>
+                    </td>
+                </tr>
+
                 <!-- EXPIRES AT -->
                 <tr scope="row">
                     <th scope="row"><label for="single__expires_at"><?php esc_html_e('Expires at', 'digital-license-manager');?></label></th>
@@ -44,18 +57,6 @@
                     </td>
                 </tr>
 
-                <!-- STATUS -->
-                <tr scope="row">
-                    <th scope="row"><label for="edit__status"><?php esc_html_e('Status', 'digital-license-manager');?></label></th>
-                    <td>
-                        <select id="edit__status" name="status" class="regular-text">
-						    <?php foreach($statusOptions as $option): ?>
-                                <option value="<?php echo esc_html($option['value']); ?>"><?php echo esc_html($option['name']); ?></option>
-						    <?php endforeach; ?>
-                        </select>
-                    </td>
-                </tr>
-
                 <!-- PRODUCT -->
                 <tr scope="row">
                     <th scope="row"><label for="single__product"><?php esc_html_e('Product', 'digital-license-manager');?></label></th>
@@ -63,11 +64,10 @@
                         <select name="product_id" id="single__product" class="regular-text"></select>
                         <p class="description">
                             <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
-			                <?php esc_html_e('The product to which the license keys will be assigned. Useful if selling from stock.', 'digital-license-manager');?>
+		                    <?php esc_html_e('The product to which the license keys will be assigned and will be delivered once that product is purchased.', 'digital-license-manager');?>
                         </p>
                     </td>
                 </tr>
-
 
                 <!-- ORDER -->
                 <tr scope="row">
@@ -76,7 +76,7 @@
                         <select name="order_id" id="single__order" class="regular-text"></select>
                         <p class="description">
                             <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
-                            <?php esc_html_e('The order to which the license keys will be assigned.', 'digital-license-manager');?>
+	                        <?php esc_html_e('The order to which the license keys will be assigned, useful if you want to assign license to order after purchase.', 'digital-license-manager');?>
                         </p>
                     </td>
                 </tr>
