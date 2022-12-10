@@ -198,7 +198,7 @@ class Orders {
 					$neededAmount
 				);
 			} else {
-				$order->add_order_note( sprintf( __( 'License delivery failed: Could not find enough licenses in stock (Current stock: %d | Required %d)' ), $neededAmount, $availableStock ) );
+				$order->add_order_note( sprintf( __( 'License delivery failed: Could not find enough licenses in stock (Current stock: %d | Required %d)' ), $availableStock, $neededAmount ) );
 			}
 
 		} else if ( $useGenerator ) { // Sell license keys through the active generator
