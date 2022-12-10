@@ -191,8 +191,9 @@ class Orders {
 			/**
 			 * If there are enough keys, grab some and mark as "SOLD", otherwise add order notice.
 			 */
+			$assignedLicenses = [];
 			if ( $neededAmount <= $availableStock ) {
-				LicenseUtil::assignLicensesFromStock(
+				$assignedLicenses = LicenseUtil::assignLicensesFromStock(
 					$product,
 					$order,
 					$neededAmount
@@ -200,6 +201,8 @@ class Orders {
 			} else {
 				$order->add_order_note( sprintf( __( 'License delivery failed: Could not find enough licenses in stock (Current stock: %d | Required %d)' ), $availableStock, $neededAmount ) );
 			}
+
+			do_action('dlm_stock_delivery_licenses', $assignedLicenses, $neededAmount, $availableStock, $order, $product);
 
 		} else if ( $useGenerator ) { // Sell license keys through the active generator
 
