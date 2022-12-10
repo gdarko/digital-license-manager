@@ -202,7 +202,7 @@ class Orders {
 				$order->add_order_note( sprintf( __( 'License delivery failed: Could not find enough licenses in stock (Current stock: %d | Required %d)' ), $availableStock, $neededAmount ) );
 			}
 
-			do_action('dlm_stock_delivery_licenses', $assignedLicenses, $neededAmount, $availableStock, $order, $product);
+			do_action( 'dlm_stock_delivery_assigned_licenses', $assignedLicenses, $neededAmount, $availableStock, $order, $product );
 
 		} else if ( $useGenerator ) { // Sell license keys through the active generator
 
