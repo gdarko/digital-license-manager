@@ -138,6 +138,8 @@ class Emails {
 		add_action( 'dlm_email_order_details', array( $this, 'addOrderDetails' ), 10, 4 );
 		add_action( 'dlm_email_order_licenses', array( $this, 'addOrderLicenseKeys' ), 10, 4 );
 		$this->emails['DLM_ResendOrderLicenses'] = new ResendOrderLicenses();
+
+		add_action( 'dlm_email_customer_deliver_licenses', array( $this->emails['DLM_ResendOrderLicenses'], 'trigger' ) );
 	}
 
 	/**

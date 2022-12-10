@@ -31,8 +31,6 @@ class ResendOrderLicenses extends WC_Email {
 			'{order_number}' => '',
 		);
 
-		add_action( 'dlm_email_customer_deliver_licenses', array( $this, 'trigger' ) );
-
 		parent::__construct();
 	}
 
