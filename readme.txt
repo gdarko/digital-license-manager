@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce, w
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 6.1
-Stable tag: 1.3.6
+Stable tag: 1.3.7
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -162,6 +162,19 @@ To migrate to Digital License Manager, please navigate to "License Manager" > "S
 15. Re-send licenses via Order page
 
 == Changelog ==
+
+= 1.3.7 =
+*Release Date - 12 Dec 2022*
+
+* Fix logic error that made the order note when no licenses in stock found incorrect
+* Add action hook `dlm_stock_delivery_assigned_licenses($assignedLicenses, $neededAmount, $availableStock, $order, $product)` that is triggered once licenses from stock assignment finished. Useful to notify third party something based on the delivered licenses or if no licenses were delivered due to empty stock
+* Add duplicate check to Licenses import based on plugin settings for allowing duplicates
+* Add duplicate check warnings into admin notices when importing licenses
+* Fix issue in Licenses import that allowed empty lines to be imported as empty licenses from clipboard or file
+* Refactor file import process, moved temporary import file path from plugin folder to uploads
+* Refactor order licenses resend email/action, the resend was not working on some environments
+* Make use of 'paginate' property for wc_get_products in dropdown search fields
+* Code quality and formatting improvements
 
 = 1.3.6 =
 *Release Date - 24 Nov 2022*
