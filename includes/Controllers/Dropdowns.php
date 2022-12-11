@@ -51,7 +51,7 @@ class Dropdowns {
 
 		$type    = (string) sanitize_text_field( wp_unslash( $_POST['type'] ) );
 		$page    = 1;
-		$limit   = 10;
+		$limit   = 6;
 		$results = array();
 		$term    = isset( $_POST['term'] ) ? (string) sanitize_text_field( wp_unslash( $_POST['term'] ) ) : '';
 		$more    = true;
@@ -219,20 +219,15 @@ class Dropdowns {
 				}
 			} else if ( $type === 'product' ) {
 
-				$all = wc_get_products( [
-					'limit'  => - 1,
-					'return' => 'ids',
-				] );
-
-				$total = count( $all );
-
-				$query = new \WC_Product_Query( [
+				$query = wc_get_products( [
 					'page'   => $page,
 					'limit'  => $limit,
-					'search' => $term
+					'search' => $term,
+					'paginate' => true,
 				] );
 
-				foreach ( $query->get_products() as $product ) {
+
+				foreach ( $query->products as $product ) {
 					/* @var \WC_Product $product */
 					$results[] = $this->formatProduct( $product );
 					$children  = $product->get_children();
@@ -246,12 +241,7 @@ class Dropdowns {
 					}
 				}
 
-				$currentTotal = $page * $limit;
-				if ( $currentTotal < $total) {
-					$more = true;
-				} else {
-					$more = false;
-				}
+				$more = $page < $query->max_num_pages;
 
 			} else if ( ! empty( $searchable_post_types ) && in_array( $type, $searchable_post_types ) ) {
 
