@@ -15,6 +15,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class Emails {
 
+	const EMAIL_KEY_RESEND_LICENSES = 'DLM_ResendOrderLicenses';
+
 	/**
 	 * List of registered emails
 	 * @var array
@@ -25,8 +27,39 @@ class Emails {
 	 * Email constructor.
 	 */
 	public function __construct() {
+
+		add_action( 'dlm_email_order_details', array( $this, 'addOrderDetails' ), 10, 4 );
+		add_action( 'dlm_email_order_licenses', array( $this, 'addOrderLicenseKeys' ), 10, 4 );
+
 		add_action( 'woocommerce_email_classes', array( $this, 'registerEmailClasses' ), 90, 1 );
 		add_action( 'woocommerce_email_after_order_table', array( $this, 'afterOrderTable' ), 10, 4 );
+
+		add_action( 'dlm_email_customer_deliver_licenses', array( $this, 'deliverLicenses' ), 10, 2 );
+
+	}
+
+	/**
+	 * Registers the plugin email classes to work with WooCommerce.
+	 *
+	 * @param array $emails
+	 *
+	 * @return array
+	 */
+	public function registerEmailClasses( $emails ) {
+
+		$this->emails[self::EMAIL_KEY_RESEND_LICENSES] = new ResendOrderLicenses();
+
+		return array_merge( $emails, $this->emails );
+	}
+
+	/**
+	 * Deliver the required licenses based on specifci order
+	 * @return void
+	 */
+	public function deliverLicenses( $order_id, $order ) {
+		/* @var ResendOrderLicenses $mailer */
+		$mailer = WC()->mailer()->get_emails()[ self::EMAIL_KEY_RESEND_LICENSES ];
+		$mailer->trigger( $order_id, $order );
 	}
 
 	/**
@@ -114,32 +147,6 @@ class Emails {
 				);
 			}
 		}
-	}
-
-	/**
-	 * Registers the plugin email classes to work with WooCommerce.
-	 *
-	 * @param array $emails
-	 *
-	 * @return array
-	 */
-	public function registerEmailClasses( $emails ) {
-
-		$this->registerResendOrderLicensesEmail();
-
-		return array_merge( $emails, $this->emails );
-	}
-
-	/**
-	 * Register the resend.
-	 * @return void
-	 */
-	public function registerResendOrderLicensesEmail() {
-		add_action( 'dlm_email_order_details', array( $this, 'addOrderDetails' ), 10, 4 );
-		add_action( 'dlm_email_order_licenses', array( $this, 'addOrderLicenseKeys' ), 10, 4 );
-		$this->emails['DLM_ResendOrderLicenses'] = new ResendOrderLicenses();
-
-		add_action( 'dlm_email_customer_deliver_licenses', array( $this->emails['DLM_ResendOrderLicenses'], 'trigger' ) );
 	}
 
 	/**
