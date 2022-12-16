@@ -74,7 +74,7 @@ class Emails {
 	public function afterOrderTable( $order, $isAdminEmail, $plainText, $email ) {
 
 		// Return if the order isn't complete.
-		if ( ! Orders::isComplete( $order->get_id() ) ) {
+		if ( ! Orders::isComplete( $order ) ) {
 			return;
 		}
 
