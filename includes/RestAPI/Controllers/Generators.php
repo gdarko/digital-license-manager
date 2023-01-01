@@ -419,7 +419,6 @@ class Generators extends DLM_REST_Controller {
 			);
 		}
 
-		/** @var string[] $licenses */
 		$licenses = GeneratorUtil::generateLicenseKeys( $amount, $generator );
 
 		if ( is_wp_error( $licenses ) ) {

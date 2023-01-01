@@ -185,7 +185,7 @@ class Settings extends Singleton {
 					'{{DATE_FORMAT}}',
 					'{{TIME_FORMAT}}',
 					esc_url( admin_url( 'options-general.php' ) ),
-					__( '<a href="https://wordpress.org/support/article/formatting-date-and-time/">Documentation on date and time formatting</a>.' ),
+					__( '<a href="https://wordpress.org/support/article/formatting-date-and-time/">Documentation on date and time formatting</a>.' )
 				),
 				'label_for' => 'expiration_format',
 				'size'      => 40,

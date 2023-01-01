@@ -3,9 +3,11 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Utils\Data;
 
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractGenerator;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Support\Generators\StandardGenerator;
 use WP_Error;
 
 
@@ -247,83 +249,47 @@ class Generator {
 	}
 
 	/**
-	 * Generate a single license string
-	 *
-	 * @param string $charset Character map from which the license will be generated
-	 * @param int $chunks Number of chunks
-	 * @param int $chunkLength The length of an individual chunk
-	 * @param string $separator Separator used
-	 * @param string $prefix Prefix used
-	 * @param string $suffix Suffix used
-	 *
-	 * @return string
-	 */
-	private static function generateLicenseString( $charset, $chunks, $chunkLength, $separator, $prefix, $suffix ) {
-
-		$charsetLength = strlen( $charset );
-		$licenseString = $prefix;
-
-		// loop through the chunks
-		for ( $i = 0; $i < $chunks; $i ++ ) {
-			// add n random characters from $charset to chunk, where n = $chunkLength
-			for ( $j = 0; $j < $chunkLength; $j ++ ) {
-				$licenseString .= $charset[ rand( 0, $charsetLength - 1 ) ];
-			}
-			// do not add the separator on the last iteration
-			if ( $i < $chunks - 1 ) {
-				$licenseString .= $separator;
-			}
-		}
-
-		$licenseString .= $suffix;
-
-		return $licenseString;
-	}
-
-	/**
 	 * Bulk create license keys, if possible for given parameters.
 	 *
 	 * @param int $amount Number of license keys to be generated
 	 * @param GeneratorResourceModel $generator Generator used for the license keys
 	 * @param array $licenses Number of license keys to be generated
+	 * @param \WC_Order|null $order
+	 * @param \WC_Product|null $product
 	 *
 	 * @return array|WP_Error
 	 */
-	public static function generateLicenseKeys( $amount, $generator, $licenses = array() ) {
+	public static function generateLicenseKeys( $amount, $generator, $licenses = array(), $order = null, $product = null ) {
+		$generatorInstance = self::getGeneratorInstance( $generator, $order, $product );
 
-		// check if it's possible to create as many combinations using the input args
-		$uniqueCharacters = count( array_unique( str_split( $generator->getCharset() ) ) );
-		$maxPossibleKeys  = pow( $uniqueCharacters, $generator->getChunks() * $generator->getChunkLength() );
+		return $generatorInstance->generate( $amount, $licenses );
+	}
 
-		if ( $amount > $maxPossibleKeys ) {
-			return new WP_Error( 'data_error', __( 'It\'s not possible to generate that many keys with the given parameters, there are not enough combinations. Please review your inputs.', 'digital-license-manager' ), array( 'code' => 422 ) );
+	/**
+	 * The generator instance
+	 *
+	 * @param GeneratorResourceModel $generator
+	 * @param \WC_Order $order
+	 *
+	 * @return AbstractGenerator
+	 */
+	public static function getGeneratorInstance( $generator, $order = null, $product = null ) {
+
+		/**
+		 * Determines the generator PHP class, this class should implement AbstractGenerator.
+		 *
+		 * @param $className
+		 * @param $generator
+		 * @param $order
+		 * @param $product
+		 */
+		$className = apply_filters( 'dlm_generator_class', StandardGenerator::class, $generator, $order, $product );
+		if ( ! class_exists( $className ) ) {
+			$className = StandardGenerator::class;
 		}
 
-		// Generate the license strings
-		for ( $i = 0; $i < $amount; $i ++ ) {
-			$licenses[] = self::generateLicenseString(
-				$generator->getCharset(),
-				$generator->getChunks(),
-				$generator->getChunkLength(),
-				$generator->getSeparator(),
-				$generator->getPrefix(),
-				$generator->getSuffix()
-			);
-		}
+		return ( new $className( $generator ) );
 
-		// Remove duplicate entries from the array
-		$licenses = array_unique( $licenses );
-
-		// check if any licenses have been removed
-		if ( count( $licenses ) < $amount ) {
-			// regenerate removed license keys, repeat until there are no duplicates
-			while ( count( $licenses ) < $amount ) {
-				$licenses = self::generateLicenseKeys( ( $amount - count( $licenses ) ), $generator, $licenses );
-			}
-		}
-
-		// Reindex and return the array
-		return array_values( $licenses );
 	}
 
 }

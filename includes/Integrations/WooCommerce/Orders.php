@@ -221,7 +221,7 @@ class Orders {
 			/**
 			 * Run the generator and create the licenses, if everything ok, save them.
 			 */
-			$licenses = GeneratorUtil::generateLicenseKeys( $neededAmount, $generator );
+			$licenses = GeneratorUtil::generateLicenseKeys( $neededAmount, $generator, [], $order, $product );
 			if ( ! is_wp_error( $licenses ) ) {
 				LicenseUtil::saveGeneratedLicenseKeys(
 					$order->get_id(),
@@ -377,13 +377,13 @@ class Orders {
 	 */
 	public static function isComplete( $orderId ) {
 
-		$order = wc_get_order($orderId);
+		$order = wc_get_order( $orderId );
 
 		if ( ! is_a( $order, WC_Order::class ) ) {
 			return false;
 		}
 
-		if (  ! $order->get_meta( 'dlm_order_complete', true ) ) {
+		if ( ! $order->get_meta( 'dlm_order_complete', true ) ) {
 			return false;
 		}
 
