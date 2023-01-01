@@ -38,6 +38,6 @@ abstract class AbstractGenerator {
 	 *
 	 * @return WP_Error|string[]
 	 */
-	abstract public function generate( $amount, $licenses );
+	abstract public function generate( $amount, $licenses = array() );
 
 }
