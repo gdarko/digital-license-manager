@@ -104,8 +104,8 @@ class Stock {
 	public static function synchronize() {
 		// For the query to return any results, the following WooCommerce Product settings need to be enabled:
 		// 1. Inventory       -> Manage stock?
-		// 2. License Manager -> Sell license keys
-		// 3. License Manager -> License keys source -> Provide licenses from stock
+		// 2. License Manager -> Sell Licenses
+		// 3. License Manager -> Licenses source -> Provide licenses from stock
 		$args = [
 			'limit'                                => - 1,
 			'type'                                 => [ 'simple', 'subscription', 'variation' ],

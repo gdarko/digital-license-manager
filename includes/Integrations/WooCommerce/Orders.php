@@ -177,11 +177,25 @@ class Orders {
 		}
 
 		/**
+		 * Determines whether max activations field in the generated license
+		 * is based on the generator settings or woocommerce quantity.
+		 */
+		$maxActivationsBehavior = $product->get_meta( 'dlm_licensed_product_activations_behavior', true );
+		if ( empty( $maxActivationsBehavior ) ) {
+			$maxActivationsBehavior = 'standard';
+		}
+
+		/**
+		 * Override activations limit in case on quantity behavior
+		 */
+		$activationsLimit = 'quantity' === $maxActivationsBehavior ? $quantity : null;
+
+		/**
 		 * Set the needed delivery amount
 		 */
-		$neededAmount = absint( $quantity ) * $deliveredQuantity;
+		$neededAmount = 'standard' === $maxActivationsBehavior ? ( absint( $quantity ) * $deliveredQuantity ) : $deliveredQuantity;
 
-		if ( $useStock ) {  // Sell license keys through available stock.
+		if ( $useStock ) {  // Sell Licenses through available stock.
 
 			/**
 			 * Retrieve the current stock amount
@@ -196,7 +210,8 @@ class Orders {
 				$assignedLicenses = LicenseUtil::assignLicensesFromStock(
 					$product,
 					$order,
-					$neededAmount
+					$neededAmount,
+					$activationsLimit
 				);
 			} else {
 				$order->add_order_note( sprintf( __( 'License delivery failed: Could not find enough licenses in stock (Current stock: %d | Required %d)' ), $availableStock, $neededAmount ) );
@@ -204,7 +219,7 @@ class Orders {
 
 			do_action( 'dlm_stock_delivery_assigned_licenses', $assignedLicenses, $neededAmount, $availableStock, $order, $product );
 
-		} else if ( $useGenerator ) { // Sell license keys through the active generator
+		} else if ( $useGenerator ) { // Sell Licenses through the active generator
 
 			$generatorId = $product->get_meta( 'dlm_licensed_product_assigned_generator', true );
 
@@ -228,7 +243,9 @@ class Orders {
 					$product->get_id(),
 					$licenses,
 					LicenseStatus::SOLD,
-					$generator
+					$generator,
+					null,
+					$activationsLimit
 				);
 			}
 		}
@@ -249,10 +266,22 @@ class Orders {
 			);
 		}
 
+
+		/**
+		 * Set activations limit on the ordered licenses based on the max activations behavior.
+		 * @var LicenseResourceModel[] $orderedLicenses
+		 */
+		$orderedLicenses = LicenseResourceRepository::instance()->findAllBy( array( 'order_id' => $order->get_id() ) );
+		if ( 'quantity' === $maxActivationsBehavior ) {
+			foreach ( $orderedLicenses as $license ) {
+				LicenseResourceRepository::instance()->update( $license->getId(), [ 'activations_limit' => $quantity ] );
+				$orderedLicenses = LicenseResourceRepository::instance()->findAllBy( array( 'order_id' => $order->get_id() ) ); // Reload.
+			}
+		}
+
 		/**
 		 * Fire an action as a final step, to allow the developers to hook into.
 		 */
-		$orderedLicenses = LicenseResourceRepository::instance()->findAllBy( array( 'order_id' => $order->get_id() ) );
 		do_action(
 			'dlm_licenses_generated_on_order',
 			array(

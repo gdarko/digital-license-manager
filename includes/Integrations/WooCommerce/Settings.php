@@ -180,8 +180,8 @@ class Settings {
 			'<p class="description">%s<br/>1. %s<br/>2. %s<br/>3. %s</p>',
 			__( 'To use this feature, you also need to enable the following settings at a product level:', 'digital-license-manager' ),
 			__( 'Inventory &rarr; Manage stock?', 'digital-license-manager' ),
-			__( 'License Manager &rarr; Sell license keys', 'digital-license-manager' ),
-			__( 'License Manager &rarr; License keys source &rarr; Provide licenses from stock', 'digital-license-manager' )
+			__( 'License Manager &rarr; Sell Licenses', 'digital-license-manager' ),
+			__( 'License Manager &rarr; Licenses source &rarr; Provide licenses from stock', 'digital-license-manager' )
 		);
 		$html .= '</fieldset>';
 

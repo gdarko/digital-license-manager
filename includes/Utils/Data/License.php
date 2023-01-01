@@ -190,7 +190,7 @@ class License {
 
 		// Update the stock
 		if ( $license->getProductId() !== null && $license->getStatus() === LicenseStatusEnum::ACTIVE ) {
-			Stock::syncrhonizeProductStock($license->getProductId());
+			Stock::syncrhonizeProductStock( $license->getProductId() );
 		}
 
 		return $license;
@@ -303,7 +303,7 @@ class License {
 
 		// Update the stock
 		if ( $oldLicense->getProductId() !== null && $oldLicense->getStatus() === LicenseStatusEnum::ACTIVE ) {
-			Stock::syncrhonizeProductStock($oldLicense->getProductId());
+			Stock::syncrhonizeProductStock( $oldLicense->getProductId() );
 		}
 
 		/** @var LicenseResourceModel $license */
@@ -333,7 +333,7 @@ class License {
 
 		// Update the stock
 		if ( $newLicense->getProductId() !== null && $newLicense->getStatus() === LicenseStatusEnum::ACTIVE ) {
-			Stock::syncrhonizeProductStock($newLicense->getProductId());
+			Stock::syncrhonizeProductStock( $newLicense->getProductId() );
 
 		}
 
@@ -357,7 +357,7 @@ class License {
 
 		// Update the stock
 		if ( $oldLicense && $oldLicense->getProductId() !== null && $oldLicense->getStatus() === LicenseStatusEnum::ACTIVE ) {
-			Stock::syncrhonizeProductStock($oldLicense->getProductId());
+			Stock::syncrhonizeProductStock( $oldLicense->getProductId() );
 		}
 
 		/** @var LicenseResourceModel $license */
@@ -765,14 +765,14 @@ class License {
 		}
 
 		foreach ( $licenseKeys as $licenseKey ) {
-			if(empty($licenseKey)) {
+			if ( empty( $licenseKey ) ) {
 				continue;
 			}
 			array_push( $cleanLicenseKeys, sanitize_text_field( $licenseKey ) );
 		}
 
-		$result['added']  = 0;
-		$result['failed'] = 0;
+		$result['added']      = 0;
+		$result['failed']     = 0;
 		$result['duplicates'] = 0;
 
 		if ( ! intval( Settings::get( 'allow_duplicates', Settings::SECTION_GENERAL ) ) ) {
@@ -827,7 +827,7 @@ class License {
 	 *
 	 * @return array|bool|WP_Error
 	 */
-	public static function saveGeneratedLicenseKeys( $orderId, $productId, $licenseKeys, $status, $generator, $validFor = null ) {
+	public static function saveGeneratedLicenseKeys( $orderId, $productId, $licenseKeys, $status, $generator, $validFor = null, $activationsLimit = null ) {
 
 		$cleanLicenseKeys = array();
 		$cleanOrderId     = ( $orderId ) ? absint( $orderId ) : null;
@@ -887,6 +887,9 @@ class License {
 			}
 			$hashedLicenseKey = StringHasher::license( $licenseKey );
 
+			$generatorActivationsLimit = ! empty( $generator->getActivationsLimit() ) ? $generator->getActivationsLimit() : null;
+			$activationsLimit          = is_numeric( $activationsLimit ) ? (int) $activationsLimit : $generatorActivationsLimit;
+
 			// Save to database.
 			LicenseResourceRepository::instance()->insert(
 				array(
@@ -898,7 +901,7 @@ class License {
 					'expires_at'        => $expiresAt,
 					'source'            => LicenseSource::GENERATOR,
 					'status'            => $cleanStatus,
-					'activations_limit' => $generator->getActivationsLimit() ?: null,
+					'activations_limit' => $activationsLimit,
 					'valid_for'         => $validFor,
 				)
 			);
@@ -994,18 +997,18 @@ class License {
 	 *
 	 * @return LicenseResourceModel[]|WP_Error
 	 */
-	public static function assignLicensesFromStock( $product, $order, $amount ) {
+	public static function assignLicensesFromStock( $product, $order, $amount, $activationsLimit = null ) {
 
-		$product = is_numeric($product) ? wc_get_product($product) : $product;
+		$product = is_numeric( $product ) ? wc_get_product( $product ) : $product;
 
 		$order = is_numeric( $order ) ? wc_get_order( $order ) : $order;
 		if ( ! $order ) {
 			return new WP_Error( 'data_error', __( 'Invalid order provided.', 'digital-license-manager' ), array( 'code' => 422 ) );
 		}
 
-		$orderId      = $order->get_id();
+		$orderId     = $order->get_id();
 		$orderUserId = $order->get_user_id();
-		$amount        = is_numeric( $amount ) ? intval( $amount ) : 0;
+		$amount      = is_numeric( $amount ) ? intval( $amount ) : 0;
 
 		if ( ! $amount ) {
 			return new WP_Error( 'data_error', __( 'Amount is invalid.', 'digital-license-manager' ), array( 'code' => 422 ) );
@@ -1036,15 +1039,18 @@ class License {
 				}
 			}
 
-			LicenseResourceRepository::instance()->update(
-				$license->getId(),
-				array(
-					'order_id'   => $orderId,
-					'user_id'    => $orderUserId,
-					'expires_at' => $expiresAt,
-					'status'     => LicenseStatusEnum::SOLD
-				)
+			$params = array(
+				'order_id'   => $orderId,
+				'user_id'    => $orderUserId,
+				'expires_at' => $expiresAt,
+				'status'     => LicenseStatusEnum::SOLD
 			);
+
+			if ( is_numeric( $activationsLimit ) ) {
+				$params['activations_limit'] = (int) $activationsLimit;
+			}
+
+			LicenseResourceRepository::instance()->update( $license->getId(), $params );
 
 			Stock::syncrhonizeProductStock( $product );
 
