@@ -195,7 +195,7 @@ class Licenses {
 				'activations_limit',
 			) );
 
-			$license = $this->service->create( $licenseKey, $licenseData );
+			$license = $this->service->create( $licenseData );
 
 			if ( is_wp_error( $license ) ) {
 				if ( 'data_error' === $license->get_error_code() ) {

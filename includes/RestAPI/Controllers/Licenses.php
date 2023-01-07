@@ -45,7 +45,7 @@ class Licenses extends AbstractRestController {
 	 */
 	public function __construct() {
 		$this->settings = (array) get_option( 'dlm_settings_general', array() );
-		$this->service = new LicensesService();
+		$this->service  = new LicensesService();
 	}
 
 	/**
@@ -292,7 +292,8 @@ class Licenses extends AbstractRestController {
 		$activationsLimit = isset( $body['activations_limit'] ) ? absint( $body['activations_limit'] ) : null;
 		$status           = isset( $body['status'] ) ? sanitize_text_field( $body['status'] ) : null;
 
-		$license = $this->service->create( $licenseKey, array(
+		$license = $this->service->create( array(
+			'license_key'       => $licenseKey,
 			'order_id'          => $orderId,
 			'product_id'        => $productId,
 			'user_id'           => $userId,
