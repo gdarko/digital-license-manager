@@ -6,7 +6,7 @@ use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractRestController;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseActivation as LicenseActivationResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
-use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
+use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -36,10 +36,16 @@ class Licenses extends AbstractRestController {
 	protected $settings = array();
 
 	/**
+	 * @var LicensesService
+	 */
+	protected $service;
+
+	/**
 	 * Licenses constructor.
 	 */
 	public function __construct() {
 		$this->settings = (array) get_option( 'dlm_settings_general', array() );
+		$this->service = new LicensesService();
 	}
 
 	/**
@@ -227,7 +233,7 @@ class Licenses extends AbstractRestController {
 			return $isValid;
 		}
 
-		$licenses = LicenseUtil::get();
+		$licenses = $this->service->get();
 		$prepared = array();
 
 		foreach ( $licenses as $license ) {
@@ -252,7 +258,7 @@ class Licenses extends AbstractRestController {
 		}
 
 		$licenseKey = sanitize_text_field( $request->get_param( 'license_key' ) );
-		$license    = LicenseUtil::find( $licenseKey );
+		$license    = $this->service->find( $licenseKey );
 		if ( is_wp_error( $license ) ) {
 			return $this->maybeErrorResponse( $license );
 		}
@@ -286,7 +292,7 @@ class Licenses extends AbstractRestController {
 		$activationsLimit = isset( $body['activations_limit'] ) ? absint( $body['activations_limit'] ) : null;
 		$status           = isset( $body['status'] ) ? sanitize_text_field( $body['status'] ) : null;
 
-		$license = LicenseUtil::create( $licenseKey, array(
+		$license = $this->service->create( $licenseKey, array(
 			'order_id'          => $orderId,
 			'product_id'        => $productId,
 			'user_id'           => $userId,
@@ -328,7 +334,7 @@ class Licenses extends AbstractRestController {
 			$updateData = $request->get_params();
 		}
 
-		$updatedLicense = LicenseUtil::update( $licenseKey, $updateData );
+		$updatedLicense = $this->service->update( $licenseKey, $updateData );
 
 		if ( is_wp_error( $updatedLicense ) ) {
 			return $this->maybeErrorResponse( $updatedLicense );
@@ -354,7 +360,7 @@ class Licenses extends AbstractRestController {
 
 		$urlParams  = $request->get_url_params();
 		$licenseKey = isset( $urlParams['license_key'] ) ? sanitize_text_field( $urlParams['license_key'] ) : '';
-		$deleted    = LicenseUtil::delete( $licenseKey );
+		$deleted    = $this->service->delete( $licenseKey );
 
 		if ( is_wp_error( $deleted ) ) {
 			return $this->maybeErrorResponse( $deleted );
@@ -383,9 +389,9 @@ class Licenses extends AbstractRestController {
 		$existingToken   = $request->get_param( 'token' );
 
 		if ( ! empty( $existingToken ) ) {
-			$licenseActivation = LicenseUtil::reactivate( $existingToken, $licenseKey );
+			$licenseActivation = $this->service->reactivate( $existingToken, $licenseKey );
 		} else {
-			$licenseActivation = LicenseUtil::activate( $licenseKey, array(
+			$licenseActivation = $this->service->activate( $licenseKey, array(
 				'label' => $activationLabel,
 				'meta'  => $activationMeta
 			) );
@@ -416,7 +422,7 @@ class Licenses extends AbstractRestController {
 		}
 
 		$activationToken   = sanitize_text_field( $request->get_param( 'activation_token' ) );
-		$licenseActivation = LicenseUtil::deactivate( $activationToken );
+		$licenseActivation = $this->service->deactivate( $activationToken );
 
 		if ( is_wp_error( $licenseActivation ) ) {
 			return $this->maybeErrorResponse( $licenseActivation );

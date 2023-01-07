@@ -1,6 +1,6 @@
 <?php
 
-namespace IdeoLogix\DigitalLicenseManager\Support\Generators;
+namespace IdeoLogix\DigitalLicenseManager\Core\Generators;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractGenerator;
 

@@ -1,251 +1,112 @@
 <?php
 
-
 namespace IdeoLogix\DigitalLicenseManager\Utils\Data;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractGenerator;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
-use IdeoLogix\DigitalLicenseManager\Support\Generators\StandardGenerator;
+use IdeoLogix\DigitalLicenseManager\Utils\GeneratorsHelper;
 use WP_Error;
 
-
+/**
+ * Generator CRUD
+ * @deprecated 1.3.9
+ * @package IdeoLogix\DigitalLicenseManager\Utils\Data
+ */
 class Generator {
 
 	/**
-	 * Returns a single generator from the database.
+	 * Find a single item from the database.
 	 *
-	 * @param int $generatorId
+	 * @param mixed $id The license key to be deleted.
 	 *
-	 * @return GeneratorResourceModel|WP_Error
+	 * @return AbstractResourceModel|GeneratorResourceModel|\WP_Error
 	 */
-	public static function find( $generatorId ) {
-		/** @var GeneratorResourceModel $generator */
-		$generator = GeneratorResourceRepository::instance()->find( (int) $generatorId );
+	public static function find( $id ) {
 
-		if ( ! $generator ) {
-			return new WP_Error( 'data_error', __( 'The generator could not be found.', 'digital-license-manager' ), array( 'code' => 404 ) );
-		}
+		_deprecated_function( __METHOD__, '1.3.9', 'Core\Services\GeneratorsService::find' );
 
-		return $generator;
+		$instance = new \IdeoLogix\DigitalLicenseManager\Core\Services\GeneratorsService();
+
+		return $instance->find( $id );
 	}
 
 	/**
-	 * Retrieves multiple generators by a query array.
+	 * Retrieves a single license from the database by ID
+	 *
+	 * @param $licenseId
+	 *
+	 * @return AbstractResourceModel|WP_Error
+	 */
+	public static function findById( $id ) {
+
+		_deprecated_function( __METHOD__, '1.3.9', 'Core\Services\GeneratorsService::findById' );
+
+		return self::find( $id );
+	}
+
+	/**
+	 * Retrieves multiple items by a query array.
 	 *
 	 * @param array $query Key/value pairs with the generator table column names as keys
 	 *
-	 * @return GeneratorResourceModel[]|WP_Error
+	 * @return AbstractResourceModel[]|GeneratorResourceModel[]|WP_Error
 	 */
-	public static function get( $query = array() ) {
-		/** @var GeneratorResourceModel[] $generators */
-		$generators = empty( $query ) ? GeneratorResourceRepository::instance()->findAll() : GeneratorResourceRepository::instance()->findAllBy( $query );
+	public static function get( $query = [] ) {
 
-		if ( ! $generators ) {
-			return new WP_Error( 'data_error', __( 'No generators found for your query', 'digital-license-manager' ), array( 'code' => 404 ) );
-		}
+		_deprecated_function( __METHOD__, '1.3.9', 'Core\Services\GeneratorsService::get' );
 
-		return $generators;
+		$instance = new \IdeoLogix\DigitalLicenseManager\Core\Services\GeneratorsService();
+
+		return $instance->get( $query );
 	}
 
 	/**
-	 * Deletes generators from the database.
+	 * Creates a new entry to the database
 	 *
-	 * @param int|int[] $id A single generator ID, or an array of generator IDs
+	 * @param array $data
+	 *
+	 * @return AbstractResourceModel|GeneratorResourceModel|\WP_Error
+	 */
+	public static function create( $data = [] ) {
+
+		_deprecated_function( __METHOD__, '1.3.9', 'Core\Services\GeneratorsService::create' );
+
+		$instance = new \IdeoLogix\DigitalLicenseManager\Core\Services\GeneratorsService();
+
+		return $instance->create( $data );
+	}
+
+	/**
+	 * Updates specific entry in the database
+	 *
+	 * @param $id
+	 * @param $data
+	 *
+	 * @return AbstractResourceModel|GeneratorResourceModel|WP_Error
+	 */
+	public static function update( $id, $data = [] ) {
+
+		_deprecated_function( __METHOD__, '1.3.9', 'Core\Services\GeneratorsService::update' );
+
+		$instance = new \IdeoLogix\DigitalLicenseManager\Core\Services\GeneratorsService();
+
+		return $instance->update( $id, $data );
+	}
+
+	/**
+	 * Deletes specific entry from the database
+	 *
+	 * @param int|int[] $id
 	 *
 	 * @return bool|WP_Error
 	 */
 	public static function delete( $id ) {
-		if ( ! is_array( $id ) ) {
-			$id = (array) $id;
-		}
 
-		/** @var GeneratorResourceModel $generator */
-		$generator = GeneratorResourceRepository::instance()->delete( $id );
+		_deprecated_function( __METHOD__, '1.3.9', 'Core\Services\GeneratorsService::delete' );
 
-		if ( ! $generator ) {
-			return new WP_Error( 'server_error', __( 'The generator(s) could not be deleted.', 'digital-license-manager' ), array( 'code' => 500 ) );
-		}
+		$instance = new \IdeoLogix\DigitalLicenseManager\Core\Services\GeneratorsService();
 
-		return true;
-	}
-
-
-	/**
-	 * Create generator in the database and enforce validation
-	 *
-	 * @param array $params
-	 *
-	 * @return bool|AbstractResourceModel|GeneratorResourceModel|WP_Error
-	 */
-	public static function create( $params = array() ) {
-
-		// Validate request.
-		if ( empty( $params['name'] ) || ! is_string( $params['name'] ) ) {
-			return new WP_Error( 'data_error', __( 'Generator name is missing.', 'digital-license-manager' ), array( 'code' => '422' ) );
-		}
-
-		if ( empty( $params['charset'] ) || ! is_string( $params['charset'] ) ) {
-			return new WP_Error( 'data_error', __( 'The charset is invalid.', 'digital-license-manager' ), array( 'code' => '422' ) );
-		}
-
-		if ( empty( $params['chunks'] ) || ! is_numeric( $params['chunks'] ) ) {
-			return new WP_Error( 'data_error', __( 'Only integer values allowed for chunks.', 'digital-license-manager' ), array( 'code' => '422' ) );
-		}
-
-		if ( $params['chunks'] < 0 || $params['chunks'] > 100 ) {
-			return new WP_Error( 'data_error', __( 'Chunks should be between 1 and 99', 'digital-license-manager' ), array( 'code' => '422' ) );
-		}
-
-		if ( empty( $params['chunk_length'] ) || ! is_numeric( $params['chunk_length'] ) ) {
-			return new WP_Error( 'data_error', __( 'Only integer values allowed for chunk length.', 'digital-license-manager' ), array( 'code' => '422' ) );
-		}
-
-		if ( $params['chunk_length'] < 2 || $params['chunk_length'] > 100 ) {
-			return new WP_Error( 'data_error', __( 'Chunk length should be between 2 and 99', 'digital-license-manager' ), array( 'code' => '422' ) );
-		}
-
-		$expiresIn = null;
-		if ( ! empty( $params['expires_in'] ) ) {
-			if ( is_numeric( $params['expires_in'] ) && $params['expires_in'] > 1 ) {
-				$expiresIn = absint( $params['expires_in'] );
-			} else {
-				return new WP_Error( 'data_error', __( 'Expires in should be numeric and positive value larger than 1', 'digital-license-manager' ), array( 'code' => '422' ) );
-			}
-		}
-
-		$maxActivations = null;
-		if ( ! empty( $params['activations_limit'] ) ) {
-			if ( is_numeric( $params['activations_limit'] ) && $params['activations_limit'] > 0 ) {
-				$maxActivations = absint( $params['activations_limit'] );
-			} else {
-				return new WP_Error( 'data_error', __( 'Time activated max should be numeric and positive value larger than 0', 'digital-license-manager' ), array( 'code' => '422' ) );
-			}
-		}
-
-		// Save the generator.
-		$generator = GeneratorResourceRepository::instance()->insert(
-			array(
-				'name'              => sanitize_text_field( $params['name'] ),
-				'charset'           => sanitize_text_field( $params['charset'] ),
-				'chunks'            => absint( $params['chunks'] ),
-				'chunk_length'      => absint( $params['chunk_length'] ),
-				'activations_limit' => $maxActivations,
-				'separator'         => isset( $params['separator'] ) ? sanitize_text_field( $params['separator'] ) : null,
-				'prefix'            => isset( $params['prefix'] ) ? sanitize_text_field( $params['prefix'] ) : null,
-				'suffix'            => isset( $params['suffix'] ) ? sanitize_text_field( $params['suffix'] ) : null,
-				'expires_in'        => $expiresIn
-			)
-		);
-
-		if ( ! $generator ) {
-			return new WP_Error( 'server_error', __( 'The generator could not be created.', 'digital-license-manager' ), array( 'code' => 500 ) );
-		}
-
-
-		return $generator;
-	}
-
-	/**
-	 * Create generator in the database and enforce validation
-	 *
-	 * @param $id
-	 * @param $params
-	 *
-	 * @return bool|AbstractResourceModel|GeneratorResourceModel|WP_Error
-	 */
-	public static function update( $id, $params ) {
-
-		$updateData = array();
-
-		// Validate id
-		$generator = self::find( $id );
-		if ( is_wp_error( $generator ) ) {
-			return $generator;
-		}
-
-		// Validate request.
-		if ( array_key_exists( 'name', $params ) ) {
-			if ( ! empty( $params['name'] ) ) {
-				$updateData['name'] = sanitize_text_field( $params['name'] );
-			} else {
-				return new WP_Error( 'data_error', __( 'Name can not be empty.', 'digital-license-manager' ), array( 'code' => '422' ) );
-			}
-		}
-
-		if ( array_key_exists( 'charset', $params ) ) {
-			if ( ! empty( $params['charset'] ) ) {
-				$updateData['charset'] = sanitize_text_field( $params['charset'] );
-			} else {
-				return new WP_Error( 'data_error', __( 'Charset can not be empty.', 'digital-license-manager' ), array( 'code' => '422' ) );
-			}
-		}
-
-		if ( array_key_exists( 'chunks', $params ) ) {
-			if ( is_numeric( $params['chunks'] ) && $params['chunks'] > 0 && $params['chunks'] < 100 ) {
-				$updateData['chunks'] = (int) $params['chunks'];
-			} else {
-				return new WP_Error( 'data_error', __( 'Only integer values between 1 and 99 are allowed for chunks.', 'digital-license-manager' ), array( 'code' => '422' ) );
-			}
-		}
-
-		if ( array_key_exists( 'chunk_length', $params ) ) {
-			if ( is_numeric( $params['chunk_length'] ) && $params['chunk_length'] > 0 && $params['chunk_length'] < 10 ) {
-				$updateData['chunk_length'] = (int) $params['chunk_length'];
-			} else {
-				return new WP_Error( 'data_error', __( 'Only integer values between 1 and 99 are allowed for chunk_length.', 'digital-license-manager' ), array( 'code' => '422' ) );
-			}
-		}
-
-		if ( array_key_exists( 'activations_limit', $params ) ) {
-			if ( is_numeric( $params['activations_limit'] ) && $params['activations_limit'] > 0 ) {
-				$updateData['activations_limit'] = (int) $params['activations_limit'];
-			} else {
-				return new WP_Error( 'data_error', __( 'Activations Limit should positive integer value larger than 0', 'digital-license-manager' ), array( 'code' => '422' ) );
-			}
-		}
-
-		if ( array_key_exists( 'expires_in', $params ) ) {
-			if ( is_numeric( $params['expires_in'] ) && $params['expires_in'] > 1 ) {
-				$updateData['expires_in'] = (int) $params['expires_in'];
-			} else {
-				return new WP_Error( 'data_error', __( 'Expires In shoudld be positive integer value larger than 1 that represents number of days', 'digital-license-manager' ), array( 'code' => '422' ) );
-			}
-		}
-
-
-		if ( array_key_exists( 'separator', $params ) ) {
-			if ( ! empty( $params['separator'] ) ) {
-				if ( 1 === strlen( $params['separator'] ) ) {
-					$updateData['separator'] = $params['separator'];
-				} else {
-					return new WP_Error( 'data_error', __( 'Separator should be only one character', 'digital-license-manager' ), array( 'code' => '422' ) );
-				}
-			}
-		}
-
-		if ( array_key_exists( 'prefix', $params ) ) {
-			if ( ! empty( $params['prefix'] ) ) {
-				$updateData['prefix'] = sanitize_text_field( $params['prefix'] );
-			}
-		}
-
-		if ( array_key_exists( 'suffix', $params ) ) {
-			if ( ! empty( $params['suffix'] ) ) {
-				$updateData['suffix'] = sanitize_text_field( $params['suffix'] );
-			}
-		}
-
-		// Update the generator.
-		$generator = GeneratorResourceRepository::instance()->update( $id, $updateData );
-
-		if ( ! $generator ) {
-			return new WP_Error( 'server_error', __( 'The generator could not be created.', 'digital-license-manager' ), array( 'code' => 500 ) );
-		}
-
-		return $generator;
-
+		return $instance->delete( $id );
 	}
 
 	/**
@@ -260,36 +121,8 @@ class Generator {
 	 * @return array|WP_Error
 	 */
 	public static function generateLicenseKeys( $amount, $generator, $licenses = array(), $order = null, $product = null ) {
-		$generatorInstance = self::getGeneratorInstance( $generator, $order, $product );
+		_deprecated_function( __METHOD__, '1.3.9', 'GeneratorsHelper::generateLicenseKeys' );
 
-		return $generatorInstance->generate( $amount, $licenses );
+		return GeneratorsHelper::generateLicenseKeys( $amount, $generator, $licenses, $order, $product );
 	}
-
-	/**
-	 * The generator instance
-	 *
-	 * @param GeneratorResourceModel $generator
-	 * @param \WC_Order $order
-	 *
-	 * @return AbstractGenerator
-	 */
-	public static function getGeneratorInstance( $generator, $order = null, $product = null ) {
-
-		/**
-		 * Determines the generator PHP class, this class should implement AbstractGenerator.
-		 *
-		 * @param $className
-		 * @param $generator
-		 * @param $order
-		 * @param $product
-		 */
-		$className = apply_filters( 'dlm_generator_class', StandardGenerator::class, $generator, $order, $product );
-		if ( ! class_exists( $className ) ) {
-			$className = StandardGenerator::class;
-		}
-
-		return ( new $className( $generator ) );
-
-	}
-
 }

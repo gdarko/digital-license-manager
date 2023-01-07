@@ -2,9 +2,9 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License;
+use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Settings;
-use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
+use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
@@ -32,8 +32,10 @@ class Certificates {
 			return;
 		}
 
+		$licenseService = new LicensesService();
+
 		$licenseKey = isset( $_POST['license'] ) ? sanitize_text_field( $_POST['license'] ) : null;
-		$license    = LicenseUtil::find( $licenseKey );
+		$license    = $licenseService->find( $licenseKey );
 
 		$this->generateCertificatePDF( $license );
 
@@ -75,7 +77,7 @@ class Certificates {
 	/**
 	 * Return the license certification data
 	 *
-	 * @param License $license
+	 * @param LicenseResourceModel $license
 	 *
 	 * @return mixed|void
 	 */

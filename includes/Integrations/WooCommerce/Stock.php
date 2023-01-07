@@ -3,7 +3,7 @@
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
 use IdeoLogix\DigitalLicenseManager\Settings;
-use IdeoLogix\DigitalLicenseManager\Utils\Data\License;
+use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use WC_Product;
 
 defined( 'ABSPATH' ) || exit;
@@ -145,6 +145,8 @@ class Stock {
 	 */
 	public static function syncrhonizeProductStock( $product ) {
 
+		$licenseService = new LicensesService();
+
 		if ( is_numeric( $product ) ) {
 			$product = wc_get_product( $product );
 		}
@@ -158,7 +160,7 @@ class Stock {
 		}
 
 		$woocommerceStock = (int) $product->get_stock_quantity();
-		$licenseStock     = License::getLicensesStockCount( $product->get_id() );
+		$licenseStock     = $licenseService->getLicensesStockCount( $product->get_id() );
 
 		// Nothing to do in this case
 		if ( $woocommerceStock === $licenseStock ) {

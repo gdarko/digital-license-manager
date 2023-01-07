@@ -3,13 +3,14 @@
 namespace IdeoLogix\DigitalLicenseManager\RestAPI\Controllers;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractRestController as DLM_REST_Controller;
+use IdeoLogix\DigitalLicenseManager\Core\Services\GeneratorsService;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
 use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
-use IdeoLogix\DigitalLicenseManager\Utils\Data\Generator as GeneratorUtil;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
+use IdeoLogix\DigitalLicenseManager\Utils\GeneratorsHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use WP_Error;
 use WP_REST_Request;
@@ -39,9 +40,15 @@ class Generators extends DLM_REST_Controller {
 	protected $settings = array();
 
 	/**
+	 * @var GeneratorsService
+	 */
+	protected $service;
+
+	/**
 	 * Generators constructor.
 	 */
 	public function __construct() {
+		$this->service = new GeneratorsService();
 		$this->settings = (array) get_option( 'dlm_settings_general', array() );
 	}
 
@@ -187,7 +194,7 @@ class Generators extends DLM_REST_Controller {
 			return $isValid;
 		}
 
-		$generators = GeneratorUtil::get();
+		$generators = $this->service->get();
 		if ( is_wp_error( $generators ) ) {
 			return $this->maybeErrorResponse( $generators );
 		}
@@ -215,7 +222,7 @@ class Generators extends DLM_REST_Controller {
 		}
 
 		$generatorId = absint( $request->get_param( 'generator_id' ) );
-		$generator   = GeneratorUtil::find( $generatorId );
+		$generator   = $this->service->find( $generatorId );
 
 		if ( is_wp_error( $generator ) ) {
 			return $this->maybeErrorResponse( $generator );
@@ -238,7 +245,7 @@ class Generators extends DLM_REST_Controller {
 		}
 
 		$body      = $request->get_params();
-		$generator = GeneratorUtil::create( $body );
+		$generator = $this->service->create( $body );
 
 		if ( is_wp_error( $generator ) ) {
 			return $this->maybeErrorResponse( $generator );
@@ -269,7 +276,7 @@ class Generators extends DLM_REST_Controller {
 			$updateData = $request->get_params();
 		}
 
-		$updatedGenerator = GeneratorUtil::update( $generatorId, $updateData );
+		$updatedGenerator = $this->service->update( $generatorId, $updateData );
 		if ( is_wp_error( $updatedGenerator ) ) {
 			return $this->maybeErrorResponse( $updatedGenerator );
 		}
@@ -291,7 +298,7 @@ class Generators extends DLM_REST_Controller {
 		}
 
 		$generatorId = absint( $request->get_param( 'generator_id' ) );
-		$deleted     = GeneratorUtil::delete( $generatorId );
+		$deleted     = $this->service->delete( $generatorId );
 		if ( is_wp_error( $deleted ) ) {
 			return $this->maybeErrorResponse( $deleted );
 		}
@@ -419,7 +426,7 @@ class Generators extends DLM_REST_Controller {
 			);
 		}
 
-		$licenses = GeneratorUtil::generateLicenseKeys( $amount, $generator );
+		$licenses = GeneratorsHelper::generateLicenseKeys( $amount, $generator );
 
 		if ( is_wp_error( $licenses ) ) {
 			return $this->maybeErrorResponse( $licenses );

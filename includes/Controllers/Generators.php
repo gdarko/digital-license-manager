@@ -3,10 +3,12 @@
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
-use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
-use IdeoLogix\DigitalLicenseManager\Utils\Data\Generator as GeneratorUtil;
-use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
+use IdeoLogix\DigitalLicenseManager\Core\Services\GeneratorsService;
+use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
+use IdeoLogix\DigitalLicenseManager\Utils\GeneratorsHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
+use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
+
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,9 +19,15 @@ defined( 'ABSPATH' ) || exit;
 class Generators {
 
 	/**
+	 * @var GeneratorsService
+	 */
+	protected $service;
+
+	/**
 	 * Generators constructor.
 	 */
 	public function __construct() {
+		$this->service = new GeneratorsService();
 		// Admin POST requests
 		add_action( 'admin_post_dlm_create_generators', array( $this, 'create' ), 10 );
 		add_action( 'admin_post_dlm_edit_generators', array( $this, 'update' ), 10 );
@@ -40,7 +48,7 @@ class Generators {
 			exit();
 		}
 
-		$generator = GeneratorUtil::create( $_POST );
+		$generator = $this->service->create( $_POST );
 		if ( is_wp_error( $generator ) ) {
 			if ( 'data_error' === $generator->get_error_code() ) {
 				NoticeFlasher::error( $generator->get_error_message() );
@@ -74,7 +82,7 @@ class Generators {
 		}
 
 		$id        = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : '';
-		$generator = GeneratorUtil::update( $id, $_POST );
+		$generator = $this->service->update( $id, $_POST );
 
 		if ( is_wp_error( $generator ) ) {
 			if ( 'data_error' === $generator->get_error_code() ) {
@@ -112,7 +120,7 @@ class Generators {
 		$productId   = null;
 
 		/** @var GeneratorResourceModel $generator */
-		$generator = GeneratorUtil::find( $generatorId );
+		$generator = $this->service->find( $generatorId );
 
 		if ( is_wp_error( $generator ) ) {
 			NoticeFlasher::error( __( 'The chosen generator does not exist.', 'digital-license-manager' ) );
@@ -164,11 +172,12 @@ class Generators {
 			exit();
 		}
 
-		$licenses = GeneratorUtil::generateLicenseKeys( $amount, $generator );
+		$licenses = GeneratorsHelper::generateLicenseKeys( $amount, $generator );
 
 		if ( ! is_wp_error( $licenses ) ) {
 			// Save the license keys.
-			$status = LicenseUtil::saveGeneratedLicenseKeys( $orderId, $productId, $licenses, $status, $generator, $validFor );
+			$licensesService = new LicensesService();
+			$status          = $licensesService->saveGeneratedLicenseKeys( $orderId, $productId, $licenses, $status, $generator, $validFor );
 			if ( is_wp_error( $status ) ) {
 				NoticeFlasher::error( $status->get_error_message() );
 			} else {

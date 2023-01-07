@@ -9,10 +9,9 @@ use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as L
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\ListTables\Licenses;
 use IdeoLogix\DigitalLicenseManager\Settings;
-use IdeoLogix\DigitalLicenseManager\Utils\Data\Generator as GeneratorUtil;
-use IdeoLogix\DigitalLicenseManager\Utils\Data\License;
-use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
+use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
+use IdeoLogix\DigitalLicenseManager\Utils\GeneratorsHelper;
 use WC_Order;
 use WC_Order_Item_Product;
 use WC_Product;
@@ -195,19 +194,22 @@ class Orders {
 		 */
 		$neededAmount = 'standard' === $maxActivationsBehavior ? ( absint( $quantity ) * $deliveredQuantity ) : $deliveredQuantity;
 
+
+		$licenseService = new LicensesService();
+
 		if ( $useStock ) {  // Sell Licenses through available stock.
 
 			/**
 			 * Retrieve the current stock amount
 			 */
-			$availableStock = License::getLicensesStockCount( $product );
+			$availableStock = $licenseService->getLicensesStockCount( $product );
 
 			/**
 			 * If there are enough keys, grab some and mark as "SOLD", otherwise add order notice.
 			 */
 			$assignedLicenses = [];
 			if ( $neededAmount <= $availableStock ) {
-				$assignedLicenses = LicenseUtil::assignLicensesFromStock(
+				$assignedLicenses = $licenseService->assignLicensesFromStock(
 					$product,
 					$order,
 					$neededAmount,
@@ -236,12 +238,12 @@ class Orders {
 			/**
 			 * Run the generator and create the licenses, if everything ok, save them.
 			 */
-			$licenses = GeneratorUtil::generateLicenseKeys( $neededAmount, $generator, [], $order, $product );
-			if ( ! is_wp_error( $licenses ) ) {
-				LicenseUtil::saveGeneratedLicenseKeys(
+			$generatedLicenses = GeneratorsHelper::generateLicenseKeys( $neededAmount, $generator, [], $order, $product );
+			if ( ! is_wp_error( $generatedLicenses ) ) {
+				$licenseService->saveGeneratedLicenseKeys(
 					$order->get_id(),
 					$product->get_id(),
-					$licenses,
+					$generatedLicenses,
 					LicenseStatus::SOLD,
 					$generator,
 					null,

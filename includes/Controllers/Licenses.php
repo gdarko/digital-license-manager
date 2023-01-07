@@ -3,6 +3,7 @@
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
 use Exception;
+use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
@@ -10,8 +11,6 @@ use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus as LicenseStatusEnum;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
 use IdeoLogix\DigitalLicenseManager\Utils\ArrayFormatter as ArrayUtil;
-use IdeoLogix\DigitalLicenseManager\Utils\Data\License;
-use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
 use IdeoLogix\DigitalLicenseManager\Utils\StringFormatter;
 use TCPDF;
@@ -23,10 +22,15 @@ defined( 'ABSPATH' ) || exit;
  * @package IdeoLogix\DigitalLicenseManager\Controllers
  */
 class Licenses {
+
+	protected $service;
+
 	/**
 	 * Licenses constructor.
 	 */
 	public function __construct() {
+
+		$this->service = new LicensesService();
 
 		// Admin POST requests
 		add_action( 'admin_post_dlm_import_license_keys', array( $this, 'importLicenseKeys' ), 10 );
@@ -88,15 +92,15 @@ class Licenses {
 			$licenseKeys = $this->parseImportClipboard();
 		}
 
-		if ( ! is_array( $licenseKeys )) {
+		if ( ! is_array( $licenseKeys ) ) {
 			AdminNotice::error( __( 'There was a problem importing the license keys. Invalid format provided.', 'digital-license-manager' ) );
 			wp_redirect( $backUrl );
 			exit();
 		}
 
-		$curLicensesCount = count($licenseKeys);
+		$curLicensesCount = count( $licenseKeys );
 
-		if($curLicensesCount <= 0) {
+		if ( $curLicensesCount <= 0 ) {
 			AdminNotice::error( __( 'No valid license keys found from import.', 'digital-license-manager' ) );
 			wp_redirect( $backUrl );
 			exit();
@@ -106,7 +110,7 @@ class Licenses {
 		$maxActivations = isset( $_POST['activations_limit'] ) ? intval( $_POST['activations_limit'] ) : null;
 
 		// Save the imported keys
-		$result = LicenseUtil::saveImportedLicenseKeys(
+		$result = $this->service->saveImportedLicenseKeys(
 			$licenseKeys,
 			$status,
 			$orderId,
@@ -128,14 +132,14 @@ class Licenses {
 
 		if ( $result['failed'] == 0 && $result['added'] == 0 ) {
 			$callback = 'error';
-			$message = __( 'No valid license keys were found to be imported.', 'digital-license-manager' );
+			$message  = __( 'No valid license keys were found to be imported.', 'digital-license-manager' );
 		} else if ( $result['failed'] == 0 && $result['added'] > 0 ) {
 			if ( ! empty( $result['duplicates'] ) ) {
 				$callback = 'warning';
-				$message = sprintf( __( '%d license key(s) added successfully and %d duplicate key(s) ignored.', 'digital-license-manager' ), (int) $result['added'], (int) $result['duplicates'] );
+				$message  = sprintf( __( '%d license key(s) added successfully and %d duplicate key(s) ignored.', 'digital-license-manager' ), (int) $result['added'], (int) $result['duplicates'] );
 			} else {
 				$callback = 'success';
-				$message = sprintf( __( '%d license key(s) added successfully.', 'digital-license-manager' ), (int) $result['added'] );
+				$message  = sprintf( __( '%d license key(s) added successfully.', 'digital-license-manager' ), (int) $result['added'] );
 			}
 			$resync = true;
 		} else if ( $result['failed'] > 0 && $result['added'] == 0 ) {
@@ -191,7 +195,7 @@ class Licenses {
 				'activations_limit',
 			) );
 
-			$license = LicenseUtil::create( $licenseKey, $licenseData );
+			$license = $this->service->create( $licenseKey, $licenseData );
 
 			if ( is_wp_error( $license ) ) {
 				if ( 'data_error' === $license->get_error_code() ) {
@@ -234,7 +238,7 @@ class Licenses {
 				'activations_limit',
 				'valid_for',
 			) );
-			$license     = LicenseUtil::update( $licenseId, $licenseData );
+			$license     = $this->service->update( $licenseId, $licenseData );
 			if ( is_wp_error( $license ) ) {
 				if ( 'data_error' === $license->get_error_code() ) {
 					AdminNotice::error( $license->get_error_message() );
@@ -325,9 +329,9 @@ class Licenses {
 		$licenseKeys          = null;
 		$ext                  = pathinfo( $_FILES['file']['name'], PATHINFO_EXTENSION );
 		$mimes                = array( 'application/vnd.ms-excel', 'text/plain', 'text/csv', 'text/tsv' );
-		$fileName              = $_FILES['file']['tmp_name'];
+		$fileName             = $_FILES['file']['tmp_name'];
 		$uploads              = wp_upload_dir( null, false );
-		$filePath              = trailingslashit( $uploads['basedir'] ) . $tmp_file;
+		$filePath             = trailingslashit( $uploads['basedir'] ) . $tmp_file;
 
 		/**
 		 * Validate the file extension
@@ -355,7 +359,7 @@ class Licenses {
 		 */
 		if ( $ext == 'txt' ) {
 			$licenseKeys = file( $filePath, FILE_IGNORE_NEW_LINES );
-			unlink($filePath);
+			unlink( $filePath );
 			if ( ! is_array( $licenseKeys ) ) {
 				AdminNotice::error( __( 'Invalid file content.', 'digital-license-manager' ) );
 				wp_redirect(
@@ -377,16 +381,16 @@ class Licenses {
 
 				fclose( $handle );
 			}
-			unlink($filePath);
+			unlink( $filePath );
 		} else {
-			unlink($filePath);
+			unlink( $filePath );
 		}
 
 		/**
 		 * Check for duplicates
 		 */
 		foreach ( $licenseKeys as $i => $licenseKey ) {
-			if ( LicenseUtil::isKeyDuplicate( $licenseKey ) ) {
+			if ( $this->service->isKeyDuplicate( $licenseKey ) ) {
 				unset( $licenseKeys[ $i ] );
 				$duplicateLicenseKeys[] = $licenseKey;
 				continue;
@@ -468,7 +472,7 @@ class Licenses {
 		$pdf->AddPage();
 		$pdf->AddFont( 'Helvetica', '', 'helvetica.php' );
 		$pdf->AddFont( 'Courier', '', 'courier.php' );
-		$pdf->setFont('Helvetica');
+		$pdf->setFont( 'Helvetica' );
 
 		// Header
 		$pdf->Text( 10, 10, get_bloginfo( 'name' ) );

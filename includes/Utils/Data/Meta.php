@@ -1,15 +1,13 @@
 <?php
 
-
 namespace IdeoLogix\DigitalLicenseManager\Utils\Data;
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseMeta as LicenseMetaResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseMeta as LicenseMetaResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 
 /**
  * Class Meta
- * @package IdeoLogix\DigitalLicenseManager\Utils\Data
+ * @deprecated 1.3.9
+ * @package IdeoLogix\DigitalLicenseManager\Core\Services
  */
 class Meta {
 
@@ -23,26 +21,12 @@ class Meta {
 	 * @return mixed|bool
 	 */
 	public static function addLicenseMeta( $licenseId, $metaKey, $metaValue ) {
-		$license = LicenseResourceRepository::instance()->find( $licenseId );
 
-		if ( ! $license ) {
-			return false;
-		}
+		_deprecated_function( __METHOD__, '1.3.9', 'Core\Services\LicensesService::addMeta()' );
 
-		/** @var LicenseMetaResourceModel $licenseMeta */
-		$licenseMeta = LicenseMetaResourceRepository::instance()->insert(
-			array(
-				'license_id' => $licenseId,
-				'meta_key'   => $metaKey,
-				'meta_value' => maybe_serialize( $metaValue )
-			)
-		);
+		$licensesService = new LicensesService();
 
-		if ( ! $licenseMeta ) {
-			return false;
-		}
-
-		return $licenseMeta->getMetaValue();
+		return $licensesService->addMeta( $licenseId, $metaKey, $metaValue );
 	}
 
 	/**
@@ -55,42 +39,12 @@ class Meta {
 	 * @return mixed|mixed[]|bool
 	 */
 	public static function getLicenseMeta( $licenseId, $metaKey, $single = false ) {
-		$license = LicenseResourceRepository::instance()->find( $licenseId );
 
-		if ( ! $license ) {
-			return false;
-		}
+		_deprecated_function( __METHOD__, '1.3.9', 'Core\Services\LicensesService::getMeta()' );
 
-		if ( $single ) {
-			/** @var LicenseMetaResourceModel $licenseMeta */
-			$licenseMeta = LicenseMetaResourceRepository::instance()->findBy(
-				array(
-					'license_id' => $licenseId,
-					'meta_key'   => $metaKey
-				)
-			);
+		$licensesService = new LicensesService();
 
-			if ( ! $licenseMeta ) {
-				return false;
-			}
-
-			return $licenseMeta->getMetaValue();
-		}
-
-		$licenseMetas = LicenseMetaResourceRepository::instance()->findAllBy(
-			array(
-				'license_id' => $licenseId,
-				'meta_key'   => $metaKey
-			)
-		);
-		$result       = array();
-
-		/** @var LicenseMetaResourceModel $licenseMeta */
-		foreach ( $licenseMetas as $licenseMeta ) {
-			$result[] = $licenseMeta->getMetaValue();
-		}
-
-		return $result;
+		return $licensesService->getMeta( $licenseId, $metaKey, $single );
 	}
 
 	/**
@@ -104,44 +58,12 @@ class Meta {
 	 * @return bool
 	 */
 	public static function updateLicenseMeta( $licenseId, $metaKey, $metaValue, $previousValue = null ) {
-		$license = LicenseResourceRepository::instance()->find( $licenseId );
 
-		if ( ! $license ) {
-			return false;
-		}
+		_deprecated_function( __METHOD__, '1.3.9', 'Core\Services\LicensesService::updateMeta()' );
 
-		$selectQuery          = array(
-			'license_id' => $licenseId,
-			'meta_key'   => $metaKey
-		);
-		$updateQueryCondition = array(
-			'license_id' => $licenseId,
-			'meta_key'   => $metaKey
-		);
-		$updateQueryData      = array(
-			'license_id' => $licenseId,
-			'meta_key'   => $metaKey,
-			'meta_value' => maybe_serialize( $metaValue )
-		);
+		$licensesService = new LicensesService();
 
-		if ( $previousValue !== null ) {
-			$selectQuery['meta_value']          = $previousValue;
-			$updateQueryCondition['meta_value'] = $previousValue;
-		}
-
-		$metaLicense = LicenseMetaResourceRepository::instance()->findBy( $selectQuery );
-
-		if ( ! $metaLicense ) {
-			return false;
-		}
-
-		$updateCount = LicenseMetaResourceRepository::instance()->updateBy( $updateQueryCondition, $updateQueryData );
-
-		if ( ! $updateCount ) {
-			return false;
-		}
-
-		return true;
+		return $licensesService->updateMeta( $licenseId, $metaKey, $metaValue, $previousValue );
 	}
 
 	/**
@@ -154,28 +76,12 @@ class Meta {
 	 * @return bool
 	 */
 	public static function deleteLicenseMeta( $licenseId, $metaKey, $metaValue = null ) {
-		$license = LicenseResourceRepository::instance()->find( $licenseId );
 
-		if ( ! $license ) {
-			return false;
-		}
+		_deprecated_function( __METHOD__, '1.3.9', 'Core\Services\LicensesService::deleteMeta()' );
 
-		$deleteQueryCondition = array(
-			'license_id' => $licenseId,
-			'meta_key'   => $metaKey
-		);
+		$licensesService = new LicensesService();
 
-		if ( $metaValue ) {
-			$deleteQueryCondition['meta_value'] = $metaValue;
-		}
-
-		$deleteResult = LicenseMetaResourceRepository::instance()->deleteBy( $deleteQueryCondition );
-
-		if ( $deleteResult ) {
-			return true;
-		}
-
-		return false;
+		return $licensesService->deleteMEta( $licenseId, $metaKey, $metaValue );
 	}
 
 

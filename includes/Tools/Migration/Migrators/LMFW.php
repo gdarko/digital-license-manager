@@ -12,7 +12,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseMeta 
 use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
 use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
-use IdeoLogix\DigitalLicenseManager\Utils\Data\License as LicenseUtil;
+use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 
 class LMFW extends AbstractToolMigrator {
@@ -164,7 +164,7 @@ class LMFW extends AbstractToolMigrator {
 	 *
 	 * @return int
 	 */
-	protected function getRecordsCount( $table ) {
+	public function getRecordsCount( $table ) {
 		global $wpdb;
 
 		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM %s", $table ) );
@@ -195,6 +195,7 @@ class LMFW extends AbstractToolMigrator {
 		$page     = (int) $page;
 		$per_page = 25;
 
+		$licenseService = new LicensesService();
 
 		$preserve_ids = isset( $_POST['preserve_ids'] ) ? intval( $_POST['preserve_ids'] ) : 0;
 
@@ -252,7 +253,7 @@ class LMFW extends AbstractToolMigrator {
 							if ( ! empty( $row['times_activated'] ) ) {
 								for ( $i = 0; $i < $row['times_activated']; $i ++ ) {
 									LicenseActivationResourceRepository::instance()->insert( array(
-										'token'      => LicenseUtil::generateActivationToken( $license_key ),
+										'token'      => $licenseService->generateActivationToken( $license_key ),
 										'license_id' => $new_row->getId(),
 										'label'      => __( 'Untitled' ),
 										'source'     => ActivationSource::MIGRATION,
