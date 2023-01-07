@@ -118,11 +118,11 @@ class Orders {
 			 */
 			$skip = apply_filters_deprecated(
 				'dlm_maybe_skip_subscription_renewals',
-				array( false, $orderId, $product->get_id() ),
+				array( false, $orderId, $product->get_id(), $orderItem ),
 				'1.2.2',
-				'dlm_skip_licenses_generation_for_order_product'
+				'dlm_skip_licenses_generation_for_order_product',
 			);
-			$skip = apply_filters( 'dlm_skip_licenses_generation_for_order_product', $skip, $orderId, $product->get_id() );
+			$skip = apply_filters( 'dlm_skip_licenses_generation_for_order_product', $skip, $orderId, $product->get_id(), $orderItem );
 			if ( $skip ) {
 				continue;
 			}
