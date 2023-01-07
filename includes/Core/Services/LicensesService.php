@@ -6,7 +6,7 @@ use DateInterval;
 use DateTime;
 use Exception;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
-use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\CrudInterface;
+use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ServiceInterface;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\MetadataInterface;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
@@ -22,7 +22,6 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
-use IdeoLogix\DigitalLicenseManager\Utils\GeneratorsHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use WC_Order;
@@ -32,7 +31,7 @@ use WP_Error;
  * Class License
  * @package IdeoLogix\DigitalLicenseManager\Core\Services
  */
-class LicensesService implements CrudInterface, MetadataInterface {
+class LicensesService implements ServiceInterface, MetadataInterface {
 
 	/**
 	 * Find a single item from the database.
@@ -923,7 +922,8 @@ class LicensesService implements CrudInterface, MetadataInterface {
 		// There have been duplicate keys, regenerate and add them.
 		if ( $invalidKeysAmount > 0 ) {
 
-			$newKeys = GeneratorsHelper::generateLicenseKeys( $invalidKeysAmount, $generator );
+			$generatorsService = new GeneratorsService();
+			$newKeys = $generatorsService->generateLicenses( $invalidKeysAmount, $generator );
 			if ( is_wp_error( $newKeys ) ) {
 				return $newKeys;
 			}

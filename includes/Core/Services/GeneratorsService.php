@@ -3,13 +3,14 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Core\Services;
 
+use IdeoLogix\DigitalLicenseManager\Core\Generators\StandardGenerator;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
-use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\CrudInterface;
+use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ServiceInterface;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
 use WP_Error;
 
-class GeneratorsService implements CrudInterface {
+class GeneratorsService implements ServiceInterface {
 
 	/**
 	 * Find a single item from the database.
@@ -256,5 +257,48 @@ class GeneratorsService implements CrudInterface {
 
 		return true;
 	}
+
+
+	/**
+	 * Returns the available generator implementation utility class for generating licenses
+	 * @return void
+	 */
+	public function getGeneratorUtilityInstance( $generator, $order = null, $product = null ) {
+
+		/**
+		 * Determines the generator PHP class, this class should implement AbstractGenerator.
+		 *
+		 * @param $className
+		 * @param $generator
+		 * @param $order
+		 * @param $product
+		 */
+		$className = apply_filters( 'dlm_generator_class', StandardGenerator::class, $generator, $order, $product );
+		if ( ! class_exists( $className ) ) {
+			$className = StandardGenerator::class;
+		}
+
+		return ( new $className( $generator ) );
+
+	}
+
+	/**
+	 * Bulk create license keys, if possible for given parameters.
+	 *
+	 * @param int $amount Number of license keys to be generated
+	 * @param GeneratorResourceModel $generator Generator used for the license keys
+	 * @param array $licenses Number of license keys to be generated
+	 * @param \WC_Order|null $order
+	 * @param \WC_Product|null $product
+	 *
+	 * @return array|WP_Error
+	 */
+	public function generateLicenses( $amount, $generator, $licenses = array(), $order = null, $product = null ) {
+
+		$generatorInstance = $this->getGeneratorUtilityInstance( $generator, $order, $product );
+
+		return $generatorInstance->generate( $amount, $licenses );
+	}
+
 
 }

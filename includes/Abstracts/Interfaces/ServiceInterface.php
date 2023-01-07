@@ -5,7 +5,7 @@ namespace IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
 use WP_Error;
 
-interface CrudInterface {
+interface ServiceInterface {
 
 	/**
 	 * Find a single item from the database.

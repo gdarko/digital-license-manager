@@ -4,7 +4,6 @@ namespace IdeoLogix\DigitalLicenseManager\Utils\Data;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
-use IdeoLogix\DigitalLicenseManager\Utils\GeneratorsHelper;
 use WP_Error;
 
 /**
@@ -121,8 +120,10 @@ class Generator {
 	 * @return array|WP_Error
 	 */
 	public static function generateLicenseKeys( $amount, $generator, $licenses = array(), $order = null, $product = null ) {
-		_deprecated_function( __METHOD__, '1.3.9', 'GeneratorsHelper::generateLicenseKeys' );
+		_deprecated_function( __METHOD__, '1.3.9', 'GeneratorsService::generateLicenses' );
 
-		return GeneratorsHelper::generateLicenseKeys( $amount, $generator, $licenses, $order, $product );
+		$instance = new \IdeoLogix\DigitalLicenseManager\Core\Services\GeneratorsService();
+
+		return $instance->generateLicenses( $amount, $generator, $licenses, $order, $product );
 	}
 }

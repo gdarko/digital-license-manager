@@ -10,7 +10,6 @@ use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as L
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
 use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
-use IdeoLogix\DigitalLicenseManager\Utils\GeneratorsHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use WP_Error;
 use WP_REST_Request;
@@ -426,7 +425,7 @@ class Generators extends DLM_REST_Controller {
 			);
 		}
 
-		$licenses = GeneratorsHelper::generateLicenseKeys( $amount, $generator );
+		$licenses = $this->service->generateLicenses( $amount, $generator );
 
 		if ( is_wp_error( $licenses ) ) {
 			return $this->maybeErrorResponse( $licenses );

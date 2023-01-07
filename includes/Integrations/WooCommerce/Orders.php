@@ -2,6 +2,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
+use IdeoLogix\DigitalLicenseManager\Core\Services\GeneratorsService;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
@@ -11,7 +12,6 @@ use IdeoLogix\DigitalLicenseManager\ListTables\Licenses;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
-use IdeoLogix\DigitalLicenseManager\Utils\GeneratorsHelper;
 use WC_Order;
 use WC_Order_Item_Product;
 use WC_Product;
@@ -238,7 +238,8 @@ class Orders {
 			/**
 			 * Run the generator and create the licenses, if everything ok, save them.
 			 */
-			$generatedLicenses = GeneratorsHelper::generateLicenseKeys( $neededAmount, $generator, [], $order, $product );
+			$generatorsService = new GeneratorsService();
+			$generatedLicenses = $generatorsService->generateLicenses( $neededAmount, $generator, [], $order, $product );
 			if ( ! is_wp_error( $generatedLicenses ) ) {
 				$licenseService->saveGeneratedLicenseKeys(
 					$order->get_id(),

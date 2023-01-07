@@ -5,7 +5,6 @@ namespace IdeoLogix\DigitalLicenseManager\Controllers;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
 use IdeoLogix\DigitalLicenseManager\Core\Services\GeneratorsService;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
-use IdeoLogix\DigitalLicenseManager\Utils\GeneratorsHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 
@@ -172,7 +171,7 @@ class Generators {
 			exit();
 		}
 
-		$licenses = GeneratorsHelper::generateLicenseKeys( $amount, $generator );
+		$licenses = $this->service->generateLicenses( $amount, $generator );
 
 		if ( ! is_wp_error( $licenses ) ) {
 			// Save the license keys.
