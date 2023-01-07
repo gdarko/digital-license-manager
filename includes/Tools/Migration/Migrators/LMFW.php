@@ -167,7 +167,7 @@ class LMFW extends AbstractToolMigrator {
 	public function getRecordsCount( $table ) {
 		global $wpdb;
 
-		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM %s", $table ) );
+		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $table" ) );
 	}
 
 	/**
