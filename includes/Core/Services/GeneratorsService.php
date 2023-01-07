@@ -261,7 +261,12 @@ class GeneratorsService implements ServiceInterface {
 
 	/**
 	 * Returns the available generator implementation utility class for generating licenses
-	 * @return void
+	 *
+	 * @param GeneratorResourceModel $generator
+	 * @param \WC_Order|null $order
+	 * @param \WC_Product|null $product
+	 *
+	 * @return StandardGenerator|mixed
 	 */
 	public function getGeneratorUtilityInstance( $generator, $order = null, $product = null ) {
 
