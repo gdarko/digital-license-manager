@@ -157,6 +157,11 @@ class Products {
 		$licensesSource = ! empty( $_POST['dlm_licensed_product_licenses_source'] ) ? sanitize_text_field( $_POST['dlm_licensed_product_licenses_source'] ) : 'stock';
 		$product->update_meta_data( 'dlm_licensed_product_licenses_source', $licensesSource );
 
+		// Update the max activations behavor, according to field
+		$maxActivationsBehavior = ! empty( $_POST['dlm_licensed_product_activations_behavior'] ) ? sanitize_text_field( $_POST['dlm_licensed_product_activations_behavior'] ) : 'standard';
+		$product->update_meta_data( 'dlm_licensed_product_activations_behavior', $maxActivationsBehavior );
+
+
 		// Update the assigned generator id, according to select field.
 		if ( 'generators' === $licensesSource ) {
 			$assignedGenerator = ! empty( $_POST['dlm_licensed_product_assigned_generator'] ) ? (int) $_POST['dlm_licensed_product_assigned_generator'] : 0;
@@ -417,7 +422,7 @@ class Products {
 					'type'   => 'select',
 					'params' => array(
 						'id'            => 'dlm_licensed_product',
-						'label'         => esc_html__( 'Sell license keys', 'digital-license-manager' ),
+						'label'         => esc_html__( 'Sell Licenses', 'digital-license-manager' ),
 						'description'   => esc_html__( 'Enable license key delivery for this product', 'digital-license-manager' ),
 						'value'         => (int) $this->getMeta( $product->get_Id(), 'dlm_licensed_product', 0 ),
 						'cbvalue'       => 1,
@@ -448,7 +453,7 @@ class Products {
 					'type'   => 'select',
 					'params' => array(
 						'id'            => 'dlm_licensed_product_licenses_source',
-						'label'         => esc_html__( 'License keys source', 'digital-license-manager' ),
+						'label'         => esc_html__( 'Licenses source', 'digital-license-manager' ),
 						'description'   => esc_html__( 'Select the source of the license keys. If you want them to be generated with a generator select "Provide licenses by using generator" and then specify a generator below. If you want to sell from your existing licenses make sure you have a stock of license that are marked as ACTIVE.', 'digital-license-manager' ),
 						'value'         => $licenseSource,
 						'cbvalue'       => 1,
@@ -464,7 +469,7 @@ class Products {
 					'type'   => 'select',
 					'params' => array(
 						'id'                => 'dlm_licensed_product_assigned_generator',
-						'label'             => __( 'License key generator', 'digital-license-manager' ),
+						'label'             => __( 'Licenses generator', 'digital-license-manager' ),
 						'description'       => esc_html__( 'Select the Generator that will be used to generate and deliver keys for this product. Required only if source is set to "Provide licenses by using generator".', 'digital-license-manager' ),
 						'desc_tip'          => true,
 						'options'           => $this->getGeneratorOptions(),
@@ -474,6 +479,25 @@ class Products {
 							'data-conditional-source'  => 'dlm_licensed_product_licenses_source',
 							'data-conditional-show-if' => 'generators',
 						),
+					)
+				),
+				array(
+					'type'   => 'select',
+					'params' => array(
+						'id'                => 'dlm_licensed_product_activations_behavior',
+						'label'             => __( 'Max Activations Behavior', 'digital-license-manager' ),
+						'description'       => esc_html__( 'Select the behavior of the max activations for the new licenses whether it to be based on quantity or the generator default value".', 'digital-license-manager' ),
+						'desc_tip'          => true,
+						'options'           => [
+							'standard' => __( 'Standard - Based on the Generator\'s "Max Activations"' ),
+							'quantity' => __( 'Product Quantity - Always deliver single license and set activations limit based on product quantity' ),
+						],
+						'value'             => $this->getMeta( $product->get_id(), 'dlm_licensed_product_activations_behavior', 'standard' ),
+						'wrapper_class'     => $isVariableProduct ? 'form-row form-row-last dlm-field-conditional-target' : 'dlm-field-conditional-target',
+						/*'custom_attributes' => array(
+							'data-conditional-source'  => 'dlm_licensed_product_licenses_source',
+							'data-conditional-show-if' => 'generators',
+						),*/
 					)
 				),
 			)

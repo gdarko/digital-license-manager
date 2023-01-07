@@ -972,7 +972,7 @@ msgid "License key"
 msgstr ""
 
 #: includes/Integrations/WooCommerce/Products.php:437
-msgid "License key generator"
+msgid "Licenses generator"
 msgstr ""
 
 #: templates/admin/licenses/page-import.php:45
@@ -988,7 +988,7 @@ msgid "License Keys must be provided as array"
 msgstr ""
 
 #: includes/Integrations/WooCommerce/Products.php:421
-msgid "License keys source"
+msgid "Licenses source"
 msgstr ""
 
 #: includes/Controllers/Menus.php:63 includes/Controllers/Menus.php:127
@@ -999,11 +999,11 @@ msgstr ""
 
 #: includes/Integrations/WooCommerce/Settings.php:184
 msgid ""
-"License Manager &rarr; License keys source &rarr; Provide licenses from stock"
+"License Manager &rarr; Licenses source &rarr; Provide licenses from stock"
 msgstr ""
 
 #: includes/Integrations/WooCommerce/Settings.php:183
-msgid "License Manager &rarr; Sell license keys"
+msgid "License Manager &rarr; Sell Licenses"
 msgstr ""
 
 #: includes/Controllers/Menus.php:81
@@ -1501,7 +1501,7 @@ msgid ""
 msgstr ""
 
 #: includes/Integrations/WooCommerce/Products.php:390
-msgid "Sell license keys"
+msgid "Sell Licenses"
 msgstr ""
 
 #: includes/Integrations/WooCommerce/Settings.php:127
