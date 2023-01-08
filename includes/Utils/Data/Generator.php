@@ -120,7 +120,7 @@ class Generator {
 	 * @return array|WP_Error
 	 */
 	public static function generateLicenseKeys( $amount, $generator, $licenses = array(), $order = null, $product = null ) {
-		_deprecated_function( __METHOD__, '1.3.9', 'GeneratorsService::generateLicenses' );
+		_deprecated_function( __METHOD__, '1.3.9', 'Core\Services\GeneratorsService::generateLicenses' );
 
 		$instance = new \IdeoLogix\DigitalLicenseManager\Core\Services\GeneratorsService();
 
