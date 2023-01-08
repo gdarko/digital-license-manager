@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce, w
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 6.1
-Stable tag: 1.3.8
+Stable tag: 1.3.9
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -12,10 +12,9 @@ Sell and manage your digital licenses through your WordPress or WooCommerce webs
 
 == Description ==
 
-**Digital License Manager is licensing plugin for WordPress that can be used to keep track of and sell your licenses form your site. Supported and maintained by friendly team behind. 😎**
+**Digital License Manager is licensing plugin for WordPress that can be used sell your license keys form your site. Supported and maintained by friendly team behind. 😎**
 
 The plugin is compatible with WooCommerce, although it can be used as standalone License Manager without WooCommerce.
-
 
 ### ✨ Free Features
 
@@ -162,6 +161,16 @@ To migrate to Digital License Manager, please navigate to "License Manager" > "S
 15. Re-send licenses via Order page
 
 == Changelog ==
+
+= 1.3.9 =
+*Release Date - 08 Jan 2023*
+
+* Add Generators Abstraction layer/hook and Abstract class. <a href="https://docs.codeverve.com/digital-license-manager/handbook/generators/extending-abstraction/">Read more</a>
+* Add "Max Activations Behavior" option to "Product Edit" > "License Manager" to make the purchased quantity of the product to be used as max activations limit, by default the old behavior will be preserved and the limit will depend on the Generator/Stock
+* Add `$orderItem` parameter to the `dlm_skip_licenses_generation_for_order_product` filter
+* Add services layer, move business logic code form Utils\Data to Core\Services, mark the old ones as deprecated and keep it backwards compatible
+* Fix PHP warnings on certain actions
+* Update i18n .pot template
 
 = 1.3.8 =
 *Release Date - 16 Dec 2022*
