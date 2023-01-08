@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Digital License Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-05 07:25+0000\n"
+"POT-Creation-Date: 2023-01-08 18:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -49,12 +49,24 @@ msgstr ""
 msgid "%d generator(s) permanently deleted."
 msgstr ""
 
-#: includes/Controllers/Licenses.php:152
+#: includes/Controllers/Licenses.php:155
+#, php-format
+msgid ""
+"%d key(s) have been imported, while %d key(s) were not imported and %d "
+"duplicate key(s) ignored."
+msgstr ""
+
+#: includes/Controllers/Licenses.php:157
 #, php-format
 msgid "%d key(s) have been imported, while %d key(s) were not imported."
 msgstr ""
 
-#: includes/Controllers/Licenses.php:129
+#: includes/Controllers/Licenses.php:139
+#, php-format
+msgid "%d license key(s) added successfully and %d duplicate key(s) ignored."
+msgstr ""
+
+#: includes/Controllers/Licenses.php:142
 #, php-format
 msgid "%d license key(s) added successfully."
 msgstr ""
@@ -64,7 +76,7 @@ msgstr ""
 msgid "%d license(s) permanently deleted."
 msgstr ""
 
-#: includes/Controllers/Licenses.php:385
+#: includes/Controllers/Licenses.php:402
 #, php-format
 msgid "%d license(s) skipped because they already exist."
 msgstr ""
@@ -85,7 +97,7 @@ msgstr ""
 msgid "(Order #%s)"
 msgstr ""
 
-#: includes/Controllers/Licenses.php:195
+#: includes/Controllers/Licenses.php:207
 msgid "1 license key(s) added successfully."
 msgstr ""
 
@@ -97,20 +109,20 @@ msgid ""
 "href=\"%3$s\">Administration > Settings > General</a>. %4$s"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Products.php:160
+#: includes/Integrations/WooCommerce/Products.php:170
 msgid ""
 "<strong>Error:</strong> Please select valid License generator in \"License "
 "Manager\" options."
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Products.php:236
+#: includes/Integrations/WooCommerce/Products.php:256
 #, php-format
 msgid ""
 "<strong>Error:</strong> Please select valid License generator in variation "
 "#%d Digital License Manager options."
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Emails/ResendOrderLicenses.php:56
+#: includes/Integrations/WooCommerce/Emails/ResendOrderLicenses.php:54
 msgid "[{site_title}]: Your digital licenses for order #{order_number}"
 msgstr ""
 
@@ -140,7 +152,7 @@ msgstr ""
 msgid "Activation History"
 msgstr ""
 
-#: includes/Controllers/Licenses.php:683
+#: includes/Controllers/Licenses.php:695
 msgid "Activation Limit"
 msgstr ""
 
@@ -153,7 +165,7 @@ msgstr ""
 msgid "Activations"
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:203
+#: includes/Core/Services/GeneratorsService.php:193
 msgid "Activations Limit should positive integer value larger than 0"
 msgstr ""
 
@@ -241,7 +253,8 @@ msgstr ""
 msgid "Amount"
 msgstr ""
 
-#: includes/Utils/Data/License.php:937
+#: includes/Core/Services/LicensesService.php:1028
+#: includes/Core/Services/LicensesService.php:1107
 msgid "Amount is invalid."
 msgstr ""
 
@@ -267,7 +280,7 @@ msgstr ""
 msgid "API key updated successfully."
 msgstr ""
 
-#: templates/admin/licenses/page-import.php:62
+#: templates/admin/licenses/page-import.php:75
 #: templates/admin/licenses/page-edit.php:190
 msgid ""
 "Applies only for licenses purchased from stock. Total expiration time added "
@@ -296,7 +309,7 @@ msgstr ""
 msgid "Character map"
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:179
+#: includes/Core/Services/GeneratorsService.php:169
 msgid "Charset can not be empty."
 msgstr ""
 
@@ -306,11 +319,11 @@ msgstr ""
 msgid "Chunk length"
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:104
+#: includes/Core/Services/GeneratorsService.php:94
 msgid "Chunk length should be between 2 and 99"
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:96
+#: includes/Core/Services/GeneratorsService.php:86
 msgid "Chunks should be between 1 and 99"
 msgstr ""
 
@@ -352,8 +365,8 @@ msgid "Consumer secret is invalid."
 msgstr ""
 
 #: templates/admin/licenses/page-list.php:21
-#: includes/Integrations/WooCommerce/Orders.php:471
-#: includes/Integrations/WooCommerce/Orders.php:485
+#: includes/Integrations/WooCommerce/Orders.php:501
+#: includes/Integrations/WooCommerce/Orders.php:515
 msgid "Copied to clipboard"
 msgstr ""
 
@@ -366,16 +379,16 @@ msgstr ""
 msgid "Created"
 msgstr ""
 
-#: includes/Controllers/Licenses.php:687
+#: includes/Controllers/Licenses.php:699
 msgid "Created at"
 msgstr ""
 
-#: includes/Controllers/Licenses.php:691
+#: includes/Controllers/Licenses.php:703
 msgid "Created by"
 msgstr ""
 
 #: includes/ListTables/Licenses.php:769
-#: templates/admin/licenses/page-import.php:108
+#: templates/admin/licenses/page-import.php:119
 #: templates/admin/licenses/page-edit.php:154
 #: templates/admin/licenses/page-add.php:86
 msgid "Customer"
@@ -411,9 +424,9 @@ msgstr ""
 msgid "Define how many license keys will be generated."
 msgstr ""
 
-#: templates/admin/licenses/page-import.php:72
-#: templates/admin/licenses/page-edit.php:71
-#: templates/admin/licenses/page-add.php:42
+#: templates/admin/licenses/page-import.php:87
+#: templates/admin/licenses/page-edit.php:88
+#: templates/admin/licenses/page-add.php:55
 #: templates/admin/generators/page-edit.php:57
 msgid ""
 "Define how many times the license can be marked as \"activated\". Leave "
@@ -432,14 +445,16 @@ msgid ""
 "stock. (Applies to orders from stock)"
 msgstr ""
 
-#: templates/admin/licenses/page-edit.php:89
+#: templates/admin/licenses/page-import.php:64
+#: templates/admin/licenses/page-edit.php:61
+#: templates/admin/licenses/page-add.php:32
 #: templates/admin/generators/page-generate.php:73
 msgid ""
 "Define the initial license status. Set \"Active\" to make this license "
 "available for stock purchases."
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Products.php:404
+#: includes/Integrations/WooCommerce/Products.php:438
 msgid "Defines the amount of license keys to be delivered upon purchase."
 msgstr ""
 
@@ -458,7 +473,7 @@ msgstr ""
 msgid "Delivered"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Products.php:403
+#: includes/Integrations/WooCommerce/Products.php:437
 msgid "Delivered quantity"
 msgstr ""
 
@@ -476,7 +491,7 @@ msgstr ""
 
 #. Name of the plugin
 #: includes/Controllers/Menus.php:375
-#: includes/Integrations/WooCommerce/Products.php:185
+#: includes/Integrations/WooCommerce/Products.php:199
 msgid "Digital License Manager"
 msgstr ""
 
@@ -558,7 +573,7 @@ msgid ""
 "page in My Account dashboard."
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Products.php:391
+#: includes/Integrations/WooCommerce/Products.php:425
 msgid "Enable license key delivery for this product"
 msgstr ""
 
@@ -592,7 +607,7 @@ msgstr ""
 msgid "Endpoints are missing.."
 msgstr ""
 
-#: includes/Tools/Migration/Migrators/LMFW.php:447
+#: includes/Tools/Migration/Migrators/LMFW.php:448
 #, php-format
 msgid "Error: %s"
 msgstr ""
@@ -603,9 +618,9 @@ msgstr ""
 msgid "Expires"
 msgstr ""
 
-#: includes/Controllers/Licenses.php:675
-#: templates/admin/licenses/page-edit.php:51
-#: templates/admin/licenses/page-add.php:25
+#: includes/Controllers/Licenses.php:687
+#: templates/admin/licenses/page-edit.php:68
+#: templates/admin/licenses/page-add.php:38
 msgid "Expires at"
 msgstr ""
 
@@ -615,17 +630,17 @@ msgstr ""
 msgid "Expires in"
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:211
+#: includes/Core/Services/GeneratorsService.php:201
 msgid ""
 "Expires In shoudld be positive integer value larger than 1 that represents "
 "number of days"
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:112
+#: includes/Core/Services/GeneratorsService.php:102
 msgid "Expires in should be numeric and positive value larger than 1"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Certificates.php:138
+#: includes/Integrations/WooCommerce/Certificates.php:140
 msgid "Expiry Date"
 msgstr ""
 
@@ -707,11 +722,11 @@ msgstr ""
 msgid "Generator"
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:84
+#: includes/Core/Services/GeneratorsService.php:74
 msgid "Generator name is missing."
 msgstr ""
 
-#: includes/RestAPI/Controllers/Generators.php:403
+#: includes/RestAPI/Controllers/Generators.php:409
 #, php-format
 msgid "Generator with ID: %d could not be found."
 msgstr ""
@@ -759,7 +774,7 @@ msgstr ""
 msgid "Hide license keys in the admin dashboard."
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Orders.php:483
+#: includes/Integrations/WooCommerce/Orders.php:513
 msgid "Hide license(s)"
 msgstr ""
 
@@ -783,7 +798,7 @@ msgstr ""
 msgid "i.e. for \"12-AB-34-CD\" the separator is <kbd>-</kbd>."
 msgstr ""
 
-#: includes/Controllers/Licenses.php:451 includes/Controllers/Licenses.php:655
+#: includes/Controllers/Licenses.php:463 includes/Controllers/Licenses.php:667
 #: templates/admin/licenses/page-edit.php:30
 msgid "ID"
 msgstr ""
@@ -849,7 +864,7 @@ msgid ""
 msgstr ""
 
 #: templates/admin/licenses/page-list.php:8
-#: templates/admin/licenses/page-import.php:119
+#: templates/admin/licenses/page-import.php:133
 msgid "Import"
 msgstr ""
 
@@ -876,15 +891,15 @@ msgstr ""
 msgid "Initializing..."
 msgstr ""
 
-#: includes/RestAPI/Controllers/Generators.php:417
+#: includes/RestAPI/Controllers/Generators.php:423
 msgid "Invalid amount"
 msgstr ""
 
-#: includes/Controllers/Licenses.php:350
+#: includes/Controllers/Licenses.php:364
 msgid "Invalid file content."
 msgstr ""
 
-#: includes/Controllers/Licenses.php:327
+#: includes/Controllers/Licenses.php:340
 msgid "Invalid file type, only TXT and CSV allowed."
 msgstr ""
 
@@ -892,7 +907,11 @@ msgstr ""
 msgid "Invalid license key ID"
 msgstr ""
 
-#: includes/Controllers/Licenses.php:258 includes/Controllers/Licenses.php:287
+#: includes/Core/Services/LicensesService.php:1020
+msgid "Invalid order provided."
+msgstr ""
+
+#: includes/Controllers/Licenses.php:270 includes/Controllers/Licenses.php:299
 msgid "Invalid request."
 msgstr ""
 
@@ -904,7 +923,7 @@ msgstr ""
 msgid "IP Address"
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:299
+#: includes/Core/Generators/StandardGenerator.php:25
 msgid ""
 "It's not possible to generate that many keys with the given parameters, "
 "there are not enough combinations. Please review your inputs."
@@ -954,16 +973,16 @@ msgstr ""
 msgid "License expiration format"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Certificates.php:130
+#: includes/Integrations/WooCommerce/Certificates.php:132
 msgid "License ID"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Certificates.php:134
+#: includes/Integrations/WooCommerce/Certificates.php:136
 msgid "License Key"
 msgstr ""
 
-#: includes/ListTables/Licenses.php:766 includes/Controllers/Licenses.php:454
-#: includes/Controllers/Licenses.php:671
+#: includes/ListTables/Licenses.php:766 includes/Controllers/Licenses.php:466
+#: includes/Controllers/Licenses.php:683
 #: templates/admin/licenses/page-edit.php:40
 #: templates/admin/licenses/page-add.php:16
 #: templates/woocommerce/dlm/my-account/licenses/single.php:56
@@ -971,29 +990,22 @@ msgstr ""
 msgid "License key"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Products.php:437
-msgid "Licenses generator"
-msgstr ""
-
 #: templates/admin/licenses/page-import.php:45
 msgid "License keys"
 msgstr ""
 
-#: includes/Utils/Data/License.php:929
+#: includes/Core/Services/LicensesService.php:1099
 msgid "License Keys are invalid."
 msgstr ""
 
-#: includes/Utils/Data/License.php:752 includes/Utils/Data/License.php:826
+#: includes/Core/Services/LicensesService.php:772
+#: includes/Core/Services/LicensesService.php:856
 msgid "License Keys must be provided as array"
-msgstr ""
-
-#: includes/Integrations/WooCommerce/Products.php:421
-msgid "Licenses source"
 msgstr ""
 
 #: includes/Controllers/Menus.php:63 includes/Controllers/Menus.php:127
 #: includes/Controllers/Menus.php:128
-#: includes/Integrations/WooCommerce/Products.php:82
+#: includes/Integrations/WooCommerce/Products.php:81
 msgid "License Manager"
 msgstr ""
 
@@ -1018,11 +1030,12 @@ msgstr ""
 msgid "License Manager - Settings"
 msgstr ""
 
-#: includes/Utils/Data/License.php:756 includes/Utils/Data/License.php:822
+#: includes/Core/Services/LicensesService.php:776
+#: includes/Core/Services/LicensesService.php:852
 msgid "License Status is invalid"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Certificates.php:145
+#: includes/Integrations/WooCommerce/Certificates.php:147
 msgid "Licensee"
 msgstr ""
 
@@ -1034,8 +1047,16 @@ msgstr ""
 msgid "Licenses"
 msgstr ""
 
+#: includes/Integrations/WooCommerce/Products.php:471
+msgid "Licenses generator"
+msgstr ""
+
 #: includes/Controllers/Menus.php:168
 msgid "Licenses per page"
+msgstr ""
+
+#: includes/Integrations/WooCommerce/Products.php:455
+msgid "Licenses source"
 msgstr ""
 
 #: includes/ListTables/Licenses.php:603
@@ -1050,12 +1071,16 @@ msgstr ""
 msgid "Mark as sold"
 msgstr ""
 
-#: templates/admin/licenses/page-import.php:69
-#: templates/admin/licenses/page-edit.php:65
-#: templates/admin/licenses/page-add.php:37
+#: templates/admin/licenses/page-import.php:82
+#: templates/admin/licenses/page-edit.php:82
+#: templates/admin/licenses/page-add.php:50
 #: templates/admin/generators/page-edit.php:54
 #: templates/admin/generators/page-add.php:31
 msgid "Max activations"
+msgstr ""
+
+#: includes/Integrations/WooCommerce/Products.php:487
+msgid "Max Activations Behavior"
 msgstr ""
 
 #: includes/ListTables/Generators.php:251
@@ -1084,7 +1109,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:171
+#: includes/Core/Services/GeneratorsService.php:161
 msgid "Name can not be empty."
 msgstr ""
 
@@ -1106,20 +1131,32 @@ msgstr ""
 msgid "No activations found."
 msgstr ""
 
-#: includes/Tools/Migration/Migrators/LMFW.php:546
+#: includes/Tools/Migration/Migrators/LMFW.php:547
 msgid ""
 "No data found from the plugin \"License Manager for WooCommerce\" to migrate."
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:44
+#: includes/Core/Services/GeneratorsService.php:56
 msgid "No generators found for your query"
 msgstr ""
 
-#: includes/Utils/Data/License.php:93
+#: includes/Controllers/Licenses.php:148
+#, php-format
+msgid ""
+"No licence key(s) imported successfully, %d failed to import and %d "
+"duplicate key(s) were found."
+msgstr ""
+
+#: includes/Controllers/Licenses.php:150
+#, php-format
+msgid "No licence key(s) imported successfully, %d failed to import."
+msgstr ""
+
+#: includes/Core/Services/LicensesService.php:94
 msgid "No licence keys found for your query."
 msgstr ""
 
-#: includes/Utils/Data/License.php:834
+#: includes/Core/Services/LicensesService.php:864
 msgid "No License Keys were provided"
 msgstr ""
 
@@ -1127,19 +1164,27 @@ msgstr ""
 msgid "No licenses available yet"
 msgstr ""
 
-#: includes/Controllers/Licenses.php:631
+#: includes/Controllers/Licenses.php:643
 msgid "No licenses were selected."
 msgstr ""
 
-#: includes/RestAPI/Controllers/Generators.php:341
+#: includes/RestAPI/Controllers/Generators.php:347
 msgid "No parameters were provided."
+msgstr ""
+
+#: includes/Controllers/Licenses.php:104
+msgid "No valid license keys found from import."
+msgstr ""
+
+#: includes/Controllers/Licenses.php:135
+msgid "No valid license keys were found to be imported."
 msgstr ""
 
 #: templates/woocommerce/dlm/my-account/licenses/partials/single-table-activations.php:74
 msgid "Not Active"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/MyAccount.php:165
+#: includes/Integrations/WooCommerce/MyAccount.php:166
 msgid "Not found"
 msgstr ""
 
@@ -1172,19 +1217,19 @@ msgstr ""
 msgid "One line per license key."
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:100
+#: includes/Core/Services/GeneratorsService.php:90
 msgid "Only integer values allowed for chunk length."
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:92
+#: includes/Core/Services/GeneratorsService.php:82
 msgid "Only integer values allowed for chunks."
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:195
+#: includes/Core/Services/GeneratorsService.php:185
 msgid "Only integer values between 1 and 99 are allowed for chunk_length."
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:187
+#: includes/Core/Services/GeneratorsService.php:177
 msgid "Only integer values between 1 and 99 are allowed for chunks."
 msgstr ""
 
@@ -1196,16 +1241,20 @@ msgstr ""
 msgid "Operation not initialized properly."
 msgstr ""
 
-#: templates/admin/licenses/page-import.php:61
-#: templates/admin/licenses/page-edit.php:56
-#: templates/admin/licenses/page-edit.php:70
+#: templates/admin/licenses/page-import.php:74
+#: templates/admin/licenses/page-import.php:86
+#: templates/admin/licenses/page-import.php:99
+#: templates/admin/licenses/page-import.php:111
+#: templates/admin/licenses/page-import.php:123
+#: templates/admin/licenses/page-edit.php:73
+#: templates/admin/licenses/page-edit.php:87
 #: templates/admin/licenses/page-edit.php:116
 #: templates/admin/licenses/page-edit.php:145
 #: templates/admin/licenses/page-edit.php:175
 #: templates/admin/licenses/page-edit.php:189
-#: templates/admin/licenses/page-add.php:29
-#: templates/admin/licenses/page-add.php:41
-#: templates/admin/licenses/page-add.php:65
+#: templates/admin/licenses/page-add.php:42
+#: templates/admin/licenses/page-add.php:54
+#: templates/admin/licenses/page-add.php:66
 #: templates/admin/licenses/page-add.php:78
 #: templates/admin/licenses/page-add.php:90
 #: templates/admin/generators/page-edit.php:112
@@ -1220,7 +1269,7 @@ msgid "Optional."
 msgstr ""
 
 #: includes/ListTables/Licenses.php:767
-#: templates/admin/licenses/page-import.php:99
+#: templates/admin/licenses/page-import.php:107
 #: templates/admin/licenses/page-edit.php:125
 #: templates/admin/licenses/page-add.php:74
 #: templates/admin/generators/page-generate.php:89
@@ -1228,16 +1277,16 @@ msgstr ""
 msgid "Order"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Certificates.php:159
+#: includes/Integrations/WooCommerce/Certificates.php:161
 msgid "Order Date"
 msgstr ""
 
-#: includes/Controllers/Licenses.php:452 includes/Controllers/Licenses.php:659
-#: includes/Integrations/WooCommerce/Certificates.php:155
+#: includes/Controllers/Licenses.php:464 includes/Controllers/Licenses.php:671
+#: includes/Integrations/WooCommerce/Certificates.php:157
 msgid "Order ID"
 msgstr ""
 
-#: includes/Utils/Data/License.php:933
+#: includes/Core/Services/LicensesService.php:1103
 msgid "Order ID is invalid."
 msgstr ""
 
@@ -1245,7 +1294,7 @@ msgstr ""
 msgid "Order License Keys"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Emails/ResendOrderLicenses.php:128
+#: includes/Integrations/WooCommerce/Emails/ResendOrderLicenses.php:126
 msgid "Order licenses resent to customer."
 msgstr ""
 
@@ -1262,12 +1311,12 @@ msgstr ""
 msgid "Owner of these keys."
 msgstr ""
 
-#: includes/Integrations/WooCommerce/MyAccount.php:218
+#: includes/Integrations/WooCommerce/MyAccount.php:219
 msgid "Permission denied"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Certificates.php:203
-#: includes/Integrations/WooCommerce/Certificates.php:211
+#: includes/Integrations/WooCommerce/Certificates.php:205
+#: includes/Integrations/WooCommerce/Certificates.php:213
 msgid "Permission denied."
 msgstr ""
 
@@ -1275,15 +1324,15 @@ msgstr ""
 #: templates/admin/page-generators.php:19
 #: templates/admin/page-generators.php:25 templates/admin/page-licenses.php:12
 #: templates/admin/page-licenses.php:18 templates/admin/page-licenses.php:24
-#: includes/Controllers/ApiKeys.php:42 includes/Controllers/Licenses.php:55
-#: includes/Controllers/Licenses.php:171 includes/Controllers/Licenses.php:214
-#: includes/Controllers/Generators.php:38
-#: includes/Controllers/Generators.php:71
-#: includes/Controllers/Generators.php:102
+#: includes/Controllers/ApiKeys.php:42 includes/Controllers/Licenses.php:61
+#: includes/Controllers/Licenses.php:183 includes/Controllers/Licenses.php:226
+#: includes/Controllers/Generators.php:45
+#: includes/Controllers/Generators.php:78
+#: includes/Controllers/Generators.php:109
 msgid "Permission denied. You don't have access to perform this action."
 msgstr ""
 
-#: includes/Controllers/Licenses.php:617
+#: includes/Controllers/Licenses.php:629
 msgid "Permission denied. You don't have access to this resource."
 msgstr ""
 
@@ -1295,11 +1344,11 @@ msgstr ""
 msgid "Permissions are missing."
 msgstr ""
 
-#: includes/Tools/Migration/Migrators/LMFW.php:534
+#: includes/Tools/Migration/Migrators/LMFW.php:535
 msgid "Please activate WooCommerce before starting with migration"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Products.php:324
+#: includes/Integrations/WooCommerce/Products.php:351
 msgid "Please select a generator"
 msgstr ""
 
@@ -1307,11 +1356,11 @@ msgstr ""
 msgid "Please select a user..."
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Orders.php:484
+#: includes/Integrations/WooCommerce/Orders.php:514
 msgid "Please wait..."
 msgstr ""
 
-#: includes/Tools/Migration/Migrators/LMFW.php:556
+#: includes/Tools/Migration/Migrators/LMFW.php:557
 msgid ""
 "Plugin data found, but no encryption secrets found. Unable to decrypt "
 "license keys."
@@ -1342,9 +1391,9 @@ msgid "Processing %s (%d/%d)"
 msgstr ""
 
 #: includes/ListTables/Licenses.php:768
-#: templates/admin/licenses/page-import.php:90
+#: templates/admin/licenses/page-import.php:95
 #: templates/admin/licenses/page-edit.php:96
-#: templates/admin/licenses/page-add.php:61
+#: templates/admin/licenses/page-add.php:62
 #: templates/admin/generators/page-generate.php:79
 #: templates/woocommerce/dlm/emails/email-order-details.php:38
 #: templates/woocommerce/dlm/my-account/licenses/single.php:44
@@ -1352,23 +1401,23 @@ msgstr ""
 msgid "Product"
 msgstr ""
 
-#: includes/Controllers/Licenses.php:453 includes/Controllers/Licenses.php:663
+#: includes/Controllers/Licenses.php:465 includes/Controllers/Licenses.php:675
 msgid "Product ID"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Certificates.php:166
+#: includes/Integrations/WooCommerce/Certificates.php:168
 msgid "Product Name"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Certificates.php:170
+#: includes/Integrations/WooCommerce/Certificates.php:172
 msgid "Product URL"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Products.php:428
+#: includes/Integrations/WooCommerce/Products.php:462
 msgid "Provide licenses by using generator"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Products.php:427
+#: includes/Integrations/WooCommerce/Products.php:461
 #, php-format
 msgid "Provide licenses from stock (%d available)"
 msgstr ""
@@ -1397,6 +1446,11 @@ msgstr ""
 msgid "Report on WP.org"
 msgstr ""
 
+#: includes/Core/Services/LicensesService.php:1034
+#, php-format
+msgid "Required amout of %d licenses was not found in stock."
+msgstr ""
+
 #: templates/admin/generators/page-edit.php:46
 #: templates/admin/generators/page-edit.php:70
 #: templates/admin/generators/page-edit.php:85
@@ -1412,7 +1466,7 @@ msgstr ""
 msgid "Required."
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Orders.php:335
+#: includes/Integrations/WooCommerce/Orders.php:357
 msgid "Resend license(s) to customer"
 msgstr ""
 
@@ -1477,6 +1531,12 @@ msgstr ""
 msgid "Select the access type of these keys."
 msgstr ""
 
+#: includes/Integrations/WooCommerce/Products.php:488
+msgid ""
+"Select the behavior of the max activations for the new licenses whether it "
+"to be based on quantity or the generator default value\"."
+msgstr ""
+
 #: templates/admin/settings/page-edit.php:142
 msgid ""
 "Select the endpoints that this key has access to.<br/> The complete <strong>"
@@ -1485,14 +1545,14 @@ msgid ""
 "rel=\"noopener\">here</a>."
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Products.php:438
+#: includes/Integrations/WooCommerce/Products.php:472
 msgid ""
 "Select the Generator that will be used to generate and deliver keys for this "
 "product. Required only if source is set to \"Provide licenses by using "
 "generator\"."
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Products.php:422
+#: includes/Integrations/WooCommerce/Products.php:456
 msgid ""
 "Select the source of the license keys. If you want them to be generated with "
 "a generator select \"Provide licenses by using generator\" and then specify "
@@ -1500,7 +1560,7 @@ msgid ""
 "you have a stock of license that are marked as ACTIVE."
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Products.php:390
+#: includes/Integrations/WooCommerce/Products.php:424
 msgid "Sell Licenses"
 msgstr ""
 
@@ -1514,7 +1574,7 @@ msgstr ""
 msgid "Separator"
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:221
+#: includes/Core/Services/GeneratorsService.php:211
 msgid "Separator should be only one character"
 msgstr ""
 
@@ -1526,7 +1586,7 @@ msgstr ""
 msgid "Show"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Orders.php:482
+#: includes/Integrations/WooCommerce/Orders.php:512
 msgid "Show license(s)"
 msgstr ""
 
@@ -1549,10 +1609,10 @@ msgid "Source"
 msgstr ""
 
 #: includes/ListTables/Licenses.php:772 includes/ListTables/Activations.php:367
-#: includes/Controllers/Licenses.php:679
-#: templates/admin/licenses/page-import.php:78
-#: templates/admin/licenses/page-edit.php:79
-#: templates/admin/licenses/page-add.php:49
+#: includes/Controllers/Licenses.php:691
+#: templates/admin/licenses/page-import.php:57
+#: templates/admin/licenses/page-edit.php:51
+#: templates/admin/licenses/page-add.php:25
 #: templates/admin/generators/page-generate.php:65
 #: templates/woocommerce/dlm/my-account/licenses/single.php:72
 #: templates/woocommerce/dlm/my-account/licenses/index.php:51
@@ -1568,7 +1628,7 @@ msgstr ""
 msgid "Stock management"
 msgstr ""
 
-#: includes/Controllers/Generators.php:175
+#: includes/Controllers/Generators.php:183
 #, php-format
 msgid "Successfully generated %d license key(s)."
 msgstr ""
@@ -1638,19 +1698,19 @@ msgid ""
 "<code>12-AB-34-CD</code> the character map is <code>ABCD1234</code>."
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:88
+#: includes/Core/Services/GeneratorsService.php:78
 msgid "The charset is invalid."
 msgstr ""
 
-#: includes/Controllers/Generators.php:118
+#: includes/Controllers/Generators.php:125
 msgid "The chosen generator does not exist."
 msgstr ""
 
-#: includes/Controllers/Generators.php:140
+#: includes/Controllers/Generators.php:147
 msgid "The chosen order does not exist."
 msgstr ""
 
-#: includes/Controllers/Generators.php:154
+#: includes/Controllers/Generators.php:161
 msgid "The chosen product does not exist."
 msgstr ""
 
@@ -1664,69 +1724,77 @@ msgstr ""
 msgid "The connection is not secure, therefore the API cannot be used."
 msgstr ""
 
-#: templates/admin/licenses/page-edit.php:57
-#: templates/admin/licenses/page-add.php:30
+#: templates/admin/licenses/page-edit.php:74
+#: templates/admin/licenses/page-add.php:43
 msgid ""
 "The exact date at midnight UTC that this license key expires on. Leave blank "
 "if the license key does not expire."
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Orders.php:460
+#: includes/Integrations/WooCommerce/Orders.php:490
 msgid "The following license keys have been sold by this order"
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:141 includes/Utils/Data/Generator.php:242
+#: includes/Core/Services/GeneratorsService.php:131
+#: includes/Core/Services/GeneratorsService.php:232
 msgid "The generator could not be created."
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:26
+#: includes/Core/Services/GeneratorsService.php:27
 msgid "The generator could not be found."
 msgstr ""
 
-#: includes/RestAPI/Controllers/Generators.php:333
+#: includes/RestAPI/Controllers/Generators.php:339
 msgid "The Generator ID is missing from the request."
 msgstr ""
 
-#: includes/Controllers/Generators.php:55
+#: includes/Controllers/Generators.php:62
 msgid "The generator was added successfully."
 msgstr ""
 
-#: includes/Controllers/Generators.php:86
+#: includes/Controllers/Generators.php:93
 msgid "The generator was updated successfully."
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:66
+#: includes/Core/Services/GeneratorsService.php:255
 msgid "The generator(s) could not be deleted."
 msgstr ""
 
-#: includes/Utils/Data/License.php:154 includes/Utils/Data/License.php:267
+#: includes/Core/Services/LicensesService.php:71
+#, php-format
+msgid "The license id '%s' could not be found"
+msgstr ""
+
+#: includes/Core/Services/LicensesService.php:155
+#: includes/Core/Services/LicensesService.php:270
 #, php-format
 msgid "The license key '%s' already exists"
 msgstr ""
 
-#: includes/Utils/Data/License.php:189
+#: includes/Core/Services/LicensesService.php:190
 #, php-format
 msgid "The license key '%s' could not be added"
 msgstr ""
 
-#: includes/Utils/Data/License.php:52 includes/Utils/Data/License.php:70
-#: includes/Utils/Data/License.php:223 includes/Utils/Data/License.php:394
+#: includes/Core/Services/LicensesService.php:53
+#: includes/Core/Services/LicensesService.php:226
+#: includes/Core/Services/LicensesService.php:404
 #, php-format
 msgid "The license key '%s' could not be found"
 msgstr ""
 
-#: includes/Utils/Data/License.php:371
+#: includes/Core/Services/LicensesService.php:378
 #, php-format
 msgid "The license key '%s' could not be found."
 msgstr ""
 
-#: includes/Utils/Data/License.php:319
+#: includes/Core/Services/LicensesService.php:322
 #, php-format
 msgid "The license key '%s' could not be updated."
 msgstr ""
 
 #. %s: expiration date
-#: includes/Utils/Data/License.php:663
+#: includes/Core/Services/LicensesService.php:683
 #, php-format
 msgid "The license key expired at %s."
 msgstr ""
@@ -1737,7 +1805,7 @@ msgid ""
 "The license key will be encrypted before it is stored inside the database."
 msgstr ""
 
-#: includes/Integrations/WooCommerce/MyAccount.php:166
+#: includes/Integrations/WooCommerce/MyAccount.php:167
 msgid "The license you are looking for is not found."
 msgstr ""
 
@@ -1758,31 +1826,36 @@ msgid ""
 "the number of chunks is <code>4</code>."
 msgstr ""
 
-#: includes/RestAPI/Controllers/Generators.php:363
+#: includes/RestAPI/Controllers/Generators.php:369
 msgid "The order does not exist."
 msgstr ""
 
-#: templates/admin/licenses/page-import.php:102
+#: templates/admin/licenses/page-import.php:112
 #: templates/admin/licenses/page-edit.php:146
 #: templates/admin/licenses/page-add.php:79
+msgid ""
+"The order to which the license keys will be assigned, useful if you want to "
+"assign license to order after purchase."
+msgstr ""
+
 #: templates/admin/generators/page-generate.php:93
 msgid "The order to which the license keys will be assigned."
 msgstr ""
 
-#: includes/RestAPI/Controllers/Generators.php:377
+#: includes/RestAPI/Controllers/Generators.php:383
 msgid "The product does not exist."
 msgstr ""
 
-#: templates/admin/licenses/page-import.php:93
-#: templates/admin/generators/page-generate.php:83
-msgid "The product to which the license keys will be assigned."
+#: templates/admin/licenses/page-import.php:100
+#: templates/admin/licenses/page-edit.php:117
+#: templates/admin/licenses/page-add.php:67
+msgid ""
+"The product to which the license keys will be assigned and will be delivered "
+"once that product is purchased."
 msgstr ""
 
-#: templates/admin/licenses/page-edit.php:117
-#: templates/admin/licenses/page-add.php:66
-msgid ""
-"The product to which the license keys will be assigned. Useful if selling "
-"from stock."
+#: templates/admin/generators/page-generate.php:83
+msgid "The product to which the license keys will be assigned."
 msgstr ""
 
 #: templates/admin/generators/page-generate.php:38
@@ -1800,25 +1873,25 @@ msgstr ""
 msgid "The stock of all WooCommerce products is already synchronized."
 msgstr ""
 
-#: includes/Utils/Data/License.php:332
+#: includes/Core/Services/LicensesService.php:335
 msgid "The updated license key could not be found."
 msgstr ""
 
-#: includes/RestAPI/Controllers/Generators.php:390
+#: includes/RestAPI/Controllers/Generators.php:396
 msgid "The user does not exist."
 msgstr ""
 
-#: templates/admin/licenses/page-import.php:111
+#: templates/admin/licenses/page-import.php:124
 #: templates/admin/licenses/page-edit.php:176
 #: templates/admin/licenses/page-add.php:91
 msgid "The user to which the license keys will be assigned."
 msgstr ""
 
-#: includes/Controllers/Generators.php:50
+#: includes/Controllers/Generators.php:57
 msgid "There was a problem adding the generator."
 msgstr ""
 
-#: includes/Controllers/Licenses.php:192
+#: includes/Controllers/Licenses.php:204
 msgid "There was a problem adding the license key."
 msgstr ""
 
@@ -1834,20 +1907,20 @@ msgstr ""
 msgid "There was a problem generating the API key."
 msgstr ""
 
-#: includes/Controllers/Licenses.php:90 includes/Controllers/Licenses.php:115
-#: includes/Controllers/Licenses.php:138
-msgid "There was a problem importing the license keys."
+#: includes/Controllers/Licenses.php:96
+msgid ""
+"There was a problem importing the license keys. Invalid format provided."
 msgstr ""
 
 #: includes/Controllers/ApiKeys.php:127
 msgid "There was a problem updating the API key."
 msgstr ""
 
-#: includes/Controllers/Generators.php:83
+#: includes/Controllers/Generators.php:90
 msgid "There was a problem updating the generator."
 msgstr ""
 
-#: includes/Controllers/Licenses.php:234
+#: includes/Controllers/Licenses.php:246
 msgid "There was a problem updating the license key."
 msgstr ""
 
@@ -1874,14 +1947,14 @@ msgstr ""
 msgid "This should only be activated for development purposes."
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Products.php:103
+#: includes/Integrations/WooCommerce/Products.php:102
 msgid ""
 "Those options are only available on the <strong>Edit</strong> screen. Please "
 "pick product type and then create the product in order to access those "
 "options."
 msgstr ""
 
-#: includes/Utils/Data/Generator.php:121
+#: includes/Core/Services/GeneratorsService.php:111
 msgid "Time activated max should be numeric and positive value larger than 0"
 msgstr ""
 
@@ -1899,7 +1972,7 @@ msgstr ""
 msgid "Tools"
 msgstr ""
 
-#: includes/Utils/Data/License.php:460
+#: includes/Core/Services/LicensesService.php:476
 msgid "Unable to activate key"
 msgstr ""
 
@@ -1926,7 +1999,7 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: includes/Utils/Data/License.php:989
+#: includes/Core/Services/LicensesService.php:1159
 msgid "Unknown license"
 msgstr ""
 
@@ -1947,11 +2020,11 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
-#: includes/Controllers/Licenses.php:695
+#: includes/Controllers/Licenses.php:707
 msgid "Updated at"
 msgstr ""
 
-#: includes/Controllers/Licenses.php:699
+#: includes/Controllers/Licenses.php:711
 msgid "Updated by"
 msgstr ""
 
@@ -1978,7 +2051,7 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: includes/Controllers/Licenses.php:667
+#: includes/Controllers/Licenses.php:679
 msgid "User ID"
 msgstr ""
 
@@ -1986,12 +2059,12 @@ msgstr ""
 msgid "User is missing."
 msgstr ""
 
-#: includes/Setup.php:445
+#: includes/Setup.php:442
 msgctxt "User role"
 msgid "License manager"
 msgstr ""
 
-#: includes/Setup.php:438
+#: includes/Setup.php:435
 msgctxt "User role"
 msgid "Licensing agent"
 msgstr ""
@@ -2000,36 +2073,48 @@ msgstr ""
 msgid "Valid for"
 msgstr ""
 
-#: templates/admin/licenses/page-import.php:57
+#: templates/admin/licenses/page-import.php:70
 #: templates/admin/licenses/page-edit.php:184
 msgid "Valid for (days)"
 msgstr ""
 
-#: includes/Utils/Data/License.php:960
+#: includes/Core/Services/LicensesService.php:1130
 msgid "Valid for invalid."
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Certificates.php:124
+#: includes/Core/Services/LicensesService.php:1051
+msgid "Valid for is not set or invalid."
+msgstr ""
+
+#: includes/Integrations/WooCommerce/Certificates.php:126
 msgid "Valid Permanently"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Orders.php:313
-#: includes/Integrations/WooCommerce/Emails.php:66
-#: includes/Integrations/WooCommerce/Emails.php:83
-#: includes/Integrations/WooCommerce/Emails.php:203
-#: includes/Integrations/WooCommerce/Emails.php:220
+#: includes/Integrations/WooCommerce/Orders.php:335
+#: includes/Integrations/WooCommerce/Emails.php:98
+#: includes/Integrations/WooCommerce/Emails.php:115
+#: includes/Integrations/WooCommerce/Emails.php:211
+#: includes/Integrations/WooCommerce/Emails.php:228
 msgid "Valid until"
+msgstr ""
+
+#: includes/Controllers/Dropdowns.php:336
+msgid "Variable"
+msgstr ""
+
+#: includes/Controllers/Dropdowns.php:338
+msgid "Variation"
 msgstr ""
 
 #: includes/ListTables/Licenses.php:386
 msgid "Variation of"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/MyAccount.php:200
+#: includes/Integrations/WooCommerce/MyAccount.php:201
 msgid "View"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/MyAccount.php:201
+#: includes/Integrations/WooCommerce/MyAccount.php:202
 msgid "View more details about this license."
 msgstr ""
 
@@ -2093,19 +2178,19 @@ msgstr ""
 msgid "You might need to save your permalinks after enabling this option."
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Orders.php:312
-#: includes/Integrations/WooCommerce/Emails.php:65
-#: includes/Integrations/WooCommerce/Emails.php:82
-#: includes/Integrations/WooCommerce/Emails.php:202
-#: includes/Integrations/WooCommerce/Emails.php:219
+#: includes/Integrations/WooCommerce/Orders.php:334
+#: includes/Integrations/WooCommerce/Emails.php:97
+#: includes/Integrations/WooCommerce/Emails.php:114
+#: includes/Integrations/WooCommerce/Emails.php:210
+#: includes/Integrations/WooCommerce/Emails.php:227
 msgid "Your digital license(s)"
 msgstr ""
 
-#: includes/Integrations/WooCommerce/Emails/ResendOrderLicenses.php:46
+#: includes/Integrations/WooCommerce/Emails/ResendOrderLicenses.php:44
 msgid "Your Digital License(s) - Order #{order_number}"
 msgstr ""
 
-#: includes/Controllers/Licenses.php:237
+#: includes/Controllers/Licenses.php:249
 msgid "Your license key has been updated successfully."
 msgstr ""
 
