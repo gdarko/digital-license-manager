@@ -148,7 +148,7 @@ class GeneratorsService implements ServiceInterface {
 		$updateData = array();
 
 		// Validate id
-		$generator = self::find( $id );
+		$generator = $this->findById( $id );
 		if ( is_wp_error( $generator ) ) {
 			return $generator;
 		}

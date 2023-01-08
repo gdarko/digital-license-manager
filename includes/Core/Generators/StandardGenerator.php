@@ -64,7 +64,7 @@ class StandardGenerator extends AbstractGenerator {
 	 *
 	 * @return string
 	 */
-	private static function generate_licenses( $charset, $chunks, $chunkLength, $separator, $prefix, $suffix ) {
+	public function generate_licenses( $charset, $chunks, $chunkLength, $separator, $prefix, $suffix ) {
 
 		$charsetLength = strlen( $charset );
 		$licenseString = $prefix;
