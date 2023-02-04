@@ -233,7 +233,13 @@ class Licenses extends AbstractRestController {
 			return $isValid;
 		}
 
-		$licenses = $this->service->get();
+		$query = $request->get_params();
+
+		$licenses = $this->service->get( $query );
+		if ( is_wp_error( $licenses ) ) {
+			return $this->maybeErrorResponse( $licenses );
+		}
+
 		$prepared = array();
 
 		foreach ( $licenses as $license ) {
