@@ -96,6 +96,11 @@ class Boot extends Singleton {
 	public function registerAssets() {
 
 		/**
+		 * Internal Library: HTTP
+		 */
+		wp_register_script('dlm_http', DLM_ASSETS_URL . 'js/shared/http.js', [], $this->version);
+
+		/**
 		 * Library: Fontello icons
 		 */
 		wp_register_style( 'dlm_iconfont', DLM_ASSETS_URL . 'lib/iconfont/css/digital-license-manager.css' );
