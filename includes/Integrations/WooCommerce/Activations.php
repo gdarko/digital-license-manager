@@ -45,8 +45,6 @@ class Activations {
 	 */
 	public function licenseActivationRowActions( $list, $license, $order, $product ) {
 
-		$new_list = array();
-
 		if ( (int) Settings::get( 'enable_manual_activations', Settings::SECTION_WOOCOMMERCE ) ) {
 			$list[50] = array(
 				'id'       => 'license_activation_delete',
@@ -59,7 +57,7 @@ class Activations {
 			);
 		}
 
-		return array_merge( $list, $new_list );
+		return $list;
 	}
 
 	/**
