@@ -302,6 +302,8 @@ class MyAccount {
 
 		$rowActions = apply_filters( 'dlm_myaccount_license_activation_row_actions', array(), $license, $order, $product );
 
+		ksort($rowActions);
+
 		return wc_get_template_html(
 			'dlm/my-account/licenses/partials/single-table-activations.php',
 			array(

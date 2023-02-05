@@ -48,13 +48,14 @@ class Activations {
 		$new_list = array();
 
 		if ( (int) Settings::get( 'enable_manual_activations', Settings::SECTION_WOOCOMMERCE ) ) {
-			$new_list[50] = array(
-				'id'      => 'license_activation_delete',
-				'text'    => __( 'Delete', 'digital-license-manager' ),
-				'title'   => __( 'Enables licenses deactivation to disable specific license activations.', 'digital-license-manager' ),
-				'class'   => 'button',
-				'confirm' => true,
-				'href'    => null,
+			$list[50] = array(
+				'id'       => 'license_activation_delete',
+				'text'     => __( 'Delete', 'digital-license-manager' ),
+				'title'    => __( 'Enables licenses deactivation to disable specific license activations.', 'digital-license-manager' ),
+				'class'    => 'button',
+				'confirm'  => true,
+				'href'     => null,
+				'priority' => 50,
 			);
 		}
 
