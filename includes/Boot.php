@@ -128,7 +128,7 @@ class Boot extends Singleton {
 		wp_register_style( 'dlm_settings_page', DLM_CSS_URL . 'admin/settings.css', array(), $this->version, 'all' );
 		wp_register_script( 'dlm_products_page', DLM_JS_URL . 'admin/products.js', array( 'jquery' ), $this->version );
 		wp_register_style( 'dlm_manage_page', DLM_CSS_URL . 'admin/manage.css', array(), $this->version, 'all' );
-		wp_register_script( 'dlm_tools_page', DLM_JS_URL . 'admin/tools.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'dlm_tools_page', DLM_JS_URL . 'admin/tools.js', array( 'dlm_http' ), $this->version );
 		wp_register_style( 'dlm_tools_page', DLM_CSS_URL . 'admin/tools.css', array(), $this->version, 'all' );
 
 
