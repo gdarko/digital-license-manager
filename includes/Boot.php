@@ -139,16 +139,11 @@ class Boot extends Singleton {
 		wp_register_script( 'dlm_admin', DLM_JS_URL . 'admin/general.js', array( 'jquery' ), $this->version );
 
 		/**
-		 * Global public assets
-		 */
-		wp_register_style( 'dlm_public', DLM_CSS_URL . 'public/general.css', array( 'dlm_iconfont' ), $this->version );
-		wp_register_script( 'dlm_public', DLM_JS_URL . 'public/general.js', array( 'jquery' ), $this->version );
-
-
-		/**
 		 * jQuery UI: Stylesheet
 		 */
 		wp_register_style( 'dlm_jquery-ui-datepicker', DLM_ASSETS_URL . 'lib/jquery-ui/jquery-ui.min.css', array(), '1.13.1' );
+
+		do_action('dlm_register_scripts', $this->version );
 	}
 
 	/**
@@ -306,6 +301,15 @@ class Boot extends Singleton {
 	}
 
 	/**
+	 * Enqueue public scripts
+	 * @return void
+	 */
+	public function publicEnqueueScripts() {
+		do_action( 'dlm_enqueue_scripts', $this->version );
+	}
+
+
+	/**
 	 * Add additional links to the plugin row meta.
 	 *
 	 * @param array $links Array of already present links
@@ -350,9 +354,10 @@ class Boot extends Singleton {
 		register_deactivation_hook( DLM_PLUGIN_FILE, array( '\IdeoLogix\DigitalLicenseManager\Setup', 'deactivate' ) );
 		register_uninstall_hook( DLM_PLUGIN_FILE, array( '\IdeoLogix\DigitalLicenseManager\Setup', 'uninstall' ) );
 
-		add_action( 'admin_enqueue_scripts', array( $this, 'registerAssets' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'registerAssets' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'adminEnqueueScripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'registerAssets' ), 10 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'registerAssets' ), 10 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'adminEnqueueScripts' ), 11 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'publicEnqueueScripts' ), 11 );
 		add_filter( 'plugin_row_meta', array( $this, 'pluginRowMeta' ), 10, 2 );
 	}
 

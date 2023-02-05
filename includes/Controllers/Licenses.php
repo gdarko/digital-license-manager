@@ -45,7 +45,6 @@ class Licenses {
 		// Export related
 		add_action( 'dlm_export_license_keys_pdf', array( $this, 'exportLicensesPDF' ), 10, 1 );
 		add_action( 'dlm_export_license_keys_csv', array( $this, 'exportLicensesCSV' ), 10, 1 );
-		add_action( 'wp_ajax_dlm_license_certificate_export', array( $this, 'exportLicenseCertificate' ), 10 );
 	}
 
 	/**
@@ -710,36 +709,6 @@ class Licenses {
 				'slug' => 'updated_by',
 				'name' => __( 'Updated by', 'digital-license-manager' )
 			)
-		);
-	}
-
-	/**
-	 * Handle the license export
-	 *
-	 * @param $license
-	 *
-	 * @return void
-	 */
-	public function exportLicenseCertificate() {
-		check_admin_referer( 'dlm_export_licenses' );
-		echo 'hery.';
-	}
-
-	/**
-	 * Returns the license certificate export url
-	 *
-	 * @param $license_id
-	 *
-	 * @return string
-	 */
-	public static function getLicenseCertificateExportUrl( $license_id ) {
-		return add_query_arg(
-			array(
-				'_wpnonce' => wp_create_nonce( self::getLicenseCertificateExportNonceKey() ),
-				'action'   => 'dlm_license_certificate_export',
-				'license'  => $license_id,
-			),
-			admin_url( 'admin-ajax.php' )
 		);
 	}
 

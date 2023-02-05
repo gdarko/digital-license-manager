@@ -53,6 +53,18 @@
       "css": "eye",
       "code": 59395,
       "src": "typicons"
+    },
+    {
+      "uid": "70370693ada58ef0a60fa0984fe8d52a",
+      "css": "plus",
+      "code": 59396,
+      "src": "entypo"
+    },
+    {
+      "uid": "1256e3054823e304d7e452a589cf8bb8",
+      "css": "minus",
+      "code": 59397,
+      "src": "entypo"
     }
   ]
 }

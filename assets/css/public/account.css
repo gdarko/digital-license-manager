@@ -1,0 +1,57 @@
+.dlm-list-inline {
+    display: block;
+    list-style: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+.dlm-list-inline li {
+    display: inline-block;
+}
+.dlm-inline-child .dlm-status {
+    display: inline-block !important;
+}
+.dlm-list-inline-mb-0 {
+    margin-bottom: 0 !important;
+}
+#dlm-license-certificate-download button.button {
+    font-size: 13px;
+}
+
+/** My Account **/
+.dlm-myaccount-license-key {
+    font-family: Consolas, monospace;
+    font-size: 13px;
+}
+.dlm-header h3, .dlm-header button {
+    display:inline-block;
+    width:auto;
+}
+.dlm-header .dlm-button {
+    float: right;
+}
+
+/** Micromodal related */
+.micromodal-slide form .dlm-form-row:last-child {
+    margin-bottom: 0;
+}
+.micromodal-slide form .dlm-form-row {
+    margin-bottom: 20px;
+}
+.micromodal-slide form .dlm-form-row label {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+}
+.micromodal-slide .modal__title {
+    font-size: 25px;
+}
+.micromodal-slide .dlm-form-row input[type=text] {
+    width: 100%;
+}
+.micromodal-slide .button-primary {
+    background: var(--color-success);
+    color: #fff;
+}
+.micromodal-slide form {
+    margin-bottom: 0;
+}

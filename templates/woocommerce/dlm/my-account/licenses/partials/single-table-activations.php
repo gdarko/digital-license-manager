@@ -15,111 +15,157 @@
  * Default variables
  *
  * @var LicenseResourceModel $license
- * @var WC_Product $product
  * @var WC_Order $order
+ * @var WC_Product $product
  * @var string $date_format
  * @var string $license_key
+ * @var int $manual_activations_enabled
+ * @var array $rowActions
+ * @var \IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseActivation[] $activations
  */
 
-
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseActivation as LicenseActivationResourceModel;
 use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Activations;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 
-
-/* @var LicenseActivationResourceModel[] */
-$notAvailable = __( 'N/A', 'digital-license-manager' );
-$activations  = $license->getActivations();
-
-$isExpired      = $license->isExpired();
-$actionsEnabled = apply_filters( 'dlm_myaccount_license_activation_row_actions_enabled', false );
 ?>
 
-
-<h3 class="product-name"><?php _e( 'Activations', 'digital-license-manager' ); ?></h3>
-
-<table class="shop_table shop_table_responsive my_account_orders">
-    <thead>
-    <tr>
-        <th class="table-col table-col-label"><?php _e( 'Label', 'digital-license-manager' ); ?></th>
-        <th class="table-col table-col-status"><?php _e( 'Status', 'digital-license-manager' ); ?></th>
-        <th class="table-col table-col-source"><?php _e( 'Source', 'digital-license-manager' ); ?></th>
-        <th class="table-col table-col-date"><?php _e( 'Date', 'digital-license-manager' ); ?></th>
-		<?php if ( $actionsEnabled ): ?>
-            <th class="table-col table-col-actions"></th>
+<div class="dlm-license-activations">
+    <div class="dlm-header">
+        <h3 class="product-name"><?php _e( 'Activations', 'digital-license-manager' ); ?></h3>
+		<?php if ( $manual_activations_enabled ): ?>
+            <button id="dlm-myaccount-license--new-activation" class="woocommerce-button button dlm-button">
+                <span class="dlm-icon-plus"></span>
+				<?php echo apply_filters( 'dlm_myaccount_manual_activation_button', __( 'Activate', 'digital-license-manager' ) ); ?>
+            </button>
 		<?php endif; ?>
-    </tr>
-    </thead>
-    <tbody>
-	<?php if ( count( $activations ) > 0 ): ?>
+    </div>
 
-		<?php foreach ( $activations as $activation ): ?>
+    <table class="shop_table shop_table_responsive my_account_orders">
+        <thead>
+        <tr>
+            <th class="table-col table-col-label"><?php _e( 'Label', 'digital-license-manager' ); ?></th>
+            <th class="table-col table-col-status"><?php _e( 'Status', 'digital-license-manager' ); ?></th>
+            <th class="table-col table-col-source"><?php _e( 'Source', 'digital-license-manager' ); ?></th>
+            <th class="table-col table-col-date"><?php _e( 'Date', 'digital-license-manager' ); ?></th>
+			<?php if ( ! empty( $rowActions ) ): ?>
+                <th class="table-col table-col-actions"></th>
+			<?php endif; ?>
+        </tr>
+        </thead>
+        <tbody>
+		<?php if ( count( $activations ) > 0 ): ?>
+			<?php foreach ( $activations as $activation ): ?>
+                <tr>
+                    <td>
+						<?php
+						$label = $activation->getLabel();
+						if ( empty( $label ) ) {
+							$label = substr( $activation->getToken(), 0, 12 );
+						}
+						echo esc_html( $label );
+						?>
+                    </td>
+                    <td>
+						<?php
+						if ( $activation->getDeactivatedAt() ) {
+							echo LicenseStatus::statusToHtml( 'disabled', [
+								'style' => 'inline',
+								'text'  => __( 'Not Active', 'digital-license-manager' )
+							] );
+						} else {
+							echo LicenseStatus::statusToHtml( 'delivered', [
+								'style' => 'inline',
+								'text'  => __( 'Active', 'digital-license-manager' )
+							] );
+						}
+						?>
+                    </td>
+                    <td>
+						<?php
+						echo ActivationSource::format( $activation->getSource() );
+						?>
+                    </td>
+                    <td>
+						<?php
+
+						if ( $activation->getCreatedAt() ) {
+							try {
+								$date = new \DateTime( $activation->getCreatedAt() );
+								printf( '<b>%s</b>', $date->format( $date_format ) );
+							} catch ( Exception $e ) {
+								_e( 'N/A', 'digital-license-manager' );
+							}
+						} else {
+							_e( 'N/A', 'digital-license-manager' );
+						}
+						?>
+                    </td>
+					<?php if ( ! empty( $rowActions ) ): ?>
+                        <td>
+							<?php
+							echo wc_get_template_html(
+								'dlm/my-account/licenses/partials/table-activations-row-actions.php',
+								array(
+									'license'    => $license,
+									'activation' => $activation,
+									'rowActions' => $rowActions,
+									'product'    => $product,
+									'order'      => $order,
+									'licenseKey' => $license_key,
+								),
+								'',
+								Controller::getTemplatePath()
+							);
+							?>
+                        </td>
+					<?php endif; ?>
+                </tr>
+
+			<?php endforeach; ?>
+
+		<?php else: ?>
 
             <tr>
-                <td>
-					<?php
-					$label = $activation->getLabel();
-					if ( empty( $label ) ) {
-						$label = substr( $activation->getToken(), 0, 12 );
-					}
-					echo esc_html($label);
-					?>
+                <td colspan="4">
+                    <p><?php _e( 'No activations found.', 'digital-license-manager' ); ?></p>
                 </td>
-                <td>
-					<?php
-					if ( $activation->getDeactivatedAt() ) {
-						echo LicenseStatus::statusToHtml( 'disabled', [
-							'style' => 'inline',
-							'text'  => __( 'Not Active', 'digital-license-manager' )
-						] );
-					} else {
-						echo LicenseStatus::statusToHtml( 'delivered', [
-							'style' => 'inline',
-							'text'  => __( 'Active', 'digital-license-manager' )
-						] );
-					}
-					?>
-                </td>
-                <td>
-					<?php
-					echo ActivationSource::format( $activation->getSource() );
-					?>
-                </td>
-                <td>
-					<?php
-
-					if ( $activation->getCreatedAt() ) {
-						try {
-							$date = new \DateTime( $activation->getCreatedAt() );
-							printf( '<b>%s</b>', $date->format( $date_format ) );
-						} catch ( Exception $e ) {
-							echo $notAvailable;
-						}
-					} else {
-						echo $notAvailable;
-					}
-					?>
-                </td>
-				<?php if ( $actionsEnabled ): ?>
-                    <td>
-						<?php do_action( 'dlm_myaccount_license_activation_row_actions', $license, $activation, $license_key ); ?>
-                    </td>
-				<?php endif; ?>
             </tr>
 
-		<?php endforeach; ?>
+		<?php endif; ?>
 
-	<?php else: ?>
+        </tbody>
+    </table>
 
-        <tr>
-            <td colspan="4">
-                <p><?php _e( 'No activations found.', 'digital-license-manager' ); ?></p>
-            </td>
-        </tr>
-
+	<?php if ( $manual_activations_enabled ): ?>
+        <div class="modal micromodal-slide" id="dlm-manual-activation-add" aria-hidden="true">
+            <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+                <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="dlm-manual-activation-add--title">
+                    <header class="modal__header">
+                        <h2 class="modal__title" id="dlm-manual-activation-add--title">
+							<?php _e( 'New Activation', 'digital-license-manager' ); ?>
+                        </h2>
+                        <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+                    </header>
+                    <form method="POST" action="<?php echo home_url(); ?>" id="dlm-manual-activation-add--form">
+                        <main class="modal__content" id="dlm-manual-activation-add--content">
+                            <div class="dlm-form-row">
+                                <label for="label"><?php _e( 'Label' ); ?></label>
+                                <input type="text" id="label" name="label"/>
+                            </div>
+                        </main>
+                        <footer class="modal__footer">
+                            <input type="hidden" name="dlm_action" value="manual_activation">
+                            <input type="hidden" name="dlm_nonce" value="<?php echo wp_create_nonce( Activations::NONCE ); ?>">
+                            <input type="hidden" name="license" value="<?php echo $license->getDecryptedLicenseKey(); ?>">
+                            <button type="submit" class="button button-primary"><?php _e( 'Create', 'digital-license-manager' ); ?></button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+        </div>
 	<?php endif; ?>
-
-    </tbody>
-</table>
+</div>
 

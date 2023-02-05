@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'digital-license-manager';
-  src: url('../font/digital-license-manager.eot?74468080');
-  src: url('../font/digital-license-manager.eot?74468080#iefix') format('embedded-opentype'),
-       url('../font/digital-license-manager.woff2?74468080') format('woff2'),
-       url('../font/digital-license-manager.woff?74468080') format('woff'),
-       url('../font/digital-license-manager.ttf?74468080') format('truetype'),
-       url('../font/digital-license-manager.svg?74468080#digital-license-manager') format('svg');
+  src: url('../font/digital-license-manager.eot?5288027');
+  src: url('../font/digital-license-manager.eot?5288027#iefix') format('embedded-opentype'),
+       url('../font/digital-license-manager.woff2?5288027') format('woff2'),
+       url('../font/digital-license-manager.woff?5288027') format('woff'),
+       url('../font/digital-license-manager.ttf?5288027') format('truetype'),
+       url('../font/digital-license-manager.svg?5288027#digital-license-manager') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'digital-license-manager';
-    src: url('../font/digital-license-manager.svg?74468080#digital-license-manager') format('svg');
+    src: url('../font/digital-license-manager.svg?5288027#digital-license-manager') format('svg');
   }
 }
 */
@@ -58,6 +58,8 @@
 .dlm-icon-download-cloud:before { content: '\e801'; } /* '' */
 .dlm-icon-doc-text:before { content: '\e802'; } /* '' */
 .dlm-icon-eye:before { content: '\e803'; } /* '' */
+.dlm-icon-plus:before { content: '\e804'; } /* '' */
+.dlm-icon-minus:before { content: '\e805'; } /* '' */
 .dlm-icon-certificate:before { content: '\f0a3'; } /* '' */
 .dlm-icon-file-pdf:before { content: '\f1c1'; } /* '' */
 .dlm-icon-id-card:before { content: '\f2c2'; } /* '' */

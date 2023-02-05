@@ -454,7 +454,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			$activationParams = array(
 				'license_id' => $license->getId(),
 				'token'      => $newToken,
-				'source'     => ActivationSource::API,
+				'source'     => isset( $params['source'] ) ? intval( $params['source'] ) : ActivationSource::API,
 				'ip_address' => HttpHelper::clientIp(),
 				'user_agent' => HttpHelper::userAgent(),
 			);
@@ -663,6 +663,41 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		}
 
 		return $updatedActivation;
+
+	}
+
+	/**
+	 * Delete activation token
+	 *
+	 * @param $activationToken
+	 *
+	 * @return WP_Error|true
+	 */
+	public function deleteActivation( $activationToken ) {
+
+		if ( ! $activationToken ) {
+			return new WP_Error(
+				'data_error',
+				'License activation token is invalid.',
+				array( 'status' => 404 )
+			);
+		}
+
+		try {
+			/** @var LicenseActivation $activation */
+			return (bool) LicenseActivationResourcesRepository::instance()->deleteBy(
+				array(
+					'token' => $activationToken
+				)
+			);
+
+		} catch ( Exception $e ) {
+			return new WP_Error(
+				'data_error',
+				$e->getMessage(),
+				array( 'status' => 404 )
+			);
+		}
 
 	}
 
@@ -923,7 +958,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		if ( $invalidKeysAmount > 0 ) {
 
 			$generatorsService = new GeneratorsService();
-			$newKeys = $generatorsService->generateLicenses( $invalidKeysAmount, $generator );
+			$newKeys           = $generatorsService->generateLicenses( $invalidKeysAmount, $generator );
 			if ( is_wp_error( $newKeys ) ) {
 				return $newKeys;
 			}

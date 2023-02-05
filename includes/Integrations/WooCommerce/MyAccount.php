@@ -3,6 +3,7 @@
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
+use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Settings;
@@ -28,7 +29,8 @@ class MyAccount {
 		add_filter( 'dlm_myaccount_licenses_keys_row_actions', array( $this, 'licensesRowActions' ), 10, 3 );
 		add_action( 'dlm_myaccount_licenses_single_page_content', array( $this, 'addSingleLicenseContent' ), 10, 1 );
 		add_action( 'dlm_myaccount_licenses_single_page_end', array( $this, 'addSingleLicenseActivationsTable' ), 10, 5 );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueueScripts' ), 10, 1 );
+		add_action( 'dlm_register_scripts', array( $this, 'registerScripts' ), 10, 1 );
+		add_action( 'dlm_enqueue_scripts', array( $this, 'enqueueScripts' ), 10, 1 );
 	}
 
 	/**
@@ -56,23 +58,34 @@ class MyAccount {
 			wp_die( 'Link has expired. Please try again later.', 'digital-license-manager' );
 		}
 
-
 		do_action( 'dlm_myaccount_handle_action_' . $action );
 		do_action( 'dlm_myaccount_handle_action', $action );
 		exit;
 	}
 
 	/**
-	 * Enqueue scripts
+	 * Registers the scripts
 	 * @return void
 	 */
-	public function enqueueScripts() {
+	public function registerScripts( $version ) {
+		wp_register_style( 'dlm_myaccount', DLM_CSS_URL . 'public/account.css', array( 'dlm_global', 'dlm_iconfont', 'dlm_micromodal' ), $version );
+		wp_register_script( 'dlm_myaccount', DLM_JS_URL . 'public/account.js', array( 'dlm_micromodal' ), $version );
+	}
 
+	/**
+	 * Enqueues the scripts
+	 * @return void
+	 */
+	public function enqueueScripts( $version ) {
 		if ( ! is_account_page() ) {
 			return;
 		}
-		wp_enqueue_style( 'dlm_global' );
-		wp_enqueue_style( 'dlm_public' );
+		wp_enqueue_script( 'dlm_myaccount' );
+		wp_enqueue_style( 'dlm_myaccount' );
+		wp_localize_script( 'dlm_myaccount', 'DLM_MyAccount', [
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'_wpnonce' => wp_create_nonce( Activations::NONCE ),
+		] );
 	}
 
 	/**
@@ -160,7 +173,7 @@ class MyAccount {
 		} else {
 
 			$licenseService = new LicensesService();
-			$license = $licenseService->findById( $licenseID );
+			$license        = $licenseService->findById( $licenseID );
 
 			if ( is_wp_error( $license ) || $license->getUserId() != $user->ID ) {
 				echo sprintf( '<h3>%s</h3>', __( 'Not found', 'digital-license-manager' ) );
@@ -252,15 +265,55 @@ class MyAccount {
 			return;
 		}
 
-		echo wc_get_template_html(
+		echo self::getLicenseActivationsTable( $license, $order, $product, $dateFormat, $licenseKey );
+
+	}
+
+	/**
+	 * Prints out the licenses activation table
+	 *
+	 * @param License $license
+	 * @param $order
+	 * @param $product
+	 * @param $dateFormat
+	 * @param $licenseKey
+	 *
+	 * @return string
+	 */
+	public static function getLicenseActivationsTable( $license, $order = null, $product = null, $dateFormat = null, $licenseKey = null ) {
+
+		if ( is_null( $order ) ) {
+			$order = wc_get_order( $license->getOrderId() );
+		}
+
+		if ( is_null( $product ) ) {
+			$product = wc_get_order( $license->getProductId() );
+		}
+
+		if ( is_null( $dateFormat ) ) {
+			$dateFormat = get_option( 'date_format' );
+		}
+
+		if ( is_null( $licenseKey ) ) {
+			$licenseKey = $license->getDecryptedLicenseKey();
+		}
+
+		$manual_activations_enabled = (int) Settings::get( 'enable_manual_activations', Settings::SECTION_WOOCOMMERCE );
+
+		$rowActions = apply_filters( 'dlm_myaccount_license_activation_row_actions', array(), $license, $order, $product );
+
+		return wc_get_template_html(
 			'dlm/my-account/licenses/partials/single-table-activations.php',
 			array(
-				'license'     => $license,
-				'license_key' => $licenseKey,
-				'product'     => $product,
-				'order'       => $order,
-				'date_format' => $dateFormat,
-				'nonce'       => wp_create_nonce( 'dlm_nonce' ),
+				'license'                    => $license,
+				'license_key'                => $licenseKey,
+				'product'                    => $product,
+				'order'                      => $order,
+				'date_format'                => $dateFormat,
+				'manual_activations_enabled' => $manual_activations_enabled,
+				'rowActions'                 => $rowActions,
+				'activations'                => $license->getActivations(),
+				'nonce'                      => wp_create_nonce( 'dlm_nonce' ),
 			),
 			'',
 			Controller::getTemplatePath()
@@ -269,6 +322,7 @@ class MyAccount {
 
 	/**
 	 * Get licenses for a customer
+	 *
 	 * @param $userId
 	 *
 	 * @return array

@@ -3,6 +3,8 @@
 .dlm-icon-download-cloud:before { content: '\e801'; } /* '' */
 .dlm-icon-doc-text:before { content: '\e802'; } /* '' */
 .dlm-icon-eye:before { content: '\e803'; } /* '' */
+.dlm-icon-plus:before { content: '\e804'; } /* '' */
+.dlm-icon-minus:before { content: '\e805'; } /* '' */
 .dlm-icon-certificate:before { content: '\f0a3'; } /* '' */
 .dlm-icon-file-pdf:before { content: '\f1c1'; } /* '' */
 .dlm-icon-id-card:before { content: '\f2c2'; } /* '' */

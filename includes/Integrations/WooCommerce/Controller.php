@@ -40,6 +40,7 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 
 		if ( SettingsData::get( 'myaccount_endpoint', SettingsData::SECTION_WOOCOMMERCE ) ) {
 			new MyAccount();
+			new Activations();
 		}
 	}
 
@@ -90,11 +91,12 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 		if ( ! isset( $settings[ SettingsData::SECTION_WOOCOMMERCE ] ) ) {
 
 			$default_settings = array(
-				'myaccount_endpoint'       => 1,
-				'auto_delivery'            => 1,
-				'enable_activations_table' => 1,
-				'enable_certificates'      => 1,
-				'order_delivery_statuses'  => array(
+				'myaccount_endpoint'        => 1,
+				'auto_delivery'             => 1,
+				'enable_activations_table'  => 1,
+				'enable_manual_activations' => 0,
+				'enable_certificates'       => 1,
+				'order_delivery_statuses'   => array(
 					'wc-completed'  => array(
 						'send' => '1'
 					),

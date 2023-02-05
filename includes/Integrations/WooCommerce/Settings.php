@@ -81,7 +81,7 @@ class Settings {
 								'explain' => __( "You might need to save your permalinks after enabling this option.", 'digital-license-manager' ),
 							)
 						),
-						20 => array(
+						30 => array(
 							'id'       => 'enable_activations_table',
 							'title'    => __( 'Activation History', 'digital-license-manager' ),
 							'callback' => array( $this, 'fieldCheckbox' ),
@@ -90,7 +90,16 @@ class Settings {
 								'explain' => __( "Use this option to display table that shows list of activations and labels.", 'digital-license-manager' ),
 							)
 						),
-						30 => array(
+						50 => array(
+							'id'       => 'enable_manual_activations',
+							'title'    => __( 'Allow Manual Activations', 'digital-license-manager' ),
+							'callback' => array( $this, 'fieldCheckbox' ),
+							'args'     => array(
+								'label'   => __( "Enable this to allow manual license activation. Users will be able to create activations from the admin without using the REST API.", 'digital-license-manager' ),
+								'explain' => __( "Normally activations should be done through the REST API from your apps, however this is more a psychological feature to give the users a feeling that they can activate the product.", 'digital-license-manager' ),
+							)
+						),
+						70 => array(
 							'id'       => 'enable_certificates',
 							'title'    => __( 'Enable Certificates', 'digital-license-manager' ),
 							'callback' => array( $this, 'fieldCheckbox' ),
