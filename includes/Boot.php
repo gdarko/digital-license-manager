@@ -98,6 +98,7 @@ class Boot extends Singleton {
 		/**
 		 * Internal Library: HTTP
 		 */
+		wp_register_script('dlm_utils', DLM_ASSETS_URL . 'js/shared/utils.js', [], $this->version);
 		wp_register_script('dlm_http', DLM_ASSETS_URL . 'js/shared/http.js', [], $this->version);
 
 		/**
@@ -124,7 +125,7 @@ class Boot extends Singleton {
 		wp_register_script( 'dlm_licenses_page', DLM_JS_URL . 'admin/licenses.js', array( 'jquery' ), $this->version );
 		wp_register_script( 'dlm_generators_page', DLM_JS_URL . 'admin/generators.js', array( 'jquery' ), $this->version );
 		wp_register_script( 'dlm_activations_page', DLM_JS_URL . 'admin/activations.js', array( 'jquery' ), $this->version );
-		wp_register_script( 'dlm_settings_page', DLM_JS_URL . 'admin/settings.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'dlm_settings_page', DLM_JS_URL . 'admin/settings.js', array( 'dlm_utils' ), $this->version );
 		wp_register_style( 'dlm_settings_page', DLM_CSS_URL . 'admin/settings.css', array(), $this->version, 'all' );
 		wp_register_script( 'dlm_products_page', DLM_JS_URL . 'admin/products.js', array( 'jquery' ), $this->version );
 		wp_register_style( 'dlm_manage_page', DLM_CSS_URL . 'admin/manage.css', array(), $this->version, 'all' );
