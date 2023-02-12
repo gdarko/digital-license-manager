@@ -22,6 +22,21 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 })
             }
         }
+
+        // User select field
+        var userField = document.getElementById('user')
+        if(userField) {
+            new window.DLM.Select(userField, {
+                remote: {
+                    url: ajaxurl,
+                    action: 'dlm_dropdown_search',
+                    type: 'user',
+                    nonce: DLM_MAIN.security.dropdownSearch,
+                    delay: 300
+                },
+                placeholder: DLM_MAIN.i18n.placeholderSearchUsers,
+            });
+        }
     }
     /**
      * Global.

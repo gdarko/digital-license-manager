@@ -233,6 +233,7 @@ class Settings extends Singleton {
 					$keyId = absint( $_GET['edit_key'] );
 				}
 
+				$users  = [];
 				if ( $keyId !== 0 ) {
 					/** @var ApiKeyResourceModel $keyData */
 					$keyData     = ApiKeyResourceRepository::instance()->find( $keyId );
@@ -244,9 +245,14 @@ class Settings extends Singleton {
 						date_i18n( $date_format, strtotime( $keyData->getLastAccess() ) ),
 						date_i18n( $time_format, strtotime( $keyData->getLastAccess() ) )
 					);
+					if($userId) {
+						$owner = get_user_by('id', $userId);
+						if($owner) {
+							$users[] = $owner;
+						}
+					}
 				}
 
-				$users       = Users::getUsers();
 				$permissions = array(
 					'read'       => __( 'Read', 'digital-license-manager' ),
 					'write'      => __( 'Write', 'digital-license-manager' ),

@@ -156,7 +156,7 @@ class Boot extends Singleton {
 		 * Global admin assets
 		 */
 		wp_register_style( 'dlm_admin', DLM_CSS_URL . 'admin/general.css', array(), $this->version );
-		wp_register_script( 'dlm_admin', DLM_JS_URL . 'admin/general.js', array( 'jquery', 'dlm_http' ), $this->version );
+		wp_register_script( 'dlm_admin', DLM_JS_URL . 'admin/general.js', array( 'dlm_http', 'dlm_select' ), $this->version );
 
 		do_action( 'dlm_register_scripts', $this->version );
 	}
@@ -199,8 +199,12 @@ class Boot extends Singleton {
 				'show'              => wp_create_nonce( 'dlm_show_license_key' ),
 				'show_all'          => wp_create_nonce( 'dlm_show_all_license_keys' ),
 				'product_downloads' => Settings::get( 'product_downloads' ),
+				'security' => array(
+					'dropdownSearch' => wp_create_nonce('dlm_dropdown_search')
+				),
 				'i18n'              => array(
-					'confirm_dialog' => __( 'Are you sure? This action can not be reverted.', 'digital-license-manager' )
+					'confirm_dialog' => __( 'Are you sure? This action can not be reverted.', 'digital-license-manager' ),
+					'placeholderSearchUsers'     => __( 'Search by user login, name or email', 'digital-license-manager' ),
 				)
 			)
 		);
