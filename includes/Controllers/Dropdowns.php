@@ -49,11 +49,11 @@ class Dropdowns {
 			wp_die();
 		}
 
-		$type    = (string) sanitize_text_field( wp_unslash( $_POST['type'] ) );
+		$type    = (string) sanitize_text_field( wp_unslash( $_REQUEST['type'] ) );
 		$page    = 1;
 		$limit   = 6;
 		$results = array();
-		$term    = isset( $_POST['term'] ) ? (string) sanitize_text_field( wp_unslash( $_POST['term'] ) ) : '';
+		$term    = isset( $_REQUEST['term'] ) ? (string) sanitize_text_field( wp_unslash( $_REQUEST['term'] ) ) : '';
 		$more    = true;
 		$offset  = 0;
 		$ids     = array();
@@ -62,8 +62,8 @@ class Dropdowns {
 			wp_die();
 		}
 
-		if ( array_key_exists( 'page', $_POST ) ) {
-			$page = (int) $_POST['page'];
+		if ( array_key_exists( 'page', $_REQUEST ) ) {
+			$page = (int) $_REQUEST['page'];
 		}
 
 		if ( $page > 1 ) {
@@ -286,6 +286,7 @@ class Dropdowns {
 				'page'       => $page,
 				'results'    => $results,
 				'pagination' => array(
+					'current' => $page,
 					'more' => $more
 				)
 			)

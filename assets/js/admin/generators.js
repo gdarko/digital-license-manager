@@ -1,77 +1,48 @@
-jQuery(function($) {
-    'use strict';
+window.DLM = window.hasOwnProperty('DLM') ? window.DLM : {};
 
-    let generateLicenseKeysProduct = $('select#generate__product');
-    let generateLicenseKeysOrder   = $('select#generate__order');
+document.addEventListener("DOMContentLoaded", function (event) {
 
-    const productDropdownSearchConfig = {
-        ajax: {
-            cache: true,
-            delay: 500,
-            url: ajaxurl,
-            method: 'POST',
-            dataType: 'json',
-            data: function(params) {
-                return {
-                    action: 'dlm_dropdown_search',
-                    security: dlm_generators_security.dropdownSearch,
-                    term: params.term,
-                    page: params.page,
-                    type: 'product'
-                };
-            },
-            processResults: function(data, params) {
-                params.page = params.page || 1;
-
-                return {
-                    results: data.results,
-                    pagination: {
-                        more: data.pagination.more
-                    }
-                };
-            }
-        },
-        placeholder: dlm_generators_i18n.placeholderSearchProducts,
-        minimumInputLength: 1,
-        allowClear: true
-    };
-    const orderDropdownSearchConfig = {
-        ajax: {
-            cache: true,
-            delay: 500,
-            url: ajaxurl,
-            method: 'POST',
-            dataType: 'json',
-            data: function(params) {
-                return {
-                    action: 'dlm_dropdown_search',
-                    security: dlm_generators_security.dropdownSearch,
-                    term: params.term,
-                    page: params.page,
-                    type: 'shop_order'
-                };
-            },
-            processResults: function(data, params) {
-                params.page = params.page || 1;
-
-                return {
-                    results: data.results,
-                    pagination: {
-                        more: data.pagination.more
-                    }
-                };
-            }
-        },
-        placeholder: dlm_generators_i18n.placeholderSearchOrders,
-        minimumInputLength: 1,
-        allowClear: true
-    };
-
-    if (generateLicenseKeysProduct) {
-        generateLicenseKeysProduct.select2(productDropdownSearchConfig);
+    window.DLM.Generators = function () {
+        this.setupListeners();
     }
 
-    if (generateLicenseKeysOrder) {
-        generateLicenseKeysOrder.select2(orderDropdownSearchConfig);
+    /**
+     * Set up the listeners
+     */
+    window.DLM.Generators.prototype.setupListeners = function () {
+
+        const generateLicenseKeysProduct = document.querySelector('select#generate__product');
+        const generateLicenseKeysOrder = document.querySelector('select#generate__order');
+
+        // Search configurations
+        const productDropdownSearchConfig = {
+            remote: {
+                url: ajaxurl,
+                action: 'dlm_dropdown_search',
+                type: 'product',
+                nonce: dlm_generators_security.dropdownSearch,
+            },
+            placeholder: dlm_generators_i18n.placeholderSearchProducts,
+        };
+
+        const orderDropdownSearchConfig = {
+            remote: {
+                url: ajaxurl,
+                action: 'dlm_dropdown_search',
+                type: 'shop_order',
+                nonce: dlm_generators_security.dropdownSearch,
+            },
+            placeholder: dlm_generators_i18n.placeholderSearchOrders,
+        };
+
+        if (generateLicenseKeysProduct) {
+            new window.DLM.Select(generateLicenseKeysProduct, productDropdownSearchConfig);
+        }
+        if (generateLicenseKeysOrder) {
+            new window.DLM.Select(generateLicenseKeysOrder, orderDropdownSearchConfig);
+        }
     }
+
+    new window.DLM.Generators();
+
 });

@@ -16,7 +16,7 @@ $columns = \IdeoLogix\DigitalLicenseManager\Controllers\Licenses::exportColumns(
                     <h2 class="modal__title" id="<?php echo esc_attr($modal_id); ?>-title">
 						<?php _e( 'Export Licenses', 'digital-license-manager' ); ?>
                     </h2>
-                    <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+                    <button class="modal__close" type="button" aria-label="Close modal" data-micromodal-close></button>
                 </header>
                 <main class="modal__content" id="<?php echo esc_attr($modal_id); ?>-content">
                     <div class="dlm-form-row">
@@ -35,7 +35,7 @@ $columns = \IdeoLogix\DigitalLicenseManager\Controllers\Licenses::exportColumns(
                     <input type="hidden" name="dlm_export_licenses">
                     <input type="hidden" name="action" value="dlm_licenses_export">
                     <button type="submit" class="button button-primary"><?php _e( 'Export', 'digital-license-manager' ); ?></button>
-                    <button class="button button-secondary" data-micromodal-close aria-label="Close this dialog window"><?php _e( 'Close', 'digital-license-manager' ); ?></button>
+                    <button class="button button-secondary" type="button" data-micromodal-close aria-label="Close this dialog window"><?php _e( 'Close', 'digital-license-manager' ); ?></button>
                 </footer>
             </div>
         </form>

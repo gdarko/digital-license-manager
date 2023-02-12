@@ -1,49 +1,43 @@
-jQuery(function ($) {
-    'use strict';
+window.DLM = window.hasOwnProperty('DLM') ? window.DLM : {};
 
-    const dropdownLicenses = $('select#filter-by-license-id');
-    const dropdownSources = $('select#filter-by-source');
+document.addEventListener("DOMContentLoaded", function (event) {
 
-    const licenseDropdownSearchConfig = {
-        ajax: {
-            cache: true,
-            delay: 500,
-            url: ajaxurl,
-            method: 'POST',
-            dataType: 'json',
-            data: function (params) {
-                return {
-                    action: 'dlm_dropdown_search',
-                    security: dlm_activations_security.dropdownSearch,
-                    term: params.term,
-                    page: params.page,
-                    type: 'license'
-                };
+    window.DLM.Activations = function () {
+        this.setupListeners();
+    }
+
+    /**
+     * Set up the listeners
+     */
+    window.DLM.Activations.prototype.setupListeners = function () {
+
+        const dropdownLicenses = document.querySelector('select#filter-by-license-id');
+        const dropdownSources = document.querySelector('select#filter-by-source');
+
+        // Search configurations
+        const licenseDropdownSearchConfig = {
+            remote: {
+                url: ajaxurl,
+                action: 'dlm_dropdown_search',
+                type: 'license',
+                nonce: dlm_activations_security.dropdownSearch,
             },
-            processResults: function (data, params) {
-                params.page = params.page || 1;
-                return {
-                    results: data.results,
-                    pagination: {
-                        more: data.pagination.more
-                    }
-                };
-            }
-        },
-        placeholder: dlm_activations_i18n.placeholderSearchLicenses,
-        minimumInputLength: 1,
-        allowClear: true
-    };
-    const sourceDropdownSearchConfig = {
-        allowClear: true,
-        placeholder: dlm_activations_i18n.placeholderSearchSources
-    };
+            placeholder: dlm_activations_i18n.placeholderSearchLicenses,
+        };
 
-    if (dropdownLicenses) {
-        dropdownLicenses.select2(licenseDropdownSearchConfig);
+        const sourceDropdownSearchConfig = {
+            placeholder: dlm_activations_i18n.placeholderSearchSources
+        };
+
+        if (dropdownLicenses) {
+            new window.DLM.Select(dropdownLicenses, licenseDropdownSearchConfig);
+        }
+
+        if (dropdownSources) {
+            new window.DLM.Select(dropdownSources, sourceDropdownSearchConfig);
+        }
     }
-    if (dropdownSources) {
-        dropdownSources.select2(sourceDropdownSearchConfig);
-    }
+
+    new window.DLM.Activations();
 
 });

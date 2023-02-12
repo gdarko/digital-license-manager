@@ -5,6 +5,21 @@
 	table-layout: auto;
 }
 
+.actions #filter-action {
+	margin-left:5px;
+}
+
+/* Modals */
+.modal__overlay {
+	z-index: 9999;
+}
+
+/*
+Flatpickr
+ */
+.regular-text[readonly] {
+	background: transparent;
+}
 
 /** License Key Placeholder */
 .dlm-placeholder {

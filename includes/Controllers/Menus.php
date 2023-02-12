@@ -238,8 +238,8 @@ class Menus {
 
 			if ( $license->getExpiresAt() ) {
 				try {
-					$expiresAtDateTime = new \DateTime( $license->getExpiresAt() );
-					$expiresAt         = $expiresAtDateTime->format( 'Y-m-d' );
+					$expiresAtDateTime = \DateTime::createFromFormat('Y-m-d H:i:s', $license->getExpiresAt(), new \DateTimeZone('UTC'));
+					$expiresAt         = $expiresAtDateTime->format( 'Y-m-d H:i:s' );
 				} catch ( \Exception $e ) {
 					$expiresAt = null;
 				}
@@ -253,13 +253,6 @@ class Menus {
 			if ( is_wp_error( $licenseKey ) ) {
 				wp_die( $licenseKey->get_error_message() );
 			}
-		}
-
-		// Edit, add or import license keys
-		if ( $action === 'edit' || $action === 'add' || $action === 'import' ) {
-			wp_enqueue_style( 'dlm-jquery-ui-datepicker' );
-			wp_enqueue_script( 'jquery-ui-datepicker' );
-			$statusOptions = LicenseStatus::dropdown();
 		}
 
 		include trailingslashit( DLM_TEMPLATES_DIR ) . 'admin/page-licenses.php';
