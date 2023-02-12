@@ -195,7 +195,18 @@ document.addEventListener("DOMContentLoaded", function (event) {
             for (var i = 0; i < licensesToggleAllBtns.length; i++) {
                 licensesToggleAllBtns[i].addEventListener('click', function (e) {
                     var elements = this.closest('td').querySelectorAll('.dlm-license-list li');
-                    self.handleLicenseKeysToggle(elements, this.classList.contains('dlm-license-keys-show-all'));
+                    var state, text;
+                    if(this.dataset.toggleCurrent === 'hide') {
+                        this.dataset.toggleCurrent = 'show';
+                        state = 1;
+                    } else {
+                        this.dataset.toggleCurrent = 'hide';
+                        state = 0;
+                    }
+                    text = this.innerHTML;
+                    this.innerHTML = this.dataset.toggleText;
+                    this.dataset.toggleText = text;
+                    self.handleLicenseKeysToggle(elements, state);
                 }.bind(licensesToggleAllBtns[i]))
             }
         }

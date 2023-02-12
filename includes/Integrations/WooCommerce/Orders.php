@@ -509,8 +509,12 @@ class Orders {
 
 			$html .= '</ul>';
 			$html .= '<p>';
-			$html .= sprintf( '<a class="button dlm-license-keys-toggle-all dlm-license-keys-show-all" data-order-id="%d">%s</a>', $order_id, __( 'Show license(s)', 'digital-license-manager' ) );
-			$html .= sprintf( '<a class="button dlm-license-keys-toggle-all" data-order-id="%d">%s</a>', $order_id, __( 'Hide license(s)', 'digital-license-manager' ) );
+			$html .= sprintf(
+				'<a class="button dlm-license-keys-toggle-all" data-order-id="%d" data-toggle-text="%s" data-toggle-current="hide">%s</a>',
+				$order_id,
+				__( 'Hide license(s)', 'digital-license-manager' ),
+				__( 'Show license(s)', 'digital-license-manager' )
+			);
 			$html .= sprintf( '<img class="dlm-spinner" alt="%s" src="%s">', __( 'Please wait...', 'digital-license-manager' ), Licenses::SPINNER_URL );
 			$html .= '<span class="dlm-txt-copied-to-clipboard" style="display: none">' . __( 'Copied to clipboard', 'digital-license-manager' ) . '</span>';
 			$html .= '</p>';
