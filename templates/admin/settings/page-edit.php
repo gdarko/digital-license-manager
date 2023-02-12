@@ -46,7 +46,6 @@ $time_format = get_option( 'time_format' );
                 </th>
                 <td>
                     <select id="user" class="regular-text" name="user">
-                        <option value=""><?php esc_html_e( 'Please select a user...', 'digital-license-manager' ); ?></option>
 						<?php
 						foreach ( $users as $user ):
 							$selected = ( $userId == $user->ID ) ? 'selected="selected"' : '';

@@ -90,11 +90,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
     /**
      * Initalize
      */
-    let form = document.querySelector('.dlm-tool-form');
+    var form = document.querySelector('.dlm-tool-form');
     if (form) {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
-            const tools = new window.DLM.AdminTools(form);
+            var tools = new window.DLM.AdminTools(form);
             tools.init(1, 1);
         })
     }

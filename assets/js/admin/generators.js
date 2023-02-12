@@ -11,11 +11,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
      */
     window.DLM.Generators.prototype.setupListeners = function () {
 
-        const generateLicenseKeysProduct = document.querySelector('select#generate__product');
-        const generateLicenseKeysOrder = document.querySelector('select#generate__order');
+        var generateLicenseKeysProduct = document.querySelector('select#generate__product');
+        var generateLicenseKeysOrder = document.querySelector('select#generate__order');
 
         // Search configurations
-        const productDropdownSearchConfig = {
+        var productDropdownSearchConfig = {
             remote: {
                 url: ajaxurl,
                 action: 'dlm_dropdown_search',
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             placeholder: dlm_generators_i18n.placeholderSearchProducts,
         };
 
-        const orderDropdownSearchConfig = {
+        var orderDropdownSearchConfig = {
             remote: {
                 url: ajaxurl,
                 action: 'dlm_dropdown_search',

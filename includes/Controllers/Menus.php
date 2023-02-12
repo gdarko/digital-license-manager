@@ -255,6 +255,11 @@ class Menus {
 			}
 		}
 
+		// Edit, add or import license keys
+		if ( $action === 'edit' || $action === 'add' || $action === 'import' ) {
+			$statusOptions = LicenseStatus::dropdown();
+		}
+
 		include trailingslashit( DLM_TEMPLATES_DIR ) . 'admin/page-licenses.php';
 	}
 

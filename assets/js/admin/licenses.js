@@ -2,34 +2,45 @@ window.DLM = window.hasOwnProperty('DLM') ? window.DLM : {};
 
 document.addEventListener("DOMContentLoaded", function (event) {
 
-    window.DLM.Licenses = function () {
+    var Licenses = function () {
         this.setupListeners();
     }
 
     /**
-     * Set up the listeners
+     * Set up all listeners
      */
-    window.DLM.Licenses.prototype.setupListeners = function () {
+    Licenses.prototype.setupListeners = function () {
+        this.setupFormFields();
+        this.setupLicenseKeyToggle();
+        this.setupLicenseKeyClipboard();
+    }
 
-        const importLicenseProduct = document.querySelector('select#bulk__product');
-        const importLicenseOrder = document.querySelector('select#bulk__order');
-        const addLicenseProduct = document.querySelector('select#single__product');
-        const addLicenseOrder = document.querySelector('select#single__order');
-        const addLicenseUser = document.querySelector('select#single__user');
-        const addExpiresAt = document.querySelector('input#single__expires_at');
-        const editLicenseProduct = document.querySelector('select#edit__product');
-        const editLicenseOrder = document.querySelector('select#edit__order');
-        const editExpiresAt = document.querySelector('input#edit__expires_at');
-        const editStatus = document.querySelector('select#edit__status');
-        const bulkAddSource = document.querySelectorAll('input[type="radio"].bulk__type');
+    /**
+     * Set up the form fields listeners
+     * - Tom-select
+     * - Flatpickr
+     */
+    Licenses.prototype.setupFormFields = function () {
+
+        var importLicenseProduct = document.querySelector('select#bulk__product');
+        var importLicenseOrder = document.querySelector('select#bulk__order');
+        var addLicenseProduct = document.querySelector('select#single__product');
+        var addLicenseOrder = document.querySelector('select#single__order');
+        var addLicenseUser = document.querySelector('select#single__user');
+        var addExpiresAt = document.querySelector('input#single__expires_at');
+        var editLicenseProduct = document.querySelector('select#edit__product');
+        var editLicenseOrder = document.querySelector('select#edit__order');
+        var editExpiresAt = document.querySelector('input#edit__expires_at');
+        var editStatus = document.querySelector('select#edit__status');
+        var bulkAddSource = document.querySelectorAll('input[type="radio"].bulk__type');
         // Licenses table
-        const dropdownOrders = document.querySelector('select#filter-by-order-id');
-        const dropdownProducts = document.querySelector('select#filter-by-product-id');
-        const dropdownUsers = document.querySelector('select#filter-by-user-id');
-        const selectActions = document.querySelectorAll('#dlm-license-table select[name=action]');
+        var dropdownOrders = document.querySelector('select#filter-by-order-id');
+        var dropdownProducts = document.querySelector('select#filter-by-product-id');
+        var dropdownUsers = document.querySelector('select#filter-by-user-id');
+        var selectActions = document.querySelectorAll('#dlm-license-table select[name=action]');
 
         // Search configurations
-        const productDropdownSearchConfig = {
+        var productDropdownSearchConfig = {
             remote: {
                 url: ajaxurl,
                 action: 'dlm_dropdown_search',
@@ -39,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             },
             placeholder: dlm_licenses_i18n.placeholderSearchProducts,
         };
-        const orderDropdownSearchConfig = {
+        var orderDropdownSearchConfig = {
             remote: {
                 url: ajaxurl,
                 action: 'dlm_dropdown_search',
@@ -48,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             },
             placeholder: dlm_licenses_i18n.placeholderSearchOrders,
         };
-        const userDropdownSearchConfig = {
+        var userDropdownSearchConfig = {
             remote: {
                 url: ajaxurl,
                 action: 'dlm_dropdown_search',
@@ -59,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             placeholder: dlm_licenses_i18n.placeholderSearchUsers,
         };
 
-        const flatPickrConfig = {
+        var flatPickrConfig = {
             altInput: true,
             altFormat: dlm_licenses_i18n.dateTimeFormat,
             dateFormat: "Y-m-d H:i:S",
@@ -106,22 +117,22 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
             for (var i = 0; i < bulkAddSource.length; i++) {
                 bulkAddSource[i].addEventListener('change', function () {
-                    const bulkType = document.querySelector('input[type="radio"].bulk__type:checked');
-                    const value = bulkType ? bulkType.value : '';
+                    var bulkType = document.querySelector('input[type="radio"].bulk__type:checked');
+                    var value = bulkType ? bulkType.value : '';
 
                     if (value !== 'file' && value !== 'clipboard') {
                         return;
                     }
 
                     // Hide the currently visible row
-                    const bulkSourceRows = document.querySelectorAll('tr.bulk__source_row');
+                    var bulkSourceRows = document.querySelectorAll('tr.bulk__source_row');
                     for (var j = 0; j < bulkSourceRows.length; j++) {
                         if (!bulkSourceRows[j].classList.contains('hidden')) {
                             bulkSourceRows[j].classList.add('hidden');
                         }
                     }
                     // Display the selected row
-                    const bulkSourceRowCurrent = document.querySelector('tr#bulk__source_' + value + '.bulk__source_row');
+                    var bulkSourceRowCurrent = document.querySelector('tr#bulk__source_' + value + '.bulk__source_row');
                     if (bulkSourceRowCurrent) {
                         bulkSourceRowCurrent.classList.remove('hidden');
                     }
@@ -162,6 +173,164 @@ document.addEventListener("DOMContentLoaded", function (event) {
         }
     }
 
+    /**
+     * Set up license key ajax based toggle
+     */
+    Licenses.prototype.setupLicenseKeyToggle = function () {
+        var self = this;
+
+        // Single key toggle
+        var licenseToggles = document.querySelectorAll('.dlm-license-key-toggle');
+        if (licenseToggles) {
+            for (var i = 0; i < licenseToggles.length; i++) {
+                licenseToggles[i].addEventListener('click', function (e) {
+                    self.handleLicenseKeysToggle([this.closest('tr')], this.classList.contains('dlm-license-key-show'));
+                }.bind(licenseToggles[i]));
+            }
+        }
+
+        // Toggle all
+        var licensesToggleAllBtns = document.querySelectorAll('.dlm-license-keys-toggle-all');
+        if (licensesToggleAllBtns) {
+            for (var i = 0; i < licensesToggleAllBtns.length; i++) {
+                licensesToggleAllBtns[i].addEventListener('click', function (e) {
+                    var elements = this.closest('td').querySelectorAll('.dlm-license-list li');
+                    self.handleLicenseKeysToggle(elements, this.classList.contains('dlm-license-keys-show-all'));
+                }.bind(licensesToggleAllBtns[i]))
+            }
+        }
+
+    }
+
+    /**
+     * Setup license key cliboard
+     */
+    Licenses.prototype.setupLicenseKeyClipboard = function () {
+        var licenseKeys = document.querySelectorAll('.license_key .dlm-placeholder, .dlm-license-list .dlm-placeholder');
+        if (licenseKeys) {
+            for (var i = 0; i < licenseKeys.length; i++) {
+                licenseKeys[i].addEventListener('click', this.copyLicenseToClipboard.bind(licenseKeys[i]));
+            }
+        }
+    }
+
+    /**
+     * Handle license toggle
+     * @param {Array} elements
+     * @param {Boolean} isShow
+     */
+    Licenses.prototype.handleLicenseKeysToggle = function (elements, isShow) {
+        var self = this
+        if (isShow) {
+            var licenseIds = [];
+            for (var i = 0; i < elements.length; i++) {
+                var placeholder = elements[i].querySelector('.dlm-placeholder');
+                if (placeholder) {
+                    licenseIds.push(parseInt(placeholder.dataset.id));
+                }
+                self.toggleLicenseKeySpinner(elements[i], true);
+            }
+            var http = new window.DLM.Http();
+            http.post(ajaxurl, {
+                data: {
+                    action: 'dlm_show_all_license_keys',
+                    show_all: DLM_MAIN.show_all,
+                    ids: JSON.stringify(licenseIds)
+                },
+                success: function (response, responseStatus, responseHeaders) {
+                    for (var id in response) {
+                        var licenseKey = document.querySelector('.dlm-placeholder[data-id="' + id + '"]');
+                        licenseKey.classList.remove('empty');
+                        licenseKey.innerHTML = response[id];
+                    }
+                },
+                error: function (response, responseStatus, responseHeaders) {
+                    alert(response);
+                },
+                complete: function () {
+                    for (var i = 0; i < elements.length; i++) {
+                        self.toggleLicenseKeySpinner(elements[i], false)
+                    }
+                }
+            });
+        } else {
+            for (var i = 0; i < elements.length; i++) {
+                var licenseKey = elements[i].querySelector('.dlm-placeholder');
+                if (licenseKey) {
+                    licenseKey.innerHTML = '';
+                    licenseKey.classList.add('empty');
+                }
+            }
+        }
+
+    }
+
+
+    /**
+     *
+     * @param element
+     * @param state
+     */
+    Licenses.prototype.toggleLicenseKeySpinner = function (element, state) {
+        element.querySelector('.dlm-spinner').style.opacity = state ? 1 : 0;
+    }
+
+
+    /**
+     * Copy license to clipboard
+     * @param e
+     */
+    Licenses.prototype.copyLicenseToClipboard = function (e) {
+
+        var el = this;
+
+        if (!el) {
+            return;
+        }
+        var str = el.innerHTML;
+
+        if (str.length === 0) {
+            return;
+        }
+
+        var textArea = document.createElement('textarea');
+        textArea.value = str;
+        textArea.setAttribute('readonly', '');
+        textArea.style.position = 'absolute';
+        textArea.style.left = '-9999px';
+        document.body.appendChild(textArea);
+        var selected = document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        if (selected) {
+            document.getSelection().removeAllRanges();
+            document.getSelection().addRange(selected);
+        }
+
+        // Display info
+        var copied = document.createElement('div');
+        copied.classList.add('dlm-clipboard');
+        copied.style.position = 'absolute';
+        copied.style.left = e.clientX.toString() + 'px';
+        copied.style.top = (window.pageYOffset + e.clientY).toString() + 'px';
+        copied.innerText = document.querySelector('.dlm-txt-copied-to-clipboard').innerText.toString();
+        document.body.appendChild(copied);
+
+        setTimeout(function () {
+            copied.style.opacity = '0';
+        }, 700);
+        setTimeout(function () {
+            document.body.removeChild(copied);
+        }, 1500);
+    }
+
+
+    /**
+     * Initialize
+     * @type {Licenses}
+     */
+    window.DLM.Licenses = Licenses;
     new window.DLM.Licenses();
 
 });
