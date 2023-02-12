@@ -14,6 +14,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller as WooCo
 use IdeoLogix\DigitalLicenseManager\RestAPI\Setup as RestController;
 use IdeoLogix\DigitalLicenseManager\Utils\CompatibilityHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
+use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeManager;
 
@@ -96,14 +97,10 @@ class Boot extends Singleton {
 	public function registerAssets() {
 
 		/**
-		 * Internal Library: HTTP
+		 * Library: Flatpickr
 		 */
-		wp_register_script('dlm_http', DLM_ASSETS_URL . 'js/shared/http.js', [], $this->version);
-
-		/**
-		 * Library: Fontello icons
-		 */
-		wp_register_style( 'dlm_iconfont', DLM_ASSETS_URL . 'lib/iconfont/css/digital-license-manager.css' );
+		wp_register_style( 'dlm_flatpickr', DLM_ASSETS_URL . 'lib/flatpickr/flatpickr.min.css' );
+		wp_register_script( 'dlm_flatpickr', DLM_ASSETS_URL . 'lib/flatpickr/flatpickr.min.js' );
 
 		/**
 		 * Library: Micromodal
@@ -112,23 +109,41 @@ class Boot extends Singleton {
 		wp_register_script( 'dlm_micromodal', DLM_ASSETS_URL . 'lib/micromodal/micromodal.min.js' );
 
 		/**
-		 * Library: Select2
+		 * Library: Tom-Select.js
 		 */
-		wp_register_style( 'dlm_select2', DLM_ASSETS_URL . 'lib/select2/select2.min.css', array(), '4.0.13' );
-		wp_register_script( 'dlm_select2', DLM_ASSETS_URL . 'lib/select2/select2.min.js', array( 'jquery' ), '4.0.13' );
-		wp_register_style( 'dlm_select2_custom', DLM_CSS_URL . 'admin/select2.css' );
+		wp_register_script( 'dlm_tomselect', DLM_ASSETS_URL . 'lib/tom-select/tom-select.complete.min.js', [], '2.2.2' );
+		wp_register_style( 'dlm_tomselect', DLM_ASSETS_URL . 'lib/tom-select/tom-select.default.min.css', [], '2.2.2' );
+
+		/**
+		 * Internal Library: HTTP
+		 */
+		wp_register_script( 'dlm_utils', DLM_ASSETS_URL . 'js/shared/utils.js', [], $this->version );
+		wp_register_script( 'dlm_http', DLM_ASSETS_URL . 'js/shared/http.js', [], $this->version );
+
+		/**
+		 * Internal Library: Select
+		 */
+		wp_register_script( 'dlm_select', DLM_ASSETS_URL . 'js/shared/select.js', [ 'dlm_tomselect', 'dlm_http' ], $this->version );
+		wp_register_style( 'dlm_select', DLM_ASSETS_URL . 'css/shared/select.css', [ 'dlm_tomselect' ], $this->version );
+		wp_localize_script( 'dlm_select', 'dlm_select_i18n', [ 'loading' => __( 'Loading more results...', 'digital-license-manager' ) ] );
+
+
+		/**
+		 * Library: Fontello icons
+		 */
+		wp_register_style( 'dlm_iconfont', DLM_ASSETS_URL . 'lib/iconfont/css/digital-license-manager.css' );
 
 		/**
 		 * Page specific
 		 */
-		wp_register_script( 'dlm_licenses_page', DLM_JS_URL . 'admin/licenses.js', array( 'jquery' ), $this->version );
-		wp_register_script( 'dlm_generators_page', DLM_JS_URL . 'admin/generators.js', array( 'jquery' ), $this->version );
-		wp_register_script( 'dlm_activations_page', DLM_JS_URL . 'admin/activations.js', array( 'jquery' ), $this->version );
-		wp_register_script( 'dlm_settings_page', DLM_JS_URL . 'admin/settings.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'dlm_licenses_page', DLM_JS_URL . 'admin/licenses.js', array( 'jquery', 'dlm_select', 'dlm_flatpickr' ), $this->version );
+		wp_register_script( 'dlm_generators_page', DLM_JS_URL . 'admin/generators.js', array( 'jquery', 'dlm_select' ), $this->version );
+		wp_register_script( 'dlm_activations_page', DLM_JS_URL . 'admin/activations.js', array( 'jquery', 'dlm_select' ), $this->version );
+		wp_register_script( 'dlm_settings_page', DLM_JS_URL . 'admin/settings.js', array( 'dlm_utils' ), $this->version );
 		wp_register_style( 'dlm_settings_page', DLM_CSS_URL . 'admin/settings.css', array(), $this->version, 'all' );
 		wp_register_script( 'dlm_products_page', DLM_JS_URL . 'admin/products.js', array( 'jquery' ), $this->version );
 		wp_register_style( 'dlm_manage_page', DLM_CSS_URL . 'admin/manage.css', array(), $this->version, 'all' );
-		wp_register_script( 'dlm_tools_page', DLM_JS_URL . 'admin/tools.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'dlm_tools_page', DLM_JS_URL . 'admin/tools.js', array( 'dlm_http' ), $this->version );
 		wp_register_style( 'dlm_tools_page', DLM_CSS_URL . 'admin/tools.css', array(), $this->version, 'all' );
 
 
@@ -141,14 +156,9 @@ class Boot extends Singleton {
 		 * Global admin assets
 		 */
 		wp_register_style( 'dlm_admin', DLM_CSS_URL . 'admin/general.css', array(), $this->version );
-		wp_register_script( 'dlm_admin', DLM_JS_URL . 'admin/general.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'dlm_admin', DLM_JS_URL . 'admin/general.js', array( 'jquery', 'dlm_http' ), $this->version );
 
-		/**
-		 * jQuery UI: Stylesheet
-		 */
-		wp_register_style( 'dlm_jquery-ui-datepicker', DLM_ASSETS_URL . 'lib/jquery-ui/jquery-ui.min.css', array(), '1.13.1' );
-
-		do_action('dlm_register_scripts', $this->version );
+		do_action( 'dlm_register_scripts', $this->version );
 	}
 
 	/**
@@ -173,7 +183,6 @@ class Boot extends Singleton {
 		/**
 		 * Global assets
 		 */
-		wp_enqueue_style( 'dlm_jquery-ui-datepicker' );
 		wp_enqueue_style( 'dlm_global' );
 		wp_enqueue_style( 'dlm_iconfont' );
 
@@ -203,18 +212,14 @@ class Boot extends Singleton {
 		}
 
 		/**
-		 * Enqueue select2
-		 */
-		if ( $isLicenses || $isGenerators || $isSettings || $isActivations ) {
-			wp_enqueue_script( 'dlm_select2' );
-			wp_enqueue_style( 'dlm_select2' );
-			wp_enqueue_style( 'dlm_select2_custom' );
-		}
-
-		/**
 		 * Page: Licenses
 		 */
 		if ( $isLicenses ) {
+			$dateFormat =  get_option( 'date_format' );
+			$timeFormat =  DateFormatter::convertTimeFormatForFlatpickr(get_option('time_format'));
+
+			wp_enqueue_style( 'dlm_select' );
+			wp_enqueue_style( 'dlm_flatpickr' );
 			wp_enqueue_style( 'dlm_micromodal' );
 			wp_enqueue_script( 'dlm_micromodal' );
 			wp_enqueue_script( 'dlm_licenses_page' );
@@ -227,7 +232,8 @@ class Boot extends Singleton {
 					'placeholderSearchUsers'     => __( 'Search by user login, name or email', 'digital-license-manager' ),
 					'placeholderFilterByOrder'   => __( 'Filter by order', 'digital-license-manager' ),
 					'placeholderFilterByProduct' => __( 'Filter by product', 'digital-license-manager' ),
-					'placeholderFilterByUser'    => __( 'Filter by user', 'digital-license-manager' )
+					'placeholderFilterByUser'    => __( 'Filter by user', 'digital-license-manager' ),
+					'dateTimeFormat'                 => sprintf('%s at %s', $dateFormat, $timeFormat),
 				)
 			);
 			wp_localize_script(
@@ -243,6 +249,8 @@ class Boot extends Singleton {
 		 * Page: Generators
 		 */
 		if ( $isGenerators ) {
+			wp_enqueue_style( 'dlm_select' );
+			wp_enqueue_style( 'dlm_flatpickr' );
 			wp_enqueue_script( 'dlm_generators_page' );
 			wp_localize_script(
 				'dlm_generators_page',
@@ -262,6 +270,8 @@ class Boot extends Singleton {
 		}
 
 		if ( $isActivations ) {
+			wp_enqueue_style( 'dlm_select' );
+			wp_enqueue_style( 'dlm_flatpickr' );
 			wp_enqueue_script( 'dlm_activations_page' );
 			wp_localize_script(
 				'dlm_activations_page',
@@ -284,6 +294,8 @@ class Boot extends Singleton {
 		 * Page: Settings
 		 */
 		if ( $isSettings ) {
+			wp_enqueue_style( 'dlm_select' );
+			wp_enqueue_style( 'dlm_flatpickr' );
 			wp_enqueue_media();
 			wp_enqueue_script( 'dlm_settings_page' );
 			wp_enqueue_style( 'dlm_settings_page' );

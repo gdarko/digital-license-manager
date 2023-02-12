@@ -129,7 +129,7 @@ class DateFormatter {
 
 			} else {
 				$timestampInput = strtotime( $date_str );
-				$timestampNow = strtotime( 'now' );
+				$timestampNow   = strtotime( 'now' );
 				if ( $timestampNow >= $timestampInput ) {
 					return sprintf(
 						'<span class="dlm-date dlm-date-expired" title="%s">%s</span>%s',
@@ -161,4 +161,50 @@ class DateFormatter {
 		);
 	}
 
+
+	/**
+	 * Converts PHP time format tokens to Flatpickr time format tokens
+	 *
+	 * @param $format
+	 *
+	 * @url https://www.php.net/manual/en/datetime.format.php (Time)
+	 * @url https://flatpickr.js.org/formatting/#time-formatting-tokens
+	 *
+	 * @since 1.4.0
+	 *
+	 * @return array|string|string[]
+	 */
+	public static function convertTimeFormatForFlatpickr( $format ) {
+		$phpfpmap = [
+			'A' => 'K',
+			'g' => 'h',
+			'G' => 'H',
+			'h' => 'G',
+			'H' => 'H',
+			'a' => 'K',
+			'i' => 'i',
+			's' => 'S'
+		];
+
+		foreach ( $phpfpmap as $phpF => $fpF ) {
+			$format = str_replace( $phpF, $fpF, $format );
+		}
+
+		return $format;
+	}
+
+
+	/**
+	 * Validates date/time string based on format
+	 *
+	 * @param $format
+	 * @param $date
+	 *
+	 * @since 1.4.0
+	 *
+	 * @return bool
+	 */
+	public static function validate( $format, $date ) {
+		return ( DateTime::createFromFormat( $format, $date ) !== false );
+	}
 }

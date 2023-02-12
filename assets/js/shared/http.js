@@ -61,6 +61,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
                         params.error(request.responseText, request.status, headers);
                     }
                 }
+                if(params.hasOwnProperty('complete')) {
+                    params.complete(request.responseText, request.status, headers)
+                }
             }
         };
         if (params.hasOwnProperty('beforeStart')) {

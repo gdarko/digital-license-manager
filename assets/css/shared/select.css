@@ -1,0 +1,37 @@
+/* tom select */
+.ts-wrapper {
+    min-height:30px;
+}
+.ts-wrapper .ts-control {
+    background: #fff !important;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    height: 30px;
+}
+.ts-control > [data-ts-item] {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    padding-right: 35px;
+}
+.ts-wrapper .ts-dropdown {
+    top: 30px !important;
+    margin-top:0 !important;
+}
+.ts-wrapper input.dropdown-input {
+    outline: none;
+}
+.ts-wrapper .clear-button {
+    color: red;
+    font-weight: bold;
+}
+.ts-wrapper.plugin-remove_button .item .remove {
+    background: #f0f0f0;
+}
+.actions .ts-wrapper .ts-control {
+    min-width: 280px;
+    max-width: 280px;
+}
+.actions .ts-wrapper {
+    float: left;
+}

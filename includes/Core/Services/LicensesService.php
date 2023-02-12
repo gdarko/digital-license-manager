@@ -156,10 +156,8 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		}
 
 		if ( ! empty( $expiresAt ) ) {
-			try {
-				new DateTime( $expiresAt );
-			} catch ( Exception $e ) {
-				return new WP_Error( 'data_error', $e->getMessage(), array( 'code' => 422 ) );
+			if ( ! DateFormatter::validate( 'Y-m-d H:i:s', $expiresAt ) ) {
+				return new WP_Error( 'data_error', __( 'Invalid expires at date format', 'digital-license-manager' ), array( 'code' => 422 ) );
 			}
 		} else {
 			$expiresAt = null;
@@ -226,6 +224,10 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			return new WP_Error( 'data_error', sprintf( __( "The license key '%s' could not be found", 'digital-license-manager' ), $licenseKey ), array( 'code' => 404 ) );
 		}
 
+		if ( is_numeric( $licenseKey ) ) {
+			$licenseKey = $oldLicense->getDecryptedLicenseKey();
+		}
+
 		// Order ID
 		if ( array_key_exists( 'order_id', $data ) ) {
 			if ( $data['order_id'] === null ) {
@@ -264,9 +266,9 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 
 
 		// License key
-		if ( array_key_exists( 'license_key', $data ) ) {
+		if ( array_key_exists( 'license_key', $data ) && $data['license_key'] != $oldLicense->getDecryptedLicenseKey() ) {
 			// Check for possible duplicates
-			if ( $this->isKeyDuplicate( $data['license_key'], $oldLicense->getId() ) ) {
+			if (  $this->isKeyDuplicate( $data['license_key'], $oldLicense->getId() ) ) {
 				return new WP_Error( 'data_error', sprintf( __( "The license key '%s' already exists", 'digital-license-manager' ), $data['license_key'] ), array( 'code' => 409 ) );
 			}
 

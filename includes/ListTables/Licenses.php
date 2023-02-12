@@ -253,7 +253,7 @@ class Licenses extends AbstractListTable {
 	 */
 	public function column_license_key( $item ) {
 		if ( Settings::get( 'hide_license_keys' ) ) {
-			$title = '<code class="dlm-placeholder empty"></code>';
+			$title = sprintf('<code class="dlm-placeholder empty" data-id="%d"></code>', $item['id']);
 			$title .= sprintf(
 				'<img class="dlm-spinner" data-id="%d" src="%s">',
 				$item['id'],
@@ -300,12 +300,12 @@ class Licenses extends AbstractListTable {
 
 		// Hide/Show
 		$actions['show'] = sprintf(
-			'<a class="dlm-license-key-show" data-id="%d">%s</a>',
+			'<a class="dlm-license-key-toggle dlm-license-key-show" data-id="%d">%s</a>',
 			$item['id'],
 			__( 'Show', 'digital-license-manager' )
 		);
 		$actions['hide'] = sprintf(
-			'<a class="dlm-license-key-hide" data-id="%d">%s</a>',
+			'<a class="dlm-license-key-toggle dlm-license-key-hide" data-id="%d">%s</a>',
 			$item['id'],
 			__( 'Hide', 'digital-license-manager' )
 		);
