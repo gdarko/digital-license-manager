@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         this.setupListeners();
     }
     Products.prototype.setupListeners = function () {
-        let self = this;
+        var self = this;
         setTimeout(function () {
             self.handleAllConditionalFields();
         }, 50);
@@ -17,11 +17,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
     }
 
     Products.prototype.handleConditionalField = function (event, field) {
-        let wrapper = field.closest('.woocommerce_variable_attributes') ? field.closest('div.data') : field.closest('div.woocommerce_options_panel')
-        let sourceId = field.id;
-        let sourceVal = field.value;
-        let target = wrapper.querySelector('[data-conditional-source="' + sourceId + '"]');
-        let targetW = target ? target.closest('.dlm-field-conditional-target') : null;
+        var wrapper = field.closest('.woocommerce_variable_attributes') ? field.closest('div.data') : field.closest('div.woocommerce_options_panel')
+        var sourceId = field.id;
+        var sourceVal = field.value;
+        var target = wrapper.querySelector('[data-conditional-source="' + sourceId + '"]');
+        var targetW = target ? target.closest('.dlm-field-conditional-target') : null;
         if (targetW) {
             if (sourceVal === target.dataset.conditionalShowIf) {
                 targetW.style.display = 'block';
@@ -32,8 +32,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
     }
 
     Products.prototype.handleAllConditionalFields = function () {
-        let selectDropdowns = document.querySelectorAll('.dlm-field-conditional-src select');
-        for (let i = 0; i < selectDropdowns.length; i++) {
+        var selectDropdowns = document.querySelectorAll('.dlm-field-conditional-src select');
+        for (var i = 0; i < selectDropdowns.length; i++) {
             this.handleConditionalField(null, selectDropdowns[i]);
         }
     }
@@ -42,9 +42,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
      * Attach the events
      */
     Products.prototype.attachConditionalFieldsListeners = function () {
-        let self = this;
-        let selectDropdowns = document.querySelectorAll('.dlm-field-conditional-src select');
-        for (let i = 0; i < selectDropdowns.length; i++) {
+        var self = this;
+        var selectDropdowns = document.querySelectorAll('.dlm-field-conditional-src select');
+        for (var i = 0; i < selectDropdowns.length; i++) {
             selectDropdowns[i].addEventListener('change', function (event) {
                 self.handleConditionalField(event, selectDropdowns[i])
             })

@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         if (licensesToggleAllBtns) {
             for (var i = 0; i < licensesToggleAllBtns.length; i++) {
                 licensesToggleAllBtns[i].addEventListener('click', function (e) {
-                    let elements = this.closest('td').querySelectorAll('.dlm-license-list li');
+                    var elements = this.closest('td').querySelectorAll('.dlm-license-list li');
                     self.handleLicenseKeysToggle(elements, this.classList.contains('dlm-license-keys-show-all'));
                 }.bind(licensesToggleAllBtns[i]))
             }
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     AdminGeneral.prototype.handleLicenseKeysToggle = function (elements, isShow) {
         var self = this
         if (isShow) {
-            const licenseIds = [];
+            var licenseIds = [];
             for (var i = 0; i < elements.length; i++) {
                 var placeholder = elements[i].querySelector('.dlm-placeholder');
                 if (placeholder) {
@@ -90,8 +90,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
                     ids: JSON.stringify(licenseIds)
                 },
                 success: function (response, responseStatus, responseHeaders) {
-                    for (const id in response) {
-                        const licenseKey = document.querySelector('.dlm-placeholder[data-id="' + id + '"]');
+                    for (var id in response) {
+                        var licenseKey = document.querySelector('.dlm-placeholder[data-id="' + id + '"]');
                         licenseKey.classList.remove('empty');
                         licenseKey.innerHTML = response[id];
                     }
@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             });
         } else {
             for (var i = 0; i < elements.length; i++) {
-                const licenseKey = elements[i].querySelector('.dlm-placeholder');
+                var licenseKey = elements[i].querySelector('.dlm-placeholder');
                 if (licenseKey) {
                     licenseKey.innerHTML = '';
                     licenseKey.classList.add('empty');
@@ -127,19 +127,19 @@ document.addEventListener("DOMContentLoaded", function (event) {
         if (!el) {
             return;
         }
-        const str = el.innerHTML;
+        var str = el.innerHTML;
 
         if (str.length === 0) {
             return;
         }
 
-        const textArea = document.createElement('textarea');
+        var textArea = document.createElement('textarea');
         textArea.value = str;
         textArea.setAttribute('readonly', '');
         textArea.style.position = 'absolute';
         textArea.style.left = '-9999px';
         document.body.appendChild(textArea);
-        const selected = document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
+        var selected = document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
         textArea.select();
         document.execCommand('copy');
         document.body.removeChild(textArea);
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         }
 
         // Display info
-        const copied = document.createElement('div');
+        var copied = document.createElement('div');
         copied.classList.add('dlm-clipboard');
         copied.style.position = 'absolute';
         copied.style.left = e.clientX.toString() + 'px';

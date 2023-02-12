@@ -11,11 +11,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
      */
     window.DLM.Activations.prototype.setupListeners = function () {
 
-        const dropdownLicenses = document.querySelector('select#filter-by-license-id');
-        const dropdownSources = document.querySelector('select#filter-by-source');
+        var dropdownLicenses = document.querySelector('select#filter-by-license-id');
+        var dropdownSources = document.querySelector('select#filter-by-source');
 
         // Search configurations
-        const licenseDropdownSearchConfig = {
+        var licenseDropdownSearchConfig = {
             remote: {
                 url: ajaxurl,
                 action: 'dlm_dropdown_search',
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             placeholder: dlm_activations_i18n.placeholderSearchLicenses,
         };
 
-        const sourceDropdownSearchConfig = {
+        var sourceDropdownSearchConfig = {
             placeholder: dlm_activations_i18n.placeholderSearchSources
         };
 

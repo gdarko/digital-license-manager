@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         var uploadButton = document.querySelectorAll('.dlm-field-upload-button');
         for (var i = 0; i < uploadButton.length; i++) {
             uploadButton[i].addEventListener('click', this.handleUpload.bind(uploadButton[i]));
-            let removeBtn = uploadButton[i].closest('.dlm-field-upload').querySelector('.dlm-field-remove-button');
+            var removeBtn = uploadButton[i].closest('.dlm-field-upload').querySelector('.dlm-field-remove-button');
             removeBtn.addEventListener('click', this.handleRemove.bind(removeBtn));
         }
     }

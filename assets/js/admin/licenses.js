@@ -11,25 +11,25 @@ document.addEventListener("DOMContentLoaded", function (event) {
      */
     window.DLM.Licenses.prototype.setupListeners = function () {
 
-        const importLicenseProduct = document.querySelector('select#bulk__product');
-        const importLicenseOrder = document.querySelector('select#bulk__order');
-        const addLicenseProduct = document.querySelector('select#single__product');
-        const addLicenseOrder = document.querySelector('select#single__order');
-        const addLicenseUser = document.querySelector('select#single__user');
-        const addExpiresAt = document.querySelector('input#single__expires_at');
-        const editLicenseProduct = document.querySelector('select#edit__product');
-        const editLicenseOrder = document.querySelector('select#edit__order');
-        const editExpiresAt = document.querySelector('input#edit__expires_at');
-        const editStatus = document.querySelector('select#edit__status');
-        const bulkAddSource = document.querySelectorAll('input[type="radio"].bulk__type');
+        var importLicenseProduct = document.querySelector('select#bulk__product');
+        var importLicenseOrder = document.querySelector('select#bulk__order');
+        var addLicenseProduct = document.querySelector('select#single__product');
+        var addLicenseOrder = document.querySelector('select#single__order');
+        var addLicenseUser = document.querySelector('select#single__user');
+        var addExpiresAt = document.querySelector('input#single__expires_at');
+        var editLicenseProduct = document.querySelector('select#edit__product');
+        var editLicenseOrder = document.querySelector('select#edit__order');
+        var editExpiresAt = document.querySelector('input#edit__expires_at');
+        var editStatus = document.querySelector('select#edit__status');
+        var bulkAddSource = document.querySelectorAll('input[type="radio"].bulk__type');
         // Licenses table
-        const dropdownOrders = document.querySelector('select#filter-by-order-id');
-        const dropdownProducts = document.querySelector('select#filter-by-product-id');
-        const dropdownUsers = document.querySelector('select#filter-by-user-id');
-        const selectActions = document.querySelectorAll('#dlm-license-table select[name=action]');
+        var dropdownOrders = document.querySelector('select#filter-by-order-id');
+        var dropdownProducts = document.querySelector('select#filter-by-product-id');
+        var dropdownUsers = document.querySelector('select#filter-by-user-id');
+        var selectActions = document.querySelectorAll('#dlm-license-table select[name=action]');
 
         // Search configurations
-        const productDropdownSearchConfig = {
+        var productDropdownSearchConfig = {
             remote: {
                 url: ajaxurl,
                 action: 'dlm_dropdown_search',
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             },
             placeholder: dlm_licenses_i18n.placeholderSearchProducts,
         };
-        const orderDropdownSearchConfig = {
+        var orderDropdownSearchConfig = {
             remote: {
                 url: ajaxurl,
                 action: 'dlm_dropdown_search',
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             },
             placeholder: dlm_licenses_i18n.placeholderSearchOrders,
         };
-        const userDropdownSearchConfig = {
+        var userDropdownSearchConfig = {
             remote: {
                 url: ajaxurl,
                 action: 'dlm_dropdown_search',
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             placeholder: dlm_licenses_i18n.placeholderSearchUsers,
         };
 
-        const flatPickrConfig = {
+        var flatPickrConfig = {
             altInput: true,
             altFormat: dlm_licenses_i18n.dateTimeFormat,
             dateFormat: "Y-m-d H:i:S",
@@ -106,22 +106,22 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
             for (var i = 0; i < bulkAddSource.length; i++) {
                 bulkAddSource[i].addEventListener('change', function () {
-                    const bulkType = document.querySelector('input[type="radio"].bulk__type:checked');
-                    const value = bulkType ? bulkType.value : '';
+                    var bulkType = document.querySelector('input[type="radio"].bulk__type:checked');
+                    var value = bulkType ? bulkType.value : '';
 
                     if (value !== 'file' && value !== 'clipboard') {
                         return;
                     }
 
                     // Hide the currently visible row
-                    const bulkSourceRows = document.querySelectorAll('tr.bulk__source_row');
+                    var bulkSourceRows = document.querySelectorAll('tr.bulk__source_row');
                     for (var j = 0; j < bulkSourceRows.length; j++) {
                         if (!bulkSourceRows[j].classList.contains('hidden')) {
                             bulkSourceRows[j].classList.add('hidden');
                         }
                     }
                     // Display the selected row
-                    const bulkSourceRowCurrent = document.querySelector('tr#bulk__source_' + value + '.bulk__source_row');
+                    var bulkSourceRowCurrent = document.querySelector('tr#bulk__source_' + value + '.bulk__source_row');
                     if (bulkSourceRowCurrent) {
                         bulkSourceRowCurrent.classList.remove('hidden');
                     }
