@@ -156,7 +156,7 @@ class Boot extends Singleton {
 		 * Global admin assets
 		 */
 		wp_register_style( 'dlm_admin', DLM_CSS_URL . 'admin/general.css', array(), $this->version );
-		wp_register_script( 'dlm_admin', DLM_JS_URL . 'admin/general.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'dlm_admin', DLM_JS_URL . 'admin/general.js', array( 'jquery', 'dlm_http' ), $this->version );
 
 		do_action( 'dlm_register_scripts', $this->version );
 	}

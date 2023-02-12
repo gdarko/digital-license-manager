@@ -494,7 +494,7 @@ class Orders {
 			foreach ( $licenses as $license ) {
 				$decrypted = $license->getDecryptedLicenseKey();
 				$decrypted = is_wp_error( $decrypted ) ? 'ERROR' : $decrypted;
-				$html      .= sprintf( '<li></span> <code class="dlm-placeholder">%s</code></li>', $decrypted );
+				$html      .= sprintf( '<li> <code class="dlm-placeholder">%s</code></li>', $decrypted );
 			}
 
 			$html .= '</ul>';
@@ -502,15 +502,15 @@ class Orders {
 		} else {
 			foreach ( $licenses as $license ) {
 				$html .= sprintf(
-					'<li><code class="dlm-placeholder empty" data-id="%d"></code></li>',
+					'<li><span class="dlm-spinner"></span><code class="dlm-placeholder empty" data-id="%d"></code></li>',
 					$license->getId()
 				);
 			}
 
 			$html .= '</ul>';
 			$html .= '<p>';
-			$html .= sprintf( '<a class="button dlm-license-keys-show-all" data-order-id="%d">%s</a>', $order_id, __( 'Show license(s)', 'digital-license-manager' ) );
-			$html .= sprintf( '<a class="button dlm-license-keys-hide-all" data-order-id="%d">%s</a>', $order_id, __( 'Hide license(s)', 'digital-license-manager' ) );
+			$html .= sprintf( '<a class="button dlm-license-keys-toggle-all dlm-license-keys-show-all" data-order-id="%d">%s</a>', $order_id, __( 'Show license(s)', 'digital-license-manager' ) );
+			$html .= sprintf( '<a class="button dlm-license-keys-toggle-all" data-order-id="%d">%s</a>', $order_id, __( 'Hide license(s)', 'digital-license-manager' ) );
 			$html .= sprintf( '<img class="dlm-spinner" alt="%s" src="%s">', __( 'Please wait...', 'digital-license-manager' ), Licenses::SPINNER_URL );
 			$html .= '<span class="dlm-txt-copied-to-clipboard" style="display: none">' . __( 'Copied to clipboard', 'digital-license-manager' ) . '</span>';
 			$html .= '</p>';

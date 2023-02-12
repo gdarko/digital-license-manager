@@ -1,161 +1,133 @@
-(function ($) {
+window.DLM = window.hasOwnProperty('DLM') ? window.DLM : {};
 
-    $(document).ready(function () {
-        const licenseKeysCheckbox = $('#dlm_licensed_product');
-        registerClickHandlers(licenseKeysCheckbox);
-        registerChangeHandlers();
-        if (DLM_MAIN.product_downloads && licenseKeysCheckbox.is(':checked')) {
-            modifyProductDownloadsTable();
+document.addEventListener("DOMContentLoaded", function (event) {
+    /**
+     * Admin Settings
+     * @constructor
+     */
+    var AdminGeneral = function () {
+        this.setupListeners();
+    };
+    /**
+     * Initializes the event listeners
+     */
+    AdminGeneral.prototype.setupListeners = function () {
+
+        var self = this;
+
+        // Single key toggle
+        var licenseToggles = document.querySelectorAll('.dlm-license-key-toggle');
+        if (licenseToggles) {
+            for (var i = 0; i < licenseToggles.length; i++) {
+                licenseToggles[i].addEventListener('click', function (e) {
+                    self.handleLicenseKeysToggle([this.closest('tr')], this.classList.contains('dlm-license-key-show'));
+                }.bind(licenseToggles[i]));
+            }
+        }
+
+        // Copy license key to clipboard
+        var licenseKeys = document.querySelectorAll('.license_key .dlm-placeholder, .dlm-license-list .dlm-placeholder');
+        if (licenseKeys) {
+            for (var i = 0; i < licenseKeys.length; i++) {
+                licenseKeys[i].addEventListener('click', function (e) {
+                    self.copyLicenseToClipboard(licenseKeys[i], e);
+                });
+            }
+        }
+
+        // Toggle all
+        var licensesToggleAllBtns = document.querySelectorAll('.dlm-license-keys-toggle-all');
+        if (licensesToggleAllBtns) {
+            for (var i = 0; i < licensesToggleAllBtns.length; i++) {
+                licensesToggleAllBtns[i].addEventListener('click', function (e) {
+                    let elements = this.closest('td').querySelectorAll('.dlm-license-list li');
+                    self.handleLicenseKeysToggle(elements, this.classList.contains('dlm-license-keys-show-all'));
+                }.bind(licensesToggleAllBtns[i]))
+            }
+        }
+
+        // Dialog confirm
+        var confirmDialogs = document.querySelectorAll('.dlm-confirm-dialog');
+        if (confirmDialogs) {
+            for (var i = 0; i < confirmDialogs.length; i++) {
+                confirmDialogs[i].addEventListener('click', function (e) {
+                    return confirm(DLM_MAIN.i18n.confirm_dialog);
+                })
+            }
+        }
+    }
+
+    /**
+     *
+     * @param element
+     * @param state
+     */
+    AdminGeneral.prototype.setLicenseKeySpinner = function (element, state) {
+        element.querySelector('.dlm-spinner').style.opacity = state ? 1 : 0;
+    }
+
+    /**
+     * Handle license toggle
+     * @param {Array} elements
+     * @param {Boolean} isShow
+     */
+    AdminGeneral.prototype.handleLicenseKeysToggle = function (elements, isShow) {
+        var self = this
+        if (isShow) {
+            const licenseIds = [];
+            for (var i = 0; i < elements.length; i++) {
+                var placeholder = elements[i].querySelector('.dlm-placeholder');
+                if (placeholder) {
+                    licenseIds.push(parseInt(placeholder.dataset.id));
+                }
+                self.setLicenseKeySpinner(elements[i], true);
+            }
+            var http = new window.DLM.Http();
+            http.post(ajaxurl, {
+                data: {
+                    action: 'dlm_show_all_license_keys',
+                    show_all: DLM_MAIN.show_all,
+                    ids: JSON.stringify(licenseIds)
+                },
+                success: function (response, responseStatus, responseHeaders) {
+                    for (const id in response) {
+                        const licenseKey = document.querySelector('.dlm-placeholder[data-id="' + id + '"]');
+                        licenseKey.classList.remove('empty');
+                        licenseKey.innerHTML = response[id];
+                    }
+                },
+                error: function (response, responseStatus, responseHeaders) {
+                    alert(response);
+                },
+                complete: function () {
+                    for (var i = 0; i < elements.length; i++) {
+                        self.setLicenseKeySpinner(elements[i], false)
+                    }
+                }
+            });
         } else {
-            resetProductDownloadsTable();
-        }
-        $(document).on('click', '.dlm-confirm-dialog', handleConfirmDialog);
-    });
-
-    function registerClickHandlers(licenseKeysCheckbox) {
-        $('.dlm-license-key-show').click(function () {
-            showLicenseKey(this);
-        });
-
-        $(document).on('click', '.license_key .dlm-placeholder, .dlm-license-list .dlm-placeholder', function (e) {
-            copyLicenseKeyToClipboard(this, e);
-        });
-
-        $('.dlm-license-key-hide').click(function () {
-            hideLicenseKey(this);
-        });
-
-        $('.dlm-license-keys-show-all').click(function () {
-            showAllLicenseKeys(this);
-        });
-
-        $('.dlm-license-keys-hide-all').click(function () {
-            hideAllLicenseKeys(this);
-        });
-
-        if (DLM_MAIN.product_downloads) {
-            $('#woocommerce-product-data .downloadable_files table .insert').click(function () {
-                if (licenseKeysCheckbox.is(':checked')) {
-                    modifyProductDownloadsTable(true);
+            for (var i = 0; i < elements.length; i++) {
+                const licenseKey = elements[i].querySelector('.dlm-placeholder');
+                if (licenseKey) {
+                    licenseKey.innerHTML = '';
+                    licenseKey.classList.add('empty');
                 }
-            });
-
-            $('#woocommerce-product-data').on('click', '.downloadable_files table tr .delete', function () {
-                if (licenseKeysCheckbox.is(':checked')) {
-                    resetProductDownloadsTable();
-                }
-            });
-        }
-    }
-
-    function registerChangeHandlers() {
-        if (DLM_MAIN.product_downloads) {
-            $(document).on('change', '#dlm_licensed_product', function () {
-                if ($(this).is(':checked')) {
-                    $('.downloadable_files table tbody').find('tr:gt(0)').remove();
-                    modifyProductDownloadsTable();
-                } else {
-                    resetProductDownloadsTable();
-                }
-            });
-        }
-    }
-
-    function showLicenseKey(el) {
-        const licenseKeyId = parseInt($(el).data('id'));
-        const code = $(el).closest('.license_key').find('.dlm-placeholder');
-
-        showLicenseKeyLoadingSpinner(el);
-
-        const data = {
-            action: 'dlm_show_license_key',
-            show: DLM_MAIN.show,
-            id: licenseKeyId
-        };
-
-        $.post(ajaxurl, data, function () {
-        }).done(function (response) {
-            code.removeClass('empty');
-            code.text(response);
-        }).fail(function (response) {
-            console.log(response);
-        }).always(function () {
-            hideLicenseKeyLoadingSpinner(el);
-        });
-    }
-
-    function hideLicenseKey(el) {
-        const code = $(el).closest('.license_key').find('.dlm-placeholder');
-
-        code.text('');
-        code.addClass('empty');
-    }
-
-    function showAllLicenseKeys(el) {
-        const licenseKeyIds = getAllLicenseKeyIds(el);
-
-        showLicenseKeyLoadingSpinner(el);
-
-        const data = {
-            action: 'dlm_show_all_license_keys',
-            show_all: DLM_MAIN.show_all,
-            ids: JSON.stringify(licenseKeyIds)
-        };
-
-        $.post(ajaxurl, data, function () {
-        }).done(function (response) {
-            for (const id in response) {
-                if (!response.hasOwnProperty(id)) {
-                    continue;
-                }
-
-                const licenseKey = $('.dlm-placeholder[data-id="' + id + '"]');
-
-                licenseKey.removeClass('empty');
-                licenseKey.text(response[id]);
             }
-        }).fail(function (response) {
-            console.log(response);
-        }).always(function () {
-            hideLicenseKeyLoadingSpinner(el);
-        });
-    }
-
-    function hideAllLicenseKeys(el) {
-        const licenseKeyIds = getAllLicenseKeyIds(el);
-
-        $(licenseKeyIds).each(function (id, value) {
-            const licenseKey = $('.dlm-placeholder[data-id="' + value + '"]');
-
-            licenseKey.addClass('empty');
-            licenseKey.text('');
-        });
-
-        for (const id in licenseKeyIds) {
-            if (!licenseKeyIds.hasOwnProperty(id)) {
-                continue;
-            }
-
-            const licenseKey = $('.dlm-placeholder[data-id="' + id + '"]');
-
-            licenseKey.addClass('empty');
-            licenseKey.text('');
         }
+
     }
 
-    function getAllLicenseKeyIds(el) {
-        const licenseKeyIds = [];
-        const codeList = $(el).closest('td').find('.dlm-license-list li');
 
-        codeList.each(function (id, li) {
-            licenseKeyIds.push(parseInt($(li).find('.dlm-placeholder').data('id')));
-        });
-
-        return licenseKeyIds;
-    }
-
-    function copyLicenseKeyToClipboard(el, e) {
-        const str = $(el).text();
+    /**
+     * Copy license to clipboard
+     * @param el
+     * @param e
+     */
+    AdminGeneral.prototype.copyLicenseToClipboard = function (el, e) {
+        if (!el) {
+            return;
+        }
+        const str = el.innerHTML;
 
         if (str.length === 0) {
             return;
@@ -193,29 +165,13 @@
         }, 1500);
     }
 
-    function showLicenseKeyLoadingSpinner(el) {
-        $(el).closest('td').find('.dlm-spinner').css('opacity', 1);
-    }
-
-    function hideLicenseKeyLoadingSpinner(el) {
-        $(el).closest('td').find('.dlm-spinner').css('opacity', 0);
-    }
-
-    function modifyProductDownloadsTable(insertButton = false) {
-        let productDownloadsTableRowCount = $('.downloadable_files table tbody tr').length;
-
-        if ((!insertButton && productDownloadsTableRowCount >= 1) || (insertButton && productDownloadsTableRowCount >= 0)) {
-            $('.downloadable_files table tfoot').css('display', 'none');
-        } else {
-            resetProductDownloadsTable();
-        }
-    }
-
-    function resetProductDownloadsTable() {
-        $('.downloadable_files table tfoot').css('display', 'table-footer-group');
-    }
-
-    function handleConfirmDialog() {
-        return confirm(DLM_MAIN.i18n.confirm_dialog);
-    }
-})(jQuery);
+    /**
+     * Global.
+     * @type {AdminTools}
+     */
+    window.DLM.AdminGeneral = AdminGeneral;
+    /**
+     * Init
+     */
+    new window.DLM.AdminGeneral()
+});
