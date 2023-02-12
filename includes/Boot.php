@@ -137,11 +137,11 @@ class Boot extends Singleton {
 		 * Page specific
 		 */
 		wp_register_script( 'dlm_licenses_page', DLM_JS_URL . 'admin/licenses.js', array( 'jquery', 'dlm_select', 'dlm_flatpickr' ), $this->version );
-		wp_register_script( 'dlm_generators_page', DLM_JS_URL . 'admin/generators.js', array( 'jquery', 'dlm_select' ), $this->version );
-		wp_register_script( 'dlm_activations_page', DLM_JS_URL . 'admin/activations.js', array( 'jquery', 'dlm_select' ), $this->version );
+		wp_register_script( 'dlm_generators_page', DLM_JS_URL . 'admin/generators.js', array( 'dlm_select' ), $this->version );
+		wp_register_script( 'dlm_activations_page', DLM_JS_URL . 'admin/activations.js', array( 'dlm_select' ), $this->version );
 		wp_register_script( 'dlm_settings_page', DLM_JS_URL . 'admin/settings.js', array( 'dlm_utils' ), $this->version );
 		wp_register_style( 'dlm_settings_page', DLM_CSS_URL . 'admin/settings.css', array(), $this->version, 'all' );
-		wp_register_script( 'dlm_products_page', DLM_JS_URL . 'admin/products.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'dlm_products_page', DLM_JS_URL . 'admin/products.js', array(), $this->version );
 		wp_register_style( 'dlm_manage_page', DLM_CSS_URL . 'admin/manage.css', array(), $this->version, 'all' );
 		wp_register_script( 'dlm_tools_page', DLM_JS_URL . 'admin/tools.js', array( 'dlm_http' ), $this->version );
 		wp_register_style( 'dlm_tools_page', DLM_CSS_URL . 'admin/tools.css', array(), $this->version, 'all' );
@@ -178,6 +178,7 @@ class Boot extends Singleton {
 		$isActivations = $hook === 'license-manager_page_dlm_activations';
 		$isSettings    = $hook === 'license-manager_page_dlm_settings';
 		$isProducts    = in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'product' === $post_type;
+		$isOrder       = in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'shop_order' === $post_type;
 		$isManage      = $isLicenses || $isGenerators || $isActivations || apply_filters( 'dlm_admin_stylesheet_is_manage', false );
 
 		/**
@@ -214,9 +215,9 @@ class Boot extends Singleton {
 		/**
 		 * Page: Licenses
 		 */
-		if ( $isLicenses ) {
-			$dateFormat =  get_option( 'date_format' );
-			$timeFormat =  DateFormatter::convertTimeFormatForFlatpickr(get_option('time_format'));
+		if ( $isLicenses || $isOrder ) {
+			$dateFormat = get_option( 'date_format' );
+			$timeFormat = DateFormatter::convertTimeFormatForFlatpickr( get_option( 'time_format' ) );
 
 			wp_enqueue_style( 'dlm_select' );
 			wp_enqueue_style( 'dlm_flatpickr' );
@@ -233,7 +234,7 @@ class Boot extends Singleton {
 					'placeholderFilterByOrder'   => __( 'Filter by order', 'digital-license-manager' ),
 					'placeholderFilterByProduct' => __( 'Filter by product', 'digital-license-manager' ),
 					'placeholderFilterByUser'    => __( 'Filter by user', 'digital-license-manager' ),
-					'dateTimeFormat'                 => sprintf('%s at %s', $dateFormat, $timeFormat),
+					'dateTimeFormat'             => sprintf( '%s at %s', $dateFormat, $timeFormat ),
 				)
 			);
 			wp_localize_script(
