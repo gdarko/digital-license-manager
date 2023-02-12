@@ -34,6 +34,7 @@ class Orders {
 		add_action( 'woocommerce_order_details_after_order_table', array( $this, 'showBoughtLicenses' ), 10, 1 );
 		add_filter( 'woocommerce_order_actions', array( $this, 'addSendLicenseKeysAction' ), 10, 1 );
 		add_action( 'woocommerce_after_order_itemmeta', array( $this, 'showOrderedLicenses' ), 10, 3 );
+		add_filter( 'dlm_woocommerce_order_item_actions', array( $this, 'orderItemActions' ), 10, 4 );
 	}
 
 	/**
@@ -397,7 +398,36 @@ class Orders {
 			return;
 		}
 
-		echo self::getOrderedLicensesHtml( $licenses, $item->get_order_id() );
+		echo self::getOrderedLicensesHtml( $licenses, $item );
+	}
+
+	/**
+	 * Add order item actions
+	 *
+	 * @param array $actions
+	 * @param \WC_Order_Item_Product $order_item
+	 * @param $licenses
+	 *
+	 * @return array
+	 */
+	public function orderItemActions( $actions, $order_item, $licenses, $hide_keys ) {
+
+		if ( $hide_keys ) {
+			$actions['toggle'] = array(
+				'main_html'  => sprintf(
+					'<a class="button dlm-license-keys-toggle-all" data-order-id="%d" data-toggle-text="%s" data-toggle-current="hide"><img class="dlm-spinner" style="display:none;" alt="%s" src="%s"><span>%s</span></a>',
+					$order_item->get_order_id(),
+					__( 'Hide license(s)', 'digital-license-manager' ),
+					__( 'Please wait...', 'digital-license-manager' ),
+					Licenses::SPINNER_URL,
+					__( 'Show license(s)', 'digital-license-manager' )
+				),
+				'after_html' => '',
+				'priority'   => 20,
+			);
+		}
+
+		return $actions;
 	}
 
 	/**
@@ -481,44 +511,48 @@ class Orders {
 	 * Print the ordered licenses
 	 *
 	 * @param $licenses
-	 * @param $order_id
+	 * @param \WC_Order_Item_Product $order_item
 	 *
 	 * @return string
 	 */
-	public static function getOrderedLicensesHtml( $licenses, $order_id ) {
+	public static function getOrderedLicensesHtml( $licenses, $order_item ) {
 
-		$html = sprintf( '<p>%s:</p>', __( 'The following license keys have been sold by this order', 'digital-license-manager' ) );
+		$hide_keys = (int) Settings::get( 'hide_license_keys' );
+		$actions   = apply_filters( 'dlm_woocommerce_order_item_actions', [], $order_item, $licenses, $hide_keys );
+
+		// Generate licenses.
+		$html = sprintf( '<p>%s:</p>', __( 'The following licenses have been generated for this order item', 'digital-license-manager' ) );
 		$html .= '<ul class="dlm-license-list">';
-
-		if ( ! Settings::get( 'hide_license_keys' ) ) {
-			foreach ( $licenses as $license ) {
+		foreach ( $licenses as $license ) {
+			if ( ! $hide_keys ) {
 				$decrypted = $license->getDecryptedLicenseKey();
 				$decrypted = is_wp_error( $decrypted ) ? 'ERROR' : $decrypted;
 				$html      .= sprintf( '<li> <code class="dlm-placeholder">%s</code></li>', $decrypted );
+			} else {
+				$html .= sprintf( '<li><code class="dlm-placeholder empty" data-id="%d"></code></li>', $license->getId() );
 			}
-
-			$html .= '</ul>';
-			$html .= '<span class="dlm-txt-copied-to-clipboard" style="display: none">' . __( 'Copied to clipboard', 'digital-license-manager' ) . '</span>';
-		} else {
-			foreach ( $licenses as $license ) {
-				$html .= sprintf(
-					'<li><span class="dlm-spinner"></span><code class="dlm-placeholder empty" data-id="%d"></code></li>',
-					$license->getId()
-				);
-			}
-
-			$html .= '</ul>';
-			$html .= '<p>';
-			$html .= sprintf(
-				'<a class="button dlm-license-keys-toggle-all" data-order-id="%d" data-toggle-text="%s" data-toggle-current="hide">%s</a>',
-				$order_id,
-				__( 'Hide license(s)', 'digital-license-manager' ),
-				__( 'Show license(s)', 'digital-license-manager' )
-			);
-			$html .= sprintf( '<img class="dlm-spinner" alt="%s" src="%s">', __( 'Please wait...', 'digital-license-manager' ), Licenses::SPINNER_URL );
-			$html .= '<span class="dlm-txt-copied-to-clipboard" style="display: none">' . __( 'Copied to clipboard', 'digital-license-manager' ) . '</span>';
-			$html .= '</p>';
 		}
+		$html .= '</ul>';
+
+		// Render Actions.
+		if ( ! empty( $actions ) ) {
+			$html .= '<ul class="dlm-license-actions">';
+			foreach ( $actions as $key => $action ) {
+				if ( isset( $action['main_html'] ) ) {
+					$html .= '<li class="dlm-orderitem-action-' . $key . '">' . $action['main_html'] . '</li>';
+				}
+			}
+			$html .= '</ul>';
+
+			foreach ( $actions as $key => $action ) {
+				if ( !empty( $action['after_html'] ) ) {
+					add_action( 'admin_footer', function () use ( $action ) {
+						echo $action['after_html'];
+					}, 100000 );
+				}
+			}
+		}
+
 
 		return $html;
 	}

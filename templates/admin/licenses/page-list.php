@@ -17,5 +17,3 @@
         $licenses->display();
     ?>
 </form>
-
-<span class="dlm-txt-copied-to-clipboard" style="display: none"><?php esc_html_e('Copied to clipboard', 'digital-license-manager'); ?></span>

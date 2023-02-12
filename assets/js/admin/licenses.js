@@ -203,10 +203,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
                         this.dataset.toggleCurrent = 'hide';
                         state = 0;
                     }
-                    text = this.innerHTML;
-                    this.innerHTML = this.dataset.toggleText;
+                    var span = this.querySelector('span');
+                    text = span.innerHTML;
+                    span.innerText = this.dataset.toggleText;
                     this.dataset.toggleText = text;
-                    self.handleLicenseKeysToggle(elements, state);
+                    self.handleLicenseKeysToggle(elements, state, this);
                 }.bind(licensesToggleAllBtns[i]))
             }
         }
@@ -229,18 +230,30 @@ document.addEventListener("DOMContentLoaded", function (event) {
      * Handle license toggle
      * @param {Array} elements
      * @param {Boolean} isShow
+     * @param spinner
      */
-    Licenses.prototype.handleLicenseKeysToggle = function (elements, isShow) {
+    Licenses.prototype.handleLicenseKeysToggle = function (elements, isShow, spinner) {
         var self = this
+        spinner = spinner ? spinner : null;
         if (isShow) {
+
+            console.log(spinner);
+
             var licenseIds = [];
             for (var i = 0; i < elements.length; i++) {
                 var placeholder = elements[i].querySelector('.dlm-placeholder');
                 if (placeholder) {
                     licenseIds.push(parseInt(placeholder.dataset.id));
                 }
-                self.toggleLicenseKeySpinner(elements[i], true);
+                if(null === spinner) {
+                    self.toggleLicenseKeySpinner(elements[i], true);
+                }
             }
+
+            if(spinner) {
+                self.toggleLicenseKeySpinner(spinner, true);
+            }
+
             var http = new window.DLM.Http();
             http.post(ajaxurl, {
                 data: {
@@ -259,8 +272,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
                     alert(response);
                 },
                 complete: function () {
-                    for (var i = 0; i < elements.length; i++) {
-                        self.toggleLicenseKeySpinner(elements[i], false)
+                    if(null === spinner) {
+                        for (var i = 0; i < elements.length; i++) {
+                            self.toggleLicenseKeySpinner(elements[i], false)
+                        }
+                    } else {
+                        self.toggleLicenseKeySpinner(spinner, false)
                     }
                 }
             });
@@ -283,6 +300,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
      * @param state
      */
     Licenses.prototype.toggleLicenseKeySpinner = function (element, state) {
+        element.querySelector('.dlm-spinner').style.display = state ? 'inline-block' : 'none';
         element.querySelector('.dlm-spinner').style.opacity = state ? 1 : 0;
     }
 
@@ -325,7 +343,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         copied.style.position = 'absolute';
         copied.style.left = e.clientX.toString() + 'px';
         copied.style.top = (window.pageYOffset + e.clientY).toString() + 'px';
-        copied.innerText = document.querySelector('.dlm-txt-copied-to-clipboard').innerText.toString();
+        copied.innerText = dlm_licenses_i18n.copiedToClipboard
         document.body.appendChild(copied);
 
         setTimeout(function () {

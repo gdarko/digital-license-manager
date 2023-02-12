@@ -9,11 +9,6 @@
 	margin-left:5px;
 }
 
-/* Modals */
-.modal__overlay {
-	z-index: 9999;
-}
-
 /*
 Flatpickr
  */
@@ -120,9 +115,8 @@ Flatpickr
 .dlm-form-row > label {
 	font-weight: bold;
 }
-
-.wrap.dlm .tablenav  .select2-container {
-	min-width:250px;
+.modal__overlay {
+	z-index: 9999;
 }
 
 /* Helpers */
@@ -133,4 +127,13 @@ Flatpickr
 }
 .dlm-clear-margin-bottom {
 	margin-bottom: 0 !important;
+}
+
+/**
+Orders
+ */
+.dlm-license-keys-toggle-all .dlm-spinner {
+	position: relative;
+	top: 3px;
+	left: -4px;
 }

@@ -239,6 +239,7 @@ class Boot extends Singleton {
 					'placeholderFilterByProduct' => __( 'Filter by product', 'digital-license-manager' ),
 					'placeholderFilterByUser'    => __( 'Filter by user', 'digital-license-manager' ),
 					'dateTimeFormat'             => sprintf( '%s at %s', $dateFormat, $timeFormat ),
+					'copiedToClipboard'          => __( 'Copied to clipboard', 'digital-license-manager' )
 				)
 			);
 			wp_localize_script(
