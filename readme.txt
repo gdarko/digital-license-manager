@@ -3,8 +3,8 @@ Contributors: darkog, codeverve
 Tags: license key, license manager, software license, serial key, woocommerce, wordpress
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 6.1
-Stable tag: 1.3.9
+Tested up to: 6.2
+Stable tag: 1.4.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -23,6 +23,7 @@ The plugin is compatible with WooCommerce, although it can be used as standalone
 * Manage License Generators. Makes it possible to generate Licenses by specific rules (separator, chunks, length, allowed characters, prefix, suffix etc)
 * Assign Generators to one or more WooCommerce products to generate Licenses based on the rules of the Generator when the product is purchased on certain Order status
 * Automatically generate, sell and deliver keys through WooCommerce. Supports both Simple and Variable products.
+* Manual License Activations in MyAccount order page when using with WooCommerce
 * Separate page for Licenses in MyAccount when using with WooCommerce
 * Separate page for each License in My Account when using with WooCommerce
 * License Certificates in PDF format downloadable from the single License page in My Account page when using with WooCommerce
@@ -33,7 +34,10 @@ The plugin is compatible with WooCommerce, although it can be used as standalone
 * Import licenses form file
 * Export licenses to PDF or CSV format. Allows column selection
 * Migration tool for migrating from other plugins
-* Works even without WooCommerce. If you want to use the plugin as standalone license manager or if you have another solution for selling the keys, you can use the REST API to create licenses.
+* WooCommerce <a href="https://woocommerce.com/document/high-performance-order-storage/">High-Performance Order Storage</a> Support
+
+
+The plugin works fine even without WooCommerce. If you want to use the plugin as standalone license manager or if you have another solution for selling the keys, you can use the REST API to create licenses.
 
 ### ✨ PRO Version Features
 
@@ -161,6 +165,24 @@ To migrate to Digital License Manager, please navigate to "License Manager" > "S
 15. Re-send licenses via Order page
 
 == Changelog ==
+
+= 1.4.0 =
+*Release Date - 13 Feb 2023*
+
+* Add support for <a target="_blank" href="https://woocommerce.com/document/high-performance-order-storage/">WooCommerce High Performance Order Storage</a>
+* Add support to filter /licenses and /generators GET REST API endpoints with query parameters
+* Add Manual License Activations to allow customers enter manual activations, feature enabled from Settings
+* Refactored My Account's single license activations table actions, allow developers to add custom actions here
+* Add Delete button on the Activations that were added manually in My Account's single license activations table
+* Removed jQuery relience, refactored all the javascript to get rid of jQuery completely
+* Replaced Select2 (jQuery) with Tom-Select, a native JS library for select dropdowns with ajax support
+* Replaced jQuery UI's datepicker with flatpicker, a native JS library for date/time picker input
+* Refactored and simplified license reveal functionality in WooCommerce single order page in admin
+* Add a filter dlm_woocommerce_order_item_actions for managing the order item actions in the WooCommerce single order page in admin
+* Fixed issue introduced in v1.3.9 that thrown error when updating a license from admin
+* Tested compatibility with WordPress 6.2
+* Tested compatibility with WooCommerce 7.3
+* A lot of other small code quality improvements
 
 = 1.3.9 =
 *Release Date - 08 Jan 2023*
