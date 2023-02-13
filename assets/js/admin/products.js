@@ -46,8 +46,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
         var selectDropdowns = document.querySelectorAll('.dlm-field-conditional-src select');
         for (var i = 0; i < selectDropdowns.length; i++) {
             selectDropdowns[i].addEventListener('change', function (event) {
-                self.handleConditionalField(event, selectDropdowns[i])
-            })
+                self.handleConditionalField(event, this)
+            }.bind(selectDropdowns[i]))
         }
     }
 
