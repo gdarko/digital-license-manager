@@ -237,8 +237,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
         spinner = spinner ? spinner : null;
         if (isShow) {
 
-            console.log(spinner);
-
             var licenseIds = [];
             for (var i = 0; i < elements.length; i++) {
                 var placeholder = elements[i].querySelector('.dlm-placeholder');
