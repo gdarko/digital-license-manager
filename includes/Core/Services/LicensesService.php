@@ -90,7 +90,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		/** @var LicenseResourceModel[] $licenses */
 		$licenses = ! empty( $query ) ? LicenseResourceRepository::instance()->findAllBy( $query ) : LicenseResourceRepository::instance()->findAll();
 
-		if ( ! $licenses ) {
+		if ( empty($licenses) ) {
 			return new WP_Error( 'data_error', __( "No licence keys found for your query.", 'digital-license-manager' ), array( 'code' => 404 ) );
 		}
 
