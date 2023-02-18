@@ -35,9 +35,11 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseActivation 
 		<?php foreach ( $rowActions as $rowAction ): ?>
 			<?php
 			$params  = apply_filters( 'dlm_myaccount_license_activation_row_action_params', [ 'class' => [ 'button' ] ], $rowAction, $license, $activation, $order, $product );
-			$classes = $params['classes'];
+			$classes = isset($params['classes']) ? $params['classes'] : [];
+            $disabled = false;
 			if ( isset( $params['disabled'] ) && $params['disabled'] ) {
 				$classes[] = 'disabled';
+                $disabled = true;
 			}
 			?>
 			<?php if ( ! empty( $rowAction['href'] ) ): ?>
@@ -55,7 +57,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseActivation 
                         title="<?php echo isset( $params['title'] ) ? esc_attr( $params['title'] ) : ''; ?>"
                         value="<?php echo isset( $params['value'] ) ? esc_attr( $params['value'] ) : 1; ?>"
                         class="<?php echo isset( $params['class'] ) ? esc_attr( implode(' ', $params['class']) ) : ''; ?>"
-					<?php disabled( true, $params['disabled'] ); ?> >
+					<?php disabled( true, $disabled ); ?> >
 					<?php echo esc_html( $rowAction['text'] ); ?>
                 </button>
 			<?php endif; ?>
