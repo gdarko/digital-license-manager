@@ -20,6 +20,11 @@ class CompatibilityHelper {
 	 */
 	public static function is_plugin_active( $plugin ) {
 
+		$check = apply_filters( 'dlm_mock_is_plugin_active', false, $plugin );
+		if ( $check ) {
+			return true;
+		}
+
 		if ( function_exists( '\is_plugin_active' ) ) {
 			return \is_plugin_active( $plugin );
 		} else {
