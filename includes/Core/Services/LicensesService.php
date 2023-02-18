@@ -867,12 +867,13 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	/**
 	 * Save the license keys for a given product to the database.
 	 *
-	 * @param int $orderId WooCommerce Order ID
-	 * @param int $productId WooCommerce Product ID
+	 * @param int|null $orderId WooCommerce Order ID
+	 * @param int|null $productId WooCommerce Product ID
 	 * @param string[] $licenseKeys License keys to be stored
 	 * @param int $status License key status
 	 * @param GeneratorResourceModel $generator
-	 * @param int $validFor
+	 * @param int|null $validFor
+	 * @param int|null $activationsLimit
 	 *
 	 * @return array|bool|WP_Error
 	 */
