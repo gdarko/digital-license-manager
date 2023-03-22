@@ -1,10 +1,10 @@
 ﻿=== Digital License Manager ===
 Contributors: darkog, codeverve
-Tags: license key, license manager, software license, serial key, woocommerce, wordpress
+Tags: license key, license manager, software license, serial key, woocommerce, keys
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 6.2
-Stable tag: 1.4.1
+Stable tag: 1.4.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -166,10 +166,17 @@ To migrate to Digital License Manager, please navigate to "License Manager" > "S
 
 == Changelog ==
 
+= 1.4.2 =
+*Release Date - 18 Feb 2023*
+
+* Fix for PHP wranings caused by the new activations table revamp reported <a href="https://github.com/gdarko/digital-license-manager/issues/20">here</a>
+* Various improvements to the source code for flexibility
+* Minor improvements for the License Service
+
 = 1.4.1 =
 *Release Date - 13 Feb 2023*
 
-* Hotfix for Product Edit page issue in the License Manager tab, conditionals were not working.
+* Hotfix for Product Edit page issue in the License Manager tab, conditionals were not working
 
 = 1.4.0 =
 *Release Date - 13 Feb 2023*
