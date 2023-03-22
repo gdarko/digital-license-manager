@@ -445,7 +445,7 @@ class Orders {
 			return false;
 		}
 
-		if ( ! $order->get_meta( 'dlm_order_complete', true ) ) {
+		if ( ! (int) $order->get_meta( 'dlm_order_complete', true ) ) {
 			return false;
 		}
 
