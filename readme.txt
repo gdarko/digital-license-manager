@@ -167,7 +167,7 @@ To migrate to Digital License Manager, please navigate to "License Manager" > "S
 == Changelog ==
 
 = 1.4.2 =
-*Release Date - 18 Feb 2023*
+*Release Date - 22 Mar 2023*
 
 * Fix for PHP wranings caused by the new activations table revamp reported <a href="https://github.com/gdarko/digital-license-manager/issues/20">here</a>
 * Various improvements to the source code for flexibility
