@@ -13,6 +13,47 @@ defined( 'ABSPATH' ) || exit;
  * @package IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce
  */
 class Controller extends AbstractIntegrationController implements IntegrationControllerInterface {
+
+	/**
+	 * @var Emails
+	 */
+	public $emails;
+
+	/**
+	 * @var Orders
+	 */
+	public $orders;
+
+	/**
+	 * @var Stock
+	 */
+	public $stock;
+
+	/**
+	 * @var Products
+	 */
+	public $products;
+
+	/**
+	 * @var Settings
+	 */
+	public $settings;
+
+	/**
+	 * @var Certificates
+	 */
+	public $certificates;
+
+	/**
+	 * @var MyAccount
+	 */
+	public $myaccount;
+
+	/**
+	 * @var Activations
+	 */
+	public $activations;
+
 	/**
 	 * Controller constructor.
 	 */
@@ -28,19 +69,19 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 	 * Initializes the integration component
 	 */
 	private function bootstrap() {
-		new Stock();
-		new Orders();
-		new Emails();
-		new Products();
-		new Settings();
+		$this->stock    = new Stock();
+		$this->orders   = new Orders();
+		$this->emails   = new Emails();
+		$this->products = new Products();
+		$this->settings = new Settings();
 
 		if ( Certificates::isLicenseCertificationEnabled() ) {
-			new Certificates();
+			$this->certificates = new Certificates();
 		}
 
 		if ( SettingsData::get( 'myaccount_endpoint', SettingsData::SECTION_WOOCOMMERCE ) ) {
-			new MyAccount();
-			new Activations();
+			$this->myaccount   = new MyAccount();
+			$this->activations = new Activations();
 		}
 	}
 

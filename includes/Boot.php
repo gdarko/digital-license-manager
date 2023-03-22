@@ -31,6 +31,41 @@ class Boot extends Singleton {
 	public $version;
 
 	/**
+	 * @var LicenseController
+	 */
+	public $licenses;
+
+	/**
+	 * @var DropdownsController
+	 */
+	public $dropdowns;
+
+	/**
+	 * @var GeneratorController
+	 */
+	public $generators;
+
+	/**
+	 * @var ApiKeyController
+	 */
+	public $api_keys;
+
+	/**
+	 * @var WooCommerceController
+	 */
+	public $woocommerce;
+
+	/**
+	 * @var WelcomeController
+	 */
+	public $welcome;
+
+	/**
+	 * @var RestController
+	 */
+	public $rest;
+
+	/**
 	 * Main constructor.
 	 *
 	 * @return void
@@ -398,18 +433,18 @@ class Boot extends Singleton {
 		NoticeFlasher::instance();
 		NoticeManager::instance();
 
-		new DropdownsController();
-		new LicenseController();
-		new GeneratorController();
-		new ApiKeyController();
-		new WelcomeController();
+		$this->dropdowns  = new DropdownsController();
+		$this->licenses   = new LicenseController();
+		$this->generators = new GeneratorController();
+		$this->api_keys   = new ApiKeyController();
+		$this->welcome    = new WelcomeController();
 
 		if ( CompatibilityHelper::is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
-			new WooCommerceController();
+			$this->woocommerce = new WooCommerceController();
 		}
-		new RestController();
+		$this->rest = new RestController();
 
-		do_action( 'dlm_init' );
+		do_action( 'dlm_init', $this );
 	}
 
 	/**
