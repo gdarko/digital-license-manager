@@ -4,6 +4,7 @@
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
 
+use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
@@ -192,6 +193,25 @@ class Dropdowns {
 						'text' => $text
 					);
 				}
+			} // search for generator
+			elseif($type === 'generator') {
+				$generators = $this->searchGenerators( $term, $limit, $offset );
+
+				if ( count( $generators ) < $limit ) {
+					$more = false;
+				}
+
+				foreach ( $generators as $generator ) {
+					$text      = sprintf(
+						'#%d - %s',
+						$generator['id'],
+						$generator['name']
+					);
+					$results[] = array(
+						'id'   => $generator['id'],
+						'text' => $text
+					);
+				}
 			} // Search for users
 			elseif ( $type === 'user' ) {
 				$users = new WP_User_Query(
@@ -321,6 +341,37 @@ class Dropdowns {
         ", "%" . $wpdb->esc_like( StringHasher::license( $term ) ) . "%", intval( $term ), $limit, $offset );
 
 		return $wpdb->get_col( $sql );
+	}
+
+	/**
+	 * Searches the database for posts that match the given term.
+	 *
+	 * @param string $term The search term
+	 * @param int $limit Maximum number of search results
+	 * @param int $offset Search offset
+	 *
+	 * @return array
+	 */
+	private function searchGenerators( $term, $limit, $offset ) {
+		global $wpdb;
+
+		$tableName = $wpdb->prefix . DatabaseTable::GENERATORS;
+
+		$sql = $wpdb->prepare( "
+            SELECT
+            		generators.id,
+                	generators.name
+            FROM
+                {$tableName} as generators
+            WHERE
+                1=1
+                AND (generators.name LIKE %s OR generators.id=%d)
+            ORDER BY generators.id DESC
+            LIMIT %d
+            OFFSET %d
+        ", "%" . $wpdb->esc_like( $term ) . "%", intval( $term ), $limit, $offset );
+
+		return $wpdb->get_results( $sql, ARRAY_A );
 	}
 
 	/**
