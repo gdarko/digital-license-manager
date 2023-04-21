@@ -641,10 +641,6 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 				array( 'status' => 404 )
 			);
 		}
-		$licenseExpired = $this->hasLicenseExpired( $license );
-		if ( false !== $licenseExpired ) {
-			return $licenseExpired;
-		}
 		$licenseDisabled = $this->isLicenseDisabled( $license );
 		if ( false !== $licenseDisabled ) {
 			return $licenseDisabled;
