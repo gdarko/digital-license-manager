@@ -22,6 +22,8 @@
  */
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
+use IdeoLogix\DigitalLicenseManager\Settings;
+use IdeoLogix\DigitalLicenseManager\Utils\StringFormatter;
 
 defined( 'ABSPATH' ) || exit; ?>
 
@@ -41,6 +43,9 @@ foreach ( $data as $productId => $row ): ?>
         <tbody>
 		<?php
 		/** @var LicenseResourceModel $license */
+		$is_order_received  = is_order_received_page();
+		$is_obscure_enabled = (int) Settings::get( 'hide_license_keys', Settings::SECTION_WOOCOMMERCE );
+
 		foreach ( $row['keys'] as $license ):
 
 			$decrypted = $license->getDecryptedLicenseKey();
@@ -50,6 +55,9 @@ foreach ( $data as $productId => $row ): ?>
 			$actions = apply_filters( 'dlm_myaccount_licenses_keys_row_actions', array(), $license, $decrypted, $data );
 			if ( is_array( $actions ) ) {
 				ksort( $actions );
+			}
+			if ( $is_order_received && $is_obscure_enabled ) {
+				$decrypted = StringFormatter::obfuscateString( $decrypted );
 			}
 			?>
             <tr>

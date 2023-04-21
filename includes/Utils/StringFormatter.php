@@ -37,4 +37,24 @@ class StringFormatter {
 		return str_replace( $separator, '', ucwords( $input, $separator ) );
 	}
 
+
+	/**
+	 * Obuscate the given string
+	 *
+	 * @param string|null $string
+	 *
+	 * @return string|null
+	 */
+	public static function obfuscateString( $string = null ) {
+		if ( ! $string ) {
+			return null;
+		}
+		$string       = str_replace( '-', '*', $string );
+		$length       = strlen( $string );
+		$visibleCount = (int) round( $length / 4 );
+		$hiddenCount  = $length - ( $visibleCount * 2 );
+
+		return substr( $string, 0, $visibleCount ) . str_repeat( '*', $hiddenCount ) . substr( $string, ( $visibleCount * - 1 ), $visibleCount );
+	}
+
 }

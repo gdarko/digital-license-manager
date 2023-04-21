@@ -65,6 +65,15 @@ class Settings {
 							'title'    => __( 'Stock management', 'digital-license-manager' ),
 							'callback' => array( $this, 'fieldManageStock' ),
 						),
+						30 => array(
+							'id'       => 'hide_license_keys',
+							'title'    => __( 'Obscure licenses', 'digital-license-manager' ),
+							'callback' => array( $this, 'fieldCheckbox' ),
+							'args'     => array(
+								'label'   => __( 'Hide license keys in the public facing pages like "Order Received".', 'digital-license-manager' ),
+								'explain' => __( "The license keys will be masked with stars on the public facing pages for security purposes", 'digital-license-manager' ),
+							)
+						),
 					)
 				),
 				'my_account' => array(
