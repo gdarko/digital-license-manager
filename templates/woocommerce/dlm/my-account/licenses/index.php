@@ -90,7 +90,7 @@ defined( 'ABSPATH' ) || exit; ?>
 						<?php echo DateFormatter::toHtml( $license->getExpiresAt(), [ 'expires' => true ] ); ?>
                     </td>
                     <td>
-						<?php echo LicenseStatus::toHtml( $license, [ 'style' => 'inline' ] ); ?>
+						<?php echo $license->isExpired() ? LicenseStatus::toHtmlExpired($license, ['style' => 'inline']) : LicenseStatus::toHtml( $license, [ 'style' => 'inline' ] ); ?>
                     </td>
                     <td class="license-key-actions">
 						<?php

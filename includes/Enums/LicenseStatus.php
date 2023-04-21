@@ -146,9 +146,26 @@ abstract class LicenseStatus {
 	}
 
 	/**
+	 * Creates "Expired" status
+	 * @return string
+	 */
+	public static function toHtmlExpired($license, $args = []) {
+
+		$args     = wp_parse_args( $args, [ 'style' => 'normal', 'text' => '' ] );
+		$cssClass = $args['style'] === 'normal' ? 'dlm-status' : 'dlm-status-' . $args['style'];
+
+		return sprintf(
+			'<div class="%s dlm-status-inactive"><span class="dashicons dashicons-marker"></span> %s</div>',
+			$cssClass,
+			!empty($args['text']) ? esc_html($args['text']) : __( 'Expired', 'digital-license-manager' )
+		);
+	}
+
+	/**
 	 * Returns the license status
 	 *
 	 * @param $status
+	 * @param array $args
 	 *
 	 * @return string
 	 */
