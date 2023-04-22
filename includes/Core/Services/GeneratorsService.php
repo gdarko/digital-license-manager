@@ -187,21 +187,28 @@ class GeneratorsService implements ServiceInterface {
 		}
 
 		if ( array_key_exists( 'activations_limit', $data ) ) {
-			if ( is_numeric( $data['activations_limit'] ) && $data['activations_limit'] > 0 ) {
-				$updateData['activations_limit'] = (int) $data['activations_limit'];
+			if ( ! empty( $data['activations_limit'] ) ) {
+				if ( is_numeric( $data['activations_limit'] ) && $data['activations_limit'] > 0 ) {
+					$updateData['activations_limit'] = (int) $data['activations_limit'];
+				} else {
+					return new WP_Error( 'data_error', __( 'Activations Limit should positive integer value larger than 0', 'digital-license-manager' ), array( 'code' => '422' ) );
+				}
 			} else {
-				return new WP_Error( 'data_error', __( 'Activations Limit should positive integer value larger than 0', 'digital-license-manager' ), array( 'code' => '422' ) );
+				$updateData['activations_limit'] = NULL;
 			}
 		}
 
 		if ( array_key_exists( 'expires_in', $data ) ) {
-			if ( is_numeric( $data['expires_in'] ) && $data['expires_in'] > 1 ) {
-				$updateData['expires_in'] = (int) $data['expires_in'];
+			if ( ! empty( $data['expires_in'] ) ) {
+				if ( is_numeric( $data['expires_in'] ) && $data['expires_in'] > 1 ) {
+					$updateData['expires_in'] = (int) $data['expires_in'];
+				} else {
+					return new WP_Error( 'data_error', __( 'Expires In shoudld be positive integer value larger than 1 that represents number of days', 'digital-license-manager' ), array( 'code' => '422' ) );
+				}
 			} else {
-				return new WP_Error( 'data_error', __( 'Expires In shoudld be positive integer value larger than 1 that represents number of days', 'digital-license-manager' ), array( 'code' => '422' ) );
+				$updateData['expires_in'] = NULL;
 			}
 		}
-
 
 		if ( array_key_exists( 'separator', $data ) ) {
 			if ( ! empty( $data['separator'] ) ) {
@@ -210,18 +217,24 @@ class GeneratorsService implements ServiceInterface {
 				} else {
 					return new WP_Error( 'data_error', __( 'Separator should be only one character', 'digital-license-manager' ), array( 'code' => '422' ) );
 				}
+			} else {
+				$updateData['separator'] = NULL;
 			}
 		}
 
 		if ( array_key_exists( 'prefix', $data ) ) {
 			if ( ! empty( $data['prefix'] ) ) {
 				$updateData['prefix'] = sanitize_text_field( $data['prefix'] );
+			} else {
+				$updateData['prefix'] = NULL;
 			}
 		}
 
 		if ( array_key_exists( 'suffix', $data ) ) {
 			if ( ! empty( $data['suffix'] ) ) {
 				$updateData['suffix'] = sanitize_text_field( $data['suffix'] );
+			} else {
+				$updateData['suffix'] = NULL;
 			}
 		}
 
