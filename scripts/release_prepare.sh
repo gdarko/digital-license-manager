@@ -17,6 +17,8 @@ fi
 cd $PLUGINS_ROOT_DIR
 
 zip -r "$PLUGIN_SLUG.zip" "$PLUGIN_SLUG" \
+ -x=".gitignore" \
+ -x=".gitattributes" \
  -x="*tests*" \
  -x="*scripts*" \
  -x="*bin*" \
