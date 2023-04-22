@@ -49,15 +49,6 @@ defined('ABSPATH') || exit;
                     </td>
                 </tr>
 
-                <!-- TIMES ACTIVATED MAX -->
-                <tr scope="row">
-                    <th scope="row"><label><?php esc_html_e('Max activations', 'digital-license-manager');?></label></th>
-                    <td>
-                        <input name="activations_limit" id="activations_limit" class="regular-text" type="number" value="<?php echo esc_html($generator->getActivationsLimit()); ?>">
-                        <p class="description"><?php esc_html_e( 'Define how many times the license can be marked as "activated". Leave blank for unlimited activations.', 'digital-license-manager' ); ?></p>
-                    </td>
-                </tr>
-
                 <!-- CHARSET -->
                 <tr scope="row">
                     <th scope="row">
@@ -135,6 +126,18 @@ defined('ABSPATH') || exit;
                         <p class="description" id="tagline-description">
                             <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
                             <span><?php _e('Adds a character set at the end of a license key (separator <strong>not</strong> included), i.e. for <code>12-AB-34-CD-SUF</code> the suffix is <code>-SUF</code>.', 'digital-license-manager');?></span>
+                        </p>
+                    </td>
+                </tr>
+
+                <!-- TIMES ACTIVATED MAX -->
+                <tr scope="row">
+                    <th scope="row"><label><?php esc_html_e('Max activations', 'digital-license-manager');?></label></th>
+                    <td>
+                        <input name="activations_limit" id="activations_limit" class="regular-text" type="number" value="<?php echo esc_html($generator->getActivationsLimit()); ?>">
+                        <p class="description">
+                            <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
+			                <?php esc_html_e( 'Define how many times the license can be marked as "activated". Leave blank for unlimited activations.', 'digital-license-manager' ); ?>
                         </p>
                     </td>
                 </tr>
