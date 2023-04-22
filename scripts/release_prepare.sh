@@ -17,17 +17,15 @@ fi
 cd $PLUGINS_ROOT_DIR
 
 zip -r "$PLUGIN_SLUG.zip" "$PLUGIN_SLUG" \
- -x=".gitignore" \
- -x=".gitattributes" \
  -x="*tests*" \
  -x="*scripts*" \
  -x="*bin*" \
  -x="*.git*" \
- -x="*.phpcs.xml.dist*" \
  -x="*.phpunit.result.cache*" \
  -x="*.travis.yml*" \
  -x="*composer.json*" \
  -x="*composer.lock*" \
+ -x="*phpcs.xml.dist*" \
  -x="*phpunit.xml.dist*" \
  -x="*README.md*"
 
