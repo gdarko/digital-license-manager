@@ -5,6 +5,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as Gener
 defined('ABSPATH') || exit;
 
 /** @var GeneratorResourceModel $generator */
+/** @var \WC_Product[] $products */
 
 ?>
 

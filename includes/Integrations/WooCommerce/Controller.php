@@ -4,6 +4,7 @@ namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractIntegrationController;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\IntegrationControllerInterface;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Tools\GeneratePastOrderLicenses\GeneratePastOrderLicenses;
 use IdeoLogix\DigitalLicenseManager\Settings as SettingsData;
 
 defined( 'ABSPATH' ) || exit;
@@ -63,6 +64,7 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 		add_filter( 'dlm_default_settings', array( $this, 'defaultWooCommerceSettings' ), 10, 1 );
 		add_filter( 'dlm_dropdown_searchable_post_types', array( $this, 'dropdownSearchablePostTypes' ), 10, 1 );
 		add_filter( 'dlm_dropdown_search_query_default_status', array( $this, 'dropdownSearchQDefaultStatus' ), 10, 2 );
+		add_filter( 'dlm_tools', array( $this, 'registerTools' ), 10, 1 );
 	}
 
 	/**
@@ -151,6 +153,25 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 		}
 
 		return $settings;
+	}
+
+	/**
+	 * Add additional tools
+	 *
+	 * @param $tools
+	 *
+	 * @return array
+	 */
+	public function registerTools( $tools ) {
+		if ( ! is_array( $tools ) || empty( $tools ) ) {
+			$tools = [];
+		}
+
+		if ( ! isset( $tools['generate_past_order_licenses'] ) ) {
+			$tools['generate_past_order_licenses'] = GeneratePastOrderLicenses::class;
+		}
+
+		return $tools;
 	}
 
 	/**

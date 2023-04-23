@@ -346,6 +346,9 @@ class Boot extends Singleton {
 				wp_localize_script( 'dlm_tools_page', 'DLM_Tools', array(
 					'ajax_url' => admin_url( 'admin-ajax.php' ),
 					'nonce'    => wp_create_nonce( 'dlm-tools' ),
+					'i18n' => [
+						'confirmation' => __('WARNING - Please take backups before running this tool. It can cause a damage to your database if not used properly.', 'digital-license-manager')
+					]
 				) );
 			}
 		}

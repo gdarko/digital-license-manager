@@ -8,7 +8,6 @@ use IdeoLogix\DigitalLicenseManager\Abstracts\SettingsFieldsTrait;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Singleton;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\ApiKey as ApiKeyResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\ApiKey as ApiKeyResourceRepository;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Users;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\ListTables\ApiKeys;
 use IdeoLogix\DigitalLicenseManager\Tools\Migration\Migration;
@@ -24,7 +23,7 @@ class Settings extends Singleton {
 	 * @var string[]
 	 */
 	protected $tools = [
-		'migration' => Migration::class
+		'migration' => Migration::class,
 	];
 
 
@@ -34,6 +33,7 @@ class Settings extends Singleton {
 	 * Settings constructor.
 	 */
 	public function __construct() {
+		$this->tools = apply_filters( 'dlm_tools', $this->tools );
 		add_action( 'dlm_settings_sanitized', array( $this, 'afterSanitize' ), 10, 2 );
 		add_action( 'wp_ajax_dlm_handle_tool_process', array( $this, 'handleToolProcess' ), 50 );
 	}
@@ -180,7 +180,7 @@ class Settings extends Singleton {
 			'callback' => array( $this, 'fieldText' ),
 			'args'     => array(
 				'explain'   => sprintf(
-					/* translators: %1$s: date format merge code, %2$s: time format merge code, %3$s: general settings URL, %4$s: link to date and time formatting documentation */
+				/* translators: %1$s: date format merge code, %2$s: time format merge code, %3$s: general settings URL, %4$s: link to date and time formatting documentation */
 					__( '<code>%1$s</code> and <code>%2$s</code> will be replaced by formats from <a href="%3$s">Administration > Settings > General</a>. %4$s', 'digital-license-manager' ),
 					'{{DATE_FORMAT}}',
 					'{{TIME_FORMAT}}',
@@ -233,7 +233,7 @@ class Settings extends Singleton {
 					$keyId = absint( $_GET['edit_key'] );
 				}
 
-				$users  = [];
+				$users = [];
 				if ( $keyId !== 0 ) {
 					/** @var ApiKeyResourceModel $keyData */
 					$keyData     = ApiKeyResourceRepository::instance()->find( $keyId );
@@ -245,9 +245,9 @@ class Settings extends Singleton {
 						date_i18n( $date_format, strtotime( $keyData->getLastAccess() ) ),
 						date_i18n( $time_format, strtotime( $keyData->getLastAccess() ) )
 					);
-					if($userId) {
-						$owner = get_user_by('id', $userId);
-						if($owner) {
+					if ( $userId ) {
+						$owner = get_user_by( 'id', $userId );
+						if ( $owner ) {
 							$users[] = $owner;
 						}
 					}
@@ -289,7 +289,7 @@ class Settings extends Singleton {
 
 		if ( 'list' === $action ) {
 			include_once DLM_TEMPLATES_DIR . 'admin/settings/page-list.php';
-		} else if ( 'show' === $action ) {
+		} elseif ( 'show' === $action ) {
 			include_once DLM_TEMPLATES_DIR . 'admin/settings/page-show.php';
 		} else {
 			include_once DLM_TEMPLATES_DIR . 'admin/settings/page-edit.php';
@@ -439,7 +439,7 @@ class Settings extends Singleton {
 	/**
 	 * Sanitizes the settings input.
 	 *
-	 * @param array $settings
+	 * @param  array  $settings
 	 *
 	 * @return array
 	 */
@@ -512,10 +512,13 @@ class Settings extends Singleton {
 	 * @return void
 	 */
 	public function handleToolProcess() {
+
 		if ( ! check_ajax_referer( 'dlm-tools', '_wpnonce', false ) || ! current_user_can( 'dlm_manage_settings' ) ) {
 			wp_send_json_error( [ 'message' => __( 'Permission denied.' ) ] );
 			exit;
 		} else {
+
+			$this->tools = apply_filters( 'dlm_tools', $this->tools );
 
 			$tool_id = isset( $_POST['tool'] ) ? sanitize_text_field( $_POST['tool'] ) : null;
 			if ( is_null( $tool_id ) || ! isset( $this->tools[ $tool_id ] ) ) {
@@ -534,12 +537,12 @@ class Settings extends Singleton {
 			$init = isset( $_POST['init'] ) ? (int) $_POST['init'] : 0;
 			if ( $init ) {
 
-				$availability = $tool->checkAvailability( $identifier );
+				$canInit = $tool->initProcess( $identifier );
 
-				if ( ! is_wp_error( $availability ) ) {
+				if ( ! is_wp_error( $canInit ) ) {
 					wp_send_json_success();
 				} else {
-					wp_send_json_error( [ 'message' => $availability->get_error_message() ] );
+					wp_send_json_error( [ 'message' => $canInit->get_error_message() ] );
 				}
 
 			} else {
@@ -571,7 +574,7 @@ class Settings extends Singleton {
 	 * to output all the sections and fields that were added to that $page with
 	 * add_settings_section() and add_settings_field()
 	 *
-	 * @param string $page The slug name of the page whose settings sections you want to output.
+	 * @param  string  $page  The slug name of the page whose settings sections you want to output.
 	 *
 	 * @global array $wp_settings_fields Storage array of settings fields and info about their pages/sections.
 	 * @since 2.7.0

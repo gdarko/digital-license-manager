@@ -63,6 +63,11 @@ class Migration extends AbstractTool {
 	 * @return bool|\WP_Error
 	 */
 	public function initProcess( $identifier = null ) {
+
+		$canInit = $this->checkAvailability( $identifier );
+		if ( is_wp_error( $canInit ) ) {
+			return $canInit;
+		}
 		$plugin = $this->getPlugin( $identifier );
 		if ( is_wp_error( $plugin ) ) {
 			return $plugin;
@@ -94,7 +99,7 @@ class Migration extends AbstractTool {
 	 *
 	 * @param $step
 	 * @param $page
-	 * @param null $identifier
+	 * @param  null  $identifier
 	 *
 	 * @return bool|\WP_Error
 	 */
@@ -111,7 +116,7 @@ class Migration extends AbstractTool {
 	/**
 	 * Check availability
 	 *
-	 * @param null $identifier
+	 * @param  null  $identifier
 	 *
 	 * @return bool|\WP_Error
 	 */
