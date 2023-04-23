@@ -7,7 +7,7 @@ defined( 'ABSPATH' ) || exit;
 
 foreach ( $tools as $tool_id ) {
 	/* @var AbstractTool $tool_id */
-	$tool = new $tool_id;
+	$tool = new $tool_id( time() );
 	echo '<div class="dlm-tool-row">';
 	echo $tool->getView();
 	echo '</div>';

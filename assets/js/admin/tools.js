@@ -24,7 +24,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
             data: data,
             success: function (response, responseStatus, responseHeaders) {
                 if (response.success) {
-                    self.process(step, page);
+                    if (response.hasOwnProperty('data') && response.data.hasOwnProperty('warning')) {
+                        if (confirm(response.data.warning)) {
+                            self.process(step, page);
+                        }
+                    } else {
+                        self.process(step, page);
+                    }
                 } else {
                     alert(response.data.message)
                 }
@@ -35,6 +41,19 @@ document.addEventListener("DOMContentLoaded", function (event) {
         });
     }
     /**
+     * Set progress
+     * @param message
+     * @param percent
+     */
+    AdminTools.prototype.setProgress = function(message, percent) {
+        var progressBarValue = this.form.querySelector('.dlm-tool-progress-bar-inner');
+        var progressBarInfo = this.form.querySelector('.dlm-tool-progress-info');
+        var progressBarRow = this.form.querySelector('.dlm-tool-form-row-progress');
+        progressBarValue.style.width = percent + '%';
+        progressBarInfo.innerHTML = (message + ' ' + '(' + percent + '%)');
+        progressBarRow.style.display = 'block';
+    };
+    /**
      * Processes single step
      * @param step
      * @param page
@@ -44,11 +63,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
         var data = new FormData(this.form);
         var http = new window.DLM.Http();
         var url = DLM_Tools.ajax_url + '?action=dlm_handle_tool_process&_wpnonce=' + DLM_Tools.nonce;
-        var progressBarValue = this.form.querySelector('.dlm-tool-progress-bar-inner');
-        var progressBarInfo = this.form.querySelector('.dlm-tool-progress-info');
-        var progressBarRow = this.form.querySelector('.dlm-tool-form-row-progress');
+
         var submitButton = this.form.querySelector('button[type=submit]');
-        progressBarRow.style.display = 'block';
         submitButton.classList.add('disabled');
         window.onbeforeunload = function () {
             return true;
@@ -62,9 +78,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 var next_page = response.data.next_page;
                 var message = response.data.message;
                 var percent = response.data.percent;
-                progressBarValue.style.width = percent + '%';
-                progressBarInfo.innerHTML = (message + ' ' + '(' + percent + '%)');
-                if (next_step > 0 && next_page > 0) {
+                self.setProgress(message, percent);
+                if (next_step > 0 && next_page >= 0) {
                     setTimeout(function () {
                         self.process(next_step, next_page)
                     }, 2000);
@@ -93,10 +108,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var forms = document.querySelectorAll('.dlm-tool-form');
     console.log(forms);
     if (forms && forms.length) {
-        for(var i = 0; i < forms.length; i++) {
+        for (var i = 0; i < forms.length; i++) {
             forms[i].addEventListener('submit', function (e) {
                 e.preventDefault();
-                if(confirm(DLM_Tools.i18n.confirmation)) {
+                if (confirm(DLM_Tools.i18n.confirmation)) {
                     var tools = new window.DLM.AdminTools(this);
                     tools.init(1, 1);
                 }

@@ -28,7 +28,8 @@ defined( 'ABSPATH' ) || exit;
         <div class="dlm-tool-progress-info"><?php _e( 'Initializing...', 'digital-license-manager' ); ?></div>
     </div>
     <div class="dlm-tool-form-row">
-        <input type="hidden" name="tool" value="<?php echo $tool->getId(); ?>">
+        <input type="hidden" name="id" value="<?php echo $tool->getId(); ?>">
+        <input type="hidden" name="tool" value="<?php echo $tool->getSlug(); ?>">
         <button type="submit" class="button button-small button-primary"><?php _e( 'Migrate', 'digital-license-manager' ); ?></button>
     </div>
 </form>

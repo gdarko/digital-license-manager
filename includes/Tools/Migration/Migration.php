@@ -20,9 +20,11 @@ class Migration extends AbstractTool {
 	/**
 	 * Constructor
 	 */
-	public function __construct() {
+	public function __construct( $id ) {
 
-		$this->id          = 'migration';
+		parent::__construct( $id );
+
+		$this->slug        = 'migration';
 		$this->description = __( 'Migration tool that makes it possible to easily move from other plugins', 'digital-license-manager' );
 
 		$this->plugins = [
@@ -49,8 +51,8 @@ class Migration extends AbstractTool {
 	 * Returns the migrator steps
 	 * @return array|\WP_Error
 	 */
-	public function getSteps( $identifier = null ) {
-		$plugin = $this->getPlugin( $identifier );
+	public function getSteps() {
+		$plugin = $this->getPlugin();
 		if ( is_wp_error( $plugin ) ) {
 			return $plugin;
 		}
@@ -62,13 +64,13 @@ class Migration extends AbstractTool {
 	 * Initializes the process
 	 * @return bool|\WP_Error
 	 */
-	public function initProcess( $identifier = null ) {
+	public function initProcess() {
 
-		$canInit = $this->checkAvailability( $identifier );
+		$canInit = $this->checkAvailability();
 		if ( is_wp_error( $canInit ) ) {
 			return $canInit;
 		}
-		$plugin = $this->getPlugin( $identifier );
+		$plugin = $this->getPlugin();
 		if ( is_wp_error( $plugin ) ) {
 			return $plugin;
 		}
@@ -84,7 +86,10 @@ class Migration extends AbstractTool {
 	 *
 	 * @return LMFW|mixed|null
 	 */
-	public function getPlugin( $identifier ) {
+	public function getPlugin() {
+
+		$identifier = $this->getIdentifier();
+
 		foreach ( $this->plugins as $plugin ) {
 			if ( $plugin->getId() == $identifier ) {
 				return $plugin;
@@ -99,11 +104,13 @@ class Migration extends AbstractTool {
 	 *
 	 * @param $step
 	 * @param $page
-	 * @param  null  $identifier
+	 * @param null $identifier
 	 *
 	 * @return bool|\WP_Error
 	 */
-	public function doStep( $step, $page, $identifier = null ) {
+	public function doStep( $step, $page ) {
+
+		$identifier = $this->getIdentifier();
 
 		$plugin = $this->getPlugin( $identifier );
 		if ( is_wp_error( $plugin ) ) {
@@ -116,11 +123,13 @@ class Migration extends AbstractTool {
 	/**
 	 * Check availability
 	 *
-	 * @param  null  $identifier
+	 * @param null $identifier
 	 *
 	 * @return bool|\WP_Error
 	 */
-	public function checkAvailability( $identifier = null ) {
+	public function checkAvailability() {
+
+		$identifier = $this->getIdentifier();
 
 		$plugin = $this->getPlugin( $identifier );
 		if ( is_wp_error( $plugin ) ) {
@@ -129,5 +138,13 @@ class Migration extends AbstractTool {
 
 		return $plugin->checkAvailability();
 
+	}
+
+	/**
+	 * Return the identifier
+	 * @return string
+	 */
+	public function getIdentifier() {
+		return isset( $_REQUEST['identifier'] ) ? sanitize_text_field( $_REQUEST['identifier'] ) : '';
 	}
 }

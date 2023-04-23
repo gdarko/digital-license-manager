@@ -439,7 +439,7 @@ class Settings extends Singleton {
 	/**
 	 * Sanitizes the settings input.
 	 *
-	 * @param  array  $settings
+	 * @param array $settings
 	 *
 	 * @return array
 	 */
@@ -520,42 +520,45 @@ class Settings extends Singleton {
 
 			$this->tools = apply_filters( 'dlm_tools', $this->tools );
 
-			$tool_id = isset( $_POST['tool'] ) ? sanitize_text_field( $_POST['tool'] ) : null;
-			if ( is_null( $tool_id ) || ! isset( $this->tools[ $tool_id ] ) ) {
+			$tool_slug = isset( $_POST['tool'] ) ? sanitize_text_field( $_POST['tool'] ) : null;
+			$tool_id = isset( $_POST['id'] ) ? sanitize_text_field( $_POST['id'] ) : null;
+			if ( is_null( $tool_slug ) || ! isset( $this->tools[ $tool_slug ] ) ) {
 				wp_send_json_error( [ 'message' => __( 'Unknown tool selected.' ) ] );
 				exit;
 			}
 
 			$step       = isset( $_POST['step'] ) ? intval( $_POST['step'] ) : null;
 			$page       = isset( $_POST['page'] ) ? intval( $_POST['page'] ) : null;
-			$identifier = isset( $_POST['identifier'] ) ? sanitize_text_field( $_POST['identifier'] ) : null;
 
 			/* @var AbstractTool $tool */
-			$tool = new $this->tools[ $tool_id ]();
-
+			$tool = new $this->tools[ $tool_slug ]($tool_id);
 
 			$init = isset( $_POST['init'] ) ? (int) $_POST['init'] : 0;
 			if ( $init ) {
 
-				$canInit = $tool->initProcess( $identifier );
-
-				if ( ! is_wp_error( $canInit ) ) {
+				$process = $tool->initProcess();
+				if ( ! is_wp_error( $process ) ) {
 					wp_send_json_success();
 				} else {
-					wp_send_json_error( [ 'message' => $canInit->get_error_message() ] );
+					if ( 'data_warn' === $process->get_error_code() ) {
+						wp_send_json_success( [ 'warning' => $process->get_error_message() ] );
+					} else {
+						wp_send_json_error( [ 'message' => $process->get_error_message() ] );
+					}
 				}
 
 			} else {
 
-				$next = $tool->getNextStep( $step, $page, $identifier );
+				$next = $tool->getNextStep( $step, $page );
 
 				if ( is_wp_error( $next ) ) {
 					wp_send_json_error( [ 'message' => $next->get_error_message() ] );
 					exit;
 				} else {
 
-					$result               = $tool->doStep( $step, $page, $identifier );
-					$next['step_message'] = is_wp_error( $result ) ? $result->get_error_message() : sprintf( __( 'Page %d of step %d completed successfully.' ), $page, $step );
+					$result               = $tool->doStep( $step, $page );
+					$step_message         = sprintf( __( 'Page %d of step %d completed successfully.' ), $page, $step );
+					$next['step_message'] = is_wp_error( $result ) ? $result->get_error_message() : $step_message;
 					wp_send_json_success( $next );
 
 					exit;
@@ -574,7 +577,7 @@ class Settings extends Singleton {
 	 * to output all the sections and fields that were added to that $page with
 	 * add_settings_section() and add_settings_field()
 	 *
-	 * @param  string  $page  The slug name of the page whose settings sections you want to output.
+	 * @param string $page The slug name of the page whose settings sections you want to output.
 	 *
 	 * @global array $wp_settings_fields Storage array of settings fields and info about their pages/sections.
 	 * @since 2.7.0

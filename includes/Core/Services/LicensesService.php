@@ -873,7 +873,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 *
 	 * @return array|bool|WP_Error
 	 */
-	public function saveGeneratedLicenseKeys( $orderId, $productId, $licenseKeys, $status, $generator, $validFor = null, $activationsLimit = null ) {
+	public function saveGeneratedLicenseKeys( $orderId, $productId, $licenseKeys, $status, $generator, $validFor = null, $activationsLimit = null, $markAsComplete = true ) {
 
 		$cleanLicenseKeys = array();
 		$cleanOrderId     = ( $orderId ) ? absint( $orderId ) : null;
@@ -972,7 +972,9 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			);
 		} else {
 			// Keys have been generated and saved, this order is now complete.
-			update_post_meta( $cleanOrderId, 'dlm_order_complete', 1 );
+			if($markAsComplete) {
+				update_post_meta( $cleanOrderId, 'dlm_order_complete', 1 );
+			}
 
 			return true;
 		}

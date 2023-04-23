@@ -13,7 +13,7 @@ class GeneratePastOrderLicenses extends AbstractTool {
 	 * The id
 	 * @var string
 	 */
-	protected $id = 'generate_past_order_licenses';
+	protected $slug = 'generate_past_order_licenses';
 
 	/**
 	 * The description
@@ -47,31 +47,34 @@ class GeneratePastOrderLicenses extends AbstractTool {
 	 *        5 => array( 'name' => 'Step 5', 'pages' => 7 )
 	 *    ];
 	 *
-	 * @param  null  $identifier
-	 *
 	 * @return array|\WP_Error
 	 */
-	public function getSteps( $identifier = null ) {
-		return [
-			1 => array(
-				'name'  => 'Generate Licenses',
-				'pages' => $this->getPagesCount()
-			),
-			2 => array(
-				'name'  => 'Clean up',
-				'pages' => 1,
-			)
-		];
+	public function getSteps() {
+
+		$list = $this->getData( 'steps' );
+
+		if ( ! is_array( $list ) || empty( $list ) ) {
+			$list = $this->setData( 'steps', [
+				1 => array(
+					'name'  => 'Generate Licenses',
+					'pages' => $this->getPagesCount()
+				),
+				2 => array(
+					'name'  => 'Clean up',
+					'pages' => $this->getPagesCount(),
+				)
+			] );
+		}
+
+		return $list;
 	}
 
 	/**
 	 * Initializes the process
 	 *
-	 * @param  null  $identifier
-	 *
 	 * @return bool|\WP_Error
 	 */
-	public function initProcess( $identifier = null ) {
+	public function initProcess() {
 
 		if ( empty( $_POST['generator'] ) ) {
 			return ( new \WP_Error( 'data_error', __( 'Please select a generator that will be used to generate the licenses.', 'digital-license-manager' ) ) );
@@ -84,6 +87,10 @@ class GeneratePastOrderLicenses extends AbstractTool {
 			return ( new \WP_Error( 'data_error', __( 'No orders found without licenses.', 'digital-license-manager' ) ) );
 		}
 
+		if ( $this->isRiskyQuery( $query ) ) {
+			return ( new \WP_Error( 'data_warn', __( 'WARNING - Looks like you modified the data query of the tool by a filter. We noticed that no check against the dlm_order_complete meta is present that is intended to limit the query to only those products that doesn\'t have licenses assigned from previously. This means your procedure will run on all the past orders, even the ones that have a license. Only continue if you agree with this, otherwise update your filter and include the dlm_order_complete meta check.', 'digital-license-manager' ) ) );
+		}
+
 		return true;
 	}
 
@@ -92,11 +99,10 @@ class GeneratePastOrderLicenses extends AbstractTool {
 	 *
 	 * @param $step
 	 * @param $page
-	 * @param  null  $identifier
 	 *
 	 * @return bool|\WP_Error
 	 */
-	public function doStep( $step, $page, $identifier = null ) {
+	public function doStep( $step, $page ) {
 
 		switch ( $step ) {
 			case 1:
@@ -120,6 +126,7 @@ class GeneratePastOrderLicenses extends AbstractTool {
 				$generated = 0;
 
 				foreach ( $results->orders as $order ) {
+					$generatedForOrder = 0;
 					/* @var \WC_Order $order */
 					$skip_order = (bool) $order->get_meta( '_subscription_renewal' ); // Skip renewal orders?
 					if ( apply_filters( 'dlm_tool_generate_past_order_licenses_skip_order', $skip_order, $order ) ) {
@@ -154,30 +161,68 @@ class GeneratePastOrderLicenses extends AbstractTool {
 						if ( isset( $productGenerators[ $productId ] ) ) {
 							$licenses = $generatorServ->generateLicenses( $quantity, $generator, [] );
 							if ( ! is_wp_error( $licenses ) ) {
-								$validFor = $productGenerators[ $productId ]->getExpiresIn();
-								$status   = $licensesServ->saveGeneratedLicenseKeys(
+								$status = $licensesServ->saveGeneratedLicenseKeys(
 									$item->get_order_id(),
 									$productId,
 									$licenses,
-									LicenseStatus::DELIVERED,
+									LicenseStatus::SOLD,
 									$generator,
-									$validFor
+									null,
+									null,
+									false
 								);
 
 								if ( ! is_wp_error( $status ) ) {
-									$order->add_order_note( sprintf( __( 'Generated %d license(s) for order item #%d (product #%d) with generator #%d via the "Past Orders License Generator" tool.', 'digital-license-manager' ), count( $licenses ), $item->get_id(), $item->get_product_id(), $productGenerators[$productId]->getId() ) );
+									$order->add_order_note( sprintf( __( 'Generated %d license(s) for order item #%d (product #%d) with generator #%d via the "Past Orders License Generator" tool.', 'digital-license-manager' ), count( $licenses ), $item->get_id(), $item->get_product_id(), $productGenerators[ $productId ]->getId() ) );
 									$item->add_meta_data( 'generated_licenses', time() );
-									$item->save_meta_data();;
+									$item->save_meta_data();
 									$generated ++;
 								}
 
-								$generated += is_wp_error( $status ) ? 0 : 1;
+								if ( ! is_wp_error( $status ) ) {
+									$generated ++;
+									$generatedForOrder ++;
+								}
 							}
 						}
+					}
+
+					if ( $generatedForOrder ) {
+						$order->add_meta_data( 'dlm_past_order_generated_licenses', 1 );
+						$order->save_meta_data();
 					}
 				}
 
 				return $generated ? true : new \WP_Error( 'not_generated', __( 'No licenses generated for this page.', 'digital-license-manager' ) );
+			case 2:
+
+				$query = array_merge( $this->getOrdersQuery(), [
+					'page'     => $page,
+					'meta_key' => 'dlm_past_order_generated_licenses',
+				] );
+
+				$results = wc_get_orders( $query );
+				if ( empty( $results->orders ) ) {
+					$this->deleteData();
+
+					return new \WP_Error( 'not_found', sprintf( __( 'No orders found for step "%s", page "%s"' ), $step, $page ) );
+				}
+
+				foreach ( $results->orders as $order ) {
+					/* @var \WC_Order $order */
+					$order->add_meta_data( 'dlm_order_complete', 1 );
+					$order->save_meta_data();
+				}
+
+				if ( $page === $results->max_num_pages ) {
+
+					error_log( 'Last item processed. Data deleted: ' . json_encode( $this->getData() ) );
+					$this->deleteData();
+				}
+
+
+				return true;
+
 			default:
 				return true;
 		}
@@ -207,9 +252,29 @@ class GeneratePastOrderLicenses extends AbstractTool {
 		return apply_filters( 'dlm_tool_generate_past_order_licenses_query', [
 			'paginate'     => true,
 			'status'       => array( 'wc-processing', 'wc-completed' ),
-			'limit'        => 10,
+			'limit'        => 1,
 			'meta_key'     => 'dlm_order_complete',
 			'meta_compare' => 'NOT EXISTS',
 		] );
+	}
+
+	/**
+	 * Is a risky query?
+	 * A risky query is if meta_compare and meta_key are not present, the query will run on all the records in the db.
+	 *
+	 * @param string $query
+	 *
+	 * @return bool
+	 */
+	private function isRiskyQuery( $query = '' ) {
+
+		if ( empty( $query ) ) {
+			$query = $this->getOrdersQuery();
+		}
+
+		$key = isset( $query['meta_key'] ) ? $query['meta_key'] : '';
+		$cmp = isset( $query['meta_compare'] ) ? $query['meta_compare'] : '';
+
+		return empty( $key ) && empty( $cmp );
 	}
 }

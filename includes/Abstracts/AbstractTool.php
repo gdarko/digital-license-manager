@@ -5,10 +5,16 @@ namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 abstract class AbstractTool {
 
 	/**
+	 * The instance id
+	 * @var - integer
+	 */
+	protected $id;
+
+	/**
 	 * The identifier
 	 * @var string
 	 */
-	protected $id;
+	protected $slug;
 
 	/**
 	 * The description
@@ -17,66 +23,116 @@ abstract class AbstractTool {
 	protected $description;
 
 	/**
+	 * Constructor
+	 */
+	public function __construct( $id ) {
+		$this->id = $id;
+	}
+
+	/**
+	 * Set tool data
+	 * @param $key
+	 * @param $value
+	 *
+	 * @return array
+	 */
+	public function setData( $key, $value ) {
+		$data = $this->getData();
+		if ( ! is_array( $data ) ) {
+			$data = array();
+		}
+		$data[ $key ] = $value;
+		set_transient( $this->getDataKey(), $data, apply_filters( 'dlm_tool_data_expiration', 48 * HOUR_IN_SECONDS, $this ) );
+		return $value;
+	}
+
+	/**
+	 * Get tool data
+	 * @param $key
+	 * @param $default
+	 *
+	 * @return mixed|null
+	 */
+	public function getData( $key = null, $default = null ) {
+		$data = get_transient( $this->getDataKey() );
+
+		if ( is_null( $key ) ) {
+			return $data;
+		}
+
+		return is_array( $data ) && isset( $data[ $key ] ) ? $key : $default;
+	}
+
+	/**
+	 * Delete tool data
+	 * @return void
+	 */
+	public function deleteData() {
+		delete_transient( $this->getDataKey() );
+	}
+
+	/**
+	 * Get the data key
+	 * @return string
+	 */
+	public function getDataKey() {
+		return 'dlm_tool_' . md5( $this->id );
+	}
+
+	/**
 	 * Returns the view
 	 * @return string
 	 */
 	abstract public function getView();
 
-    /**
-     * Returns the tool steps
-     *
-     * eg:
-     *
-     *    [
-     *        1 => array( 'name' => 'Step 1', 'pages' => 3 ),
-     *        2 => array( 'name' => 'Step 2', 'pages' => 4 ),
-     *        3 => array( 'name' => 'Step 3', 'pages' => 5 ),
-     *        4 => array( 'name' => 'Step 4', 'pages' => 6 ),
-     *        5 => array( 'name' => 'Step 5', 'pages' => 7 )
-     *    ];
-     *
-     * @param  null  $identifier
-     *
-     * @return array|\WP_Error
-     */
-	abstract public function getSteps( $identifier = null );
+	/**
+	 * Returns the tool steps
+	 *
+	 * eg:
+	 *
+	 *    [
+	 *        1 => array( 'name' => 'Step 1', 'pages' => 3 ),
+	 *        2 => array( 'name' => 'Step 2', 'pages' => 4 ),
+	 *        3 => array( 'name' => 'Step 3', 'pages' => 5 ),
+	 *        4 => array( 'name' => 'Step 4', 'pages' => 6 ),
+	 *        5 => array( 'name' => 'Step 5', 'pages' => 7 )
+	 *    ];
+	 *
+	 * @return array|\WP_Error
+	 */
+	abstract public function getSteps();
 
 	/**
 	 * Initializes the process
 	 *
-	 * @param null $identifier
-	 *
 	 * @return bool|\WP_Error
 	 */
-	abstract public function initProcess( $identifier = null );
+	abstract public function initProcess();
 
 	/**
 	 * Initializes the process
 	 *
 	 * @param $step
 	 * @param $page
-	 * @param null $identifier
 	 *
 	 * @return bool|\WP_Error
 	 */
-	abstract public function doStep( $step, $page, $identifier = null );
-
+	abstract public function doStep( $step, $page );
 
 	/**
 	 * Return the next step
 	 *
 	 * @param $step
 	 * @param $page
-	 * @param null $identifier
 	 *
 	 * @return array|\WP_Error
 	 */
-	public function getNextStep( $step, $page, $identifier = null ) {
+	public function getNextStep( $step, $page ) {
 
 		$step = is_null( $step ) ? 1 : (int) $step;
 		$page = is_null( $page ) ? 1 : (int) $page;
 
-		$steps = $this->getSteps( $identifier );
+		$steps = $this->getSteps();
 
 		if ( ! is_array( $steps ) ) {
 			return new \WP_Error( '500', 'Unable to determine next step', 'digital-license-manager' );
@@ -111,23 +167,30 @@ abstract class AbstractTool {
 			$next_page   = $page + 1;
 			$total_pages = (int) $steps[ $step ]['pages'];
 
-			if ( $next_page <= $total_pages ) {
+			if ( $page === $total_pages ) {
+				$next_step         = isset( $steps[ $step + 1 ] ) ? $step + 1 : - 1;
+				$data['next_step'] = $next_step;
+				$data['next_page'] = isset( $steps[ $step + 1 ] ) ? 1 : - 1;
+				$data['message']   = sprintf( __( 'Processing "%s" (%d/%d)', 'digital-license-manager' ), $steps[ $step ]['name'], $page, $total_pages );
+			} else if ( $page < $total_pages ) {
 				$next_step         = $step;
 				$data['next_step'] = $next_step;
 				$data['next_page'] = $next_page;
-				$data['message']   = sprintf( __( 'Processing %s (%d/%d)', 'digital-license-manager' ), $steps[ $next_step ]['name'], $next_page, $steps[ $next_step ]['pages'] );
+				$data['message']   = sprintf( __( 'Processing "%s" (%d/%d)', 'digital-license-manager' ), $steps[ $step ]['name'], $page, $total_pages );
 			} else if ( isset( $steps[ $step + 1 ] ) ) {
 				$next_page         = 1;
 				$next_step         = $step + 1;
 				$data['next_step'] = $next_step;
 				$data['next_page'] = $next_page;
-				$data['message']   = sprintf( __( 'Processing %s (%d/%d)', 'digital-license-manager' ), $steps[ $next_step ]['name'], $next_page, $steps[ $next_step ]['pages'] );
+				$data['message']   = sprintf( __( 'Processing "%s" (%d/%d)', 'digital-license-manager' ), $steps[ $step ]['name'], $page, $total_pages );
 
 			} else {
+				$next_step         = - 1;
 				$data['next_step'] = - 1;
 				$data['next_page'] = - 1;
 				$data['message']   = __( 'Operation complete.', 'digital-license-manager' );
 			}
+
 
 			$current = 0;
 			foreach ( $steps as $i => $info ) {
@@ -137,6 +200,7 @@ abstract class AbstractTool {
 					$current += $page;
 				}
 			}
+
 			$data['percent'] = $current > 0 && $total > 0 ? round( $current / $total * 100, 2 ) : 0;
 
 		}
@@ -151,6 +215,14 @@ abstract class AbstractTool {
 	 */
 	public function getId() {
 		return $this->id;
+	}
+
+	/**
+	 * Return the id identifier
+	 * @return string
+	 */
+	public function getSlug() {
+		return $this->slug;
 	}
 
 	/**
