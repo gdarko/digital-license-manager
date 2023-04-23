@@ -22,23 +22,23 @@ abstract class AbstractTool {
 	 */
 	abstract public function getView();
 
-	/**
-	 * Returns the migrator steps
-	 *
-	 * eg:
-	 *
-	 *    [
-	 *        1 => array( 'name' => 'Licenses', 'pages' => 3 ),
-	 *        2 => array( 'name' => 'Generators', 'pages' => 4 ),
-	 *        3 => array( 'name' => 'API Keys', 'pages' => 5 ),
-	 *        4 => array( 'name' => 'Products', 'pages' => 6 ),
-	 *        5 => array( 'name' => 'Orders', 'pages' => 7 )
-	 *    ];
-	 *
-	 * @param null $identifier
-	 *
-	 * @return array|\WP_Error
-	 */
+    /**
+     * Returns the tool steps
+     *
+     * eg:
+     *
+     *    [
+     *        1 => array( 'name' => 'Step 1', 'pages' => 3 ),
+     *        2 => array( 'name' => 'Step 2', 'pages' => 4 ),
+     *        3 => array( 'name' => 'Step 3', 'pages' => 5 ),
+     *        4 => array( 'name' => 'Step 4', 'pages' => 6 ),
+     *        5 => array( 'name' => 'Step 5', 'pages' => 7 )
+     *    ];
+     *
+     * @param  null  $identifier
+     *
+     * @return array|\WP_Error
+     */
 	abstract public function getSteps( $identifier = null );
 
 	/**
@@ -60,16 +60,6 @@ abstract class AbstractTool {
 	 * @return bool|\WP_Error
 	 */
 	abstract public function doStep( $step, $page, $identifier = null );
-
-
-	/**
-	 * Check availability
-	 *
-	 * @param null $identifier
-	 *
-	 * @return bool|\WP_Error
-	 */
-	abstract public function checkAvailability( $identifier = null );
 
 
 	/**
@@ -147,7 +137,7 @@ abstract class AbstractTool {
 					$current += $page;
 				}
 			}
-			$data['percent'] = $current > 0 ? round( $current / $total * 100, 2 ) : 0;
+			$data['percent'] = $current > 0 && $total > 0 ? round( $current / $total * 100, 2 ) : 0;
 
 		}
 
