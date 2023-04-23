@@ -90,13 +90,18 @@ document.addEventListener("DOMContentLoaded", function (event) {
     /**
      * Initalize
      */
-    var form = document.querySelector('.dlm-tool-form');
-    if (form) {
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            var tools = new window.DLM.AdminTools(form);
-            tools.init(1, 1);
-        })
+    var forms = document.querySelectorAll('.dlm-tool-form');
+    console.log(forms);
+    if (forms && forms.length) {
+        for(var i = 0; i < forms.length; i++) {
+            forms[i].addEventListener('submit', function (e) {
+                e.preventDefault();
+                if(confirm(DLM_Tools.i18n.confirmation)) {
+                    var tools = new window.DLM.AdminTools(this);
+                    tools.init(1, 1);
+                }
+            })
+        }
     }
 });
 
