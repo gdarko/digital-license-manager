@@ -121,7 +121,14 @@ class GeneratePastOrderLicenses extends AbstractTool {
 
 				foreach ( $results->orders as $order ) {
 					/* @var \WC_Order $order */
+					$skip_order = (bool) $order->get_meta( '_subscription_renewal' ); // Skip renewal orders?
+					if ( apply_filters( 'dlm_tool_generate_past_order_licenses_skip_order', $skip_order, $order ) ) {
+						continue;
+					}
 					foreach ( $order->get_items( [ 'line_item' ] ) as $item ) {
+						if ( apply_filters( 'dlm_tool_generate_past_order_licenses_skip_order_item', false, $item, $order ) ) {
+							continue;
+						}
 						/* @var \WC_Order_Item_Product $item */
 						$productId = $item->get_product_id();
 						$quantity  = $item->get_quantity();
@@ -158,7 +165,7 @@ class GeneratePastOrderLicenses extends AbstractTool {
 								);
 
 								if ( ! is_wp_error( $status ) ) {
-									$order->add_order_note( sprintf( __( 'Generated %d licenses for order item #%d (product %d) via the "Past Orders License Generator" tool.', 'digital-license-manager' ), count( $licenses ), $item->get_id(), $item->get_product_id() ) );
+									$order->add_order_note( sprintf( __( 'Generated %d licenses for order item #%d (product %d) with generator #%d via the "Past Orders License Generator" tool.', 'digital-license-manager' ), count( $licenses ), $item->get_id(), $item->get_product_id(), $productGenerators[$productId]->getId() ) );
 									$item->add_meta_data( 'generated_licenses', time() );
 									$item->save_meta_data();;
 									$generated ++;
@@ -197,10 +204,10 @@ class GeneratePastOrderLicenses extends AbstractTool {
 	 * @return mixed|null
 	 */
 	private function getOrdersQuery() {
-		return apply_filters( 'dlm_woocommerce_tool_license_generator_query', [
+		return apply_filters( 'dlm_tool_generate_past_order_licenses_query', [
 			'paginate'     => true,
 			'status'       => array( 'wc-processing', 'wc-completed' ),
-			'limit'        => 10,
+			'limit'        => 2,
 			'meta_key'     => 'dlm_order_complete',
 			'meta_compare' => 'NOT EXISTS',
 		] );
