@@ -38,3 +38,17 @@
     text-align: center;
     font-size: 12px;
 }
+
+.dlm-tool-row > .dlm-tool-form .dlm-tool-form-row:last-child {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.dlm-tool-row > h3, .dlm-tool-row > p, .dlm-tool-row > .dlm-tool-form {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.dlm-tool-row {
+    border: 1px solid #ccc;
+    margin-bottom: 17px;
+}
