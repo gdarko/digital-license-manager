@@ -252,7 +252,7 @@ class GeneratePastOrderLicenses extends AbstractTool {
 		return apply_filters( 'dlm_tool_generate_past_order_licenses_query', [
 			'paginate'     => true,
 			'status'       => array( 'wc-processing', 'wc-completed' ),
-			'limit'        => 1,
+			'limit'        => 10,
 			'meta_key'     => 'dlm_order_complete',
 			'meta_compare' => 'NOT EXISTS',
 		] );
