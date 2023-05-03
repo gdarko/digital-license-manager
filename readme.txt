@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce, k
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 6.2
-Stable tag: 1.4.2
+Stable tag: 1.4.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -146,6 +146,10 @@ To validate a license through the REST API, please follow this <a href="http://d
 
 To migrate to Digital License Manager, please navigate to "License Manager" > "Settings" > "Tools" and here you can find the migration tool. This will copy your data to Digital License Manager supported format. If you used the REST API, we will be providing a fallback REST API for license activation/deactivation/validation endpoints that will be the same url structure as the "License Manager for WooCommerce" but utilize our backend APIs for backwards compatibility. Stay tuned!
 
+= Can i assign license keys to past WooCommerce orders that were placed before i installed Digital Licnese Manager?
+
+Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past Orders". You must select a Generator that will be used to generate keys for the orders.
+
 == Screenshots ==
 
 1. Licenses - Overview page
@@ -165,6 +169,19 @@ To migrate to Digital License Manager, please navigate to "License Manager" > "S
 15. Re-send licenses via Order page
 
 == Changelog ==
+
+= 1.4.3 =
+*Release Date - 03 May 2023*
+
+* Do not enforce expired license validation when deactivting token through the REST API
+* Add option in Settings > WooCommerce to enable masking the license keys on the public facing pages like Order Received" page
+* Show My Account licenses status as Expired when license is expired
+* Fix issue when clearing Generator valeus in edit page
+* Move "Max Activations" at the bottom before expiresIn in Generator edit
+* Add support on the dropdown search endpoint for generators
+* Add "Past Orders License Generator" tool in Settings > Tools that allows users to generate licenses for past orders by selectting Generator.
+* Add UI improvements to the styling of the Tools page
+* Add unit tests for orders/products
 
 = 1.4.2 =
 *Release Date - 22 Mar 2023*

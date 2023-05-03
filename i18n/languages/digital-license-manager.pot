@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Digital License Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-21 15:32+0000\n"
+"POT-Creation-Date: 2023-05-03 00:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -130,7 +130,7 @@ msgstr ""
 msgid "A manual email to send out license keys to the customer."
 msgstr ""
 
-#: templates/admin/generators/page-edit.php:47
+#: templates/admin/generators/page-edit.php:48
 #: templates/admin/generators/page-add.php:24
 msgid "A short name to describe the generator."
 msgstr ""
@@ -166,7 +166,7 @@ msgstr ""
 msgid "Activations"
 msgstr ""
 
-#: includes/Core/Services/GeneratorsService.php:193
+#: includes/Core/Services/GeneratorsService.php:194
 msgid "Activations Limit should positive integer value larger than 0"
 msgstr ""
 
@@ -198,27 +198,27 @@ msgstr ""
 msgid "Add new generator"
 msgstr ""
 
-#: templates/admin/generators/page-edit.php:137
+#: templates/admin/generators/page-edit.php:129
 msgid ""
 "Adds a character set at the end of a license key (separator <strong>"
 "not</strong> included), i.e. for <code>12-AB-34-CD-SUF</code> the suffix is "
 "<code>-SUF</code>."
 msgstr ""
 
-#: templates/admin/generators/page-edit.php:125
+#: templates/admin/generators/page-edit.php:117
 msgid ""
 "Adds a character set at the start of a license key (separator <strong>"
 "not</strong> included), i.e. for <code>PRE-12-AB-34-CD</code> the prefix is "
 "<code>PRE-</code>."
 msgstr ""
 
-#: templates/admin/generators/page-add.php:114
+#: templates/admin/generators/page-add.php:105
 msgid ""
 "Adds a word at the end (separator <strong>not</strong> included), i.e. <kbd>"
 "12-AB-34-CD<strong>-SUF</strong></kbd>."
 msgstr ""
 
-#: templates/admin/generators/page-add.php:102
+#: templates/admin/generators/page-add.php:93
 msgid ""
 "Adds a word at the start (separator <strong>not</strong> included), i.e. "
 "<kbd><strong>PRE-</strong>12-AB-34-CD</kbd>."
@@ -258,8 +258,8 @@ msgstr ""
 msgid "Amount"
 msgstr ""
 
-#: includes/Core/Services/LicensesService.php:1062
-#: includes/Core/Services/LicensesService.php:1141
+#: includes/Core/Services/LicensesService.php:1064
+#: includes/Core/Services/LicensesService.php:1143
 msgid "Amount is invalid."
 msgstr ""
 
@@ -313,8 +313,8 @@ msgid "Certificate"
 msgstr ""
 
 #: includes/ListTables/Generators.php:248
-#: templates/admin/generators/page-edit.php:64
-#: templates/admin/generators/page-add.php:41
+#: templates/admin/generators/page-edit.php:56
+#: templates/admin/generators/page-add.php:32
 msgid "Character map"
 msgstr ""
 
@@ -323,8 +323,8 @@ msgid "Charset can not be empty."
 msgstr ""
 
 #: includes/ListTables/Generators.php:250
-#: templates/admin/generators/page-edit.php:94
-#: templates/admin/generators/page-add.php:71
+#: templates/admin/generators/page-edit.php:86
+#: templates/admin/generators/page-add.php:62
 msgid "Chunk length"
 msgstr ""
 
@@ -378,7 +378,7 @@ msgid "Copied to clipboard"
 msgstr ""
 
 #: templates/admin/licenses/page-add.php:100
-#: templates/admin/generators/page-add.php:133
+#: templates/admin/generators/page-add.php:136
 #: templates/woocommerce/dlm/my-account/licenses/partials/single-table-activations.php:163
 msgid "Create"
 msgstr ""
@@ -435,13 +435,13 @@ msgstr ""
 #: templates/admin/licenses/page-import.php:87
 #: templates/admin/licenses/page-edit.php:88
 #: templates/admin/licenses/page-add.php:55
-#: templates/admin/generators/page-edit.php:57
+#: templates/admin/generators/page-edit.php:141
 msgid ""
 "Define how many times the license can be marked as \"activated\". Leave "
 "blank for unlimited activations."
 msgstr ""
 
-#: templates/admin/generators/page-add.php:34
+#: templates/admin/generators/page-add.php:117
 msgid ""
 "Define how many times the license key can be marked as \"activated\" by "
 "using the REST API. Leave blank if you do not use the API."
@@ -533,7 +533,7 @@ msgstr ""
 msgid "Display the 'Licenses' section inside WooCommerce's 'My Account'."
 msgstr ""
 
-#: includes/Boot.php:389
+#: includes/Boot.php:392
 msgid "Documentation"
 msgstr ""
 
@@ -556,7 +556,7 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: templates/admin/generators/page-edit.php:11
+#: templates/admin/generators/page-edit.php:12
 msgid "Edit generator"
 msgstr ""
 
@@ -648,12 +648,12 @@ msgid "Expires at"
 msgstr ""
 
 #: includes/ListTables/Generators.php:255
-#: templates/admin/generators/page-edit.php:144
-#: templates/admin/generators/page-add.php:121
+#: templates/admin/generators/page-edit.php:148
+#: templates/admin/generators/page-add.php:124
 msgid "Expires in"
 msgstr ""
 
-#: includes/Core/Services/GeneratorsService.php:201
+#: includes/Core/Services/GeneratorsService.php:206
 msgid ""
 "Expires In shoudld be positive integer value larger than 1 that represents "
 "number of days"
@@ -740,8 +740,16 @@ msgstr ""
 msgid "Generate Licenses"
 msgstr ""
 
+#: includes/Integrations/WooCommerce/Tools/GeneratePastOrderLicenses/GeneratePastOrderLicenses.php:176
+#, php-format
+msgid ""
+"Generated %d license(s) for order item #%d (product #%d) with generator #%d "
+"via the \"Past Orders License Generator\" tool."
+msgstr ""
+
 #: includes/ListTables/Generators.php:29
 #: templates/admin/generators/page-generate.php:29
+#: templates/admin/settings/tools/generate-past-order-licenses.php:11
 msgid "Generator"
 msgstr ""
 
@@ -777,7 +785,7 @@ msgstr ""
 msgid "Get in touch with us, do not hesitate to do that."
 msgstr ""
 
-#: includes/Boot.php:384
+#: includes/Boot.php:387
 msgid "GitHub"
 msgstr ""
 
@@ -809,19 +817,19 @@ msgstr ""
 msgid "https://darkog.com/"
 msgstr ""
 
-#: templates/admin/generators/page-add.php:48
+#: templates/admin/generators/page-add.php:39
 msgid "i.e. for \"12-AB-34-CD\" the character map is <kbd>ABCD1234</kbd>."
 msgstr ""
 
-#: templates/admin/generators/page-add.php:78
+#: templates/admin/generators/page-add.php:69
 msgid "i.e. for \"12-AB-34-CD\" the chunk length is <kbd>2</kbd>."
 msgstr ""
 
-#: templates/admin/generators/page-add.php:63
+#: templates/admin/generators/page-add.php:54
 msgid "i.e. for \"12-AB-34-CD\" the number of chunks is <kbd>4</kbd>."
 msgstr ""
 
-#: templates/admin/generators/page-add.php:90
+#: templates/admin/generators/page-add.php:81
 msgid "i.e. for \"12-AB-34-CD\" the separator is <kbd>-</kbd>."
 msgstr ""
 
@@ -915,6 +923,7 @@ msgid "Inactive"
 msgstr ""
 
 #: templates/admin/settings/tools/migration.php:28
+#: templates/admin/settings/tools/generate-past-order-licenses.php:25
 msgid "Initializing..."
 msgstr ""
 
@@ -938,7 +947,7 @@ msgstr ""
 msgid "Invalid license key ID"
 msgstr ""
 
-#: includes/Core/Services/LicensesService.php:1054
+#: includes/Core/Services/LicensesService.php:1056
 msgid "Invalid order provided."
 msgstr ""
 
@@ -1033,7 +1042,7 @@ msgstr ""
 msgid "License keys"
 msgstr ""
 
-#: includes/Core/Services/LicensesService.php:1133
+#: includes/Core/Services/LicensesService.php:1135
 msgid "License Keys are invalid."
 msgstr ""
 
@@ -1117,8 +1126,8 @@ msgstr ""
 #: templates/admin/licenses/page-import.php:82
 #: templates/admin/licenses/page-edit.php:82
 #: templates/admin/licenses/page-add.php:50
-#: templates/admin/generators/page-edit.php:54
-#: templates/admin/generators/page-add.php:31
+#: templates/admin/generators/page-edit.php:136
+#: templates/admin/generators/page-add.php:112
 msgid "Max activations"
 msgstr ""
 
@@ -1130,7 +1139,7 @@ msgstr ""
 msgid "Maximum activation count"
 msgstr ""
 
-#: templates/admin/settings/tools/migration.php:32
+#: templates/admin/settings/tools/migration.php:33
 msgid "Migrate"
 msgstr ""
 
@@ -1138,7 +1147,7 @@ msgstr ""
 msgid "Migration"
 msgstr ""
 
-#: includes/Tools/Migration/Migration.php:26
+#: includes/Tools/Migration/Migration.php:28
 msgid "Migration tool that makes it possible to easily move from other plugins"
 msgstr ""
 
@@ -1148,7 +1157,7 @@ msgid "N/A"
 msgstr ""
 
 #: includes/ListTables/Generators.php:247
-#: templates/admin/generators/page-edit.php:40
+#: templates/admin/generators/page-edit.php:41
 #: templates/admin/generators/page-add.php:17
 msgid "Name"
 msgstr ""
@@ -1212,8 +1221,16 @@ msgstr ""
 msgid "No licenses available yet"
 msgstr ""
 
+#: includes/Integrations/WooCommerce/Tools/GeneratePastOrderLicenses/GeneratePastOrderLicenses.php:196
+msgid "No licenses generated for this page."
+msgstr ""
+
 #: includes/Controllers/Licenses.php:642
 msgid "No licenses were selected."
+msgstr ""
+
+#: includes/Integrations/WooCommerce/Tools/GeneratePastOrderLicenses/GeneratePastOrderLicenses.php:87
+msgid "No orders found without licenses."
 msgstr ""
 
 #: includes/RestAPI/Controllers/Generators.php:349
@@ -1252,8 +1269,8 @@ msgid "Nothing to see here..."
 msgstr ""
 
 #: includes/ListTables/Generators.php:249
-#: templates/admin/generators/page-edit.php:79
-#: templates/admin/generators/page-add.php:56
+#: templates/admin/generators/page-edit.php:71
+#: templates/admin/generators/page-add.php:47
 msgid "Number of chunks"
 msgstr ""
 
@@ -1289,11 +1306,11 @@ msgstr ""
 msgid "Only integer values between 1 and 99 are allowed for chunks."
 msgstr ""
 
-#: includes/Abstracts/AbstractTool.php:139
+#: includes/Abstracts/AbstractTool.php:191
 msgid "Operation complete."
 msgstr ""
 
-#: includes/Abstracts/AbstractTool.php:112
+#: includes/Abstracts/AbstractTool.php:158
 msgid "Operation not initialized properly."
 msgstr ""
 
@@ -1313,14 +1330,16 @@ msgstr ""
 #: templates/admin/licenses/page-add.php:66
 #: templates/admin/licenses/page-add.php:78
 #: templates/admin/licenses/page-add.php:90
-#: templates/admin/generators/page-edit.php:112
-#: templates/admin/generators/page-edit.php:124
-#: templates/admin/generators/page-edit.php:136
-#: templates/admin/generators/page-edit.php:148
-#: templates/admin/generators/page-add.php:89
-#: templates/admin/generators/page-add.php:101
-#: templates/admin/generators/page-add.php:113
-#: templates/admin/generators/page-add.php:125
+#: templates/admin/generators/page-edit.php:104
+#: templates/admin/generators/page-edit.php:116
+#: templates/admin/generators/page-edit.php:128
+#: templates/admin/generators/page-edit.php:140
+#: templates/admin/generators/page-edit.php:152
+#: templates/admin/generators/page-add.php:80
+#: templates/admin/generators/page-add.php:92
+#: templates/admin/generators/page-add.php:104
+#: templates/admin/generators/page-add.php:116
+#: templates/admin/generators/page-add.php:128
 msgid "Optional."
 msgstr ""
 
@@ -1342,7 +1361,7 @@ msgstr ""
 msgid "Order ID"
 msgstr ""
 
-#: includes/Core/Services/LicensesService.php:1137
+#: includes/Core/Services/LicensesService.php:1139
 msgid "Order ID is invalid."
 msgstr ""
 
@@ -1365,6 +1384,10 @@ msgstr ""
 
 #: templates/admin/settings/page-edit.php:66
 msgid "Owner of these keys."
+msgstr ""
+
+#: templates/admin/settings/tools/generate-past-order-licenses.php:7
+msgid "Past Orders License Generator"
 msgstr ""
 
 #: includes/Integrations/WooCommerce/MyAccount.php:232
@@ -1412,6 +1435,10 @@ msgstr ""
 msgid "Please select a generator"
 msgstr ""
 
+#: includes/Integrations/WooCommerce/Tools/GeneratePastOrderLicenses/GeneratePastOrderLicenses.php:80
+msgid "Please select a generator that will be used to generate the licenses."
+msgstr ""
+
 #: includes/Integrations/WooCommerce/Orders.php:421
 msgid "Please wait..."
 msgstr ""
@@ -1423,8 +1450,8 @@ msgid ""
 msgstr ""
 
 #: includes/ListTables/Generators.php:253
-#: templates/admin/generators/page-edit.php:120
-#: templates/admin/generators/page-add.php:97
+#: templates/admin/generators/page-edit.php:112
+#: templates/admin/generators/page-add.php:88
 msgid "Prefix"
 msgstr ""
 
@@ -1440,10 +1467,15 @@ msgstr ""
 msgid "Price"
 msgstr ""
 
-#: includes/Abstracts/AbstractTool.php:128
-#: includes/Abstracts/AbstractTool.php:134
+#: templates/admin/settings/tools/generate-past-order-licenses.php:31
+msgid "Process"
+msgstr ""
+
+#: includes/Abstracts/AbstractTool.php:174
+#: includes/Abstracts/AbstractTool.php:179
+#: includes/Abstracts/AbstractTool.php:185
 #, php-format
-msgid "Processing %s (%d/%d)"
+msgid "Processing \"%s\" (%d/%d)"
 msgstr ""
 
 #: includes/ListTables/Licenses.php:768
@@ -1502,19 +1534,19 @@ msgstr ""
 msgid "Report on WP.org"
 msgstr ""
 
-#: includes/Core/Services/LicensesService.php:1068
+#: includes/Core/Services/LicensesService.php:1070
 #, php-format
 msgid "Required amout of %d licenses was not found in stock."
 msgstr ""
 
-#: templates/admin/generators/page-edit.php:46
-#: templates/admin/generators/page-edit.php:70
-#: templates/admin/generators/page-edit.php:85
-#: templates/admin/generators/page-edit.php:100
+#: templates/admin/generators/page-edit.php:47
+#: templates/admin/generators/page-edit.php:62
+#: templates/admin/generators/page-edit.php:77
+#: templates/admin/generators/page-edit.php:92
 #: templates/admin/generators/page-add.php:23
-#: templates/admin/generators/page-add.php:47
-#: templates/admin/generators/page-add.php:62
-#: templates/admin/generators/page-add.php:77
+#: templates/admin/generators/page-add.php:38
+#: templates/admin/generators/page-add.php:53
+#: templates/admin/generators/page-add.php:68
 #: templates/admin/settings/page-edit.php:37
 #: templates/admin/settings/page-edit.php:65
 #: templates/admin/settings/page-edit.php:86
@@ -1541,6 +1573,10 @@ msgstr ""
 
 #: templates/admin/activations/page-list.php:21
 msgid "Search activations"
+msgstr ""
+
+#: templates/admin/settings/tools/generate-past-order-licenses.php:46
+msgid "Search by generator"
 msgstr ""
 
 #: includes/Boot.php:321
@@ -1625,12 +1661,12 @@ msgid "Send"
 msgstr ""
 
 #: includes/ListTables/Generators.php:252
-#: templates/admin/generators/page-edit.php:108
-#: templates/admin/generators/page-add.php:85
+#: templates/admin/generators/page-edit.php:100
+#: templates/admin/generators/page-add.php:76
 msgid "Separator"
 msgstr ""
 
-#: includes/Core/Services/GeneratorsService.php:211
+#: includes/Core/Services/GeneratorsService.php:218
 msgid "Separator should be only one character"
 msgstr ""
 
@@ -1695,8 +1731,8 @@ msgid "Successfully updated the stock of %d WooCommerce products."
 msgstr ""
 
 #: includes/ListTables/Generators.php:254
-#: templates/admin/generators/page-edit.php:132
-#: templates/admin/generators/page-add.php:109
+#: templates/admin/generators/page-edit.php:124
+#: templates/admin/generators/page-add.php:100
 msgid "Suffix"
 msgstr ""
 
@@ -1742,13 +1778,13 @@ msgstr ""
 msgid "The API key provided does not have write permissions."
 msgstr ""
 
-#: templates/admin/generators/page-edit.php:101
+#: templates/admin/generators/page-edit.php:93
 msgid ""
 "The character length of an individual chunk, i.e. for <code>12-AB-34-"
 "CD</code> the chunk length is <code>2</code>."
 msgstr ""
 
-#: templates/admin/generators/page-edit.php:71
+#: templates/admin/generators/page-edit.php:63
 msgid ""
 "The characters which will be used for generating a license key, i.e. for "
 "<code>12-AB-34-CD</code> the character map is <code>ABCD1234</code>."
@@ -1792,7 +1828,7 @@ msgid "The following licenses have been generated for this order item"
 msgstr ""
 
 #: includes/Core/Services/GeneratorsService.php:131
-#: includes/Core/Services/GeneratorsService.php:232
+#: includes/Core/Services/GeneratorsService.php:245
 msgid "The generator could not be created."
 msgstr ""
 
@@ -1812,7 +1848,7 @@ msgstr ""
 msgid "The generator was updated successfully."
 msgstr ""
 
-#: includes/Core/Services/GeneratorsService.php:255
+#: includes/Core/Services/GeneratorsService.php:268
 msgid "The generator(s) could not be deleted."
 msgstr ""
 
@@ -1875,14 +1911,14 @@ msgstr ""
 msgid "The nonce is invalid or has expired."
 msgstr ""
 
-#: templates/admin/generators/page-edit.php:149
-#: templates/admin/generators/page-add.php:126
+#: templates/admin/generators/page-edit.php:153
+#: templates/admin/generators/page-add.php:129
 msgid ""
 "The number of days for which the license key is valid after purchase. Leave "
 "blank if it doesn't expire."
 msgstr ""
 
-#: templates/admin/generators/page-edit.php:86
+#: templates/admin/generators/page-edit.php:78
 msgid ""
 "The number of separated character sets, i.e. for <code>12-AB-34-CD</code> "
 "the number of chunks is <code>4</code>."
@@ -1925,7 +1961,7 @@ msgid ""
 "The selected generator's rules will be used to generate the license keys."
 msgstr ""
 
-#: templates/admin/generators/page-edit.php:113
+#: templates/admin/generators/page-edit.php:105
 msgid ""
 "The special character separating the individual chunks, i.e. for <code>12-AB-"
 "34-CD</code> the separator is <code>-</code>."
@@ -1982,7 +2018,7 @@ msgstr ""
 msgid "There was a problem updating the generator."
 msgstr ""
 
-#: templates/admin/generators/page-edit.php:17
+#: templates/admin/generators/page-edit.php:18
 msgid "This generator is assigned to the following product(s)"
 msgstr ""
 
@@ -2003,6 +2039,13 @@ msgstr ""
 
 #: includes/Controllers/Settings.php:109
 msgid "This should only be activated for development purposes."
+msgstr ""
+
+#: templates/admin/settings/tools/generate-past-order-licenses.php:8
+msgid ""
+"This tool generates licenses for all past orders that doesn't have license "
+"assigned. Useful if you already have established shop and want to assign "
+"licenses to your existing orders."
 msgstr ""
 
 #: includes/Integrations/WooCommerce/Products.php:102
@@ -2043,7 +2086,7 @@ msgstr ""
 msgid "Unable to delete license activation."
 msgstr ""
 
-#: includes/Abstracts/AbstractTool.php:118
+#: includes/Abstracts/AbstractTool.php:164
 msgid "Unable to determine next step"
 msgstr ""
 
@@ -2061,7 +2104,7 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: includes/Core/Services/LicensesService.php:1193
+#: includes/Core/Services/LicensesService.php:1195
 msgid "Unknown license"
 msgstr ""
 
@@ -2078,7 +2121,7 @@ msgid "Untitled"
 msgstr ""
 
 #: templates/admin/licenses/page-edit.php:200
-#: templates/admin/generators/page-edit.php:156
+#: templates/admin/generators/page-edit.php:160
 msgid "Update"
 msgstr ""
 
@@ -2096,6 +2139,12 @@ msgstr ""
 
 #: includes/Controllers/Settings.php:92
 msgid "Upload a company logo that will be displayed in the certification PDF."
+msgstr ""
+
+#: templates/admin/settings/tools/generate-past-order-licenses.php:18
+msgid ""
+"Use product settings where possible, e.g some products have their own "
+"licensing configuration settings."
 msgstr ""
 
 #: includes/Integrations/WooCommerce/Settings.php:117
@@ -2140,11 +2189,11 @@ msgstr ""
 msgid "Valid for (days)"
 msgstr ""
 
-#: includes/Core/Services/LicensesService.php:1164
+#: includes/Core/Services/LicensesService.php:1166
 msgid "Valid for invalid."
 msgstr ""
 
-#: includes/Core/Services/LicensesService.php:1085
+#: includes/Core/Services/LicensesService.php:1087
 msgid "Valid for is not set or invalid."
 msgstr ""
 
@@ -2160,11 +2209,11 @@ msgstr ""
 msgid "Valid until"
 msgstr ""
 
-#: includes/Controllers/Dropdowns.php:337
+#: includes/Controllers/Dropdowns.php:388
 msgid "Variable"
 msgstr ""
 
-#: includes/Controllers/Dropdowns.php:339
+#: includes/Controllers/Dropdowns.php:390
 msgid "Variation"
 msgstr ""
 
@@ -2186,6 +2235,23 @@ msgstr ""
 
 #: templates/admin/welcome.php:31
 msgid "Want more features? try the PRO version!"
+msgstr ""
+
+#: includes/Integrations/WooCommerce/Tools/GeneratePastOrderLicenses/GeneratePastOrderLicenses.php:91
+msgid ""
+"WARNING - Looks like you modified the data query of the tool by a filter. We "
+"noticed that no check against the dlm_order_complete meta is present that is "
+"intended to limit the query to only those products that doesn't have "
+"licenses assigned from previously. This means your procedure will run on all "
+"the past orders, even the ones that have a license. Only continue if you "
+"agree with this, otherwise update your filter and include the "
+"dlm_order_complete meta check."
+msgstr ""
+
+#: includes/Boot.php:350
+msgid ""
+"WARNING - Please take backups before running this tool. It can cause a "
+"damage to your database if not used properly."
 msgstr ""
 
 #: templates/admin/settings/page-help.php:23
