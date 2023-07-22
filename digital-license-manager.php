@@ -8,7 +8,7 @@
  * Text Domain: digital-license-manager
  * Domain Path: /i18n/languages/
  * WC requires at least: 2.7
- * WC tested up to: 7.6
+ * WC tested up to: 8.0
  */
 
 defined( 'ABSPATH' ) || exit;
