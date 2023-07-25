@@ -24,7 +24,6 @@
  */
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\ApiKey as ApiKeyResourceModel;
-use IdeoLogix\DigitalLicenseManager\Utils\Html;
 
 defined( 'ABSPATH' ) || exit;
 
