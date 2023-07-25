@@ -1,3 +1,9 @@
+/**
+ * Copyright (C) 2020-2023 Darko Gjorgjijoski <https://darkog.com>
+ * All Rights Reserved.
+ * Licensed under GPLv3.
+ */
+
 document.addEventListener("DOMContentLoaded", function (event) {
 
     /**
