@@ -58,6 +58,7 @@ class Orders {
 		add_filter( 'woocommerce_order_actions', array( $this, 'addSendLicenseKeysAction' ), 10, 1 );
 		add_action( 'woocommerce_after_order_itemmeta', array( $this, 'showOrderedLicenses' ), 10, 3 );
 		add_filter( 'dlm_woocommerce_order_item_actions', array( $this, 'orderItemActions' ), 10, 4 );
+		add_action( 'dlm_generated_licenses_saved', array( $this, 'markOrderAsComplete' ), 10, 3 );
 	}
 
 	/**
@@ -272,7 +273,8 @@ class Orders {
 					LicenseStatus::SOLD,
 					$generator,
 					null,
-					$activationsLimit
+					$activationsLimit,
+					false
 				);
 			}
 		}
@@ -393,6 +395,7 @@ class Orders {
 	 */
 	public function showOrderedLicenses( $itemId, $item, $product ) {
 
+
 		// Not a WC_Order_Item_Product object? Nothing to do...
 		if ( ! ( $item instanceof WC_Order_Item_Product ) ) {
 			return;
@@ -451,6 +454,28 @@ class Orders {
 		}
 
 		return $actions;
+	}
+
+	/**
+	 * Mark as complete
+	 *
+	 * @param $order_id
+	 * @param $licenses
+	 * @param $shouldMark
+	 *
+	 * @return void
+	 */
+	public function markOrderAsComplete( $order_id, $licenses, $shouldMark ) {
+		if ( ! $shouldMark ) {
+			return;
+		}
+		$order = wc_get_order( $order_id );
+		if ( ! $order ) {
+			return;
+		}
+		$order->update_meta_data( 'dlm_order_complete' );
+		$order->save();
+
 	}
 
 	/**
@@ -568,7 +593,7 @@ class Orders {
 			$html .= '</ul>';
 
 			foreach ( $actions as $key => $action ) {
-				if ( !empty( $action['after_html'] ) ) {
+				if ( ! empty( $action['after_html'] ) ) {
 					add_action( 'admin_footer', function () use ( $action ) {
 						echo $action['after_html'];
 					}, 100000 );

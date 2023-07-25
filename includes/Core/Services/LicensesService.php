@@ -113,7 +113,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		/** @var LicenseResourceModel[] $licenses */
 		$licenses = ! empty( $query ) ? LicenseResourceRepository::instance()->findAllBy( $query ) : LicenseResourceRepository::instance()->findAll();
 
-		if ( empty($licenses) ) {
+		if ( empty( $licenses ) ) {
 			return new WP_Error( 'data_error', __( "No licence keys found for your query.", 'digital-license-manager' ), array( 'code' => 404 ) );
 		}
 
@@ -291,7 +291,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		// License key
 		if ( array_key_exists( 'license_key', $data ) && $data['license_key'] != $oldLicense->getDecryptedLicenseKey() ) {
 			// Check for possible duplicates
-			if (  $this->isKeyDuplicate( $data['license_key'], $oldLicense->getId() ) ) {
+			if ( $this->isKeyDuplicate( $data['license_key'], $oldLicense->getId() ) ) {
 				return new WP_Error( 'data_error', sprintf( __( "The license key '%s' already exists", 'digital-license-manager' ), $data['license_key'] ), array( 'code' => 409 ) );
 			}
 
@@ -995,8 +995,8 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			);
 		} else {
 			// Keys have been generated and saved, this order is now complete.
-			if($markAsComplete) {
-				update_post_meta( $cleanOrderId, 'dlm_order_complete', 1 );
+			if ( $markAsComplete ) {
+				do_action( 'dlm_generated_licenses_saved', $cleanOrderId, [], $markAsComplete );
 			}
 
 			return true;
@@ -1047,13 +1047,10 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 */
 	public function getLicensesFromStock( $product, $amount = - 1, $params = [] ) {
 
-		$product_id = is_object( $product ) ? $product->get_id() : intval( $product );
+		$query = $this->getStockLicensesQuery( $product, $params );
 
 		return LicenseResourceRepository::instance()->findAllBy(
-			array(
-				'product_id' => $product_id,
-				'status'     => LicenseStatusEnum::ACTIVE
-			),
+			$query,
 			null,
 			null,
 			- 1,

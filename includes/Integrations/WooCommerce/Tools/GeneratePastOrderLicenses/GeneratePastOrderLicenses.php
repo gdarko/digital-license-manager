@@ -233,7 +233,7 @@ class GeneratePastOrderLicenses extends AbstractTool {
 
 				foreach ( $results->orders as $order ) {
 					/* @var \WC_Order $order */
-					$order->add_meta_data( 'dlm_order_complete', 1 );
+					$order->update_meta_data( 'dlm_order_complete', 1 );
 					$order->save_meta_data();
 				}
 
