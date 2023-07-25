@@ -88,6 +88,9 @@ abstract class AbstractResourceRepository extends Singleton implements ResourceR
 	 */
 	function sanitize( &$data ) {
 		foreach ( $data as $column => $value ) {
+			if(!isset($this->mapping[ $column ])) {
+				continue;
+			}
 			switch ( $this->mapping[ $column ] ) {
 				case ColumnTypeEnum::HTML_TEXT:
 					if ( $data[ $column ] !== null ) {
