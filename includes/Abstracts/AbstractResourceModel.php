@@ -27,8 +27,8 @@ namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 
 /**
  * Class AbstractResourceModel
- * @package IdeoLogix\DigitalLicenseManager\Abstracts
  * @depreacted  1.5.0
+ * @package IdeoLogix\DigitalLicenseManager\Abstracts
  */
 abstract class AbstractResourceModel extends AbstractDataModel {
 }
