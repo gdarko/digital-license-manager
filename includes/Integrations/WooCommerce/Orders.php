@@ -516,8 +516,8 @@ class Orders {
 		foreach ( $order->get_items() as $itemData ) {
 
 			/** @var WC_Product $product */
-			$product   = $itemData->get_product();
-			$productId = $product->get_id();
+			$productId = apply_filters( 'dlm_order_licensed_product', $itemData->get_product_id(), $itemData, $order );
+			$product   = wc_get_product( $productId );
 			$orderId   = $order->get_id();
 
 			// Check if the product has been activated for selling.
@@ -530,7 +530,7 @@ class Orders {
 			/** @var LicenseResourceModel[] $licenses */
 			$licenses = LicenseResourceRepository::instance()->findAllBy( array(
 				'order_id'   => $orderId,
-				'product_id' => $product->get_id()
+				'product_id' => $productId
 			) );
 
 			$data[ $product->get_id() ]['name'] = $product->get_name();
