@@ -30,10 +30,14 @@ use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ResourceRepositoryInter
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\ApiKey as ApiKeyResourceModel;
 use IdeoLogix\DigitalLicenseManager\Enums\ColumnType as ColumnTypeEnum;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
+use IdeoLogix\DigitalLicenseManager\Traits\Singleton;
 
 defined( 'ABSPATH' ) || exit;
 
 class ApiKey extends AbstractResourceRepository implements ResourceRepositoryInterface {
+
+	use Singleton;
+
 	/**
 	 * @var string
 	 */

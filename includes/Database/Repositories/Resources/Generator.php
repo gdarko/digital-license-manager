@@ -30,10 +30,14 @@ use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ResourceRepositoryInter
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
 use IdeoLogix\DigitalLicenseManager\Enums\ColumnType as ColumnTypeEnum;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
+use IdeoLogix\DigitalLicenseManager\Traits\Singleton;
 
 defined( 'ABSPATH' ) || exit;
 
 class Generator extends AbstractResourceRepository implements ResourceRepositoryInterface {
+
+	use Singleton;
+
 	/**
 	 * @var string
 	 */

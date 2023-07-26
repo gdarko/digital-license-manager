@@ -30,7 +30,7 @@ use IdeoLogix\DigitalLicenseManager\Enums\ColumnType as ColumnTypeEnum;
 
 defined( 'ABSPATH' ) || exit;
 
-abstract class AbstractResourceRepository extends Singleton implements ResourceRepositoryInterface {
+abstract class AbstractResourceRepository implements ResourceRepositoryInterface {
 	/**
 	 * @var string
 	 */

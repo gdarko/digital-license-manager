@@ -30,10 +30,14 @@ use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ResourceRepositoryInter
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseMeta as LicenseMetaResourceModel;
 use IdeoLogix\DigitalLicenseManager\Enums\ColumnType;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
+use IdeoLogix\DigitalLicenseManager\Traits\Singleton;
 
 defined( 'ABSPATH' ) || exit;
 
 class LicenseMeta extends AbstractResourceRepository implements ResourceRepositoryInterface {
+
+	use Singleton;
+
 	/**
 	 * @var string
 	 */

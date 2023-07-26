@@ -30,7 +30,7 @@ use Defuse\Crypto\Exception\BadFormatException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
 use Defuse\Crypto\Key;
-use IdeoLogix\DigitalLicenseManager\Abstracts\Singleton;
+use IdeoLogix\DigitalLicenseManager\Traits\Singleton;
 use WP_Error;
 
 defined( 'ABSPATH' ) || exit;
@@ -39,7 +39,9 @@ defined( 'ABSPATH' ) || exit;
  * Class CryptoHelper
  * @package IdeoLogix\DigitalLicenseManager\Utils
  */
-class CryptoHelper extends Singleton {
+class CryptoHelper {
+
+	use Singleton;
 
 	/**
 	 * The defuse key file name.
@@ -80,7 +82,8 @@ class CryptoHelper extends Singleton {
 	/**
 	 * Setup Constructor.
 	 */
-	public function __construct() {
+	protected function init() {
+
 		$uploads = wp_upload_dir( null, false );
 
 		$this->uploads_dir = $uploads['basedir'] . '/dlm-files/';
@@ -90,7 +93,7 @@ class CryptoHelper extends Singleton {
 	}
 
 	/**
-	 * Sets the defuse encryption key.
+	 * Sets to defuse encryption key.
 	 */
 	private function setDefuse() {
 		/* When the cryptographic secrets are loaded into these constants, no other files are needed */

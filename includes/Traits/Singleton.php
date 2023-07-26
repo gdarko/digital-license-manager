@@ -23,28 +23,60 @@
  * Code written, maintained by Darko Gjorgjijoski (https://darkog.com)
  */
 
-namespace IdeoLogix\DigitalLicenseManager\Abstracts;
+namespace IdeoLogix\DigitalLicenseManager\Traits;
 
-defined('ABSPATH') || exit;
+trait Singleton {
 
-abstract class Singleton
-{
-    /**
-     * @var $this[]
-     */
-    protected static $instance = array();
+	/**
+	 * The instance object
+	 * @var Singleton
+	 */
+	private static $instance;
 
-    /**
-     * @return $this
-     */
-    public static function instance()
-    {
-        $class = get_called_class();
+	/**
+	 * Prevent new instances
+	 */
+	final private function __construct() {
+		$this->init();
+	}
 
-        if (!array_key_exists($class, self::$instance)) {
-            self::$instance[$class] = new $class();
-        }
+	/**
+	 * The singleton instance
+	 * @return Singleton
+	 */
+	final public static function instance() {
+		if ( ! isset( self::$instance ) ) {
+			self::$instance = new self();
+		}
 
-        return self::$instance[$class];
-    }
+		return self::$instance;
+	}
+
+	/**
+	 * Allow init method for initialization
+	 * @return void
+	 */
+	protected function init() {
+	}
+
+	/**
+	 * Prevent cloning of the instance
+	 * @return void
+	 */
+	final private function __clone() {
+	}
+
+	/**
+	 * Prevent serialization of the instance
+	 * @return void
+	 */
+	final private function __sleep() {
+	}
+
+	/**
+	 * Prevent deserialization of the instance
+	 * @return void
+	 */
+	final private function __wakeup() {
+	}
 }

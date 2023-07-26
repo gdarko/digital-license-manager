@@ -30,6 +30,7 @@ use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ResourceRepositoryInter
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseActivation as LicenseActivationResourceModel;
 use IdeoLogix\DigitalLicenseManager\Enums\ColumnType;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
+use IdeoLogix\DigitalLicenseManager\Traits\Singleton;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -38,6 +39,9 @@ defined( 'ABSPATH' ) || exit;
  * @package IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources
  */
 class LicenseActivation extends AbstractResourceRepository implements ResourceRepositoryInterface {
+
+	use Singleton;
+
 	/**
 	 * @var string
 	 */

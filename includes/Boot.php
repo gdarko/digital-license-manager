@@ -25,7 +25,6 @@
 
 namespace IdeoLogix\DigitalLicenseManager;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\Singleton;
 use IdeoLogix\DigitalLicenseManager\Controllers\ApiKeys as ApiKeyController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Dropdowns as DropdownsController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Generators as GeneratorController;
@@ -35,6 +34,7 @@ use IdeoLogix\DigitalLicenseManager\Controllers\Settings as SettingsController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Welcome as WelcomeController;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller as WooCommerceController;
 use IdeoLogix\DigitalLicenseManager\RestAPI\Setup as RestController;
+use IdeoLogix\DigitalLicenseManager\Traits\Singleton;
 use IdeoLogix\DigitalLicenseManager\Utils\CompatibilityHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
@@ -47,7 +47,10 @@ defined( 'ABSPATH' ) || exit;
  * Class Boot
  * @package IdeoLogix\DigitalLicenseManager
  */
-class Boot extends Singleton {
+class Boot {
+
+	use Singleton;
+
 	/**
 	 * @var string
 	 */
@@ -89,26 +92,23 @@ class Boot extends Singleton {
 	public $rest;
 
 	/**
-	 * Main constructor.
-	 *
+	 * Initializes the class
 	 * @return void
 	 */
-	public function __construct() {
-
+	protected function init() {
 		$this->_defineConstants();
 
 		$this->version = DLM_VERSION;
 
 		$this->_initHooks();
 
-		add_action( 'init', array( $this, 'init' ) );
+		add_action( 'init', array( $this, 'wpInit' ) );
 		add_action( 'admin_init', array( $this, 'adminInit' ) );
 
 		new RestAPI\Authentication();
 
 		// Init other plugins dependant on DLM
 		do_action( 'dlm_boot' );
-
 	}
 
 	/**
@@ -450,7 +450,7 @@ class Boot extends Singleton {
 	 *
 	 * @return void
 	 */
-	public function init() {
+	public function wpInit() {
 		Setup::migrate();
 
 		new MenuController();

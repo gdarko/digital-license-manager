@@ -25,7 +25,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Utils;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\Singleton;
+use IdeoLogix\DigitalLicenseManager\Traits\Singleton;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -33,7 +33,9 @@ defined( 'ABSPATH' ) || exit;
  * Class NoticeFlasher
  * @package IdeoLogix\DigitalLicenseManager\Utils
  */
-class NoticeFlasher extends Singleton {
+class NoticeFlasher {
+
+	use Singleton;
 
 	const MESSAGE_DISMISSIBLE = '<div class="notice %s is-dismissible"><p><strong>Digital License Manager</strong>: %s</p></div>';
 	const NOTICE_ERROR = 'notice-error';
@@ -49,7 +51,7 @@ class NoticeFlasher extends Singleton {
 	/**
 	 * Notice constructor.
 	 */
-	public function __construct() {
+	protected function init() {
 		$this->types = array(
 			'error'   => self::NOTICE_ERROR,
 			'success' => self::NOTICE_SUCCESS,
@@ -57,13 +59,13 @@ class NoticeFlasher extends Singleton {
 			'info'    => self::NOTICE_INFO
 		);
 
-		add_action( 'admin_notices', array( $this, 'init' ) );
+		add_action( 'admin_notices', array( $this, 'wpInit' ) );
 	}
 
 	/**
 	 * Retrieves the notice message from the transients, displays it and finally deletes the transient itself.
 	 */
-	public function init() {
+	public function wpInit() {
 		foreach ( $this->types as $type => $class ) {
 			$messages = get_transient( 'dlm_notice_' . $type );
 

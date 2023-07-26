@@ -25,8 +25,8 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Utils;
 
-use IdeoLogix\DigitalLicenseManager\Abstracts\Singleton;
-use IgniteKit\WP\Notices\NoticesManager;
+use IdeoLogix\DigitalLicenseManager\Traits\Singleton;
+use IgniteKit\WP\Notices\NoticesManager as IgniteKitNoticesManager;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -34,19 +34,22 @@ defined( 'ABSPATH' ) || exit;
  * Class NoticeManager
  * @package IdeoLogix\DigitalLicenseManager\Utils
  */
-class NoticeManager extends Singleton {
+class NoticeManager {
+
+	use Singleton;
 
 	/**
 	 * The manager
-	 * @var NoticesManager
+	 * @var IgniteKitNoticesManager
 	 */
 	protected $manager;
 
 	/**
-	 * NoticeManager constructor.
+	 * Initializes the notice manager
+	 * @return void
 	 */
-	public function __construct() {
-		$this->manager = new NoticesManager( 'dlm' );
+	protected function init() {
+		$this->manager = new IgniteKitNoticesManager( 'dlm' );
 	}
 
 	/**

@@ -30,10 +30,13 @@ use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ResourceRepositoryInter
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\ProductDownload as ProductDownloadResourceModel;
 use IdeoLogix\DigitalLicenseManager\Enums\ColumnType;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
+use IdeoLogix\DigitalLicenseManager\Traits\Singleton;
 
 defined( 'ABSPATH' ) || exit;
 
 class ProductDownload extends AbstractResourceRepository implements ResourceRepositoryInterface {
+
+	use Singleton;
 
 	/**
 	 * @var string

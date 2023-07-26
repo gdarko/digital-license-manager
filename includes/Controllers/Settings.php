@@ -27,18 +27,20 @@ namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractTool;
 use IdeoLogix\DigitalLicenseManager\Abstracts\SettingsFieldsTrait;
-use IdeoLogix\DigitalLicenseManager\Abstracts\Singleton;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\ApiKey as ApiKeyResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\ApiKey as ApiKeyResourceRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\ListTables\ApiKeys;
 use IdeoLogix\DigitalLicenseManager\Tools\Migration\Migration;
+use IdeoLogix\DigitalLicenseManager\Traits\Singleton;
 
 /**
  * Class Settings
  * @package IdeoLogix\DigitalLicenseManager\Controllers
  */
-class Settings extends Singleton {
+class Settings {
+
+	use Singleton;
 
 	/**
 	 * List of allowed tools.
