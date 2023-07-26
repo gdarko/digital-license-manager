@@ -209,7 +209,9 @@ class License extends AbstractDataModel {
 	 * @return int
 	 */
 	public function getTimesActivatedCount() {
-		return LicenseActivations::instance()->count( [ 'license_id' => $this->getId() ] );
+		$params = $this->getActivationsQuery( [ 'active' => 1 ] );
+
+		return LicenseActivations::instance()->count( $params );
 	}
 
 	/**
@@ -218,6 +220,7 @@ class License extends AbstractDataModel {
 	 */
 	public function getActivations( $query = array() ) {
 		$params = $this->getActivationsQuery( $query );
+
 		return LicenseActivations::instance()->get( $params );
 	}
 
@@ -227,6 +230,7 @@ class License extends AbstractDataModel {
 	 */
 	public function getActivationsCount( $query = array() ) {
 		$params = $this->getActivationsQuery( $query );
+
 		return LicenseActivations::instance()->count( $params );
 	}
 
@@ -244,6 +248,7 @@ class License extends AbstractDataModel {
 		if ( isset( $query['active'] ) && $query['active'] ) {
 			$params['deactivated_at'] = null;
 		}
+
 		return $params;
 	}
 
