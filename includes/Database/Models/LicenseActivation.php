@@ -91,16 +91,11 @@ class LicenseActivation extends AbstractDataModel {
 	}
 
 	/**
-	 * The metadata of the user that activated
-	 * @return string
+	 *  The metadata of the user that activated
+	 * @return array|mixed
 	 */
 	public function getMetaData() {
-		static $meta;
-		if ( is_null( $meta ) ) {
-			$meta = JsonFormatter::decode( $this->get( 'meta_data' ), true );
-		}
-
-		return $meta;
+		return $this->get_json('meta_data', true);
 	}
 
 	/**

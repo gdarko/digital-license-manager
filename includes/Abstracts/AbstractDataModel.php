@@ -3,23 +3,13 @@
 namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\DataModelInterface;
+use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 use TenQuality\WP\Database\Abstracts\DataModel;
 use TenQuality\WP\Database\Traits\DataModelTrait;
 
 abstract class AbstractDataModel extends DataModel implements DataModelInterface {
 
 	use DataModelTrait;
-
-	/**
-	 * Get property
-	 *
-	 * @param $property
-	 *
-	 * @return mixed|null
-	 */
-	protected function get( $property ) {
-		return isset( $this->attributes[ $property ] ) ? $this->attributes[ $property ] : null;
-	}
 
 
 	/**
@@ -42,7 +32,7 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 	 *
 	 * @return mixed
 	 */
-	private function cast( $attributes ) {
+	protected function cast( $attributes ) {
 
 		$allowed = [ $this->primary_key ];
 
@@ -64,6 +54,38 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 		}
 
 		return $attributes;
+	}
+
+	/**
+	 * Get property
+	 *
+	 * @param $property
+	 *
+	 * @return mixed|null
+	 */
+	protected function get( $property ) {
+		return isset( $this->attributes[ $property ] ) ? $this->attributes[ $property ] : null;
+	}
+
+	/**
+	 * Returns decoded json
+	 *
+	 * @param $key
+	 * @param $cached
+	 *
+	 * @return mixed
+	 */
+	protected function get_json( $key, $cached = true ) {
+		static $cache = [];
+		if ( $cached ) {
+			if ( ! isset( $cache[ $key ] ) ) {
+				$cache[ $key ] = JsonFormatter::decode( $this->attributes[ $key ], true );
+			}
+
+			return $cache[ $key ];
+		} else {
+			return JsonFormatter::decode( $this->get( $key ), true );
+		}
 	}
 
 }

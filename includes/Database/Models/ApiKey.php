@@ -57,7 +57,7 @@ class ApiKey extends AbstractDataModel {
 	 * @return mixed|string
 	 */
 	public function getEndpoints() {
-		return JsonFormatter::decode( $this->get( 'endpoints' ), true );
+		return $this->get_json( 'endpoints' );
 	}
 
 	/**
