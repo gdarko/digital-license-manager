@@ -2,6 +2,13 @@
 
 class DLM_Licenses_TestCase extends WP_UnitTestCase {
 
+	private $tokens = [
+		'77963b7a931377ad4ab5ad6a9cd718aa',
+		'5fa5ef503967d1c4774a82c8b339838c',
+		'xfa5ef503967d1c4774a82c8b3398321',
+		'9fa5ef503967d1c4774a82c8b3398113',
+	];
+
 	private function getData() {
 
 		return [
@@ -28,6 +35,7 @@ class DLM_Licenses_TestCase extends WP_UnitTestCase {
 				'source'            => \IdeoLogix\DigitalLicenseManager\Enums\LicenseSource::API,
 				'activations_limit' => 5,
 				'created_at'        => date( 'Y-m-d H:i:s', time() - mt_rand( 2630000, 2630000 * 3 ) ),
+				'expires_at'        => date( 'Y-m-d H:i:s', time() - 16000 ),
 			],
 			[
 				'license_key'       => 'XXXX-XXXX-XXXX-1111',
@@ -36,6 +44,27 @@ class DLM_Licenses_TestCase extends WP_UnitTestCase {
 				'source'            => \IdeoLogix\DigitalLicenseManager\Enums\LicenseSource::IMPORT,
 				'activations_limit' => 1,
 				'created_at'        => date( 'Y-m-d H:i:s', time() - mt_rand( 2630000, 2630000 * 3 ) ),
+				'activations'       => [
+					[
+						'token'          => $this->tokens[0],
+						'license_id'     => '',
+						'label'          => 'Random Activation',
+						'source'         => \IdeoLogix\DigitalLicenseManager\Enums\ActivationSource::WEB,
+						'ip_address'     => '10.10.10.1',
+						'user_agent'     => 'Chrome user agent',
+						'created_at'     => date( 'Y-m-d H:i:s', time() - 150 ),
+						'deactivated_at' => date( 'Y-m-d H:i:s', time() )
+					],
+					[
+						'token'      => $this->tokens[1],
+						'license_id' => '',
+						'label'      => 'Different Activation',
+						'source'     => \IdeoLogix\DigitalLicenseManager\Enums\ActivationSource::WEB,
+						'ip_address' => '10.10.10.2',
+						'user_agent' => 'Mozila user agent',
+						'created_at' => date( 'Y-m-d H:i:s', time() - 110 ),
+					],
+				]
 			]
 		];
 	}
@@ -43,12 +72,24 @@ class DLM_Licenses_TestCase extends WP_UnitTestCase {
 	private function importData( $data ) {
 		$succeeded = [];
 		foreach ( $data as $object ) {
-			$license_key           = $object['license_key'];
+			$license_key = $object['license_key'];
+			$activations = [];
+			if ( isset( $object['activations'] ) ) {
+				$activations = $object['activations'];
+				unset( $object['activations'] );
+			}
 			$object['license_key'] = \IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper::encrypt( $license_key );
 			$object['hash']        = \IdeoLogix\DigitalLicenseManager\Utils\StringHasher::license( $license_key );
 			$result                = \IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License::instance()->insert( $object );
 			if ( $result && method_exists( $result, 'getId' ) ) {
 				$succeeded[] = $result;
+				if ( ! empty( $activations ) ) {
+					foreach ( $activations as $activation ) {
+						$activation['license_id'] = $result->getId();
+						\IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation::instance()->insert( $activation );
+					}
+				}
+
 			}
 		}
 
@@ -85,26 +126,39 @@ class DLM_Licenses_TestCase extends WP_UnitTestCase {
 		$object = \IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License::instance()->find( isset( $row['id'] ) ? $row['id'] : 0 );
 
 		$properties = [
-			'getId', 'getOrderId', 'getProductId',
-			'getUserId', 'getLicenseKey', 'getDecryptedLicenseKey',
-			'getHash', 'getExpiresAt', 'getSource',
-			'getStatus', 'getTimesActivated', 'getActivationsLimit',
-			'getCreatedAt', 'getCreatedBy', 'getUpdatedAt',
-			'getUpdatedBy', 'getValidFor', 'isExpired',
-			'getActivations', 'getActivationsCount'
+			'getId',
+			'getOrderId',
+			'getProductId',
+			'getUserId',
+			'getLicenseKey',
+			'getDecryptedLicenseKey',
+			'getHash',
+			'getExpiresAt',
+			'getSource',
+			'getStatus',
+			'getTimesActivated',
+			'getActivationsLimit',
+			'getCreatedAt',
+			'getCreatedBy',
+			'getUpdatedAt',
+			'getUpdatedBy',
+			'getValidFor',
+			'isExpired',
+			'getActivations',
+			'getActivationsCount'
 		];
 
 		$allExist = true;
-		foreach($properties as $property) {
-			if(!method_exists($object, $property)) {
+		foreach ( $properties as $property ) {
+			if ( ! method_exists( $object, $property ) ) {
 				$allExist = false;
 				break;
 			}
 		}
-		$this->assertTrue($allExist);
-		$this->assertEquals('XXXX-XXXX-XXXX-X111', $object->getDecryptedLicenseKey());
-		$this->assertEquals(\IdeoLogix\DigitalLicenseManager\Utils\StringHasher::license('XXXX-XXXX-XXXX-X111'), $object->getHash());
-		$this->assertEquals(\IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper::hash('XXXX-XXXX-XXXX-X111'), $object->getHash());
+		$this->assertTrue( $allExist );
+		$this->assertEquals( 'XXXX-XXXX-XXXX-X111', $object->getDecryptedLicenseKey() );
+		$this->assertEquals( \IdeoLogix\DigitalLicenseManager\Utils\StringHasher::license( 'XXXX-XXXX-XXXX-X111' ), $object->getHash() );
+		$this->assertEquals( \IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper::hash( 'XXXX-XXXX-XXXX-X111' ), $object->getHash() );
 
 	}
 
@@ -192,6 +246,28 @@ class DLM_Licenses_TestCase extends WP_UnitTestCase {
 		$this->assertEquals( 1, $result );
 		$this->assertEquals( $wpdb->prefix . 'dlm_licenses', \IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License::instance()->getTable() );
 
+	}
+
+	public function testRelations() {
+		$this->importAllData();
+
+		/* @var $license \IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License */
+		$license = \IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License::instance()->findBy( [ 'hash' => \IdeoLogix\DigitalLicenseManager\Utils\StringHasher::license( 'XXXX-XXXX-XXXX-1111' ) ] );
+		$this->assertIsObject( $license );
+		$this->assertEquals( 1, $license->getTimesActivated() );
+		$activations = $license->getActivations();
+		$this->assertCount( 2, $activations );
+		$activations = $license->getActivations( [ 'active' => 1 ] );
+		$this->assertCount( 1, $activations );
+	}
+
+	public function testExpiration() {
+		$this->importAllData();
+
+		/* @var $license \IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License */
+		$license = \IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License::instance()->findBy( [ 'hash' => \IdeoLogix\DigitalLicenseManager\Utils\StringHasher::license( 'XXXX-XXXX-XXXX-X111' ) ] );
+		$this->assertIsObject( $license );
+		$this->assertTrue( $license->isExpired() );
 	}
 
 	private function getLicense( $licenseKey ) {

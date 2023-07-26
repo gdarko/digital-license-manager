@@ -66,6 +66,7 @@ class DLM_ApiKeys_TestCase extends WP_UnitTestCase {
 		$row    = $this->getApiKey( 'Example 1' );
 		$object = \IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\ApiKey::instance()->find( isset( $row['id'] ) ? $row['id'] : 0 );
 		$this->assertIsObject( $object );
+		$this->assertIsArray( $object->getEndpoints() );
 
 	}
 
