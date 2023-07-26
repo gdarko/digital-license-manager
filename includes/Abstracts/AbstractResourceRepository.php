@@ -252,7 +252,7 @@ abstract class AbstractResourceRepository implements ResourceRepositoryInterface
 		}
 
 		foreach ( $result as $row ) {
-			$returnValue[] = $this->find( $row->id );
+			$returnValue[] = $this->find( $row->{$this->primaryKey} );
 		}
 
 		return $returnValue;
@@ -328,7 +328,7 @@ abstract class AbstractResourceRepository implements ResourceRepositoryInterface
 		$updated = $wpdb->update(
 			$this->table,
 			array_merge( $data, $meta ),
-			array( 'id' => $id )
+			array( $this->primaryKey => $id )
 		);
 
 		if ( ! $updated ) {
