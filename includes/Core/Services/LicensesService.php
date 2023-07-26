@@ -792,8 +792,8 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		elseif ( is_numeric( $licenseKeyId ) ) {
 			global $wpdb;
 			$table = LicenseResourceRepository::instance()->getTable();
-			$query = $wpdb->prepare( "SELECT id FROM {$table} WHERE hash=%s AND id NOT LIKE %s", $hash, "%" . $licenseKeyId . "%" );
-			if ( LicenseResourceRepository::instance()->query( $query ) ) {
+			$query = $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE hash=%s AND id NOT LIKE %s", $hash, "%" . $licenseKeyId . "%" );
+			if ( $wpdb->get_var($query) ) {
 				$duplicate = true;
 			}
 		}

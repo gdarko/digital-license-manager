@@ -25,22 +25,22 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Models\Generator;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators;
 use WP_Error;
 
 abstract class AbstractGenerator {
 
 	/**
 	 * The generator database instance
-	 * @var GeneratorResourceModel
+	 * @var Generator
 	 */
 	protected $generator;
 
 	/**
 	 * Generate list of licenses needed.
 	 *
-	 * @param GeneratorResourceModel $generator
+	 * @param Generator $generator
 	 *
 	 */
 	public function __construct( $generator ) {
@@ -48,7 +48,7 @@ abstract class AbstractGenerator {
 		$this->generator = $generator;
 
 		if ( is_numeric( $this->generator ) ) {
-			$this->generator = GeneratorResourceRepository::instance()->find( $this->generator );
+			$this->generator = Generators::instance()->find( $this->generator );
 		}
 
 	}

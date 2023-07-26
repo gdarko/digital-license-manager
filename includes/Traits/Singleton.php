@@ -29,9 +29,9 @@ trait Singleton {
 
 	/**
 	 * The instance object
-	 * @var Singleton
+	 * @var self
 	 */
-	private static $instance;
+	private static $instances = [];
 
 	/**
 	 * Prevent new instances
@@ -42,14 +42,17 @@ trait Singleton {
 
 	/**
 	 * The singleton instance
-	 * @return Singleton
+	 * @return self
 	 */
 	final public static function instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
+
+		$calledClass = get_called_class();
+
+		if ( ! isset( self::$instances[ $calledClass ] ) ) {
+			self::$instances[ $calledClass ] = new $calledClass();
 		}
 
-		return self::$instance;
+		return self::$instances[ $calledClass ];
 	}
 
 	/**

@@ -49,7 +49,31 @@ class ArrayFormatter {
 				$valid[ $key ] = $data[ $key ];
 			}
 		}
+
 		return $valid;
+	}
+
+
+	/**
+	 * Check if array is list
+	 * @param $array
+	 *
+	 * @return bool
+	 */
+	public static function isList( $array ) {
+		if ( function_exists( '\array_is_list' ) ) {
+			return array_is_list( $array );
+		} else {
+			$expectedKey = 0;
+			foreach ( $array as $i => $_value ) {
+				if ( $i !== $expectedKey ) {
+					return false;
+				}
+				$expectedKey ++;
+			}
+
+			return true;
+		}
 	}
 
 }

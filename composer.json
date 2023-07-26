@@ -12,7 +12,8 @@
     "defuse/php-encryption": "^2.2",
     "ignitekit/wp-notices": "^1.0",
     "spipu/html2pdf": "^5.2",
-    "tecnickcom/tcpdf": "^6.4"
+    "tecnickcom/tcpdf": "^6.4",
+    "10quality/wp-query-builder": "^1.0"
   },
   "config": {
     "optimize-autoloader": true
