@@ -5,6 +5,7 @@ namespace IdeoLogix\DigitalLicenseManager\Database\Models;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractDataModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
+use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 
 class LicenseActivation extends AbstractDataModel {
 
@@ -94,7 +95,12 @@ class LicenseActivation extends AbstractDataModel {
 	 * @return string
 	 */
 	public function getMetaData() {
-		return $this->get( 'meta_data' );
+		static $meta;
+		if ( is_null( $meta ) ) {
+			$meta = JsonFormatter::decode( $this->get( 'meta_data' ), true );
+		}
+
+		return $meta;
 	}
 
 	/**
