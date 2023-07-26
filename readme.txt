@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce, k
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 6.3
-Stable tag: 1.4.3
+Stable tag: 1.4.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -35,6 +35,7 @@ The plugin is compatible with WooCommerce, although it can be used as standalone
 * Export licenses to PDF or CSV format. Allows column selection
 * Migration tool for migrating from other plugins
 * WooCommerce <a href="https://woocommerce.com/document/high-performance-order-storage/">High-Performance Order Storage</a> Support
+* PDF certificates of the licenses in WooCommerce -> My Account -> License page
 
 
 The plugin works fine even without WooCommerce. If you want to use the plugin as standalone license manager or if you have another solution for selling the keys, you can use the REST API to create licenses.
@@ -52,8 +53,8 @@ The PRO version focuses on making it possible to generate consistent cash flow t
 * Separate Battle-tested and well-documented WordPress package to create License Activation form and provide updates through your Digital License Manager Software API. Start your WordPress theme/plugin shop today!
 * Ready to use <a href="https://docs.codeverve.com/digital-license-manager/wordpress-theme-plugin-updates/" target="_blank" rel="noopener">theme/plugin updater</a> library with integration guide. Useful if you want to integrate license activations to your plugins/themes.
 * Additional <a href="https://docs.codeverve.com/digital-license-manager/handbook/configuration/#WooCommerce" target="_blank" rel="noopener">Options</a> to enable or disable features like the "Licenses" access in My Account.
+* WPML support. The plugin will share the stock to the translations of the original product. If you configure licenses from stock on the original product then you pick the same setting on the translation products, it should work correctly.
 * Software download statistics (Coming soon)
-* PDF certificates of the licenses (Coming soon)
 
 <a href="https://codeverve.com/product/digital-license-manager-pro/" target="_blank">Get PRO Version</a>
 
@@ -169,6 +170,16 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 15. Re-send licenses via Order page
 
 == Changelog ==
+
+= 1.4.4 =
+*Release Date - 25 Jul 2023*
+
+* Add copyright information to the files, a nice welcome screen for code THIEVES
+* Improvements to the order_complete meta saving
+* Improvements to the license stock database query
+* Fix PHP warnings, improve PHP 8.2 compatibility
+* Test with WordPress 6.3
+* Test with WooCommerce 8.0
 
 = 1.4.3 =
 *Release Date - 03 May 2023*
