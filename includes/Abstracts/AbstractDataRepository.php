@@ -151,6 +151,9 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	public function get( $where = [], $sortBy = null, $sortDir = null, $offset = - 1, $limit = - 1 ) {
 
 		try {
+			if ( count( $where ) > 0 ) {
+				$where = self::buildWhere( $where );
+			}
 			$builder = $this->buildQuery( $where, $sortBy, $sortBy, $offset, $limit );
 
 			$result = $builder->get();
@@ -219,7 +222,11 @@ class AbstractDataRepository implements DataRepositoryInterface {
 			return $this->find( $id );
 		}
 
-		$updated = $this->_update( $id, $data );
+		try {
+			$updated = $this->_update( $id, $data );
+		} catch ( \Exception $e ) {
+			$updated = false;
+		}
 
 		if ( $updated ) {
 			return $this->find( $id );
@@ -339,13 +346,14 @@ class AbstractDataRepository implements DataRepositoryInterface {
 		if ( ! empty( $where ) ) {
 			$builder = $builder->where( $where );
 		}
+
 		if ( ! empty( $sortBy ) ) {
 			$builder = $builder->order_by( $sortBy );
 		}
-		if ( - 1 !== $offset ) {
+		if ( - 1 < $offset ) {
 			$builder = $builder->offset( $offset );
 		}
-		if ( - 1 !== $limit ) {
+		if ( - 1 < $limit ) {
 			$builder = $builder->limit( $limit );
 		}
 
@@ -370,7 +378,18 @@ class AbstractDataRepository implements DataRepositoryInterface {
 				]
 			];
 		} else {
-			$where = $query; // assoc array.
+
+			$where = [];
+			foreach ( $query as $key => $value ) {
+				if ( is_array( $value ) ) {
+					$where[ $key ] = [
+						'operator' => 'IN',
+						'value'    => $value,
+					];
+				} else {
+					$where[ $key ] = $value;
+				}
+			}
 		}
 
 		return $where;
