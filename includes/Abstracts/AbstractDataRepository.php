@@ -175,6 +175,7 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 * @param array $data
 	 *
 	 * @return int
+	 * @throws \Exception
 	 */
 	public function _update( $where, $data ) {
 		if ( empty( $where ) ) {
@@ -182,8 +183,13 @@ class AbstractDataRepository implements DataRepositoryInterface {
 		}
 
 		$where = $this->buildWhere( $where );
+		try {
+			$result = $this->buildQuery( $where )->set( $data )->update();
+		} catch ( \Exception $e ) {
+			$result = 0;
+		}
 
-		return $this->buildQuery( $where )->set( $data )->update();
+		return $result;
 	}
 
 	/**
@@ -192,7 +198,7 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 * @param $id
 	 * @param array $data
 	 *
-	 * @return int|false
+	 * @return int|object
 	 */
 	public function update( $id, $data ) {
 
@@ -200,7 +206,7 @@ class AbstractDataRepository implements DataRepositoryInterface {
 		$changes  = 0;
 
 		if ( ! $existing ) {
-			return 0;
+			return false;
 		}
 
 		foreach ( $data as $key => $value ) {
@@ -210,7 +216,7 @@ class AbstractDataRepository implements DataRepositoryInterface {
 		}
 
 		if ( ! $changes ) {
-			return $existing;
+			return $this->find( $id );
 		}
 
 		$updated = $this->_update( $id, $data );
@@ -230,11 +236,12 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 * @param array $data
 	 *
 	 * @return int|bool
+	 * @throws \Exception
 	 */
 	public function updateBy( $where, $data ) {
 		$updated = $this->_update( $where, $data );
 
-		return $updated;
+		return $updated === 0 ? 1 : $updated; // if zero rows are affected, count it as updated.
 	}
 
 	/**
