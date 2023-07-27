@@ -38,7 +38,7 @@ use WP_REST_Server;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class Middleware
+ * Class Authentication
  *
  * This class is borowing concepts from the WooCommerce REST Authentication,
  * most of the copyright is held by WooCommerce, Automattic.
@@ -47,7 +47,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @package IdeoLogix\DigitalLicenseManager\RestAPI
  */
-class Middleware {
+class Authentication {
 
 	/**
 	 * The most recent error
