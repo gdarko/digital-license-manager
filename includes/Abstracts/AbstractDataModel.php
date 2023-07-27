@@ -26,6 +26,14 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 	}
 
 	/**
+	 * Converts the current data to array
+	 * @return array|void
+	 */
+	public function toArray() {
+		return $this->attributes;
+	}
+
+	/**
 	 * Cast the required attributes
 	 *
 	 * @param $attributes
@@ -75,7 +83,7 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 	 *
 	 * @return mixed
 	 */
-	protected function get_json( $key, $cached = true ) {
+	protected function getJson( $key, $cached = true ) {
 		static $cache = [];
 		if ( $cached ) {
 			if ( ! isset( $cache[ $key ] ) ) {
@@ -107,13 +115,13 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 		global $wpdb;
 		if ( ! $force_insert && $this->{$this->primary_key} ) {
 			// Update
-			$success = $wpdb->update( $this->getTablenameAlias(), $this->get_data(), [ $this->primary_key => $this->attributes[ $this->primary_key ] ], $this->get_data_format() );
+			$success = $wpdb->update( $this->getTablenameAlias(), $this->getData(), [ $this->primary_key => $this->attributes[ $this->primary_key ] ], $this->getDataFormat() );
 			if ( $success ) {
 				do_action( 'data_model_' . $this->table . '_updated', $this );
 			}
 		} else {
 			// Insert
-			$success                    = $wpdb->insert( $this->getTablenameAlias(), $this->get_data(), $this->get_data_format() );
+			$success                    = $wpdb->insert( $this->getTablenameAlias(), $this->getData(), $this->getDataFormat() );
 			$this->{$this->primary_key} = $wpdb->insert_id;
 			$date                       = date( 'Y-m-d H:i:s' );
 			$this->created_at           = $date;
@@ -134,8 +142,8 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 	 * Guess the data format
 	 * @return array
 	 */
-	protected function get_data_format() {
-		$data   = $this->get_data();
+	protected function getDataFormat() {
+		$data   = $this->getData();
 		$format = [];
 
 		foreach ( $data as $key => $value ) {
@@ -156,7 +164,7 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 		return $format;
 	}
 
-	protected function get_data() {
+	protected function getData() {
 		$protected = $this->protected_properties();
 
 		$data = array_filter( $this->attributes, function ( $key ) use ( $protected ) {
@@ -172,5 +180,6 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 
 		return $data;
 	}
+
 
 }

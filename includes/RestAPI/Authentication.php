@@ -4,6 +4,7 @@
  * https://darkog.com/p/digital-license-manager/
  *
  * Copyright (C) 2020-2023  Darko Gjorgjijoski. All Rights Reserved.
+ * Copyright (c) 2020-203   WooCommerce, Automattic. All Rights Reserved.
  *
  * Digital License Manager is free software; you can redistribute it
  * and/or modify it under the terms of the GNU General Public License
@@ -26,6 +27,7 @@
 namespace IdeoLogix\DigitalLicenseManager\RestAPI;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractRestController;
+use IdeoLogix\DigitalLicenseManager\Database\Models\ApiKey;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use stdClass;
 use WP_Error;
@@ -36,21 +38,31 @@ use WP_REST_Server;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class Authentication
+ * Class Middleware
+ *
+ * This class is borowing concepts from the WooCommerce REST Authentication,
+ * most of the copyright is held by WooCommerce, Automattic.
+ *
+ * @url https://github.com/woocommerce/woocommerce/blob/7.9.0/plugins/woocommerce/includes/class-wc-rest-authentication.php#L14
+ *
  * @package IdeoLogix\DigitalLicenseManager\RestAPI
  */
-class Authentication {
+class Middleware {
+
 	/**
+	 * The most recent error
 	 * @var WP_Error
 	 */
 	protected $error = null;
 
 	/**
-	 * @var stdClass
+	 * The current API Key that is used
+	 * @var ApiKey
 	 */
-	protected $user = null;
+	protected $consumer = null;
 
 	/**
+	 * The authentication method
 	 * @var string
 	 */
 	protected $authMethod = '';
@@ -67,6 +79,10 @@ class Authentication {
 
 	/**
 	 * Checks if the request is meant to be processed by the REST API.
+	 *
+	 * This code was inspired by and taken from the following copyright holders:
+	 * @copyright WooCommerce/Automattic
+	 * @url https://github.com/woocommerce/woocommerce/blob/7.9.0/plugins/woocommerce/includes/class-wc-rest-authentication.php#L53
 	 *
 	 * @return bool
 	 */
@@ -85,6 +101,10 @@ class Authentication {
 
 	/**
 	 * Authenticates the user.
+	 *
+	 * This code was inspired by and taken from the following copyright holders:
+	 * @copyright WooCommerce/Automattic
+	 * @url https://github.com/woocommerce/woocommerce/blob/7.9.0/plugins/woocommerce/includes/class-wc-rest-authentication.php#L76
 	 *
 	 * @param int|false $userId The user ID
 	 *
@@ -120,6 +140,10 @@ class Authentication {
 	/**
 	 * Checks for authentication errors.
 	 *
+	 * This code was inspired by and taken from the following copyright holders:
+	 * @copyright WooCommerce/Automattic
+	 * @url https://github.com/woocommerce/woocommerce/blob/7.9.0/plugins/woocommerce/includes/class-wc-rest-authentication.php#L126
+	 *
 	 * @param WP_Error|null|bool $error WordPress Error object
 	 *
 	 * @return WP_Error|null|bool
@@ -134,33 +158,17 @@ class Authentication {
 	}
 
 	/**
-	 * Sets an authentication error.
-	 *
-	 * @param WP_Error $error Authentication error data.
-	 */
-	protected function setError( $error ) {
-		// Reset user.
-		$this->user = null;
-
-		$this->error = $error;
-	}
-
-	/**
-	 * Get authentication error.
-	 *
-	 * @return WP_Error|null
-	 */
-	protected function getError() {
-		return $this->error;
-	}
-
-	/**
 	 * Basic Authentication.
 	 *
 	 * SSL-encrypted requests are not subject to sniffing or man-in-the-middle
 	 * attacks, so the request can be authenticated by simply looking up the user
 	 * associated with the given consumer key and confirming the consumer secret
 	 * provided is valid.
+	 *
+	 *
+	 * This code was inspired by and taken from the following copyright holders:
+	 * @copyright WooCommerce/Automattic
+	 * @url https://github.com/woocommerce/woocommerce/blob/7.9.0/plugins/woocommerce/includes/class-wc-rest-authentication.php#L83
 	 *
 	 * @return int|bool
 	 */
@@ -186,9 +194,9 @@ class Authentication {
 		}
 
 		// Get user data.
-		$this->user = AbstractRestController::getUserDataByConsumerKey( $consumerKey );
+		$this->consumer = AbstractRestController::getCurrentConsumer( $consumerKey );
 
-		if ( empty( $this->user ) ) {
+		if ( empty( $this->consumer ) ) {
 			$this->setError(
 				$this->responseError(
 					'authentication_error',
@@ -201,10 +209,9 @@ class Authentication {
 		}
 
 		// Validate user secret.
-		if ( ! hash_equals( $this->user->consumer_secret, $consumerSecret ) ) {
+		if ( ! hash_equals( $this->consumer->getConsumerSecret(), $consumerSecret ) ) {
 			$this->setError(
-				$this->responseError(
-					'authentication_error',
+				$this->responseError( 'authentication_error',
 					__( 'Consumer secret is invalid.', 'digital-license-manager' ),
 					array( 'status' => 401 )
 				)
@@ -213,11 +220,15 @@ class Authentication {
 			return false;
 		}
 
-		return $this->user->user_id;
+		return $this->consumer->getUserId();
 	}
 
 	/**
 	 * Check that the API keys provided have the proper key-specific permissions to either read or write API resources.
+	 *
+	 * This code was inspired by and taken from the following copyright holders:
+	 * @copyright WooCommerce/Automattic
+	 * @url https://github.com/woocommerce/woocommerce/blob/7.9.0/plugins/woocommerce/includes/class-wc-rest-authentication.php#L556
 	 *
 	 * @param string $method Current HTTP method being used
 	 *
@@ -265,23 +276,28 @@ class Authentication {
 
 	/**
 	 * Updates API Key last access timestamp.
+	 *
+	 * This code was inspired by and taken from the following copyright holders:
+	 * @copyright WooCommerce/Automattic
+	 * @url https://github.com/woocommerce/woocommerce/blob/7.9.0/plugins/woocommerce/includes/class-wc-rest-authentication.php#L587
 	 */
 	private function updateLastAccess() {
-		global $wpdb;
 
-		$wpdb->update(
-			$wpdb->prefix . 'dlm_api_keys',
-			array( 'last_access' => current_time( 'mysql' ) ),
-			array( 'id' => $this->user->id ),
-			array( '%s' ),
-			array( '%d' )
-		);
+		if ( empty( $this->consumer ) ) {
+			return;
+		}
+		$this->consumer->last_access = current_time( 'mysql' );
+		$this->consumer->save();
 	}
 
 	/**
 	 * If the consumer_key and consumer_secret $_GET parameters are NOT provided
 	 * and the Basic auth headers are either not present or the consumer secret does not match the consumer
 	 * key provided, then return the correct Basic headers and an error message.
+	 *
+	 * This code was inspired by and taken from the following copyright holders:
+	 * @copyright WooCommerce/Automattic
+	 * @url https://github.com/woocommerce/woocommerce/blob/7.9.0/plugins/woocommerce/includes/class-wc-rest-authentication.php#L620
 	 *
 	 * @param WP_REST_Response $response WordPress REST Response object
 	 *
@@ -303,22 +319,25 @@ class Authentication {
 	 * @param WP_REST_Server $server
 	 * @param WP_REST_Request $request
 	 *
+	 * This code was inspired by and taken from the following copyright holders:
+	 * @copyright WooCommerce/Automattic
+	 * @url https://github.com/woocommerce/woocommerce/blob/7.9.0/plugins/woocommerce/includes/class-wc-rest-authentication.php#L620
+	 *
 	 * @return mixed
 	 */
 	public function checkUserPermissions( $result, $server, $request ) {
-		if ( $this->user ) {
-			// Check API Key permissions.
-			$allowed = $this->checkPermissions( $request->get_method() );
 
-			if ( is_wp_error( $allowed ) ) {
-				return $allowed;
-			}
-
-			// Register last access.
-			$this->updateLastAccess();
+		if ( empty( $this->user ) ) {
+			return $result;
 		}
 
-		// Additional validation performed by the filter
+		$allowed = $this->checkPermissions( $request->get_method() );
+		if ( is_wp_error( $allowed ) ) {
+			return $allowed;
+		}
+
+		$this->updateLastAccess();
+
 		$error = apply_filters( 'dlm_rest_api_validation', $result, $server, $request );
 
 		if ( $error instanceof WP_Error ) {
@@ -339,5 +358,26 @@ class Authentication {
 	 */
 	protected function responseError( $code, $message, $data = array() ) {
 		return AbstractRestController::_responseError( $code, $message, $data );
+	}
+
+	/**
+	 * Sets an authentication error.
+	 *
+	 * @param WP_Error $error Authentication error data.
+	 */
+	protected function setError( $error ) {
+		// Reset user.
+		$this->consumer = null;
+
+		$this->error = $error;
+	}
+
+	/**
+	 * Get authentication error.
+	 *
+	 * @return WP_Error|null
+	 */
+	protected function getError() {
+		return $this->error;
 	}
 }
