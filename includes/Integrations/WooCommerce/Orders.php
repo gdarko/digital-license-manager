@@ -387,7 +387,7 @@ class Orders {
 	}
 
 	/**
-	 * Hook into the WordPress Order Item Meta Box and display the license key(s).
+	 * Hook into the WordPress Order Item Meta Box and display the license(s).
 	 *
 	 * @param int $itemId
 	 * @param WC_Order_Item_Product $item

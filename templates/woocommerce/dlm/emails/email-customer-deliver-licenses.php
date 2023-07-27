@@ -15,7 +15,7 @@
 
 
 /**
- * Deliver Order license key(s) to Customer.
+ * Deliver Order license(s) to Customer.
  */
 defined('ABSPATH') || exit;
 

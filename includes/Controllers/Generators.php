@@ -203,7 +203,7 @@ class Generators {
 			if ( is_wp_error( $status ) ) {
 				NoticeFlasher::error( $status->get_error_message() );
 			} else {
-				NoticeFlasher::success( sprintf( __( 'Successfully generated %d license key(s).', 'digital-license-manager' ), $amount ) );
+				NoticeFlasher::success( sprintf( __( 'Successfully generated %d license(s).', 'digital-license-manager' ), $amount ) );
 			}
 		} else {
 			NoticeFlasher::error( $licenses->get_error_message() );

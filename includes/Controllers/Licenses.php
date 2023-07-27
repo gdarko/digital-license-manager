@@ -158,10 +158,10 @@ class Licenses {
 		} else if ( $result['failed'] == 0 && $result['added'] > 0 ) {
 			if ( ! empty( $result['duplicates'] ) ) {
 				$callback = 'warning';
-				$message  = sprintf( __( '%d license key(s) added successfully and %d duplicate key(s) ignored.', 'digital-license-manager' ), (int) $result['added'], (int) $result['duplicates'] );
+				$message  = sprintf( __( '%d license(s) added successfully and %d duplicate key(s) ignored.', 'digital-license-manager' ), (int) $result['added'], (int) $result['duplicates'] );
 			} else {
 				$callback = 'success';
-				$message  = sprintf( __( '%d license key(s) added successfully.', 'digital-license-manager' ), (int) $result['added'] );
+				$message  = sprintf( __( '%d license(s) added successfully.', 'digital-license-manager' ), (int) $result['added'] );
 			}
 			$resync = true;
 		} else if ( $result['failed'] > 0 && $result['added'] == 0 ) {
@@ -226,7 +226,7 @@ class Licenses {
 					AdminNotice::error( __( 'There was a problem adding the license key.', 'digital-license-manager' ) );
 				}
 			} else {
-				AdminNotice::success( __( '1 license key(s) added successfully.', 'digital-license-manager' ) );
+				AdminNotice::success( __( '1 license(s) added successfully.', 'digital-license-manager' ) );
 			}
 
 			wp_redirect( sprintf( 'admin.php?page=%s&action=add', PageSlug::LICENSES ) );
