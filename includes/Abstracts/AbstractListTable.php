@@ -25,7 +25,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 
-use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
@@ -108,12 +108,12 @@ abstract class AbstractListTable extends \WP_List_Table {
 		$nonceValue = isset( $_REQUEST['_wpnonce'] ) ? $_REQUEST['_wpnonce'] : '';
 
 		if ( empty( $nonceValue ) ) {
-			AdminNotice::error( __( 'Permission denied.', 'digital-license-manager' ) );
+			NoticeFlasher::error( __( 'Permission denied.', 'digital-license-manager' ) );
 			exit;
 		}
 
 		if ( ! wp_verify_nonce( $nonceValue, $nonce ) && ! wp_verify_nonce( $nonceValue, 'bulk-' . $this->_args['plural'] ) ) {
-			AdminNotice::error( __( 'The nonce is invalid or has expired.', 'digital-license-manager' ) );
+			NoticeFlasher::error( __( 'The nonce is invalid or has expired.', 'digital-license-manager' ) );
 			wp_redirect(
 				admin_url( sprintf( 'admin.php?page=%s', $this->slug ) )
 			);
@@ -129,7 +129,7 @@ abstract class AbstractListTable extends \WP_List_Table {
 
 		if ( ! isset( $_REQUEST['id'] ) ) {
 			$message = sprintf( __( 'No %s were selected.', 'digital-license-manager' ), $this->_args['plural'] );
-			AdminNotice::warning( $message );
+			NoticeFlasher::warning( $message );
 
 			wp_redirect(
 				admin_url(

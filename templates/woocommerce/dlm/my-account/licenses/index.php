@@ -80,7 +80,7 @@ defined( 'ABSPATH' ) || exit; ?>
 
 				?>
                 <tr>
-                    <td><span class="dlm-myaccount-license-key"><?php echo $decrypted; ?></span></td>
+                    <td><span class="dlm-myaccount-license-key"><?php echo esc_attr( $decrypted ); ?></span></td>
                     <td>
                         <span><?php esc_html_e( $timesActivated ); ?></span>
                         <span>/</span>
@@ -90,7 +90,7 @@ defined( 'ABSPATH' ) || exit; ?>
 						<?php echo DateFormatter::toHtml( $license->getExpiresAt(), [ 'expires' => true ] ); ?>
                     </td>
                     <td>
-						<?php echo $license->isExpired() ? LicenseStatus::toHtmlExpired($license, ['style' => 'inline']) : LicenseStatus::toHtml( $license, [ 'style' => 'inline' ] ); ?>
+						<?php echo $license->isExpired() ? LicenseStatus::toHtmlExpired( $license, [ 'style' => 'inline' ] ) : LicenseStatus::toHtml( $license, [ 'style' => 'inline' ] ); ?>
                     </td>
                     <td class="license-key-actions">
 						<?php

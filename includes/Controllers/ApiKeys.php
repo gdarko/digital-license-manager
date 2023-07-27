@@ -29,7 +29,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\ApiKey;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\ApiKeys as ApiKeysRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
-use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
 use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 
 defined( 'ABSPATH' ) || exit;
@@ -99,7 +99,7 @@ class ApiKeys {
 		}
 
 		if ( $error ) {
-			AdminNotice::error( $error );
+			NoticeFlasher::error( $error );
 			wp_redirect( sprintf( 'admin.php?page=%s&tab=rest_api&create_key=1', PageSlug::SETTINGS ) );
 			exit();
 		}
@@ -123,11 +123,11 @@ class ApiKeys {
 			);
 
 			if ( $apiKey ) {
-				AdminNotice::success( __( 'API key generated successfully. Make sure to copy your new keys now as the secret key will be hidden once you leave this page.', 'digital-license-manager' ) );
+				NoticeFlasher::success( __( 'API key generated successfully. Make sure to copy your new keys now as the secret key will be hidden once you leave this page.', 'digital-license-manager' ) );
 				set_transient( 'dlm_consumer_key', $consumerKey, 60 );
 				set_transient( 'dlm_api_key', $apiKey, 60 );
 			} else {
-				AdminNotice::error( __( 'There was a problem generating the API key.', 'digital-license-manager' ) );
+				NoticeFlasher::error( __( 'There was a problem generating the API key.', 'digital-license-manager' ) );
 			}
 
 			wp_redirect( sprintf( 'admin.php?page=%s&tab=rest_api&show_key=1', PageSlug::SETTINGS ) );
@@ -145,9 +145,9 @@ class ApiKeys {
 			);
 
 			if ( $apiKey ) {
-				AdminNotice::success( __( 'API key updated successfully.', 'digital-license-manager' ) );
+				NoticeFlasher::success( __( 'API key updated successfully.', 'digital-license-manager' ) );
 			} else {
-				AdminNotice::error( __( 'There was a problem updating the API key.', 'digital-license-manager' ) );
+				NoticeFlasher::error( __( 'There was a problem updating the API key.', 'digital-license-manager' ) );
 			}
 
 			wp_redirect( sprintf( 'admin.php?page=%s&tab=rest_api&edit_key=%s', PageSlug::SETTINGS, $keyId ) );

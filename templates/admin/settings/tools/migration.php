@@ -35,7 +35,7 @@ defined( 'ABSPATH' ) || exit;
         <label for="identifier"><?php _e( 'Select plugin', 'digital-license-manager' ); ?></label>
         <select id="identifier" name="identifier">
 			<?php foreach ( $plugins as $plugin ): ?>
-                <option value="<?php echo $plugin->getId(); ?>"><?php echo $plugin->getName(); ?></option>
+                <option value="<?php echo esc_attr( $plugin->getId() ); ?>"><?php echo esc_attr( $plugin->getName() ); ?></option>
 			<?php endforeach; ?>
         </select>
     </div>
@@ -52,8 +52,8 @@ defined( 'ABSPATH' ) || exit;
         <div class="dlm-tool-progress-info"><?php _e( 'Initializing...', 'digital-license-manager' ); ?></div>
     </div>
     <div class="dlm-tool-form-row">
-        <input type="hidden" name="id" value="<?php echo $tool->getId(); ?>">
-        <input type="hidden" name="tool" value="<?php echo $tool->getSlug(); ?>">
+        <input type="hidden" name="id" value="<?php echo esc_attr( $tool->getId() ); ?>">
+        <input type="hidden" name="tool" value="<?php echo esc_attr( $tool->getSlug() ); ?>">
         <button type="submit" class="button button-small button-primary"><?php _e( 'Migrate', 'digital-license-manager' ); ?></button>
     </div>
 </form>

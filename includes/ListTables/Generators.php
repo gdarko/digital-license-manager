@@ -29,10 +29,9 @@ use Exception;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Generator;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators as GeneratorsRepository;
-use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Products;
-use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -382,7 +381,7 @@ class Generators extends AbstractListTable {
 		$result = GeneratorsRepository::instance()->delete( $generatorsToDelete );
 
 		if ( $result ) {
-			AdminNotice::success( sprintf( __( '%d generator(s) permanently deleted.', 'digital-license-manager' ), $result ) );
+			NoticeFlasher::success( sprintf( __( '%d generator(s) permanently deleted.', 'digital-license-manager' ), $result ) );
 
 			wp_redirect(
 				admin_url(
@@ -390,7 +389,7 @@ class Generators extends AbstractListTable {
 				)
 			);
 		} else {
-			AdminNotice::error( __( 'There was a problem deleting the generators.', 'digital-license-manager' ) );
+			NoticeFlasher::error( __( 'There was a problem deleting the generators.', 'digital-license-manager' ) );
 
 			wp_redirect(
 				admin_url(

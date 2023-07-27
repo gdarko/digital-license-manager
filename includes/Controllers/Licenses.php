@@ -30,11 +30,11 @@ use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses as LicensesRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus as LicenseStatusEnum;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
 use IdeoLogix\DigitalLicenseManager\Utils\ArrayFormatter as ArrayUtil;
-use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
+use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
 use IdeoLogix\DigitalLicenseManager\Utils\StringFormatter;
 use TCPDF;
 
@@ -80,15 +80,14 @@ class Licenses {
 		$backUrl = sprintf( 'admin.php?page=%s&action=import', PageSlug::LICENSES );
 
 		if ( ! current_user_can( 'dlm_create_licenses' ) ) {
-			AdminNotice::error( __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
-			wp_redirect( $backUrl );
-			exit();
+			NoticeFlasher::error( __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
+			HttpHelper::redirect( $backUrl );
 		}
 
 		$orderId     = null;
 		$productId   = null;
 		$userId      = null;
-		$status      = LicenseStatusEnum::ACTIVE;
+		$status      = LicenseStatus::ACTIVE;
 		$source      = isset( $_POST['source'] ) ? sanitize_text_field( $_POST['source'] ) : 0;
 		$licenseKeys = array();
 
@@ -104,7 +103,7 @@ class Licenses {
 			$userId = intval( $_POST['user_id'] );
 		}
 
-		if ( array_key_exists( 'status', $_POST ) && $_POST['status'] && in_array( $_POST['status'], LicenseStatusEnum::$status ) ) {
+		if ( array_key_exists( 'status', $_POST ) && $_POST['status'] && in_array( $_POST['status'], LicenseStatus::$status ) ) {
 			$status = intval( $_POST['status'] );
 		}
 
@@ -115,17 +114,15 @@ class Licenses {
 		}
 
 		if ( ! is_array( $licenseKeys ) ) {
-			AdminNotice::error( __( 'There was a problem importing the license keys. Invalid format provided.', 'digital-license-manager' ) );
-			wp_redirect( $backUrl );
-			exit();
+			NoticeFlasher::error( __( 'There was a problem importing the license keys. Invalid format provided.', 'digital-license-manager' ) );
+			HttpHelper::redirect( $backUrl );
 		}
 
 		$curLicensesCount = count( $licenseKeys );
 
 		if ( $curLicensesCount <= 0 ) {
-			AdminNotice::error( __( 'No valid license keys found from import.', 'digital-license-manager' ) );
-			wp_redirect( $backUrl );
-			exit();
+			NoticeFlasher::error( __( 'No valid license keys found from import.', 'digital-license-manager' ) );
+			HttpHelper::redirect( $backUrl );
 		}
 
 		$validFor       = isset( $_POST['valid_for'] ) ? intval( $_POST['valid_for'] ) : null;
@@ -142,9 +139,8 @@ class Licenses {
 			$maxActivations
 		);
 		if ( is_wp_error( $result ) ) {
-			AdminNotice::error( __( $result->get_error_message(), 'digital-license-manager' ) );
-			wp_redirect( $backUrl );
-			exit();
+			NoticeFlasher::error( __( $result->get_error_message(), 'digital-license-manager' ) );
+			HttpHelper::redirect( $backUrl );
 		}
 
 		// Redirect according to $result.
@@ -181,16 +177,14 @@ class Licenses {
 			$resync = true;
 		}
 
-		if ( $resync && $status === LicenseStatusEnum::ACTIVE ) {
+		if ( $resync && $status === LicenseStatus::ACTIVE ) {
 			Stock::syncrhonizeProductStock( $productId );
 		}
 
-		if ( method_exists( AdminNotice::class, $callback ) ) {
-			call_user_func( [ AdminNotice::class, $callback ], $message );
+		if ( method_exists( NoticeFlasher::class, $callback ) ) {
+			call_user_func( [ NoticeFlasher::class, $callback ], $message );
 		}
-		wp_redirect( $backUrl );
-		exit();
-
+		HttpHelper::redirect( $backUrl );
 	}
 
 	/**
@@ -202,8 +196,8 @@ class Licenses {
 		check_admin_referer( 'dlm_add_license_key' );
 
 		if ( ! current_user_can( 'dlm_create_licenses' ) ) {
-			AdminNotice::error( __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
-			wp_redirect( sprintf( 'admin.php?page=%s', PageSlug::LICENSES ) );
+			NoticeFlasher::error( __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
+			HttpHelper::redirect( sprintf( 'admin.php?page=%s', PageSlug::LICENSES ) );
 		} else {
 			$licenseKey  = isset( $_POST['license_key'] ) ? sanitize_text_field( $_POST['license_key'] ) : '';
 			$licenseData = ArrayUtil::only( $_POST, array(
@@ -221,18 +215,16 @@ class Licenses {
 
 			if ( is_wp_error( $license ) ) {
 				if ( 'data_error' === $license->get_error_code() ) {
-					AdminNotice::error( $license->get_error_message() );
+					NoticeFlasher::error( $license->get_error_message() );
 				} else {
-					AdminNotice::error( __( 'There was a problem adding the license key.', 'digital-license-manager' ) );
+					NoticeFlasher::error( __( 'There was a problem adding the license key.', 'digital-license-manager' ) );
 				}
 			} else {
-				AdminNotice::success( __( '1 license(s) added successfully.', 'digital-license-manager' ) );
+				NoticeFlasher::success( __( '1 license(s) added successfully.', 'digital-license-manager' ) );
 			}
 
-			wp_redirect( sprintf( 'admin.php?page=%s&action=add', PageSlug::LICENSES ) );
+			HttpHelper::redirect( sprintf( 'admin.php?page=%s&action=add', PageSlug::LICENSES ) );
 		}
-		exit();
-
 	}
 
 	/**
@@ -245,8 +237,8 @@ class Licenses {
 		check_admin_referer( 'dlm_update_license_key' );
 
 		if ( ! current_user_can( 'dlm_edit_licenses' ) ) {
-			AdminNotice::error( __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
-			wp_redirect( sprintf( 'admin.php?page=%s', PageSlug::LICENSES ) );
+			NoticeFlasher::error( __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
+			HttpHelper::redirect( sprintf( 'admin.php?page=%s', PageSlug::LICENSES ) );
 		} else {
 			$licenseId   = isset( $_POST['license_id'] ) ? absint( $_POST['license_id'] ) : null;
 			$licenseData = ArrayUtil::only( $_POST, array(
@@ -263,17 +255,15 @@ class Licenses {
 			$license     = $this->service->update( $licenseId, $licenseData );
 			if ( is_wp_error( $license ) ) {
 				if ( 'data_error' === $license->get_error_code() ) {
-					AdminNotice::error( $license->get_error_message() );
+					NoticeFlasher::error( $license->get_error_message() );
 				} else {
-					AdminNotice::error( __( sprintf( 'There was a problem updating the license key. (%s)', $license->get_error_message()), 'digital-license-manager' ) );
+					NoticeFlasher::error( __( sprintf( 'There was a problem updating the license key. (%s)', $license->get_error_message() ), 'digital-license-manager' ) );
 				}
 			} else {
-				AdminNotice::success( __( 'Your license key has been updated successfully.', 'digital-license-manager' ) );
+				NoticeFlasher::success( __( 'Your license key has been updated successfully.', 'digital-license-manager' ) );
 			}
-			wp_redirect( sprintf( 'admin.php?page=%s&action=edit&id=%d', PageSlug::LICENSES, $licenseId ) );
+			HttpHelper::redirect( sprintf( 'admin.php?page=%s&action=edit&id=%d', PageSlug::LICENSES, $licenseId ) );
 		}
-
-		exit();
 	}
 
 	/**
@@ -359,8 +349,8 @@ class Licenses {
 		 * Validate the file extension
 		 */
 		if ( ! in_array( $ext, array( 'txt', 'csv' ) ) || ! in_array( $_FILES['file']['type'], $mimes ) ) {
-			AdminNotice::error( __( 'Invalid file type, only TXT and CSV allowed.', 'digital-license-manager' ) );
-			wp_redirect(
+			NoticeFlasher::error( __( 'Invalid file type, only TXT and CSV allowed.', 'digital-license-manager' ) );
+			HttpHelper::redirect(
 				sprintf(
 					'admin.php?page=%s&action=import',
 					PageSlug::LICENSES
@@ -379,12 +369,12 @@ class Licenses {
 		/**
 		 * Handle txt and csv types
 		 */
-		if ( $ext == 'txt' ) {
+		if ( 'txt' === $ext ) {
 			$licenseKeys = file( $filePath, FILE_IGNORE_NEW_LINES );
 			unlink( $filePath );
 			if ( ! is_array( $licenseKeys ) ) {
-				AdminNotice::error( __( 'Invalid file content.', 'digital-license-manager' ) );
-				wp_redirect(
+				NoticeFlasher::error( __( 'Invalid file content.', 'digital-license-manager' ) );
+				HttpHelper::redirect(
 					sprintf(
 						'admin.php?page=%s&action=import',
 						PageSlug::LICENSES
@@ -392,7 +382,7 @@ class Licenses {
 				);
 				exit();
 			}
-		} elseif ( $ext == 'csv' ) {
+		} elseif ( 'csv' === $ext ) {
 			$licenseKeys = array();
 			if ( ( $handle = fopen( DLM_ASSETS_DIR . $tmp_file, 'r' ) ) !== false ) {
 				while ( ( $data = fgetcsv( $handle, 1000, ',' ) ) !== false ) {
@@ -419,20 +409,19 @@ class Licenses {
 			}
 		}
 		if ( count( $duplicateLicenseKeys ) > 0 ) {
-			AdminNotice::warning(
+			NoticeFlasher::warning(
 				sprintf(
 					__( '%d license(s) skipped because they already exist.', 'digital-license-manager' ),
 					count( $duplicateLicenseKeys )
 				)
 			);
 			if ( count( $licenseKeys ) === 0 ) {
-				wp_redirect(
+				HttpHelper::redirect(
 					sprintf(
 						'admin.php?page=%s&action=import',
 						PageSlug::LICENSES
 					)
 				);
-				exit();
 			}
 		}
 
@@ -561,6 +550,7 @@ class Licenses {
 	 * @param array $licenseKeyIds
 	 */
 	public function exportLicensesCSV( $licenseKeyIds, $columns = array() ) {
+
 		$licenseKeys = array();
 
 		if ( empty( $columns ) ) {
@@ -635,7 +625,7 @@ class Licenses {
 		fclose( $df );
 		ob_end_flush();
 
-		exit();
+		exit;
 	}
 
 	/**
@@ -648,7 +638,7 @@ class Licenses {
 		check_admin_referer( 'dlm_export_licenses' );
 
 		if ( ! current_user_can( 'dlm_export_licenses' ) ) {
-			array_push( $errors, __( 'Permission denied. You don\'t have access to this resource.', 'digital-license-manager' ) );
+			$errors[] = __( 'Permission denied. You don\'t have access to this resource.', 'digital-license-manager' );
 		}
 
 		$list    = isset( $_POST['dlm_export_licenses'] ) && ! empty( $_POST['dlm_export_licenses'] ) ? explode( ',', $_POST['dlm_export_licenses'] ) : array();
@@ -662,20 +652,15 @@ class Licenses {
 		}
 
 		if ( empty( $list ) ) {
-			array_push( $errors, __( 'No licenses were selected.', 'digital-license-manager' ) );
+			$errors[] = __( 'No licenses were selected.', 'digital-license-manager' );
 		}
 
 		if ( ! empty( $errors ) ) {
-			AdminNotice::warning( $errors[0] );
-			wp_redirect(
-				admin_url(
-					sprintf( 'admin.php?page=%s', PageSlug::LICENSES )
-				)
-			);
+			NoticeFlasher::warning( $errors[0] );
+			HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s', PageSlug::LICENSES ) ) );
 		} else {
 			$this->exportLicensesCSV( $list, $columns );
 		}
-		exit();
 	}
 
 	/**

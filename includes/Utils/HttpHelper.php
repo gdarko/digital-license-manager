@@ -65,4 +65,19 @@ class HttpHelper {
 		return isset( $_SERVER["HTTP_USER_AGENT"] ) ? $_SERVER["HTTP_USER_AGENT"] : null;
 	}
 
+	/**
+	 * Redirects to specific url
+	 * @return void
+	 */
+	public static function redirect( $url ) {
+
+		if ( ! $url ) {
+			return;
+		}
+
+		wp_redirect( $url );
+		exit;
+
+	}
+
 }

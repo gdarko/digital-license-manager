@@ -33,7 +33,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Repositories\ApiKeys as ApiKeysRepo
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Utils\ArrayFormatter;
-use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -347,9 +347,9 @@ class ApiKeys extends AbstractListTable {
 		}
 
 		if ( $count = ApiKeysRepository::instance()->delete( $keys ) ) {
-			AdminNotice::success( sprintf( __( '%d API key(s) permanently deleted.', 'digital-license-manager' ), $count ) );
+			NoticeFlasher::success( sprintf( __( '%d API key(s) permanently deleted.', 'digital-license-manager' ), $count ) );
 		} else {
-			AdminNotice::error( __( 'There was a problem deleting the API key(s).', 'digital-license-manager' ) );
+			NoticeFlasher::error( __( 'There was a problem deleting the API key(s).', 'digital-license-manager' ) );
 		}
 
 		wp_redirect( sprintf( 'admin.php?page=%s&tab=rest_api', $this->slug ) );

@@ -31,14 +31,13 @@ use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses as LicensesRepository;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\LicenseActivations;
-use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
-use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
 use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use WC_Product;
 use WP_User;
@@ -840,7 +839,7 @@ class Licenses extends AbstractListTable {
 		}
 
 		// Set the admin notice, redirect and exit
-		AdminNotice::success( sprintf( esc_html__( '%d license(s) updated successfully.', 'digital-license-manager' ), $count ) );
+		NoticeFlasher::success( sprintf( esc_html__( '%d license(s) updated successfully.', 'digital-license-manager' ), $count ) );
 		wp_redirect( admin_url( sprintf( 'admin.php?page=%s', $this->slug ) ) );
 		exit();
 	}
@@ -877,7 +876,7 @@ class Licenses extends AbstractListTable {
 		$message = sprintf( esc_html__( '%d license(s) permanently deleted.', 'digital-license-manager' ), $count );
 
 		// Set the admin notice
-		AdminNotice::success( $message );
+		NoticeFlasher::success( $message );
 
 		// Redirect and exit
 		wp_redirect(

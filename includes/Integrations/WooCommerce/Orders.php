@@ -59,6 +59,7 @@ class Orders {
 		add_action( 'woocommerce_after_order_itemmeta', array( $this, 'showOrderedLicenses' ), 10, 3 );
 		add_filter( 'dlm_woocommerce_order_item_actions', array( $this, 'orderItemActions' ), 10, 4 );
 		add_action( 'dlm_generated_licenses_saved', array( $this, 'markOrderAsComplete' ), 10, 3 );
+		add_filter( 'dlm_validate_order_id', array( $this, 'validateOrderId' ), 10, 2 );
 	}
 
 	/**
@@ -457,6 +458,20 @@ class Orders {
 	}
 
 	/**
+	 * Check if order id is valid
+	 *
+	 * @param $isValid
+	 * @param $orderId
+	 *
+	 * @return bool
+	 */
+	public function validateOrderId( $isValid, $orderId ) {
+		$isValid = function_exists( 'wc_get_order' ) && ! wc_get_order( $orderId );
+
+		return $isValid;
+	}
+
+	/**
 	 * Mark as complete
 	 *
 	 * @param $order_id
@@ -595,7 +610,7 @@ class Orders {
 			foreach ( $actions as $key => $action ) {
 				if ( ! empty( $action['after_html'] ) ) {
 					add_action( 'admin_footer', function () use ( $action ) {
-						echo $action['after_html'];
+						echo wp_kses($action['after_html'], wp_kses_allowed_html());
 					}, 100000 );
 				}
 			}

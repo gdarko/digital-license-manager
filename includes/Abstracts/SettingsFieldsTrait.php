@@ -63,17 +63,17 @@ trait SettingsFieldsTrait {
 		$explain = isset( $args['explain'] ) ? $args['explain'] : '';
 
 		$html = '<fieldset>';
-		$html .= sprintf( '<label for="%s">', $field );
+		$html .= sprintf( '<label for="%s">', esc_attr($field) );
 		$html .= sprintf(
 			'<input id="%s" type="checkbox" name="%s[%s]" value="1" %s/>',
-			$key,
-			$key,
-			$field,
+			esc_attr( $key ),
+			esc_attr( $key ),
+			esc_attr( $field ),
 			checked( true, $value, false )
 		);
-		$html .= sprintf( '<span>%s</span>', $label );
+		$html .= sprintf( '<span>%s</span>', esc_attr( $label ) );
 		$html .= '</label>';
-		$html .= sprintf( '<p class="description">%s</p>', $explain );
+		$html .= sprintf( '<p class="description">%s</p>', esc_attr( $explain ) );
 		$html .= '</fieldset>';
 
 		echo $html;
@@ -84,7 +84,7 @@ trait SettingsFieldsTrait {
 	 * Render the image upload field
 	 * @return void
 	 */
-	public function fieldImageUpload($args) {
+	public function fieldImageUpload( $args ) {
 
 		$key         = isset( $args['key'] ) ? $args['key'] : ''; // database key.
 		$field       = isset( $args['field'] ) ? $args['field'] : ''; // field name/id.
@@ -94,9 +94,9 @@ trait SettingsFieldsTrait {
 		$placeholder = isset( $args['placeholder'] ) ? $args['placeholder'] : DLM_PLUGIN_URL . 'assets/img/logo-placeholder.jpg';
 
 		$html = '<fieldset>';
-		$html .= sprintf( '<label for="%s">%s</label>', $field, $label );
+		$html .= sprintf( '<label for="%s">%s</label>', esc_attr( $field ), esc_attr( $label ) );
 		$html .= $this->fieldImageUploadMarkup( $key, $field, $value, $placeholder );
-		$html .= sprintf( '<p class="description">%s</p>', $explain );
+		$html .= sprintf( '<p class="description">%s</p>', esc_attr( $explain ) );
 		$html .= '</fieldset>';
 
 		echo $html;
@@ -104,7 +104,8 @@ trait SettingsFieldsTrait {
 	}
 
 	/**
-     * Upload field markup
+	 * Upload field markup
+	 *
 	 * @param $key
 	 * @param $media_id
 	 * @param $placeholder
@@ -120,18 +121,18 @@ trait SettingsFieldsTrait {
 			$current_src = $placeholder;
 			$media_id    = '';
 		}
-        ob_start();
+		ob_start();
 		?>
-		<div class="dlm-field-upload" data-show-attachment-preview="1">
-			<img class="dlm-field-placeholder" data-src="<?php echo $placeholder; ?>" src="<?php echo $current_src; ?>" alt="File"/>
-			<div class="dlm-field-submit">
-                <?php echo sprintf('<input id="%s" type="hidden" name="%s[%s]" value="%s"/>', $key, $key, $field, $media_id); ?>
-				<button type="submit" class="dlm-field-upload-button button"><?php _e('Upload', 'digital-license-manager'); ?></button>
-				<button type="submit" class="dlm-field-remove-button button">&times;</button>
-			</div>
-		</div>
+        <div class="dlm-field-upload" data-show-attachment-preview="1">
+            <img class="dlm-field-placeholder" data-src="<?php echo esc_attr( $placeholder ); ?>" src="<?php echo esc_attr( $current_src ); ?>" alt="File"/>
+            <div class="dlm-field-submit">
+				<?php echo sprintf( '<input id="%s" type="hidden" name="%s[%s]" value="%s"/>', esc_attr( $key ), esc_attr( $key ), esc_attr( $field ), esc_attr( $media_id ) ); ?>
+                <button type="submit" class="dlm-field-upload-button button"><?php _e( 'Upload', 'digital-license-manager' ); ?></button>
+                <button type="submit" class="dlm-field-remove-button button">&times;</button>
+            </div>
+        </div>
 		<?php
-        return ob_get_clean();
+		return ob_get_clean();
 	}
 
 	/**
@@ -140,16 +141,16 @@ trait SettingsFieldsTrait {
 	 * @param array $args {
 	 *     Optional arguments.
 	 *
-	 *     @type string $explain A description of the setting.
-	 *     @type string $field   The setting identifier in the option group.
-	 *     @type string $key     The option group name.
-	 *     @type int    $size    The size, in characters, of the text field. Defaults to 20.
-	 *     @type string $value   The setting's value.
+	 * @type string $explain A description of the setting.
+	 * @type string $field The setting identifier in the option group.
+	 * @type string $key The option group name.
+	 * @type int $size The size, in characters, of the text field. Defaults to 20.
+	 * @type string $value The setting's value.
 	 * }
 	 */
 	public function fieldText( $args ) {
 
-		$args  = wp_parse_args(
+		$args = wp_parse_args(
 			$args,
 			array(
 				'explain' => '', // Should be HTML escaped.
@@ -159,16 +160,15 @@ trait SettingsFieldsTrait {
 				'value'   => '',
 			)
 		);
-		$html  = sprintf(
+		$html = sprintf(
 			'<input type="text" id="%s" name="%s[%s]" value="%s" size="%s">',
-			$args['field'],
-			$args['key'],
-			$args['field'],
+			esc_attr( $args['field'] ),
+			esc_attr( $args['key'] ),
+			esc_attr( $args['field'] ),
 			esc_attr( $args['value'] ),
-			$args['size']
+			esc_attr( $args['size'] )
 		);
-		$html .= "<p class='description'>{$args['explain']}</p>";
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		$html .= "<p class='description'>" . esc_attr( $args['explain'] ) . "</p>";
 		echo $html;
 	}
 }

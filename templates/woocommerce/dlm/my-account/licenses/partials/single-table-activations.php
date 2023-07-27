@@ -159,7 +159,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
                         <footer class="modal__footer">
                             <input type="hidden" name="dlm_action" value="manual_activation">
                             <input type="hidden" name="dlm_nonce" value="<?php echo wp_create_nonce( Activations::NONCE ); ?>">
-                            <input type="hidden" name="license" value="<?php echo $license->getDecryptedLicenseKey(); ?>">
+                            <input type="hidden" name="license" value="<?php echo esc_attr($license->getDecryptedLicenseKey()); ?>">
                             <button type="submit" class="button button-primary"><?php _e( 'Create', 'digital-license-manager' ); ?></button>
                         </footer>
                     </form>

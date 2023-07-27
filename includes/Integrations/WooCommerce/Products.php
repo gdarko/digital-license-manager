@@ -59,6 +59,7 @@ class Products {
 		add_action( 'woocommerce_product_after_variable_attributes', array( $this, 'variableProductDataPanel' ), 10, 3 );
 		add_action( 'woocommerce_save_product_variation', array( $this, 'variableProductSave' ), 10, 2 );
 		add_action( 'admin_notices', array( $this, 'adminNotices' ), 10 );
+		add_filter( 'dlm_validate_product_id', array( $this, 'validateProductId' ), 10, 2 );
 	}
 
 	/**
@@ -140,7 +141,7 @@ class Products {
 					if ( function_exists( 'woocommerce_wp_' . $field['type'] ) ) {
 						call_user_func( 'woocommerce_wp_' . $field['type'], $field['params'] );
 						if ( ! empty( $field['after'] ) ) {
-							echo $field['after'];
+							echo wp_kses( $field['after'], wp_kses_allowed_html() );
 						}
 					}
 				}
@@ -236,7 +237,7 @@ class Products {
 					echo '<div class="options_group">';
 					call_user_func( 'woocommerce_wp_' . $field['type'], $field['params'] );
 					if ( ! empty( $field['after'] ) ) {
-						echo $field['after'];
+						echo wp_kses( $field['after'], wp_kses_allowed_html() );
 					}
 					echo '</div>';
 				}
@@ -288,6 +289,18 @@ class Products {
 		$variation->save();
 
 		do_action( 'dlm_variable_product_save', $variationId, $i, $variation );
+	}
+
+	/**
+	 * Validate the product id
+	 *
+	 * @param $isValid
+	 * @param $productId
+	 *
+	 * @return bool
+	 */
+	public function validateProductId( $isValid, $productId ) {
+		return function_exists( 'wc_get_product' ) && ! wc_get_product( $productId );
 	}
 
 	/**
@@ -434,7 +447,7 @@ class Products {
 	 */
 	private function getProductFields( $product, $loop = null ) {
 
-		$licenseService = new LicensesService();
+		$licenseService    = new LicensesService();
 		$isVariableProduct = $this->isVariableProduct( $product );
 		$licenseSource     = $this->getMeta( $product->get_id(), 'dlm_licensed_product_licenses_source', 'stock' );
 
@@ -506,16 +519,16 @@ class Products {
 				array(
 					'type'   => 'select',
 					'params' => array(
-						'id'                => 'dlm_licensed_product_activations_behavior',
-						'label'             => __( 'Max Activations Behavior', 'digital-license-manager' ),
-						'description'       => esc_html__( 'Select the behavior of the max activations for the new licenses whether it to be based on quantity or the generator default value".', 'digital-license-manager' ),
-						'desc_tip'          => true,
-						'options'           => [
+						'id'            => 'dlm_licensed_product_activations_behavior',
+						'label'         => __( 'Max Activations Behavior', 'digital-license-manager' ),
+						'description'   => esc_html__( 'Select the behavior of the max activations for the new licenses whether it to be based on quantity or the generator default value".', 'digital-license-manager' ),
+						'desc_tip'      => true,
+						'options'       => [
 							'standard' => __( 'Standard - Based on the Generator\'s "Max Activations"' ),
 							'quantity' => __( 'Product Quantity - Always deliver single license and set activations limit based on product quantity' ),
 						],
-						'value'             => $this->getMeta( $product->get_id(), 'dlm_licensed_product_activations_behavior', 'standard' ),
-						'wrapper_class'     => $isVariableProduct ? 'form-row form-row-last dlm-field-conditional-target' : 'dlm-field-conditional-target',
+						'value'         => $this->getMeta( $product->get_id(), 'dlm_licensed_product_activations_behavior', 'standard' ),
+						'wrapper_class' => $isVariableProduct ? 'form-row form-row-last dlm-field-conditional-target' : 'dlm-field-conditional-target',
 						/*'custom_attributes' => array(
 							'data-conditional-source'  => 'dlm_licensed_product_licenses_source',
 							'data-conditional-show-if' => 'generators',

@@ -31,9 +31,8 @@ use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
 use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\LicenseActivations;
 use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
-use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
-use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
+use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -456,7 +455,7 @@ class Activations extends AbstractListTable {
 			$count ++;
 		}
 
-		AdminNotice::success( sprintf( esc_html__( '%d %s(s) updated successfully.', 'digital-license-manager' ), $count, strtolower( $this->_args['plural'] ) ) );
+		NoticeFlasher::success( sprintf( esc_html__( '%d %s(s) updated successfully.', 'digital-license-manager' ), $count, strtolower( $this->_args['plural'] ) ) );
 		wp_redirect( admin_url( sprintf( 'admin.php?page=%s', $this->slug ) ) );
 		exit();
 	}
@@ -550,7 +549,7 @@ class Activations extends AbstractListTable {
 		$message = sprintf( esc_html__( '%d activation record(s) permanently deleted.', 'digital-license-manager' ), $count );
 
 		// Set the admin notice
-		AdminNotice::success( $message );
+		NoticeFlasher::success( $message );
 
 		// Redirect and exit
 		wp_redirect(
@@ -587,8 +586,7 @@ class Activations extends AbstractListTable {
         </label><select name="license-id" id="filter-by-license-id">
             <option></option>
 			<?php if ( $selected ): ?>
-                <option selected
-                        value="<?php echo $selected; ?>"><?php echo sprintf( '#%d', esc_attr( $selected ) ); ?></option>
+                <option selected value="<?php echo (int) $selected; ?>"><?php echo sprintf( '#%d', esc_attr( $selected ) ); ?></option>
 			<?php endif; ?>
         </select>
 		<?php
@@ -608,7 +606,7 @@ class Activations extends AbstractListTable {
         <select name="license-source" id="filter-by-source">
             <option></option>
 			<?php foreach ( ActivationSource::all() as $key => $name ): ?>
-                <option value="<?php echo $key; ?>" <?php selected( $selected, $key ); ?>><?php echo esc_attr( $name ); ?></option>
+                <option value="<?php echo esc_attr( $key ); ?>" <?php selected( $selected, $key ); ?>><?php echo esc_attr( $name ); ?></option>
 			<?php endforeach; ?>
         </select>
 		<?php

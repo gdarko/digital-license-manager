@@ -22,24 +22,24 @@
  */
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
-use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation ;
+use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation;
 
 ?>
 
 <form action="<?php echo home_url(); ?>" method="POST">
     <input type="hidden" name="dlm_action" value="activation_row_actions">
     <input type="hidden" name="dlm_nonce" value="<?php echo wp_create_nonce( 'dlm_account' ); ?>">
-    <input type="hidden" name="license" value="<?php echo $license->getDecryptedLicenseKey(); ?>">
-    <input type="hidden" name="activation" value="<?php echo $activation->getToken(); ?>">
+    <input type="hidden" name="license" value="<?php echo esc_attr( $license->getDecryptedLicenseKey() ); ?>">
+    <input type="hidden" name="activation" value="<?php echo esc_attr( $activation->getToken() ); ?>">
     <ul class="dlm-list-inline">
 		<?php foreach ( $rowActions as $rowAction ): ?>
 			<?php
-			$params  = apply_filters( 'dlm_myaccount_license_activation_row_action_params', [ 'class' => [ 'button' ] ], $rowAction, $license, $activation, $order, $product );
-			$classes = isset($params['classes']) ? $params['classes'] : [];
-            $disabled = false;
+			$params   = apply_filters( 'dlm_myaccount_license_activation_row_action_params', [ 'class' => [ 'button' ] ], $rowAction, $license, $activation, $order, $product );
+			$classes  = isset( $params['classes'] ) ? $params['classes'] : [];
+			$disabled = false;
 			if ( isset( $params['disabled'] ) && $params['disabled'] ) {
 				$classes[] = 'disabled';
-                $disabled = true;
+				$disabled  = true;
 			}
 			?>
 			<?php if ( ! empty( $rowAction['href'] ) ): ?>
@@ -56,7 +56,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation ;
                         name="<?php echo esc_attr( $rowAction['id'] ); ?>"
                         title="<?php echo isset( $params['title'] ) ? esc_attr( $params['title'] ) : ''; ?>"
                         value="<?php echo isset( $params['value'] ) ? esc_attr( $params['value'] ) : 1; ?>"
-                        class="<?php echo isset( $params['class'] ) ? esc_attr( implode(' ', $params['class']) ) : ''; ?>"
+                        class="<?php echo isset( $params['class'] ) ? esc_attr( implode( ' ', $params['class'] ) ) : ''; ?>"
 					<?php disabled( true, $disabled ); ?> >
 					<?php echo esc_html( $rowAction['text'] ); ?>
                 </button>
