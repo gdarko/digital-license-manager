@@ -28,6 +28,7 @@ namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
 use IdeoLogix\DigitalLicenseManager\Settings;
+use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
 
 class Activations {
 
@@ -112,8 +113,7 @@ class Activations {
 				}
 			}
 
-			wp_redirect( wc_get_account_endpoint_url( sprintf( 'digital-licenses/%s', $license->getId() ) ) );
-			exit;
+			HttpHelper::redirect( wc_get_account_endpoint_url( sprintf( 'digital-licenses/%s', $license->getId() ) ) );
 
 		}
 
@@ -132,8 +132,7 @@ class Activations {
 
 		if ( is_wp_error( $license ) ) {
 			\wc_add_notice( $license->get_error_message(), 'error' );
-			wp_redirect( wc_get_account_endpoint_url( 'digital-licenses' ) );
-			exit;
+			HttpHelper::redirect( wc_get_account_endpoint_url( 'digital-licenses' ) );
 		}
 		if ( current_user_can( 'administrator' ) || $license->getUserId() === get_current_user_id() ) {
 			$result = $service->activate( $licenseKey, [ 'label' => $licenseLabel, 'source' => ActivationSource::WEB ] );
@@ -146,7 +145,7 @@ class Activations {
 			\wc_add_notice( __( 'Permission denied. User does not have access to activate this license.', 'digital-license-manager' ), 'error' );
 		}
 
-		wp_redirect( wc_get_account_endpoint_url( sprintf( 'digital-licenses/%s', $license->getId() ) ) );
+		HttpHelper::redirect( wc_get_account_endpoint_url( sprintf( 'digital-licenses/%s', $license->getId() ) ) );
 		exit;
 	}
 

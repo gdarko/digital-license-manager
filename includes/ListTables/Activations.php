@@ -32,6 +32,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\LicenseActivations;
 use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
+use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
 
 defined( 'ABSPATH' ) || exit;
@@ -456,8 +457,7 @@ class Activations extends AbstractListTable {
 		}
 
 		NoticeFlasher::success( sprintf( esc_html__( '%d %s(s) updated successfully.', 'digital-license-manager' ), $count, strtolower( $this->_args['plural'] ) ) );
-		wp_redirect( admin_url( sprintf( 'admin.php?page=%s', $this->slug ) ) );
-		exit();
+		HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s', $this->slug ) ) );
 	}
 
 	/**
@@ -552,7 +552,7 @@ class Activations extends AbstractListTable {
 		NoticeFlasher::success( $message );
 
 		// Redirect and exit
-		wp_redirect(
+		HttpHelper::redirect(
 			admin_url(
 				sprintf( 'admin.php?page=%s', $this->slug )
 			)

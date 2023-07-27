@@ -25,6 +25,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 
+use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
@@ -114,11 +115,9 @@ abstract class AbstractListTable extends \WP_List_Table {
 
 		if ( ! wp_verify_nonce( $nonceValue, $nonce ) && ! wp_verify_nonce( $nonceValue, 'bulk-' . $this->_args['plural'] ) ) {
 			NoticeFlasher::error( __( 'The nonce is invalid or has expired.', 'digital-license-manager' ) );
-			wp_redirect(
+			HttpHelper::redirect(
 				admin_url( sprintf( 'admin.php?page=%s', $this->slug ) )
 			);
-
-			exit;
 		}
 	}
 
@@ -131,12 +130,7 @@ abstract class AbstractListTable extends \WP_List_Table {
 			$message = sprintf( __( 'No %s were selected.', 'digital-license-manager' ), $this->_args['plural'] );
 			NoticeFlasher::warning( $message );
 
-			wp_redirect(
-				admin_url(
-					sprintf( 'admin.php?page=%s', $this->slug )
-				)
-			);
-			exit;
+			HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s', $this->slug ) ) );
 		}
 	}
 
@@ -162,11 +156,11 @@ abstract class AbstractListTable extends \WP_List_Table {
 		$query = isset( $_REQUEST['s'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ) : '';
 
 		?>
-		<p class="search-box">
+        <p class="search-box">
 			<?php echo sprintf( '<label class="screen-reader-text" for="%s">%s</label>', esc_attr( $key ), esc_html( $text ) ); ?>
 			<?php echo sprintf( '<input type="search" id="%s" name="s" value="%s"/>', esc_attr( $key ), esc_attr( $query ) ); ?>
 			<?php submit_button( $text, '', '', false, array( 'id' => 'search-submit', ) ); ?>
-		</p>
+        </p>
 		<?php
 	}
 

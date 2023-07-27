@@ -94,7 +94,7 @@ class LicenseActivation extends AbstractDataModel {
 	 * @return array|mixed
 	 */
 	public function getMetaData() {
-		return $this->get_json('meta_data', true);
+		return $this->getJson('meta_data', true);
 	}
 
 	/**

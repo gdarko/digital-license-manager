@@ -31,6 +31,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\Generator;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators as GeneratorsRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Products;
+use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
 
 defined( 'ABSPATH' ) || exit;
@@ -382,20 +383,10 @@ class Generators extends AbstractListTable {
 
 		if ( $result ) {
 			NoticeFlasher::success( sprintf( __( '%d generator(s) permanently deleted.', 'digital-license-manager' ), $result ) );
-
-			wp_redirect(
-				admin_url(
-					sprintf( 'admin.php?page=%s', $this->slug )
-				)
-			);
+			HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s', $this->slug ) ) );
 		} else {
 			NoticeFlasher::error( __( 'There was a problem deleting the generators.', 'digital-license-manager' ) );
-
-			wp_redirect(
-				admin_url(
-					sprintf( 'admin.php?page=%s', $this->slug )
-				)
-			);
+			HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s', $this->slug ) ) );
 		}
 	}
 }

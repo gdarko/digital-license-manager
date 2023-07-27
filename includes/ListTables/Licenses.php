@@ -37,6 +37,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
+use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
 use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use WC_Product;
@@ -840,8 +841,7 @@ class Licenses extends AbstractListTable {
 
 		// Set the admin notice, redirect and exit
 		NoticeFlasher::success( sprintf( esc_html__( '%d license(s) updated successfully.', 'digital-license-manager' ), $count ) );
-		wp_redirect( admin_url( sprintf( 'admin.php?page=%s', $this->slug ) ) );
-		exit();
+		HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s', $this->slug ) ) );
 	}
 
 	/**
@@ -879,11 +879,7 @@ class Licenses extends AbstractListTable {
 		NoticeFlasher::success( $message );
 
 		// Redirect and exit
-		wp_redirect(
-			admin_url(
-				sprintf( 'admin.php?page=%s', $this->slug )
-			)
-		);
+		HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s', $this->slug ) ) );
 	}
 
 	/**

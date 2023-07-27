@@ -45,7 +45,7 @@ class ProductDownload extends AbstractDataModel {
 	}
 
 	public function getMetaData() {
-		return $this->get_json( 'meta_data' );
+		return $this->getJson( 'meta_data' );
 	}
 
 	public function getCreatedAt() {

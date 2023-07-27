@@ -28,6 +28,7 @@ namespace IdeoLogix\DigitalLicenseManager\Controllers;
 use IdeoLogix\DigitalLicenseManager\Database\Models\ApiKey;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\ApiKeys as ApiKeysRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
+use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
 use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
@@ -100,8 +101,7 @@ class ApiKeys {
 
 		if ( $error ) {
 			NoticeFlasher::error( $error );
-			wp_redirect( sprintf( 'admin.php?page=%s&tab=rest_api&create_key=1', PageSlug::SETTINGS ) );
-			exit();
+			HttpHelper::redirect( sprintf( 'admin.php?page=%s&tab=rest_api&create_key=1', PageSlug::SETTINGS ) );
 		}
 
 		if ( $action === 'create' ) {
@@ -130,8 +130,8 @@ class ApiKeys {
 				NoticeFlasher::error( __( 'There was a problem generating the API key.', 'digital-license-manager' ) );
 			}
 
-			wp_redirect( sprintf( 'admin.php?page=%s&tab=rest_api&show_key=1', PageSlug::SETTINGS ) );
-			exit();
+			HttpHelper::redirect( sprintf( 'admin.php?page=%s&tab=rest_api&show_key=1', PageSlug::SETTINGS ) );
+
 		} elseif ( $action === 'edit' ) {
 
 			$apiKey = ApiKeysRepository::instance()->update(
@@ -150,8 +150,7 @@ class ApiKeys {
 				NoticeFlasher::error( __( 'There was a problem updating the API key.', 'digital-license-manager' ) );
 			}
 
-			wp_redirect( sprintf( 'admin.php?page=%s&tab=rest_api&edit_key=%s', PageSlug::SETTINGS, $keyId ) );
-			exit();
+			HttpHelper::redirect( sprintf( 'admin.php?page=%s&tab=rest_api&edit_key=%s', PageSlug::SETTINGS, $keyId ) );
 		}
 	}
 }

@@ -25,6 +25,8 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 
+use IdeoLogix\DigitalLicenseManager\Database\Models\ApiKey;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\ApiKeys;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
@@ -128,9 +130,10 @@ abstract class AbstractRestController extends WP_REST_Controller {
 		if ( ! $consumerKey ) {
 			return false;
 		}
-		$user = self::getUserDataByConsumerKey( $consumerKey );
+		$apiKey   = self::getCurrentConsumer( $consumerKey );
+		$endpints = $apiKey ? $apiKey->getEndpoints() : [];
 
-		return isset( $user->endpoints[ $routeId ] ) && ! empty( $user->endpoints[ $routeId ] );
+		return isset( $endpints[ $routeId ] ) && ! empty( $endpints[ $routeId ] );
 	}
 
 	/**
@@ -275,26 +278,16 @@ abstract class AbstractRestController extends WP_REST_Controller {
 	 *
 	 * @param string $consumerKey Part of the user authentication
 	 *
-	 * @return array
+	 * @return false|object|ApiKey
 	 */
-	public static function getUserDataByConsumerKey( $consumerKey ) {
+	public static function getCurrentConsumer( $consumerKey ) {
 
 		$consumerKey = StringHasher::make( sanitize_text_field( $consumerKey ) );
 
 		static $cache = array();
 
 		if ( empty( $cache[ $consumerKey ] ) ) {
-			global $wpdb;
-			$cache[ $consumerKey ] = $wpdb->get_row(
-				$wpdb->prepare(
-					"
-                    SELECT id, user_id, permissions, consumer_key, consumer_secret, nonces, endpoints 
-                    FROM {$wpdb->prefix}dlm_api_keys
-                    WHERE consumer_key = %s
-                ",
-					$consumerKey
-				)
-			);
+			$cache[ $consumerKey ] = ApiKeys::instance()->findBy( [ 'consumer_key' => $consumerKey ] );
 			if ( isset( $cache[ $consumerKey ]->endpoints ) ) {
 				$cache[ $consumerKey ]->endpoints = JsonFormatter::decode( $cache[ $consumerKey ]->endpoints, true );
 			}
