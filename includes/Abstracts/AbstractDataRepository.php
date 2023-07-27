@@ -312,7 +312,7 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 * @return QueryBuilder
 	 */
 	public function queryBuilder() {
-		return \wp_query_builder();
+		return \IdeoLogix\DigitalLicenseManager\Database\QueryBuilder::create( null );
 	}
 
 	/**

@@ -478,7 +478,7 @@ class Licenses extends AbstractListTable {
 
 		$timesActivated = LicenseActivationResourceRepository::instance()->countBy( array(
 			'license_id'     => $item['id'],
-			'deactivated_at' => 'IS NULL',
+			'deactivated_at' => null,
 		) );
 
 		if ( $item['activations_limit'] === null ) {

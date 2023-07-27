@@ -88,4 +88,89 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 		}
 	}
 
+	/**
+	 *
+	 * Saves data attributes in database.
+	 * Returns flag indicating if save process was successful.
+	 *
+	 * Note: Method has been overriden for the purpose of Digital License Manager to interpret 'null' values as database NULL
+	 *
+	 * @param bool $force_insert Flag that indicates if should insert regardless of ID.
+	 *
+	 * @return bool
+	 * @since 1.0.0
+	 *
+	 * @global object Wordpress Data base accessor.
+	 *
+	 */
+	public function save( $force_insert = false ) {
+		global $wpdb;
+		if ( ! $force_insert && $this->{$this->primary_key} ) {
+			// Update
+			$success = $wpdb->update( $this->getTablenameAlias(), $this->get_data(), [ $this->primary_key => $this->attributes[ $this->primary_key ] ], $this->get_data_format() );
+			if ( $success ) {
+				do_action( 'data_model_' . $this->table . '_updated', $this );
+			}
+		} else {
+			// Insert
+			$success                    = $wpdb->insert( $this->getTablenameAlias(), $this->get_data(), $this->get_data_format() );
+			$this->{$this->primary_key} = $wpdb->insert_id;
+			$date                       = date( 'Y-m-d H:i:s' );
+			$this->created_at           = $date;
+			$this->updated_at           = $date;
+			if ( $success ) {
+				do_action( 'data_model_' . $this->table . '_inserted', $this );
+			}
+		}
+		if ( $success ) {
+			do_action( 'data_model_' . $this->table . '_save', $this );
+		}
+
+		return $success;
+	}
+
+
+	/**
+	 * Guess the data format
+	 * @return array
+	 */
+	protected function get_data_format() {
+		$data   = $this->get_data();
+		$format = [];
+
+		foreach ( $data as $key => $value ) {
+			if ( is_null( $value ) || 'null' == $value || 'NULL' === $value ) {
+				$format[] = null;
+			} else if ( is_numeric( $value ) ) {
+				if ( strpos( $value, '.' ) !== false ) {
+					$format[] = '%f';
+				} else {
+					$format[] = '%d';
+				}
+			} else {
+				$format[] = '%s';
+			}
+		}
+
+
+		return $format;
+	}
+
+	protected function get_data() {
+		$protected = $this->protected_properties();
+
+		$data = array_filter( $this->attributes, function ( $key ) use ( $protected ) {
+			return ! in_array( $key, $protected );
+		}, ARRAY_FILTER_USE_KEY );
+
+
+		foreach ( $data as $key => $value ) {
+			if ( 'null' === $value || 'NULL' === $value ) {
+				$data[ $key ] = null;
+			}
+		}
+
+		return $data;
+	}
+
 }
