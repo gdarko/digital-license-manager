@@ -16,6 +16,7 @@ class Generators extends AbstractDataRepository {
 		$this->primaryKey = 'id';
 		$this->dataTable  = DatabaseTable::GENERATORS;
 		$this->dataModel  = Generator::class;
+		$this->searchable = [ 'name', 'charset' ];
 	}
 
 

@@ -16,6 +16,7 @@ class LicenseMeta extends AbstractDataRepository {
 		$this->primaryKey = 'meta_id';
 		$this->dataTable  = DatabaseTable::LICENSE_META;
 		$this->dataModel  = LicenseMetaModel::class;
+		$this->searchable = ['meta_key', 'meta_value', 'license_id'];
 	}
 
 }

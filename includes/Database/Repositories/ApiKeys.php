@@ -16,6 +16,7 @@ class ApiKeys extends AbstractDataRepository {
 		$this->primaryKey = 'id';
 		$this->dataTable  = DatabaseTable::API_KEYS;
 		$this->dataModel  = ApiKey::class;
+		$this->searchable = [ 'description' ];
 	}
 
 }

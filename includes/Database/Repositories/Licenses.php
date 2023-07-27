@@ -17,6 +17,7 @@ class Licenses extends AbstractDataRepository {
 		$this->primaryKey = 'id';
 		$this->dataTable  = DatabaseTable::LICENSES;
 		$this->dataModel  = License::class;
+		$this->searchable = [ 'order_id', 'product_id', 'user_id', 'license_key', 'hash', 'valid_for', 'source', 'status' ];
 	}
 
 }

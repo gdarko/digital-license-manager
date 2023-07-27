@@ -76,4 +76,16 @@ class ArrayFormatter {
 		}
 	}
 
+	/**
+	 * Obtain element from array
+	 * @param $array
+	 * @param $key
+	 * @param $default
+	 *
+	 * @return void
+	 */
+	public static function get($array, $key, $default = null) {
+		return isset($array[$key]) ? $array[$key] : $default;
+	}
+
 }

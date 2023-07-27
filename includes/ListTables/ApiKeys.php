@@ -27,9 +27,12 @@ namespace IdeoLogix\DigitalLicenseManager\ListTables;
 
 use Exception;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
+use IdeoLogix\DigitalLicenseManager\Core\Services\ApiKeysService;
+use IdeoLogix\DigitalLicenseManager\Database\Models\ApiKey;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\ApiKeys as ApiKeysRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
+use IdeoLogix\DigitalLicenseManager\Utils\ArrayFormatter;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
 
 defined( 'ABSPATH' ) || exit;
@@ -46,8 +49,8 @@ class ApiKeys extends AbstractListTable {
 	public function __construct() {
 		parent::__construct(
 			array(
-				'singular' => __( 'Key', 'digital-license-manager' ),
-				'plural'   => __( 'Keys', 'digital-license-manager' ),
+				'singular' => __( 'API Key', 'digital-license-manager' ),
+				'plural'   => __( 'API Keys', 'digital-license-manager' ),
 				'ajax'     => false
 			)
 		);
@@ -77,25 +80,26 @@ class ApiKeys extends AbstractListTable {
 	/**
 	 * Checkbox column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param ApiKey $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_cb( $item ) {
-		return sprintf( '<input type="checkbox" name="id[]" value="%1$s" />', $item['id'] );
+		return sprintf( '<input type="checkbox" name="id[]" value="%1$s" />', $item->getId() );
 	}
 
 	/**
 	 * Title column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param ApiKey $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_title( $item ) {
-		$keyId  = (int) $item['id'];
+
+		$keyId  = (int) $item->getId();
 		$url    = admin_url( sprintf( 'admin.php?page=%s&tab=rest_api&edit_key=%d', $this->slug, $keyId ) );
-		$userId = (int) $item['user_id'];
+		$userId = (int) $item->getUserId();
 
 		// Check if current user can edit other users or if it's the same user.
 		$output = '<strong>';
@@ -104,10 +108,10 @@ class ApiKeys extends AbstractListTable {
 			$output .= '<a href="' . esc_url( $url ) . '" class="row-title">';
 		}
 
-		if ( empty( $item['description'] ) ) {
+		if ( empty( $item->getDescription() ) ) {
 			$output .= esc_html__( 'API key', 'digital-license-manager' );
 		} else {
-			$output .= esc_html( $item['description'] );
+			$output .= esc_html( $item->getDescription() );
 		}
 
 		if ( $this->canEdit ) {
@@ -154,23 +158,30 @@ class ApiKeys extends AbstractListTable {
 	/**
 	 * Truncated consumer key column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param ApiKey $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_truncated_key( $item ) {
-		return '<code>&hellip;' . esc_html( $item['truncated_key'] ) . '</code>';
+		return '<code>&hellip;' . esc_html( $item->getTruncatedKey() ) . '</code>';
 	}
 
 	/**
 	 * User column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param ApiKey $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_user( $item ) {
-		$user = get_user_by( 'id', $item['user_id'] );
+
+		static $cache = [];
+		if ( ! isset( $cache[ $item->getUserId() ] ) ) {
+			$user                        = get_user_by( 'id', $item->getUserId() );
+			$cache[ $item->getUserId() ] = $user;
+		} else {
+			$user = $cache[ $item->getUserId() ];
+		}
 
 		if ( ! $user ) {
 			return '';
@@ -180,52 +191,45 @@ class ApiKeys extends AbstractListTable {
 			return '<a href="' . esc_url( add_query_arg( array( 'user_id' => $user->ID ), admin_url( 'user-edit.php' ) ) ) . '">' . esc_html( $user->display_name ) . '</a>';
 		}
 
-		return esc_html( $user->display_name );
+		$display_name = ! empty( $user->display_name ) ? $user->display_name : $user->user_login;
+
+		return esc_html( $display_name );
 	}
 
 	/**
 	 * Permissions column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param ApiKey $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_permissions( $item ) {
-		$permissionKey = $item['permissions'];
-		$permissions   = array(
-			'read'       => __( 'Read', 'digital-license-manager' ),
-			'write'      => __( 'Write', 'digital-license-manager' ),
-			'read_write' => __( 'Read/Write', 'digital-license-manager' ),
-		);
-
-		if ( isset( $permissions[ $permissionKey ] ) ) {
-			return esc_html( $permissions[ $permissionKey ] );
+		if ( empty( $item->getPermissions() ) ) {
+			return '';
 		}
+		$service = new ApiKeysService();
 
-		return '';
+		return ArrayFormatter::get( $service->get_permissions(), $item->getPermissions(), '' );
 	}
 
 	/**
 	 * Last access column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param ApiKey $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_last_access( $item ) {
-		$dateFormat = get_option( 'date_format' );
-		$timeFormat = get_option( 'time_format' );
-		if ( ! empty( $item['last_access'] ) ) {
-			$date = sprintf(
-				__( '%1$s at %2$s', 'digital-license-manager' ),
-				date_i18n( $dateFormat, strtotime( $item['last_access'] ) ),
-				date_i18n( $timeFormat, strtotime( $item['last_access'] ) )
-			);
 
-			return apply_filters( 'woocommerce_api_key_last_access_datetime', $date, $item['last_access'] );
+		if ( empty( $item->getLastAccess() ) ) {
+			return esc_attr__( 'N/a', 'digital-license-manager' );
 		}
 
-		return __( 'Unknown', 'digital-license-manager' );
+		return esc_html( sprintf(
+			__( '%1$s at %2$s', 'digital-license-manager' ),
+			date_i18n( $this->dateFormat, strtotime( $item->getLastAccess() ) ),
+			date_i18n( $this->dateFormat, strtotime( $item->getLastAccess() ) )
+		) );
 	}
 
 	/**
@@ -256,8 +260,8 @@ class ApiKeys extends AbstractListTable {
 
 		switch ( $action ) {
 			case 'delete':
-				$this->verifyNonce( 'delete' );
-				$this->verifySelection();
+				$this->validateNonce( 'delete' );
+				$this->validateSelection();
 				if ( $this->canDelete ) {
 					$this->handleDelete();
 				}
@@ -268,38 +272,9 @@ class ApiKeys extends AbstractListTable {
 	}
 
 	/**
-	 * Search box.
-	 *
-	 * @param string $text Button text
-	 * @param string $inputId Input ID
-	 */
-	public function search_box( $text, $inputId ) {
-		if ( empty( $_REQUEST['s'] ) && ! $this->has_items() ) {
-			return;
-		}
-
-		$inputId     = $inputId . '-search-input';
-		$searchQuery = isset( $_REQUEST['s'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ) : '';
-
-		echo '<p class="search-box">';
-		echo '<label class="screen-reader-text" for="' . esc_attr( $inputId ) . '">' . esc_html( $text ) . ':</label>';
-		echo '<input type="search" id="' . esc_attr( $inputId ) . '" name="s" value="' . esc_attr( $searchQuery ) . '" />';
-
-		submit_button(
-			$text, '', '', false,
-			array(
-				'id' => 'search-submit',
-			)
-		);
-
-		echo '</p>';
-	}
-
-	/**
 	 * Prepare table list items.
 	 */
 	public function prepare_items() {
-		global $wpdb;
 
 		$this->_column_headers = array(
 			$this->get_columns(),
@@ -335,21 +310,15 @@ class ApiKeys extends AbstractListTable {
 	 * @return array
 	 */
 	protected function getRecords( $perPage = 20, $pageNumber = 1 ) {
-		global $wpdb;
 
-		$search = '';
+		$where = [];
 		if ( ! empty( $_REQUEST['s'] ) ) {
-			$search = "AND description LIKE '%" . esc_sql( $wpdb->esc_like( sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ) ) ) . "%'";
+			$where['search'] = sanitize_text_field( wp_unslash( $_REQUEST['s'] ) );
 		}
 
-		return $wpdb->get_results( "
-            SELECT
-                id, user_id, description, permissions, truncated_key, last_access
-            FROM
-                {$wpdb->prefix}dlm_api_keys
-            WHERE
-                1=1
-                {$search} " . $wpdb->prepare( 'ORDER BY id DESC LIMIT %d OFFSET %d;', $perPage, ( $pageNumber - 1 ) * $perPage ), ARRAY_A );
+		$offset = ( $pageNumber - 1 ) * $perPage;
+
+		return ApiKeysRepository::instance()->get( $where, 'id', 'DESC', $offset, $perPage );
 	}
 
 	/**
@@ -357,13 +326,12 @@ class ApiKeys extends AbstractListTable {
 	 * @return int
 	 */
 	protected function getRecordsCount() {
-		global $wpdb;
-		$search = '';
+		$where = [];
 		if ( ! empty( $_REQUEST['s'] ) ) {
-			$search = "AND description LIKE '%" . esc_sql( $wpdb->esc_like( sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ) ) ) . "%'";
+			$where['search'] = sanitize_text_field( wp_unslash( $_REQUEST['s'] ) );
 		}
 
-		return (int) $wpdb->get_var( "SELECT COUNT(id) FROM {$wpdb->prefix}dlm_api_keys WHERE 1 = 1 {$search};" );
+		return ApiKeysRepository::instance()->count( $where );
 	}
 
 	/**
@@ -385,7 +353,7 @@ class ApiKeys extends AbstractListTable {
 		}
 
 		wp_redirect( sprintf( 'admin.php?page=%s&tab=rest_api', $this->slug ) );
-		exit();
+		exit;
 	}
 
 }

@@ -28,12 +28,12 @@ namespace IdeoLogix\DigitalLicenseManager\ListTables;
 use DateTime;
 use Exception;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
+use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\LicenseActivations;
 use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
-use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -59,7 +59,6 @@ class Activations extends AbstractListTable {
 	 * ActivationsList constructor.
 	 */
 	public function __construct() {
-		global $wpdb;
 
 		parent::__construct(
 			array(
@@ -70,7 +69,7 @@ class Activations extends AbstractListTable {
 		);
 
 		$this->slug       = PageSlug::ACTIVATIONS;
-		$this->table      = $wpdb->prefix . DatabaseTable::LICENSE_ACTIVATIONS;
+		$this->table      = LicenseActivations::instance()->getTable();
 		$this->dateFormat = get_option( 'date_format' );
 		$this->timeFormat = get_option( 'time_format' );
 		$this->gmtOffset  = get_option( 'gmt_offset' );
@@ -89,70 +88,13 @@ class Activations extends AbstractListTable {
 	 * @return array
 	 */
 	public function getRecords( $perPage = 20, $pageNumber = 1 ) {
-		global $wpdb;
 
 		$perPage    = (int) $perPage;
 		$pageNumber = (int) $pageNumber;
+		$offset     = ( $pageNumber - 1 ) * $perPage;
+		$query      = $this->getRecordsQuery();
 
-		$sql = $this->getRecordsQuery();
-		$sql .= " LIMIT {$perPage}";
-		$sql .= ' OFFSET ' . ( $pageNumber - 1 ) * $perPage;
-
-		$results = $wpdb->get_results( $sql, ARRAY_A );
-
-		return $results;
-	}
-
-	/**
-	 * Returns records query
-	 * @return string
-	 */
-	private function getRecordsQuery( $status = '', $count = false ) {
-
-		global $wpdb;
-		$tblLicenses = $wpdb->prefix . esc_sql( DatabaseTable::LICENSES );
-
-		$what = $count ? "COUNT(*)" : " {$this->table}.*";
-		$sql  = esc_sql( "SELECT {$what} FROM {$this->table} INNER JOIN {$tblLicenses} ON {$tblLicenses}.id={$this->table}.license_id WHERE 1 = 1" );
-
-		// Applies the view filter
-		if ( ! empty( $status ) || $this->isViewFilterActive() ) {
-
-			if ( empty( $status ) ) {
-				$status = sanitize_text_field( $_GET['status'] );
-			}
-
-			if ( 'inactive' === $status ) {
-				$sql .= esc_sql( ' AND ' . $this->table . '.deactivated_at IS NOT NULL' );
-			} else {
-				$sql .= esc_sql( ' AND ' . $this->table . '.deactivated_at IS NULL' );
-			}
-
-		}
-
-		// Applies the search box filter
-		if ( array_key_exists( 's', $_REQUEST ) && ! empty( $_REQUEST['s'] ) ) {
-			$sql .= $wpdb->prepare(
-				' AND ( ' . $tblLicenses . '.hash=%s OR ' . $this->table . '.label LIKE %s )',
-				StringHasher::license( sanitize_text_field( $_REQUEST['s'] ) ),
-				'%' . $wpdb->esc_like( sanitize_text_field( $_REQUEST['s'] ) ) . '%'
-			);
-		}
-
-		// Applies the order filter
-		if ( isset( $_REQUEST['license-id'] ) && is_numeric( $_REQUEST['license-id'] ) ) {
-			$sql .= $wpdb->prepare( ' AND ' . $tblLicenses . '.id=%d', (int) $_REQUEST['license-id'] );
-		}
-
-		// Applies the order filter
-		if ( isset( $_REQUEST['license-source'] ) && is_numeric( $_REQUEST['license-source'] ) ) {
-			$sql .= $wpdb->prepare( ' AND ' . $this->table . '.source=%d', (int) $_REQUEST['license-source'] );
-		}
-
-		$sql .= ' ORDER BY ' . $this->table . '.' . ( empty( $_REQUEST['orderby'] ) ? 'id' : esc_sql( $_REQUEST['orderby'] ) );
-		$sql .= ' ' . ( empty( $_REQUEST['order'] ) ? 'DESC' : esc_sql( $_REQUEST['order'] ) );
-
-		return $sql;
+		return LicenseActivations::instance()->get( $query['where'], $query['orderby'], $query['order'], $offset, $perPage );
 	}
 
 	/**
@@ -160,34 +102,82 @@ class Activations extends AbstractListTable {
 	 * @return int
 	 */
 	private function getRecordsCount( $status = '' ) {
-		global $wpdb;
-		$sql = $this->getRecordsQuery( $status, true );
+		$query = $this->getRecordsQuery( $status );
 
-		return $wpdb->get_var( $sql );
+		return LicenseActivations::instance()->count( $query['where'] );
+	}
+
+	/**
+	 * Returns records query
+	 * @return array
+	 */
+	private function getRecordsQuery( $status = '', $count = false ) {
+
+		// The where statement
+		$where = [];
+
+		// Applies the view filter
+		if ( ! empty( $status ) || $this->isViewFilterActive() ) {
+			if ( empty( $status ) ) {
+				$status = sanitize_text_field( $_GET['status'] );
+			}
+			if ( 'inactive' === $status ) {
+				$where['deactivated_at'] = [
+					'operator' => "IS",
+					'value'    => "NOT NULL",
+				];
+			} else {
+				$where['deactivated_at'] = [
+					'operator' => "IS",
+					'value'    => "NULL",
+				];
+			}
+		}
+
+		// Applies the search box filter
+		if ( array_key_exists( 's', $_REQUEST ) && ! empty( $_REQUEST['s'] ) ) {
+			$where['search'] = sanitize_text_field( wp_unslash( $_REQUEST['s'] ) );
+		}
+
+		// Applies the order filter
+		if ( isset( $_REQUEST['license-id'] ) && is_numeric( $_REQUEST['license-id'] ) ) {
+			$where['license_id'] = (int) $_REQUEST['license-id'];
+		}
+
+		// Applies the order filter
+		if ( isset( $_REQUEST['license-source'] ) && is_numeric( $_REQUEST['license-source'] ) ) {
+			$where['source'] = (int) $_REQUEST['license-source'];
+		}
+
+		return [
+			'where'   => $where,
+			'orderby' => empty( $_REQUEST['orderby'] ) ? 'created_at' : sanitize_text_field( $_REQUEST['orderby'] ),
+			'order'   => empty( $_REQUEST['order'] ) ? 'DESC' : sanitize_text_field( $_REQUEST['order'] ),
+		];
 	}
 
 	/**
 	 * Checkbox column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param LicenseActivation $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_cb( $item ) {
-		return sprintf( '<input type="checkbox" name="id[]" value="%s" />', $item['id'] );
+		return sprintf( '<input type="checkbox" name="id[]" value="%s" />', $item->getId() );
 	}
 
 	/**
 	 * Token column.
 	 *
-	 * @param $item
+	 * @param LicenseActivation $item
 	 *
 	 * @return string
 	 */
 	public function column_token( $item ) {
 		$html = '';
-		if ( $item['token'] ) {
-			$html = sprintf( '<span title="%s">%s</span>', __( 'Unique activation token', 'digital-license-manager' ), $item['token'] );
+		if ( $item->getToken() ) {
+			$html = sprintf( '<span title="%s">%s</span>', __( 'Unique activation token', 'digital-license-manager' ), $item->getToken() );
 		}
 
 		return $html;
@@ -196,41 +186,41 @@ class Activations extends AbstractListTable {
 	/**
 	 * Name column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param LicenseActivation $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_label( $item ) {
 		$actions = array();
-		if ( empty( $item['label'] ) ) {
+		if ( empty( $item->getLabel() ) ) {
 			$title = __( 'Untitled', 'digital-license-manager' );
 		} else {
-			$title = esc_attr( $item['label'] );
+			$title = esc_attr( $item->getLabel() );
 		}
 		$title         = '<strong>' . $title . '</strong>';
-		$actions['id'] = sprintf( __( 'ID: %d', 'digital-license-manager' ), (int) $item['id'] );
+		$actions['id'] = sprintf( __( 'ID: %d', 'digital-license-manager' ), (int) $item->getId() );
 
-		if ( ! empty( $item['deactivated_at'] ) && $this->canActivate ) {
+		if ( ! empty( $item->getDeactivatedAt() ) && $this->canActivate ) {
 			$actions['activate'] = sprintf(
 				'<a href="%s">%s</a>',
 				admin_url(
 					sprintf(
 						'admin.php?page=%s&action=activate&id=%d&_wpnonce=%s',
 						$this->slug,
-						(int) $item['id'],
+						(int) $item->getId(),
 						wp_create_nonce( 'activate' )
 					)
 				),
 				__( 'Activate', 'digital-license-manager' )
 			);
-		} else if ( empty( $item['deactivated_at'] ) && $this->canDeactivate ) {
+		} else if ( empty( $item->getDeactivatedAt() ) && $this->canDeactivate ) {
 			$actions['deactivate'] = sprintf(
 				'<a href="%s">%s</a>',
 				admin_url(
 					sprintf(
 						'admin.php?page=%s&action=deactivate&id=%d&_wpnonce=%s',
 						$this->slug,
-						(int) $item['id'],
+						(int) $item->getId(),
 						wp_create_nonce( 'deactivate' )
 					)
 				),
@@ -245,7 +235,7 @@ class Activations extends AbstractListTable {
 					sprintf(
 						'admin.php?page=%s&action=delete&id=%d&_wpnonce=%s',
 						$this->slug,
-						(int) $item['id'],
+						(int) $item->getId(),
 						wp_create_nonce( 'delete' )
 					)
 				),
@@ -259,18 +249,18 @@ class Activations extends AbstractListTable {
 	/**
 	 * License ID column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param LicenseActivation $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_license_id( $item ) {
 		$html = '';
 
-		if ( $item['license_id'] ) {
+		if ( $item->getLicenseId() ) {
 			$html = sprintf(
 				'<a href="%s" target="_blank">#%s</a>',
-				esc_url( admin_url( sprintf( 'admin.php?page=%s&action=edit&id=%s', PageSlug::LICENSES, $item['license_id'] ) ) ),
-				$item['license_id']
+				esc_url( admin_url( sprintf( 'admin.php?page=%s&action=edit&id=%s', PageSlug::LICENSES, $item->getLicenseId() ) ) ),
+				$item->getLicenseId()
 			);
 		}
 
@@ -280,15 +270,15 @@ class Activations extends AbstractListTable {
 	/**
 	 * IP Address column.
 	 *
-	 * @param $item
+	 * @param LicenseActivation $item
 	 *
 	 * @return string
 	 */
 	public function column_ip_address( $item ) {
 
 		$html = '';
-		if ( $item['ip_address'] ) {
-			$html = esc_attr( $item['ip_address'] );
+		if ( $item->getIpAddress() ) {
+			$html = esc_attr( $item->getIpAddress() );
 		}
 
 		return $html;
@@ -297,15 +287,15 @@ class Activations extends AbstractListTable {
 	/**
 	 * IP Address column.
 	 *
-	 * @param $item
+	 * @param LicenseActivation $item
 	 *
 	 * @return string
 	 */
 	public function column_source( $item ) {
 
 		$html = __( 'Other', 'digital-license-manager' );
-		if ( $item['source'] ) {
-			$html = ActivationSource::format( (int) $item['source'] );
+		if ( $item->getSource() ) {
+			$html = ActivationSource::format( (int) $item->getSource() );
 		}
 
 		return $html;
@@ -314,14 +304,14 @@ class Activations extends AbstractListTable {
 	/**
 	 * IP Address column.
 	 *
-	 * @param $item
+	 * @param LicenseActivation $item
 	 *
 	 * @return string
 	 */
 	public function column_status( $item ) {
 
 		$html = '';
-		if ( ! empty( $item['deactivated_at'] ) ) {
+		if ( ! empty( $item->getDeactivatedAt() ) ) {
 			$html = sprintf(
 				'<div class="dlm-status dlm-status-inactive"><span class="dashicons dashicons-marker"></span> %s</div>',
 				__( 'Inactive', 'digital-license-manager' )
@@ -339,17 +329,17 @@ class Activations extends AbstractListTable {
 	/**
 	 * Created column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param LicenseActivation $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 * @throws Exception
 	 */
-	public function column_created( $item ) {
+	public function column_created_at( $item ) {
 		$html = '';
 
-		if ( $item['created_at'] ) {
+		if ( $item->getCreatedAt() ) {
 			$offsetSeconds = floatval( $this->gmtOffset ) * 60 * 60;
-			$timestamp     = strtotime( $item['created_at'] ) + $offsetSeconds;
+			$timestamp     = strtotime( $item->getCreatedAt() ) + $offsetSeconds;
 			$result        = date( 'Y-m-d H:i:s', $timestamp );
 			$date          = new DateTime( $result );
 
@@ -367,13 +357,13 @@ class Activations extends AbstractListTable {
 	/**
 	 * Default column value.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param LicenseActivation $item Associative array of column name and value pairs
 	 * @param string $column_name Name of the current column
 	 *
 	 * @return string
 	 */
 	public function column_default( $item, $column_name ) {
-		return isset( $item[ $column_name ] ) ? esc_attr( $item[ $column_name ] ) : '';
+		return isset( $item[ $column_name ] ) ? $item->get( $column_name ) : '';
 	}
 
 	/**
@@ -388,7 +378,7 @@ class Activations extends AbstractListTable {
 			'source'     => __( 'Source', 'digital-license-manager' ),
 			'ip_address' => __( 'IP Address', 'digital-license-manager' ),
 			'status'     => __( 'Status', 'digital-license-manager' ),
-			'created'    => __( 'Created', 'digital-license-manager' )
+			'created_at' => __( 'Created', 'digital-license-manager' )
 		);
 	}
 
@@ -399,7 +389,8 @@ class Activations extends AbstractListTable {
 	 */
 	public function get_sortable_columns() {
 		return array(
-			'label' => array( 'name', true ),
+			'label'      => 'orderby',
+			'created_at' => array( 'orderby', true )
 		);
 	}
 
@@ -450,8 +441,8 @@ class Activations extends AbstractListTable {
 				break;
 		}
 
-		$this->verifyNonce( $nonce );
-		$this->verifySelection();
+		$this->validateNonce( $nonce );
+		$this->validateSelection();
 
 		$recordIds = isset( $_REQUEST['id'] ) ? (array) $_REQUEST['id'] : array();
 		if ( ! empty( $recordIds ) ) {
@@ -540,8 +531,8 @@ class Activations extends AbstractListTable {
 	 */
 	private function handleDelete() {
 
-		$this->verifyNonce( 'delete' );
-		$this->verifySelection();
+		$this->validateNonce( 'delete' );
+		$this->validateSelection();
 
 		$recordIds = isset( $_REQUEST['id'] ) ? (array) $_REQUEST['id'] : array();
 		if ( ! empty( $recordIds ) ) {
@@ -621,34 +612,6 @@ class Activations extends AbstractListTable {
 			<?php endforeach; ?>
         </select>
 		<?php
-	}
-
-	/**
-	 * Displays the search box.
-	 *
-	 * @param string $text
-	 * @param string $inputId
-	 */
-	public function search_box( $text, $inputId ) {
-		if ( empty( $_REQUEST['s'] ) && ! $this->has_items() ) {
-			return;
-		}
-
-		$inputId     = $inputId . '-search-input';
-		$searchQuery = isset( $_REQUEST['s'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ) : '';
-
-		echo '<p class="search-box">';
-		echo '<label class="screen-reader-text" for="' . esc_attr( $inputId ) . '">' . esc_html( $text ) . ':</label>';
-		echo '<input type="search" id="' . esc_attr( $inputId ) . '" name="s" value="' . esc_attr( $searchQuery ) . '" />';
-
-		submit_button(
-			$text, '', '', false,
-			array(
-				'id' => 'search-submit',
-			)
-		);
-
-		echo '</p>';
 	}
 
 	/**

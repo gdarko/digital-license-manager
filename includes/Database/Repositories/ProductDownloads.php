@@ -19,6 +19,7 @@ class ProductDownloads extends AbstractDataRepository {
 		$this->primaryKey = 'id';
 		$this->dataTable  = DatabaseTable::PRODUCT_DOWNLOADS;
 		$this->dataModel  = ProductDownload::class;
+		$this->searchable = [ 'license_id', 'activation_id', 'source', 'ip_address', 'user_agent' ];
 	}
 
 }

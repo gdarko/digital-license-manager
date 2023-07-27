@@ -59,7 +59,6 @@ class Licenses extends AbstractListTable {
 	 * LicensesList constructor.
 	 */
 	public function __construct() {
-		global $wpdb;
 
 		parent::__construct(
 			array(
@@ -70,7 +69,7 @@ class Licenses extends AbstractListTable {
 		);
 
 		$this->slug      = PageSlug::LICENSES;
-		$this->table     = $wpdb->prefix . DatabaseTable::LICENSES;
+		$this->table     = LicensesRepository::instance()->getTable();
 		$this->canEdit   = current_user_can( 'dlm_edit_licenses' );
 		$this->canDelete = current_user_can( 'dlm_delete_licenses' );
 		$this->canExport = current_user_can( 'dlm_export_licenses' );
@@ -256,35 +255,35 @@ class Licenses extends AbstractListTable {
 	/**
 	 * Checkbox column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param License $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_cb( $item ) {
 		return sprintf(
 			'<input type="checkbox" name="id[]" value="%s" />',
-			$item['id']
+			$item->getId()
 		);
 	}
 
 	/**
 	 * License key column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param License $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_license_key( $item ) {
 		if ( Settings::get( 'hide_license_keys' ) ) {
-			$title = sprintf('<code class="dlm-placeholder empty" data-id="%d"></code>', $item['id']);
+			$title = sprintf( '<code class="dlm-placeholder empty" data-id="%d"></code>', $item->getId() );
 			$title .= sprintf(
 				'<img class="dlm-spinner" data-id="%d" src="%s">',
-				$item['id'],
+				$item->getId(),
 				self::SPINNER_URL
 			);
 		} else {
 
-			$decrypted = CryptoHelper::decrypt( $item['license_key'] );
+			$decrypted = CryptoHelper::decrypt( $item->getLicenseKey() );
 			if ( is_wp_error( $decrypted ) ) {
 				$decrypted = 'ERROR';
 			}
@@ -295,13 +294,13 @@ class Licenses extends AbstractListTable {
 			);
 			$title .= sprintf(
 				'<img class="dlm-spinner" data-id="%d" src="%s">',
-				$item['id'],
+				$item->getId(),
 				self::SPINNER_URL
 			);
 		}
 
 		// ID
-		$actions['id'] = sprintf( __( 'ID: %d', 'digital-license-manager' ), (int) $item['id'] );
+		$actions['id'] = sprintf( __( 'ID: %d', 'digital-license-manager' ), (int) $item->getId() );
 
 		// Edit
 		if ( $this->canEdit ) {
@@ -312,7 +311,7 @@ class Licenses extends AbstractListTable {
 						sprintf(
 							'admin.php?page=%s&action=edit&id=%d',
 							$this->slug,
-							(int) $item['id']
+							(int) $item->getId()
 						),
 						'dlm_edit_license_key'
 					)
@@ -324,12 +323,12 @@ class Licenses extends AbstractListTable {
 		// Hide/Show
 		$actions['show'] = sprintf(
 			'<a class="dlm-license-key-toggle dlm-license-key-show" data-id="%d">%s</a>',
-			$item['id'],
+			$item->getId(),
 			__( 'Show', 'digital-license-manager' )
 		);
 		$actions['hide'] = sprintf(
 			'<a class="dlm-license-key-toggle dlm-license-key-hide" data-id="%d">%s</a>',
-			$item['id'],
+			$item->getId(),
 			__( 'Hide', 'digital-license-manager' )
 		);
 
@@ -341,7 +340,7 @@ class Licenses extends AbstractListTable {
 					sprintf(
 						'admin.php?page=%s&action=delete&id=%d&_wpnonce=%s',
 						$this->slug,
-						(int) $item['id'],
+						(int) $item->getId(),
 						wp_create_nonce( 'delete' )
 					)
 				),
@@ -355,14 +354,14 @@ class Licenses extends AbstractListTable {
 	/**
 	 * Order ID column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param License $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_order_id( $item ) {
 		$html = '';
 
-		$order_id = ! empty( $item['order_id'] ) ? (int) $item['order_id'] : 0;
+		$order_id = ! empty( $item->getOrderId() ) ? (int) $item->getOrderId() : 0;
 
 		if ( function_exists( 'wc_get_order' ) ) {
 			if ( $order = wc_get_order( $order_id ) ) {
@@ -384,14 +383,14 @@ class Licenses extends AbstractListTable {
 	/**
 	 * Product ID column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param License $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_product_id( $item ) {
 		$html = '';
 
-		$product_id = isset( $item['product_id'] ) ? (int) $item['product_id'] : '';
+		$product_id = ! empty( $item->getProductId() ) ? (int) $item->getProductId() : '';
 
 		/** @var WC_Product $product */
 		if ( function_exists( 'wc_get_product' ) ) {
@@ -415,7 +414,7 @@ class Licenses extends AbstractListTable {
 				} else {
 					$html = sprintf(
 						'<a href="%s" target="_blank">#%s - %s</a>',
-						get_edit_post_link( $item['product_id'] ),
+						get_edit_post_link( $item->getProductId() ),
 						$product->get_id(),
 						$product->get_name()
 					);
@@ -434,16 +433,16 @@ class Licenses extends AbstractListTable {
 	/**
 	 * User ID column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param License $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_user_id( $item ) {
 		$html = '';
 
-		if ( $item['user_id'] !== null ) {
+		if ( ! empty( $item->getUserId() ) ) {
 			/** @var WP_User $user */
-			$user = get_userdata( $item['user_id'] );
+			$user = get_userdata( $item->getUserId() );
 
 			if ( $user instanceof WP_User ) {
 				if ( current_user_can( 'edit_users' ) ) {
@@ -469,7 +468,7 @@ class Licenses extends AbstractListTable {
 	/**
 	 * Activation column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param License $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
@@ -477,14 +476,14 @@ class Licenses extends AbstractListTable {
 		$html = '';
 
 		$timesActivated = LicenseActivations::instance()->countBy( array(
-			'license_id'     => $item['id'],
+			'license_id'     => $item->getId(),
 			'deactivated_at' => null,
 		) );
 
-		if ( $item['activations_limit'] === null ) {
+		if ( $item->getActivationsLimit() === null ) {
 			$activationsLimit = null;
 		} else {
-			$activationsLimit = (int) $item['activations_limit'];
+			$activationsLimit = (int) $item->getActivationsLimit();
 		}
 
 		if ( $activationsLimit === null ) {
@@ -521,7 +520,7 @@ class Licenses extends AbstractListTable {
 	/**
 	 * Created column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param License $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 * @throws Exception
@@ -529,9 +528,9 @@ class Licenses extends AbstractListTable {
 	public function column_date( $item ) {
 		$html = '';
 
-		if ( $item['created_at'] ) {
+		if ( ! empty( $item->getCreatedAt() ) ) {
 			$offsetSeconds = floatval( $this->gmtOffset ) * 60 * 60;
-			$timestamp     = strtotime( $item['created_at'] ) + $offsetSeconds;
+			$timestamp     = strtotime( $item->getCreatedAt() ) + $offsetSeconds;
 			$result        = date( 'Y-m-d H:i:s', $timestamp );
 			$date          = new DateTime( $result );
 
@@ -549,7 +548,7 @@ class Licenses extends AbstractListTable {
 	/**
 	 * Expires at column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param License $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 * @throws Exception
@@ -557,11 +556,11 @@ class Licenses extends AbstractListTable {
 	public function column_expires_at( $item ) {
 
 		$never = '';
-		if ( empty( $item['order_id'] ) ) {
+		if ( empty( $item->getCreatedAt() ) ) {
 			$never = __( 'In stock, not sold yet', 'digital-license-manager' );
 		}
 
-		$markup = '<p class="dlm-clear-spacing">' . DateFormatter::toHtml( $item['expires_at'], ['expires' => true, 'never' => $never] ) . '</p>';
+		$markup = '<p class="dlm-clear-spacing">' . DateFormatter::toHtml( $item->getExpiresAt(), [ 'expires' => true, 'never' => $never ] ) . '</p>';
 
 		return $markup;
 	}
@@ -569,26 +568,24 @@ class Licenses extends AbstractListTable {
 	/**
 	 * Status column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param License $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_status( $item ) {
-		return LicenseStatus::statusToHtml( $item['status'] );
+		return LicenseStatus::statusToHtml( $item->getStatus() );
 	}
 
 	/**
 	 * Default column value.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param License $item Associative array of column name and value pairs
 	 * @param string $columnName Name of the current column
 	 *
 	 * @return string
 	 */
 	public function column_default( $item, $columnName ) {
-		$item = apply_filters( 'dlm_table_licenses_column_value', $item, $columnName );
-
-		return $item[ $columnName ];
+		return apply_filters( 'dlm_table_licenses_column_value', $item->get( $columnName ), $columnName );
 	}
 
 	/**
@@ -604,7 +601,7 @@ class Licenses extends AbstractListTable {
 			'user_id'    => array( 'user_id', true ),
 			'expires_at' => array( 'expires_at', true ),
 			'status'     => array( 'status', true ),
-			'date'    => array( 'created_at', true ),
+			'date'       => array( 'created_at', true ),
 			'activation' => array( 'activations_limit', true )
 		);
 
@@ -712,72 +709,64 @@ class Licenses extends AbstractListTable {
 	 *
 	 * @return array
 	 */
-	private function getRecords( $perPage = 20, $pageNumber = 1 ) {
-		global $wpdb;
+	public function getRecords( $perPage = 20, $pageNumber = 1 ) {
 
-		$sql = "SELECT * FROM {$this->table} WHERE 1 = 1";
+		$perPage    = (int) $perPage;
+		$pageNumber = (int) $pageNumber;
+		$offset     = ( $pageNumber - 1 ) * $perPage;
+		$query      = $this->getRecordsQuery();
 
-		// Applies the view filter
-		if ( $this->isViewFilterActive() ) {
-			$sql .= $wpdb->prepare( ' AND status = %d', (int) $_GET['status'] );
-		}
-
-		// Applies the search box filter
-		if ( array_key_exists( 's', $_REQUEST ) && $_REQUEST['s'] ) {
-			$sql .= $wpdb->prepare(
-				' AND hash = %s',
-				StringHasher::license( sanitize_text_field( $_REQUEST['s'] ) )
-			);
-		}
-
-		// Applies the order filter
-		if ( isset( $_REQUEST['order-id'] ) && is_numeric( $_REQUEST['order-id'] ) ) {
-			$sql .= $wpdb->prepare( ' AND order_id = %d', (int) $_REQUEST['order-id'] );
-		}
-
-		// Applies the product filter
-		if ( isset( $_REQUEST['product-id'] ) && is_numeric( $_REQUEST['product-id'] ) ) {
-			$sql .= $wpdb->prepare( ' AND product_id = %d', (int) $_REQUEST['product-id'] );
-		}
-
-		// Applies the user filter
-		if ( isset( $_REQUEST['user-id'] ) && is_numeric( $_REQUEST['user-id'] ) ) {
-			$sql .= $wpdb->prepare( ' AND user_id = %d', (int) $_REQUEST['user-id'] );
-		}
-
-		$sql .= ' ORDER BY ' . ( empty( $_REQUEST['orderby'] ) ? 'id' : esc_sql( $_REQUEST['orderby'] ) );
-		$sql .= ' ' . ( empty( $_REQUEST['order'] ) ? 'DESC' : esc_sql( $_REQUEST['order'] ) );
-		$sql .= " LIMIT {$perPage}";
-		$sql .= ' OFFSET ' . ( $pageNumber - 1 ) * $perPage;
-
-		return $wpdb->get_results( $sql, ARRAY_A );
+		return LicensesRepository::instance()->get( $query['where'], $query['orderby'], $query['order'], $offset, $perPage );
 	}
 
 	/**
 	 * Retrieves the number of records in the database
 	 * @return int
 	 */
-	private function getRecordsCount() {
-		global $wpdb;
+	private function getRecordsCount( $status = '' ) {
+		$query = $this->getRecordsQuery( $status );
 
-		$sql = "SELECT COUNT(*) FROM {$this->table} WHERE 1 = 1";
+		return LicensesRepository::instance()->count( $query['where'] );
+	}
 
+	/**
+	 * Returns records query
+	 * @return array
+	 */
+	private function getRecordsQuery( $status = '', $count = false ) {
+
+		$where = [];
+
+		// Applies the view filter
 		if ( $this->isViewFilterActive() ) {
-			$sql .= $wpdb->prepare( ' AND status = %d', (int) $_GET['status'] );
+			$where['status'] = (int) $_GET['status'];
 		}
 
-		if ( isset( $_REQUEST['order-id'] ) ) {
-			$sql .= $wpdb->prepare( ' AND order_id = %d', (int) $_REQUEST['order-id'] );
-		}
-
+		// Applies the search box filter
 		if ( array_key_exists( 's', $_REQUEST ) && $_REQUEST['s'] ) {
-			$sql .= $wpdb->prepare(
-				' AND hash = %s',
-				StringHasher::license( sanitize_text_field( $_REQUEST['s'] ) )
-			);
+			$where['hash'] = StringHasher::license( sanitize_text_field( $_REQUEST['s'] ) );
 		}
 
-		return $wpdb->get_var( $sql );
+		if ( isset( $_REQUEST['order-id'] ) && is_numeric( $_REQUEST['order-id'] ) ) {
+			$where['order_id'] = (int) $_REQUEST['order-id'];
+		}
+
+		// Applies the product filter
+		if ( isset( $_REQUEST['product-id'] ) && is_numeric( $_REQUEST['product-id'] ) ) {
+			$where['product_id'] = (int) $_REQUEST['product-id'];
+		}
+
+		// Applies the user filter
+		if ( isset( $_REQUEST['user-id'] ) && is_numeric( $_REQUEST['user-id'] ) ) {
+			$where['user_id'] = (int) $_REQUEST['user-id'];
+		}
+
+		return [
+			'where'   => $where,
+			'orderby' => empty( $_REQUEST['orderby'] ) ? 'created_at' : sanitize_text_field( $_REQUEST['orderby'] ),
+			'order'   => empty( $_REQUEST['order'] ) ? 'DESC' : sanitize_text_field( $_REQUEST['order'] ),
+		];
+
 	}
 
 	/**
@@ -793,7 +782,7 @@ class Licenses extends AbstractListTable {
 			'activation'  => __( 'Activations', 'digital-license-manager' ),
 			'expires_at'  => __( 'Expires', 'digital-license-manager' ),
 			'status'      => __( 'Status', 'digital-license-manager' ),
-			'date'     => __( 'Date', 'digital-license-manager' ),
+			'date'        => __( 'Date', 'digital-license-manager' ),
 		);
 
 		return apply_filters( 'dlm_table_licenses_column_name', $columns );
@@ -820,8 +809,8 @@ class Licenses extends AbstractListTable {
 				break;
 		}
 
-		$this->verifyNonce( $nonce );
-		$this->verifySelection();
+		$this->validateNonce( $nonce );
+		$this->validateSelection();
 
 		$licenseKeyIds = isset( $_REQUEST['id'] ) ? array_map( 'intval', (array) $_REQUEST['id'] ) : array();
 		$count         = 0;
@@ -837,13 +826,13 @@ class Licenses extends AbstractListTable {
 				// License was active, but no longer is
 				if ( $license->getStatus() === LicenseStatus::ACTIVE && $status !== LicenseStatus::ACTIVE ) {
 					// Update the stock
-					Stock::syncrhonizeProductStock($license->getProductId());
+					Stock::syncrhonizeProductStock( $license->getProductId() );
 				}
 
 				// License was not active, but is now
 				if ( $license->getStatus() !== LicenseStatus::ACTIVE && $status === LicenseStatus::ACTIVE ) {
 					// Update the stock
-                    Stock::syncrhonizeProductStock($license->getProductId());
+					Stock::syncrhonizeProductStock( $license->getProductId() );
 				}
 			}
 
@@ -862,12 +851,12 @@ class Licenses extends AbstractListTable {
 	 */
 	private function handleDelete() {
 
-		$this->verifyNonce( 'delete' );
-		$this->verifySelection();
+		$this->validateNonce( 'delete' );
+		$this->validateSelection();
 
 		$licenseKeyIds = isset( $_REQUEST['id'] ) ? array_map( 'intval', (array) $_REQUEST['id'] ) : array();
 
-        $count = 0;
+		$count = 0;
 		foreach ( $licenseKeyIds as $licenseKeyId ) {
 			/** @var License $license */
 			$license = LicensesRepository::instance()->find( $licenseKeyId );
@@ -878,7 +867,7 @@ class Licenses extends AbstractListTable {
 			if ( $result ) {
 				// Update the stock
 				if ( $license->getProductId() !== null && $license->getStatus() === LicenseStatus::ACTIVE ) {
-					Stock::syncrhonizeProductStock($license->getProductId());
+					Stock::syncrhonizeProductStock( $license->getProductId() );
 				}
 
 				$count += $result;
@@ -906,15 +895,15 @@ class Licenses extends AbstractListTable {
 	 * @throws Exception
 	 */
 	private function handleExport( $type ) {
-		$this->verifySelection();
+		$this->validateSelection();
 
 		if ( $type === 'PDF' ) {
-			$this->verifyNonce( 'export_pdf' );
+			$this->validateNonce( 'export_pdf' );
 			do_action( 'dlm_export_license_keys_pdf', (array) $_REQUEST['id'] );
 		}
 
 		if ( $type === 'CSV' ) {
-			$this->verifyNonce( 'export_csv' );
+			$this->validateNonce( 'export_csv' );
 			do_action( 'dlm_export_license_keys_csv', (array) $_REQUEST['id'] );
 		}
 	}
@@ -932,33 +921,5 @@ class Licenses extends AbstractListTable {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Displays the search box.
-	 *
-	 * @param string $text
-	 * @param string $inputId
-	 */
-	public function search_box( $text, $inputId ) {
-		if ( empty( $_REQUEST['s'] ) && ! $this->has_items() ) {
-			return;
-		}
-
-		$inputId     = $inputId . '-search-input';
-		$searchQuery = isset( $_REQUEST['s'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ) : '';
-
-		echo '<p class="search-box">';
-		echo '<label class="screen-reader-text" for="' . esc_attr( $inputId ) . '">' . esc_html( $text ) . ':</label>';
-		echo '<input type="search" id="' . esc_attr( $inputId ) . '" name="s" value="' . esc_attr( $searchQuery ) . '" />';
-
-		submit_button(
-			$text, '', '', false,
-			array(
-				'id' => 'search-submit',
-			)
-		);
-
-		echo '</p>';
 	}
 }

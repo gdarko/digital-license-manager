@@ -5,7 +5,7 @@ namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\DataRepositoryInterface;
 use IdeoLogix\DigitalLicenseManager\Traits\Singleton;
 use IdeoLogix\DigitalLicenseManager\Utils\ArrayFormatter;
-use TenQuality\WP\Database\QueryBuilder;
+use IdeoLogix\DigitalLicenseManager\Database\QueryBuilder;
 
 class AbstractDataRepository implements DataRepositoryInterface {
 
@@ -28,6 +28,12 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 * @var string
 	 */
 	protected $dataModel;
+
+	/**
+	 * The list of searchable columns
+	 * @var array
+	 */
+	protected $searchable;
 
 	/**
 	 * Creates model instance
@@ -133,7 +139,7 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 *
 	 * @return array
 	 */
-	public function findAllBy( $where, $sortBy = null, $sortDir = null, $offset = - 1, $limit = - 1 ) {
+	public function findAllBy( $where, $sortBy = null, $sortDir = 'DESC', $offset = - 1, $limit = - 1 ) {
 		return $this->get( $where, $sortBy, $sortDir, $offset, $limit );
 	}
 
@@ -148,15 +154,17 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 *
 	 * @return AbstractDataModel[]
 	 */
-	public function get( $where = [], $sortBy = null, $sortDir = null, $offset = - 1, $limit = - 1 ) {
+	public function get( $where = [], $sortBy = null, $sortDir = 'DESC', $offset = - 1, $limit = - 1 ) {
 
 		try {
 			if ( count( $where ) > 0 ) {
 				$where = self::buildWhere( $where );
 			}
-			$builder = $this->buildQuery( $where, $sortBy, $sortBy, $offset, $limit );
+
+			$builder = $this->buildQuery( $where, $sortBy, $sortDir, $offset, $limit );
 
 			$result = $builder->get();
+
 		} catch ( \Exception $e ) {
 			$result = null;
 		}
@@ -326,7 +334,7 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 * @return QueryBuilder
 	 */
 	public function queryBuilder() {
-		return \IdeoLogix\DigitalLicenseManager\Database\QueryBuilder::create( null );
+		return new QueryBuilder( null );
 	}
 
 	/**
@@ -341,15 +349,25 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 * @return QueryBuilder
 	 * @throws \Exception
 	 */
-	public function buildQuery( $where = [], $sortBy = null, $sortDir = null, $offset = - 1, $limit = - 1 ) {
+	public function buildQuery( $where = [], $sortBy = null, $sortDir = 'DESC', $offset = - 1, $limit = - 1 ) {
+
+		if ( empty( $sortBy ) ) {
+			$sortBy = $this->primaryKey;
+		}
+
 		$builder = $this->queryBuilder()->from( $this->dataTable );
+
+		if ( isset( $where['search'] ) ) {
+			$builder = $builder->keywords( $where['search'], $this->searchable );
+			unset( $where['search'] );
+		}
+
 		if ( ! empty( $where ) ) {
 			$builder = $builder->where( $where );
 		}
 
-		if ( ! empty( $sortBy ) ) {
-			$builder = $builder->order_by( $sortBy );
-		}
+		$builder = $builder->order_by( $sortBy, $sortDir );
+
 		if ( - 1 < $offset ) {
 			$builder = $builder->offset( $offset );
 		}
@@ -368,6 +386,7 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 * @return array
 	 */
 	public function buildWhere( $query ) {
+
 		if ( is_numeric( $query ) ) {
 			$where = [ $this->primaryKey => intval( $query ) ];
 		} else if ( ArrayFormatter::isList( $query ) ) {
@@ -381,7 +400,7 @@ class AbstractDataRepository implements DataRepositoryInterface {
 
 			$where = [];
 			foreach ( $query as $key => $value ) {
-				if ( is_array( $value ) ) {
+				if ( is_array( $value ) && ArrayFormatter::isList( $value ) ) {
 					$where[ $key ] = [
 						'operator' => 'IN',
 						'value'    => $value,

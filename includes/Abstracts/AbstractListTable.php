@@ -103,26 +103,31 @@ abstract class AbstractListTable extends \WP_List_Table {
 	 *
 	 * @param $nonce
 	 */
-	protected function verifyNonce( $nonce ) {
-		$currentNonce = $_REQUEST['_wpnonce'];
+	protected function validateNonce( $nonce ) {
 
-		if ( ! wp_verify_nonce( $currentNonce, $nonce )
-		     && ! wp_verify_nonce( $currentNonce, 'bulk-' . $this->_args['plural'] )
-		) {
+		$nonceValue = isset( $_REQUEST['_wpnonce'] ) ? $_REQUEST['_wpnonce'] : '';
+
+		if ( empty( $nonceValue ) ) {
+			AdminNotice::error( __( 'Permission denied.', 'digital-license-manager' ) );
+			exit;
+		}
+
+		if ( ! wp_verify_nonce( $nonceValue, $nonce ) && ! wp_verify_nonce( $nonceValue, 'bulk-' . $this->_args['plural'] ) ) {
 			AdminNotice::error( __( 'The nonce is invalid or has expired.', 'digital-license-manager' ) );
 			wp_redirect(
 				admin_url( sprintf( 'admin.php?page=%s', $this->slug ) )
 			);
 
-			exit();
+			exit;
 		}
 	}
 
 	/**
 	 * Makes sure that license keys were selected for the bulk action.
 	 */
-	protected function verifySelection() {
-		if ( ! array_key_exists( 'id', $_REQUEST ) ) {
+	protected function validateSelection() {
+
+		if ( ! isset( $_REQUEST['id'] ) ) {
 			$message = sprintf( __( 'No %s were selected.', 'digital-license-manager' ), $this->_args['plural'] );
 			AdminNotice::warning( $message );
 
@@ -131,8 +136,7 @@ abstract class AbstractListTable extends \WP_List_Table {
 					sprintf( 'admin.php?page=%s', $this->slug )
 				)
 			);
-
-			exit();
+			exit;
 		}
 	}
 
@@ -141,6 +145,29 @@ abstract class AbstractListTable extends \WP_List_Table {
 	 */
 	public function no_items() {
 		echo sprintf( __( 'No %s found.', 'digital-license-manager' ), $this->_args['plural'] );
+	}
+
+	/**
+	 * Search box.
+	 *
+	 * @param string $text Button text
+	 * @param string $input_id Input ID
+	 */
+	public function search_box( $text, $input_id ) {
+		if ( empty( $_REQUEST['s'] ) && ! $this->has_items() ) {
+			return;
+		}
+
+		$key   = sprintf( '%s-search-input', $input_id );
+		$query = isset( $_REQUEST['s'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ) : '';
+
+		?>
+		<p class="search-box">
+			<?php echo sprintf( '<label class="screen-reader-text" for="%s">%s</label>', esc_attr( $key ), esc_html( $text ) ); ?>
+			<?php echo sprintf( '<input type="search" id="%s" name="s" value="%s"/>', esc_attr( $key ), esc_attr( $query ) ); ?>
+			<?php submit_button( $text, '', '', false, array( 'id' => 'search-submit', ) ); ?>
+		</p>
+		<?php
 	}
 
 }

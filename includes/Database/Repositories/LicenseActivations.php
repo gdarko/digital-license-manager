@@ -16,6 +16,7 @@ class LicenseActivations extends AbstractDataRepository {
 		$this->primaryKey = 'id';
 		$this->dataTable  = DatabaseTable::LICENSE_ACTIVATIONS;
 		$this->dataModel  = LicenseActivation::class;
+		$this->searchable = [ 'token', 'license_id', 'ip_address', 'user_agent', 'label' ];
 	}
 
 }

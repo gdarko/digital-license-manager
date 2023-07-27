@@ -27,7 +27,8 @@ namespace IdeoLogix\DigitalLicenseManager\ListTables;
 
 use Exception;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators as GeneratorsModel;
+use IdeoLogix\DigitalLicenseManager\Database\Models\Generator;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators as GeneratorsRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Products;
@@ -45,7 +46,6 @@ class Generators extends AbstractListTable {
 	 * GeneratorsList constructor.
 	 */
 	public function __construct() {
-		global $wpdb;
 
 		parent::__construct(
 			array(
@@ -56,7 +56,7 @@ class Generators extends AbstractListTable {
 		);
 
 		$this->slug      = PageSlug::GENERATORS;
-		$this->table     = $wpdb->prefix . DatabaseTable::GENERATORS;
+		$this->table     = GeneratorsRepository::instance()->getTable();
 		$this->canEdit   = current_user_can( 'dlm_edit_generators' );
 		$this->canDelete = current_user_can( 'dlm_delete_generators' );
 	}
@@ -70,20 +70,19 @@ class Generators extends AbstractListTable {
 	 * @return array
 	 */
 	public function getRecords( $perPage = 20, $pageNumber = 1 ) {
-		global $wpdb;
 
-		$perPage    = (int) $perPage;
-		$pageNumber = (int) $pageNumber;
+		$where = [];
+		if ( ! empty( $_REQUEST['s'] ) ) {
+			$where['search'] = sanitize_text_field( wp_unslash( $_REQUEST['s'] ) );
+		}
 
-		$sql = "SELECT * FROM {$this->table}";
-		$sql .= ' ORDER BY ' . ( empty( $_REQUEST['orderby'] ) ? 'id' : esc_sql( sanitize_text_field( $_REQUEST['orderby'] ) ) );
-		$sql .= ' ' . ( empty( $_REQUEST['order'] ) ? 'DESC' : esc_sql( sanitize_text_field( $_REQUEST['order'] ) ) );
-		$sql .= " LIMIT {$perPage}";
-		$sql .= ' OFFSET ' . ( $pageNumber - 1 ) * $perPage;
+		$offset = ( (int) $pageNumber - 1 ) * (int) $perPage;
 
-		$results = $wpdb->get_results( $sql, ARRAY_A );
+		$order_by = ! empty( $_REQUEST['orderby'] ) ? sanitize_text_field( $_REQUEST['orderby'] ) : 'created_at';
+		$order    = ! empty( $_REQUEST['order'] ) ? sanitize_text_field( $_REQUEST['order'] ) : 'desc';
 
-		return $results;
+
+		return GeneratorsRepository::instance()->get( $where, $order_by, $order, $offset, $perPage );
 	}
 
 	/**
@@ -91,38 +90,41 @@ class Generators extends AbstractListTable {
 	 * @return int
 	 */
 	private function getRecordsCount() {
-		global $wpdb;
+		$where = [];
+		if ( ! empty( $_REQUEST['s'] ) ) {
+			$where['search'] = sanitize_text_field( wp_unslash( $_REQUEST['s'] ) );
+		}
 
-		return $wpdb->get_var( "SELECT COUNT(*) FROM {$this->table}" );
+		return GeneratorsRepository::instance()->count( $where );
 	}
 
 	/**
 	 * Checkbox column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param Generator $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_cb( $item ) {
-		return sprintf( '<input type="checkbox" name="id[]" value="%s" />', $item['id'] );
+		return sprintf( '<input type="checkbox" name="id[]" value="%d" />', $item->getId() );
 	}
 
 	/**
 	 * Name column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param Generator $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_name( $item ) {
 
 		try {
-			$products = Products::getByGenerator( $item['id'] );
+			$products = Products::getByGenerator( $item->getId() );
 		} catch ( Exception $e ) {
 			$products = array();
 		}
 		$actions = array();
-		$title   = '<strong>' . $item['name'] . '</strong>';
+		$title   = '<strong>' . $item->getName() . '</strong>';
 
 		if ( count( $products ) > 0 ) {
 			$title .= sprintf(
@@ -132,14 +134,14 @@ class Generators extends AbstractListTable {
 			);
 		}
 
-		$actions['id'] = sprintf( __( 'ID: %d', 'digital-license-manager' ), (int) $item['id'] );
+		$actions['id'] = sprintf( __( 'ID: %d', 'digital-license-manager' ), (int) $item->getId() );
 
 		if ( ! $products && $this->canDelete ) {
 			$actions['delete'] = sprintf(
 				'<a href="?page=%s&action=%s&id=%s&_wpnonce=%s" class="dlm-confirm-dialog">%s</a>',
 				$this->slug,
 				'delete',
-				absint( $item['id'] ),
+				absint( $item->getId() ),
 				wp_create_nonce( 'delete' ),
 				__( 'Delete', 'digital-license-manager' )
 			);
@@ -150,7 +152,7 @@ class Generators extends AbstractListTable {
 				'<a href="?page=%s&action=%s&id=%s&_wpnonce=%s">%s</a>',
 				$this->slug,
 				'edit',
-				absint( $item['id'] ),
+				absint( $item->getId() ),
 				wp_create_nonce( 'edit' ),
 				__( 'Edit', 'digital-license-manager' )
 			);
@@ -163,15 +165,15 @@ class Generators extends AbstractListTable {
 	/**
 	 * Character map column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param Generator $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_charset( $item ) {
 		$charset = '';
 
-		if ( $item['charset'] ) {
-			$charset = sprintf( '<code>%s</code>', $item['charset'] );
+		if ( $item->getCharset() ) {
+			$charset = sprintf( '<code>%s</code>', $item->getCharset() );
 		}
 
 		return $charset;
@@ -180,15 +182,15 @@ class Generators extends AbstractListTable {
 	/**
 	 * Separator column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param Generator $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_separator( $item ) {
 		$separator = '';
 
-		if ( $item['separator'] ) {
-			$separator = sprintf( '<code>%s</code>', $item['separator'] );
+		if ( $item->getSeparator() ) {
+			$separator = sprintf( '<code>%s</code>', $item->getSeparator() );
 		}
 
 		return $separator;
@@ -197,15 +199,15 @@ class Generators extends AbstractListTable {
 	/**
 	 * Prefix column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param Generator $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_prefix( $item ) {
 		$prefix = '';
 
-		if ( $item['prefix'] ) {
-			$prefix = sprintf( '<code>%s</code>', $item['prefix'] );
+		if ( $item->getPrefix() ) {
+			$prefix = sprintf( '<code>%s</code>', $item->getPrefix() );
 		}
 
 		return $prefix;
@@ -214,15 +216,15 @@ class Generators extends AbstractListTable {
 	/**
 	 * Suffix column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param Generator $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_suffix( $item ) {
 		$suffix = '';
 
-		if ( $item['suffix'] ) {
-			$suffix = sprintf( '<code>%s</code>', $item['suffix'] );
+		if ( $item->getSuffix() ) {
+			$suffix = sprintf( '<code>%s</code>', $item->getSuffix() );
 		}
 
 		return $suffix;
@@ -231,18 +233,18 @@ class Generators extends AbstractListTable {
 	/**
 	 * Expires in column.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param Generator $item Associative array of column name and value pairs
 	 *
 	 * @return string
 	 */
 	public function column_expires_in( $item ) {
 		$expiresIn = '';
 
-		if ( ! $item['expires_in'] ) {
+		if ( ! $item->getExpiresIn() ) {
 			return $expiresIn;
 		}
 
-		$expiresIn .= sprintf( '%d %s', $item['expires_in'], __( 'day(s)', 'digital-license-manager' ) );
+		$expiresIn .= sprintf( '%d %s', $item->getExpiresIn(), __( 'day(s)', 'digital-license-manager' ) );
 		$expiresIn .= '<br>';
 		$expiresIn .= sprintf( '<small>%s</small>', __( 'After purchase', 'digital-license-manager' ) );
 
@@ -252,13 +254,13 @@ class Generators extends AbstractListTable {
 	/**
 	 * Default column value.
 	 *
-	 * @param array $item Associative array of column name and value pairs
+	 * @param Generator $item Associative array of column name and value pairs
 	 * @param string $column_name Name of the current column
 	 *
 	 * @return string
 	 */
 	public function column_default( $item, $column_name ) {
-		return $item[ $column_name ];
+		return $item->get( $column_name );
 	}
 
 	/**
@@ -320,8 +322,8 @@ class Generators extends AbstractListTable {
 
 		switch ( $action ) {
 			case 'delete':
-				$this->verifyNonce( 'delete' );
-				$this->verifySelection();
+				$this->validateNonce( 'delete' );
+				$this->validateSelection();
 				if ( $this->canDelete ) {
 					$this->handleDelete();
 				}
@@ -377,7 +379,7 @@ class Generators extends AbstractListTable {
 			}
 		}
 
-		$result = GeneratorsModel::instance()->delete( $generatorsToDelete );
+		$result = GeneratorsRepository::instance()->delete( $generatorsToDelete );
 
 		if ( $result ) {
 			AdminNotice::success( sprintf( __( '%d generator(s) permanently deleted.', 'digital-license-manager' ), $result ) );

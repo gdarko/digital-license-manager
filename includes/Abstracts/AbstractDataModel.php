@@ -63,7 +63,7 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 	 *
 	 * @return mixed|null
 	 */
-	protected function get( $property ) {
+	public function get( $property ) {
 		return isset( $this->attributes[ $property ] ) ? $this->attributes[ $property ] : null;
 	}
 
