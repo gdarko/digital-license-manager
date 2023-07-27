@@ -26,8 +26,8 @@
 namespace IdeoLogix\DigitalLicenseManager\RestAPI\Controllers;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractRestController;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseActivation as LicenseActivationResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\LicenseActivations;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use WP_Error;
@@ -490,8 +490,8 @@ class Licenses extends AbstractRestController {
 
 		$activationToken = sanitize_text_field( $urlParams['activation_token'] );
 
-		/* @var LicenseActivationResourceModel $activation */
-		$activation = LicenseActivationResourceRepository::instance()->findBy( array(
+		/* @var LicenseActivation $activation */
+		$activation = LicenseActivations::instance()->findBy( array(
 			'token' => $activationToken,
 		) );
 
@@ -524,7 +524,7 @@ class Licenses extends AbstractRestController {
 	/**
 	 * Prepare activations
 	 *
-	 * @param LicenseActivationResourceModel|bool $activation
+	 * @param LicenseActivation|bool $activation
 	 * @param false $withLicense
 	 *
 	 * @return array|string

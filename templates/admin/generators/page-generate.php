@@ -23,12 +23,12 @@
  * Code written, maintained by Darko Gjorgjijoski (https://darkog.com)
  */
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
+use IdeoLogix\DigitalLicenseManager\Database\Models\Generator;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * @var GeneratorResourceModel[] $generatorsDropdown
+ * @var Generator[] $generatorsDropdown
  * @var array $statusOptions
  */
 

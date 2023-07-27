@@ -25,14 +25,13 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Models\License;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Products;
 use IdeoLogix\DigitalLicenseManager\ListTables\Activations;
-use IdeoLogix\DigitalLicenseManager\ListTables\Generators;
+use IdeoLogix\DigitalLicenseManager\ListTables\Generators as GeneratorsListTable;
 use IdeoLogix\DigitalLicenseManager\ListTables\Licenses;
 
 defined( 'ABSPATH' ) || exit;
@@ -228,7 +227,7 @@ class Menus {
 
 		add_screen_option( $option, $args );
 
-		$this->generators = new Generators;
+		$this->generators = new GeneratorsListTable();
 	}
 
 	/**
@@ -255,8 +254,8 @@ class Menus {
 		// Edit license keys
 		if ( $action === 'edit' ) {
 
-			/** @var LicenseResourceModel $license */
-			$license   = LicenseResourceRepository::instance()->find( absint( $_GET['id'] ) );
+			/** @var License $license */
+			$license   = Licenses::instance()->find( absint( $_GET['id'] ) );
 			$expiresAt = null;
 
 			if ( $license->getExpiresAt() ) {
@@ -331,7 +330,7 @@ class Menus {
 
 			$generatorId = isset( $_GET['id'] ) ? intval( $_GET['id'] ) : '';
 
-			if ( ! $generator = GeneratorResourceRepository::instance()->find( $generatorId ) ) {
+			if ( ! $generator = Generators::instance()->find( $generatorId ) ) {
 				return;
 			}
 
@@ -340,7 +339,7 @@ class Menus {
 
 		// Generate license keys
 		if ( $action === 'generate' ) {
-			$generatorsDropdown = GeneratorResourceRepository::instance()->findAll();
+			$generatorsDropdown = Generators::instance()->findAll();
 			$statusOptions      = LicenseStatus::dropdown();
 
 			if ( ! $generatorsDropdown ) {

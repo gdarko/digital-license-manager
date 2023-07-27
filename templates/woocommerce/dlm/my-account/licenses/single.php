@@ -14,7 +14,7 @@
  *
  * Default variables
  *
- * @var LicenseResourceModel $license
+ * @var License $license
  * @var WC_Product $product
  * @var WC_Order $order
  * @var string $date_format
@@ -22,7 +22,7 @@
  * @var stdClass $message
  */
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
+use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 

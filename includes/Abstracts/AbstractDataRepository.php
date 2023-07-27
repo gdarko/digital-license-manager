@@ -146,7 +146,7 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 * @param int $offset
 	 * @param int $limit
 	 *
-	 * @return array
+	 * @return AbstractDataModel[]
 	 */
 	public function get( $where = [], $sortBy = null, $sortDir = null, $offset = - 1, $limit = - 1 ) {
 

@@ -27,9 +27,9 @@ namespace IdeoLogix\DigitalLicenseManager\RestAPI\Controllers;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractRestController as DLM_REST_Controller;
 use IdeoLogix\DigitalLicenseManager\Core\Services\GeneratorsService;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Models\Generator;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators as GeneratorsModel;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
 use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
@@ -224,7 +224,7 @@ class Generators extends DLM_REST_Controller {
 		}
 		$response = array();
 
-		/** @var GeneratorResourceModel $generator */
+		/** @var Generator $generator */
 		foreach ( $generators as $generator ) {
 			$response[] = $generator->toArray();
 		}
@@ -425,8 +425,8 @@ class Generators extends DLM_REST_Controller {
 			}
 		}
 
-		/** @var GeneratorResourceModel $generator */
-		$generator = GeneratorResourceRepository::instance()->find( $generatorId );
+		/** @var Generator $generator */
+		$generator = GeneratorsModel::instance()->find( $generatorId );
 
 		if ( ! $generator ) {
 			return $this->responseError(
@@ -492,7 +492,7 @@ class Generators extends DLM_REST_Controller {
 					$data['user_id'] = $userId;
 				}
 
-				LicenseResourceRepository::instance()->insert( $data );
+				Licenses::instance()->insert( $data );
 			}
 		}
 

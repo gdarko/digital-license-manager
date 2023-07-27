@@ -14,15 +14,15 @@
  *
  * Default variables
  *
- * @var LicenseResourceModel $license
- * @var LicenseActivationResourceModel $activation
+ * @var License $license
+ * @var LicenseActivation $activation
  * @var WC_Order $order
  * @var WC_Product $product
  * @var array $rowActions
  */
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseActivation as LicenseActivationResourceModel;
+use IdeoLogix\DigitalLicenseManager\Database\Models\License;
+use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation ;
 
 ?>
 

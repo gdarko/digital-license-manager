@@ -28,9 +28,9 @@ namespace IdeoLogix\DigitalLicenseManager\ListTables;
 use DateTime;
 use Exception;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Models\License;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses as LicensesRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\LicenseActivations;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
@@ -93,7 +93,7 @@ class Licenses extends AbstractListTable {
 			$allUrl,
 			$class,
 			__( 'All', 'digital-license-manager' ),
-			LicenseResourceRepository::instance()->count()
+			LicensesRepository::instance()->count()
 		);
 
 		// Sold link
@@ -104,7 +104,7 @@ class Licenses extends AbstractListTable {
 			$soldUrl,
 			$class,
 			__( 'Sold', 'digital-license-manager' ),
-			LicenseResourceRepository::instance()->countBy( array( 'status' => LicenseStatus::SOLD ) )
+			LicensesRepository::instance()->countBy( array( 'status' => LicenseStatus::SOLD ) )
 		);
 
 		// Delivered link
@@ -115,7 +115,7 @@ class Licenses extends AbstractListTable {
 			$deliveredUrl,
 			$class,
 			__( 'Delivered', 'digital-license-manager' ),
-			LicenseResourceRepository::instance()->countBy( array( 'status' => LicenseStatus::DELIVERED ) )
+			LicensesRepository::instance()->countBy( array( 'status' => LicenseStatus::DELIVERED ) )
 		);
 
 		// Active link
@@ -126,7 +126,7 @@ class Licenses extends AbstractListTable {
 			$activeUrl,
 			$class,
 			__( 'Active', 'digital-license-manager' ),
-			LicenseResourceRepository::instance()->countBy( array( 'status' => LicenseStatus::ACTIVE ) )
+			LicensesRepository::instance()->countBy( array( 'status' => LicenseStatus::ACTIVE ) )
 		);
 
 		// Inactive link
@@ -137,7 +137,7 @@ class Licenses extends AbstractListTable {
 			$inactiveUrl,
 			$class,
 			__( 'Inactive', 'digital-license-manager' ),
-			LicenseResourceRepository::instance()->countBy( array( 'status' => LicenseStatus::INACTIVE ) )
+			LicensesRepository::instance()->countBy( array( 'status' => LicenseStatus::INACTIVE ) )
 		);
 
 		// Disabled link
@@ -148,7 +148,7 @@ class Licenses extends AbstractListTable {
 			$disabledUrl,
 			$class,
 			__( 'Disabled', 'digital-license-manager' ),
-			LicenseResourceRepository::instance()->countBy( array( 'status' => LicenseStatus::DISABLED ) )
+			LicensesRepository::instance()->countBy( array( 'status' => LicenseStatus::DISABLED ) )
 		);
 
 		return $statusLinks;
@@ -476,7 +476,7 @@ class Licenses extends AbstractListTable {
 	public function column_activation( $item ) {
 		$html = '';
 
-		$timesActivated = LicenseActivationResourceRepository::instance()->countBy( array(
+		$timesActivated = LicenseActivations::instance()->countBy( array(
 			'license_id'     => $item['id'],
 			'deactivated_at' => null,
 		) );
@@ -827,10 +827,10 @@ class Licenses extends AbstractListTable {
 		$count         = 0;
 
 		foreach ( $licenseKeyIds as $licenseKeyId ) {
-			/** @var LicenseResourceModel $license */
-			$license = LicenseResourceRepository::instance()->find( $licenseKeyId );
+			/** @var License $license */
+			$license = LicensesRepository::instance()->find( $licenseKeyId );
 
-			LicenseResourceRepository::instance()->update( $licenseKeyId, array( 'status' => $status ) );
+			LicensesRepository::instance()->update( $licenseKeyId, array( 'status' => $status ) );
 
 			// The license has a product assigned to it, perhaps a stock update is necessary
 			if ( $license->getProductId() !== null ) {
@@ -869,12 +869,12 @@ class Licenses extends AbstractListTable {
 
         $count = 0;
 		foreach ( $licenseKeyIds as $licenseKeyId ) {
-			/** @var LicenseResourceModel $license */
-			$license = LicenseResourceRepository::instance()->find( $licenseKeyId );
+			/** @var License $license */
+			$license = LicensesRepository::instance()->find( $licenseKeyId );
 			if ( ! $license ) {
 				continue;
 			}
-			$result = LicenseResourceRepository::instance()->delete( (array) $licenseKeyId );
+			$result = LicensesRepository::instance()->delete( (array) $licenseKeyId );
 			if ( $result ) {
 				// Update the stock
 				if ( $license->getProductId() !== null && $license->getStatus() === LicenseStatus::ACTIVE ) {

@@ -5,7 +5,6 @@ namespace IdeoLogix\DigitalLicenseManager\Database\Models;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractDataModel;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
-use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 
 class LicenseActivation extends AbstractDataModel {
 

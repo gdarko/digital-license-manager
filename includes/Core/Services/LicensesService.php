@@ -31,13 +31,13 @@ use Exception;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ServiceInterface;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\MetadataInterface;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseActivation;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseMeta as LicenseMetaResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseMeta as LicenseMetaResourceRepository;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourcesRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Models\Generator;
+use IdeoLogix\DigitalLicenseManager\Database\Models\License;
+use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation;
+use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseMeta;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\LicenseMeta as LicenseMetaRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\LicenseActivations as LicenseActivations;
 use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus as LicenseStatusEnum;
@@ -61,12 +61,12 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 *
 	 * @param mixed $id
 	 *
-	 * @return AbstractResourceModel|LicenseResourceModel|\WP_Error
+	 * @return AbstractResourceModel|License|\WP_Error
 	 */
 	public function find( $id ) {
 
-		/** @var LicenseResourceModel $license */
-		$license = LicenseResourceRepository::instance()->findBy(
+		/** @var License $license */
+		$license = Licenses::instance()->findBy(
 			array(
 				'hash' => StringHasher::license( $id ),
 			)
@@ -84,12 +84,12 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 *
 	 * @param $id
 	 *
-	 * @return AbstractResourceModel|LicenseResourceModel|WP_Error
+	 * @return AbstractResourceModel|License|WP_Error
 	 */
 	public function findById( $id ) {
 
-		/** @var LicenseResourceModel $license */
-		$license = LicenseResourceRepository::instance()->find( $id );
+		/** @var License $license */
+		$license = Licenses::instance()->find( $id );
 		if ( ! $license ) {
 			return new WP_Error( 'data_error', sprintf( __( "The license id '%s' could not be found", 'digital-license-manager' ), $id ), array( 'code' => 404 ) );
 		}
@@ -102,7 +102,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 *
 	 * @param array $query
 	 *
-	 * @return AbstractResourceModel[]|LicenseResourceModel[]|WP_Error
+	 * @return AbstractResourceModel[]|License[]|WP_Error
 	 */
 	public function get( $query = array() ) {
 		if ( array_key_exists( 'license_key', $query ) ) {
@@ -110,8 +110,8 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			unset( $query['license_key'] );
 		}
 
-		/** @var LicenseResourceModel[] $licenses */
-		$licenses = ! empty( $query ) ? LicenseResourceRepository::instance()->findAllBy( $query ) : LicenseResourceRepository::instance()->findAll();
+		/** @var License[] $licenses */
+		$licenses = ! empty( $query ) ? Licenses::instance()->findAllBy( $query ) : Licenses::instance()->findAll();
 
 		if ( empty( $licenses ) ) {
 			return new WP_Error( 'data_error', __( "No licence keys found for your query.", 'digital-license-manager' ), array( 'code' => 404 ) );
@@ -125,7 +125,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 *
 	 * @param array $data
 	 *
-	 * @return AbstractResourceModel|LicenseResourceModel|\WP_Error
+	 * @return AbstractResourceModel|License|\WP_Error
 	 */
 	public function create( $data = array() ) {
 
@@ -204,8 +204,8 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			'activations_limit' => $activationsLimit
 		);
 
-		/** @var LicenseResourceModel $license */
-		$license = LicenseResourceRepository::instance()->insert( $queryData );
+		/** @var License $license */
+		$license = Licenses::instance()->insert( $queryData );
 
 		if ( ! $license ) {
 			return new WP_Error( 'server_error', sprintf( __( "The license key '%s' could not be added", 'digital-license-manager' ), $licenseKey ), array( 'code' => 500 ) );
@@ -225,7 +225,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 * @param $id
 	 * @param $data
 	 *
-	 * @return AbstractResourceModel|LicenseResourceModel|WP_Error
+	 * @return AbstractResourceModel|License|WP_Error
 	 */
 	public function update( $id, $data = [] ) {
 
@@ -236,11 +236,11 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			return new WP_Error( 'data_error', 'The license key is invalid.', array( 'status' => 422 ) );
 		}
 
-		/** @var LicenseResourceModel $oldLicense */
+		/** @var License $oldLicense */
 		if ( is_numeric( $licenseKey ) ) {
-			$oldLicense = LicenseResourceRepository::instance()->find( $licenseKey );
+			$oldLicense = Licenses::instance()->find( $licenseKey );
 		} else {
-			$oldLicense = LicenseResourceRepository::instance()->findBy( array( 'hash' => StringHasher::license( $licenseKey ), ) );
+			$oldLicense = Licenses::instance()->findBy( array( 'hash' => StringHasher::license( $licenseKey ), ) );
 		}
 
 		if ( ! $oldLicense ) {
@@ -335,8 +335,8 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			Stock::syncrhonizeProductStock( $oldLicense->getProductId() );
 		}
 
-		/** @var LicenseResourceModel $license */
-		$license = LicenseResourceRepository::instance()->updateBy(
+		/** @var License $license */
+		$license = Licenses::instance()->updateBy(
 			array(
 				'hash' => $oldLicense->getHash()
 			),
@@ -353,8 +353,8 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			$newLicenseHash = $updateData['hash'];
 		}
 
-		/** @var LicenseResourceModel $newLicense */
-		$newLicense = LicenseResourceRepository::instance()->findBy( array( 'hash' => $newLicenseHash ) );
+		/** @var License $newLicense */
+		$newLicense = Licenses::instance()->findBy( array( 'hash' => $newLicenseHash ) );
 
 		if ( ! $newLicense ) {
 			return new WP_Error( 'server_error', __( 'The updated license key could not be found.', 'digital-license-manager' ), array( 'code' => 500 ) );
@@ -380,8 +380,8 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 
 		$licenseKey = (string) $id;
 
-		/** @var LicenseResourceModel $oldLicense */
-		$oldLicense = LicenseResourceRepository::instance()->findBy(
+		/** @var License $oldLicense */
+		$oldLicense = Licenses::instance()->findBy(
 			array(
 				'hash' => StringHasher::license( $licenseKey )
 			)
@@ -392,8 +392,8 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			Stock::syncrhonizeProductStock( $oldLicense->getProductId() );
 		}
 
-		/** @var LicenseResourceModel $license */
-		$license = LicenseResourceRepository::instance()->deleteBy(
+		/** @var License $license */
+		$license = Licenses::instance()->deleteBy(
 			array(
 				'hash' => StringHasher::license( $licenseKey ),
 			)
@@ -419,8 +419,8 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		$activationLabel = isset( $params['label'] ) ? $params['label'] : '';
 		$activationMeta  = isset( $params['meta'] ) && is_array( $params['meta'] ) ? $params['meta'] : array();
 
-		/** @var LicenseResourceModel $license */
-		$license = LicenseResourceRepository::instance()->findBy( array( 'hash' => StringHasher::license( $licenseKey ) ) );
+		/** @var License $license */
+		$license = Licenses::instance()->findBy( array( 'hash' => StringHasher::license( $licenseKey ) ) );
 
 		if ( ! $license ) {
 			return new WP_Error(
@@ -442,8 +442,8 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		}
 
 		try {
-			/** @var LicenseResourceModel $license */
-			$license = LicenseResourceRepository::instance()->findBy( array( 'hash' => StringHasher::license( $licenseKey ) ) );
+			/** @var License $license */
+			$license = Licenses::instance()->findBy( array( 'hash' => StringHasher::license( $licenseKey ) ) );
 		} catch ( Exception $e ) {
 			return new WP_Error( 'data_error', $e->getMessage(), array( 'status' => 404 ) );
 		}
@@ -495,7 +495,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			}
 
 			// Store.
-			$licenseActivation = LicenseActivationResourcesRepository::instance()->insert( $activationParams );
+			$licenseActivation = LicenseActivations::instance()->insert( $activationParams );
 
 			if ( ! $licenseActivation ) {
 				return new WP_Error( 'server_error', __( 'Unable to activate key', 'digital-license-manager' ), array( 'status' => 500 ) );
@@ -527,7 +527,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 
 		try {
 			/** @var LicenseActivation $activation */
-			$activation = LicenseActivationResourcesRepository::instance()->findBy(
+			$activation = LicenseActivations::instance()->findBy(
 				array(
 					'token' => $activationToken
 				)
@@ -590,12 +590,12 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			return $validateLimit;
 		}
 
-		$updated = LicenseActivationResourcesRepository::instance()->update( $activation->getId(), array(
+		$updated = LicenseActivations::instance()->update( $activation->getId(), array(
 			'deactivated_at' => null,
 		) );
 
 		if ( $updated ) {
-			$updatedActivation = LicenseActivationResourcesRepository::instance()->find( $activation->getId() );
+			$updatedActivation = LicenseActivations::instance()->find( $activation->getId() );
 		} else {
 			return new WP_Error(
 				'server_error',
@@ -626,7 +626,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 
 		try {
 			/** @var LicenseActivation $activation */
-			$activation = LicenseActivationResourcesRepository::instance()->findBy(
+			$activation = LicenseActivations::instance()->findBy(
 				array(
 					'token' => $activationToken
 				)
@@ -669,12 +669,12 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			return $licenseDisabled;
 		}
 
-		$updated = LicenseActivationResourcesRepository::instance()->update( $activation->getId(), array(
+		$updated = LicenseActivations::instance()->update( $activation->getId(), array(
 			'deactivated_at' => gmdate( 'Y-m-d H:i:s' ),
 		) );
 
 		if ( $updated ) {
-			$updatedActivation = LicenseActivationResourcesRepository::instance()->find( $activation->getId() );
+			$updatedActivation = LicenseActivations::instance()->find( $activation->getId() );
 		} else {
 			return new WP_Error(
 				'server_error',
@@ -706,7 +706,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 
 		try {
 			/** @var LicenseActivation $activation */
-			return (bool) LicenseActivationResourcesRepository::instance()->deleteBy(
+			return (bool) LicenseActivations::instance()->deleteBy(
 				array(
 					'token' => $activationToken
 				)
@@ -725,7 +725,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	/**
 	 * Checks if the license has an expiry date and if it has expired already.
 	 *
-	 * @param LicenseResourceModel $license
+	 * @param License $license
 	 *
 	 * @return false|WP_Error
 	 */
@@ -749,7 +749,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	/**
 	 * Checks if the license is disabled.
 	 *
-	 * @param LicenseResourceModel $license
+	 * @param License $license
 	 *
 	 * @return false|WP_Error
 	 */
@@ -785,13 +785,13 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		// Add action
 		if ( is_null( $licenseKeyId ) ) {
 			$query = array( 'hash' => $hash );
-			if ( LicenseResourceRepository::instance()->findBy( $query ) ) {
+			if ( Licenses::instance()->findBy( $query ) ) {
 				$duplicate = true;
 			}
 		} // Update action
 		elseif ( is_numeric( $licenseKeyId ) ) {
 			global $wpdb;
-			$table = LicenseResourceRepository::instance()->getTable();
+			$table = Licenses::instance()->getTable();
 			$query = $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE hash=%s AND id NOT LIKE %s", $hash, "%" . $licenseKeyId . "%" );
 			if ( $wpdb->get_var($query) ) {
 				$duplicate = true;
@@ -859,7 +859,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			}
 			$hashed = StringHasher::license( $licenseKey );
 
-			$license = LicenseResourceRepository::instance()->insert(
+			$license = Licenses::instance()->insert(
 				array(
 					'order_id'          => $cleanOrderId,
 					'product_id'        => $cleanProductId,
@@ -890,7 +890,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 * @param int|null $productId WooCommerce Product ID
 	 * @param string[] $licenseKeys License keys to be stored
 	 * @param int $status License key status
-	 * @param GeneratorResourceModel $generator
+	 * @param Generator $generator
 	 * @param int|null $validFor
 	 * @param int|null $activationsLimit
 	 *
@@ -960,7 +960,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			$activationsLimit          = is_numeric( $activationsLimit ) ? (int) $activationsLimit : $generatorActivationsLimit;
 
 			// Save to database.
-			LicenseResourceRepository::instance()->insert(
+			Licenses::instance()->insert(
 				array(
 					'order_id'          => $cleanOrderId,
 					'product_id'        => $cleanProductId,
@@ -1033,7 +1033,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	public function getLicensesStockCount( $product, $params = [] ) {
 		$query_args = $this->getStockLicensesQuery( $product, $params );
 
-		return LicenseResourceRepository::instance()->countBy( $query_args );
+		return Licenses::instance()->countBy( $query_args );
 	}
 
 	/**
@@ -1043,13 +1043,13 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 * @param int $amount
 	 * @param array $params
 	 *
-	 * @return bool|AbstractResourceModel|LicenseResourceModel
+	 * @return bool|AbstractResourceModel|License
 	 */
 	public function getLicensesFromStock( $product, $amount = - 1, $params = [] ) {
 
 		$query = $this->getStockLicensesQuery( $product, $params );
 
-		return LicenseResourceRepository::instance()->findAllBy(
+		return Licenses::instance()->findAllBy(
 			$query,
 			null,
 			null,
@@ -1065,7 +1065,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 * @param $order
 	 * @param $amount
 	 *
-	 * @return AbstractResourceModel[]|LicenseResourceModel[]|WP_Error
+	 * @return AbstractResourceModel[]|License[]|WP_Error
 	 */
 	public function assignLicensesFromStock( $product, $order, $amount, $activationsLimit = null ) {
 
@@ -1120,7 +1120,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 				$params['activations_limit'] = (int) $activationsLimit;
 			}
 
-			LicenseResourceRepository::instance()->update( $license->getId(), $params );
+			Licenses::instance()->update( $license->getId(), $params );
 
 			Stock::syncrhonizeProductStock( $product );
 
@@ -1134,7 +1134,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	/**
 	 * Mark imported license keys as sold
 	 *
-	 * @param LicenseResourceModel[] $licenses License key resource models
+	 * @param License[] $licenses License key resource models
 	 * @param int $orderId WooCommerce Order ID
 	 * @param int $amount Amount to be marked as sold
 	 *
@@ -1188,7 +1188,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 				}
 			}
 
-			LicenseResourceRepository::instance()->update(
+			Licenses::instance()->update(
 				$license->getId(),
 				array(
 					'order_id'   => $cleanOrderId,
@@ -1205,13 +1205,13 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	/**
 	 * Check the activations limit.
 	 *
-	 * @param LicenseResourceModel $license
+	 * @param License $license
 	 *
 	 * @return bool|WP_Error
 	 */
 	public function validateActivationLimit( $license, $licenseKey = null ) {
 
-		if ( empty( $license ) || ! ( $license instanceof LicenseResourceModel ) ) {
+		if ( empty( $license ) || ! ( $license instanceof License ) ) {
 			return new WP_Error( 'license_not_found', __( 'Unknown license', 'digital-license-manager' ), array( 'status' => 404 ) );
 		}
 
@@ -1248,7 +1248,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		$reps     = 0;
 		$max_reps = 20;
 		while ( true ) {
-			if ( (int) LicenseActivationResourcesRepository::instance()->countBy( [ 'token' => $token ] ) === 0 ) {
+			if ( (int) LicenseActivations::instance()->countBy( [ 'token' => $token ] ) === 0 ) {
 				break;
 			} else if ( $reps > $max_reps ) {
 				$token = null; // Do not enter in infinite loop.
@@ -1272,14 +1272,14 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 * @return mixed|bool
 	 */
 	public function addMeta( $id, $key, $value ) {
-		$license = LicenseResourceRepository::instance()->find( $id );
+		$license = Licenses::instance()->find( $id );
 
 		if ( ! $license ) {
 			return false;
 		}
 
-		/** @var LicenseMetaResourceModel $licenseMeta */
-		$licenseMeta = LicenseMetaResourceRepository::instance()->insert(
+		/** @var LicenseMeta $licenseMeta */
+		$licenseMeta = LicenseMetaRepository::instance()->insert(
 			array(
 				'license_id' => $id,
 				'meta_key'   => $key,
@@ -1304,15 +1304,15 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 * @return mixed|mixed[]|bool
 	 */
 	public function getMeta( $id, $key, $single = false ) {
-		$license = LicenseResourceRepository::instance()->find( $id );
+		$license = Licenses::instance()->find( $id );
 
 		if ( ! $license ) {
 			return false;
 		}
 
 		if ( $single ) {
-			/** @var LicenseMetaResourceModel $licenseMeta */
-			$licenseMeta = LicenseMetaResourceRepository::instance()->findBy(
+			/** @var LicenseMeta $licenseMeta */
+			$licenseMeta = LicenseMetaRepository::instance()->findBy(
 				array(
 					'license_id' => $id,
 					'meta_key'   => $key
@@ -1326,7 +1326,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			return $licenseMeta->getMetaValue();
 		}
 
-		$licenseMetas = LicenseMetaResourceRepository::instance()->findAllBy(
+		$licenseMetas = LicenseMetaRepository::instance()->findAllBy(
 			array(
 				'license_id' => $id,
 				'meta_key'   => $key
@@ -1334,7 +1334,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		);
 		$result       = array();
 
-		/** @var LicenseMetaResourceModel $licenseMeta */
+		/** @var LicenseMeta $licenseMeta */
 		foreach ( $licenseMetas as $licenseMeta ) {
 			$result[] = $licenseMeta->getMetaValue();
 		}
@@ -1353,7 +1353,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 * @return bool
 	 */
 	public function updateMeta( $id, $key, $value, $previousValue = null ) {
-		$license = LicenseResourceRepository::instance()->find( $id );
+		$license = Licenses::instance()->find( $id );
 
 		if ( ! $license ) {
 			return false;
@@ -1378,13 +1378,13 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			$updateQueryCondition['meta_value'] = $previousValue;
 		}
 
-		$metaLicense = LicenseMetaResourceRepository::instance()->findBy( $selectQuery );
+		$metaLicense = LicenseMetaRepository::instance()->findBy( $selectQuery );
 
 		if ( ! $metaLicense ) {
 			return false;
 		}
 
-		$updateCount = LicenseMetaResourceRepository::instance()->updateBy( $updateQueryCondition, $updateQueryData );
+		$updateCount = LicenseMetaRepository::instance()->updateBy( $updateQueryCondition, $updateQueryData );
 
 		if ( ! $updateCount ) {
 			return false;
@@ -1403,7 +1403,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 * @return bool
 	 */
 	public function deleteMEta( $id, $key, $value = null ) {
-		$license = LicenseResourceRepository::instance()->find( $id );
+		$license = Licenses::instance()->find( $id );
 
 		if ( ! $license ) {
 			return false;
@@ -1418,7 +1418,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			$deleteQueryCondition['meta_value'] = $value;
 		}
 
-		$deleteResult = LicenseMetaResourceRepository::instance()->deleteBy( $deleteQueryCondition );
+		$deleteResult = LicenseMetaRepository::instance()->deleteBy( $deleteQueryCondition );
 
 		if ( $deleteResult ) {
 			return true;

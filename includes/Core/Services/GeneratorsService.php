@@ -28,8 +28,8 @@ namespace IdeoLogix\DigitalLicenseManager\Core\Services;
 use IdeoLogix\DigitalLicenseManager\Core\Generators\StandardGenerator;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ServiceInterface;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Models\Generator;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators;
 use WP_Error;
 
 class GeneratorsService implements ServiceInterface {
@@ -39,11 +39,11 @@ class GeneratorsService implements ServiceInterface {
 	 *
 	 * @param mixed
 	 *
-	 * @return AbstractResourceModel|GeneratorResourceModel|\WP_Error
+	 * @return AbstractResourceModel|Generator|\WP_Error
 	 */
 	public function find( $id ) {
-		/** @var GeneratorResourceModel $generator */
-		$generator = GeneratorResourceRepository::instance()->find( (int) $id );
+		/** @var Generator $generator */
+		$generator = Generators::instance()->find( (int) $id );
 
 		if ( ! $generator ) {
 			return new WP_Error( 'data_error', __( 'The generator could not be found.', 'digital-license-manager' ), array( 'code' => 404 ) );
@@ -68,11 +68,11 @@ class GeneratorsService implements ServiceInterface {
 	 *
 	 * @param array $query Key/value pairs with the generator table column names as keys
 	 *
-	 * @return AbstractResourceModel[]|GeneratorResourceModel[]|WP_Error
+	 * @return AbstractResourceModel[]|Generator[]|WP_Error
 	 */
 	public function get( $query = array() ) {
-		/** @var GeneratorResourceModel[] $generators */
-		$generators = empty( $query ) ? GeneratorResourceRepository::instance()->findAll() : GeneratorResourceRepository::instance()->findAllBy( $query );
+		/** @var Generator[] $generators */
+		$generators = empty( $query ) ? Generators::instance()->findAll() : Generators::instance()->findAllBy( $query );
 
 		if ( ! $generators ) {
 			return new WP_Error( 'data_error', __( 'No generators found for your query', 'digital-license-manager' ), array( 'code' => 404 ) );
@@ -87,7 +87,7 @@ class GeneratorsService implements ServiceInterface {
 	 *
 	 * @param array $data
 	 *
-	 * @return AbstractResourceModel|GeneratorResourceModel|\WP_Error
+	 * @return AbstractResourceModel|Generator|\WP_Error
 	 */
 	public function create( $data = array() ) {
 
@@ -135,7 +135,7 @@ class GeneratorsService implements ServiceInterface {
 		}
 
 		// Save the generator.
-		$generator = GeneratorResourceRepository::instance()->insert(
+		$generator = Generators::instance()->insert(
 			array(
 				'name'              => sanitize_text_field( $data['name'] ),
 				'charset'           => sanitize_text_field( $data['charset'] ),
@@ -163,7 +163,7 @@ class GeneratorsService implements ServiceInterface {
 	 * @param $id
 	 * @param $data
 	 *
-	 * @return AbstractResourceModel|GeneratorResourceModel|WP_Error
+	 * @return AbstractResourceModel|Generator|WP_Error
 	 */
 	public function update( $id, $data = [] ) {
 
@@ -261,7 +261,7 @@ class GeneratorsService implements ServiceInterface {
 		}
 
 		// Update the generator.
-		$generator = GeneratorResourceRepository::instance()->update( $id, $updateData );
+		$generator = Generators::instance()->update( $id, $updateData );
 
 		if ( ! $generator ) {
 			return new WP_Error( 'server_error', __( 'The generator could not be created.', 'digital-license-manager' ), array( 'code' => 500 ) );
@@ -283,8 +283,8 @@ class GeneratorsService implements ServiceInterface {
 			$id = (array) $id;
 		}
 
-		/** @var GeneratorResourceModel $generator */
-		$generator = GeneratorResourceRepository::instance()->delete( $id );
+		/** @var Generator $generator */
+		$generator = Generators::instance()->delete( $id );
 
 		if ( ! $generator ) {
 			return new WP_Error( 'server_error', __( 'The generator(s) could not be deleted.', 'digital-license-manager' ), array( 'code' => 500 ) );
@@ -297,7 +297,7 @@ class GeneratorsService implements ServiceInterface {
 	/**
 	 * Returns the available generator implementation utility class for generating licenses
 	 *
-	 * @param GeneratorResourceModel $generator
+	 * @param Generator $generator
 	 * @param \WC_Order|null $order
 	 * @param \WC_Product|null $product
 	 *
@@ -326,7 +326,7 @@ class GeneratorsService implements ServiceInterface {
 	 * Bulk create license keys, if possible for given parameters.
 	 *
 	 * @param int $amount Number of license keys to be generated
-	 * @param GeneratorResourceModel $generator Generator used for the license keys
+	 * @param Generator $generator Generator used for the license keys
 	 * @param array $licenses Number of license keys to be generated
 	 * @param \WC_Order|null $order
 	 * @param \WC_Product|null $product

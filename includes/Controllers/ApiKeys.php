@@ -25,8 +25,8 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\ApiKey as ApiKeyResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\ApiKey as ApiKeyResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Models\ApiKey;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\ApiKeys as ApiKeysRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
@@ -109,8 +109,8 @@ class ApiKeys {
 			$consumerKey    = 'ck_' . StringHasher::random();
 			$consumerSecret = 'cs_' . StringHasher::random();
 
-			/** @var ApiKeyResourceModel $apiKey */
-			$apiKey = ApiKeyResourceRepository::instance()->insert(
+			/** @var ApiKey $apiKey */
+			$apiKey = ApiKeysRepository::instance()->insert(
 				array(
 					'user_id'         => $userId,
 					'description'     => $description,
@@ -134,7 +134,7 @@ class ApiKeys {
 			exit();
 		} elseif ( $action === 'edit' ) {
 
-			$apiKey = ApiKeyResourceRepository::instance()->update(
+			$apiKey = ApiKeysRepository::instance()->update(
 				$keyId,
 				array(
 					'user_id'     => $userId,

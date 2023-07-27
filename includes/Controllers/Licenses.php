@@ -27,8 +27,8 @@ namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
 use Exception;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Models\License;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses as LicensesRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus as LicenseStatusEnum;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
@@ -292,8 +292,8 @@ class Licenses {
 			wp_die( __( 'Invalid request.', 'digital-license-manager' ) );
 		}
 
-		/** @var LicenseResourceModel $license */
-		$license = LicenseResourceRepository::instance()->findBy( array( 'id' => intval( $_POST['id'] ) ) );
+		/** @var License $license */
+		$license = LicensesRepository::instance()->findBy( array( 'id' => intval( $_POST['id'] ) ) );
 
 		$decrypted = $license->getDecryptedLicenseKey();
 		if ( is_wp_error( $decrypted ) ) {
@@ -325,8 +325,8 @@ class Licenses {
 
 		foreach ( json_decode( $_POST['ids'] ) as $licenseKeyId ) {
 			$licenseKeyId = intval( $licenseKeyId );
-			/** @var LicenseResourceModel $license */
-			$license = LicenseResourceRepository::instance()->find( $licenseKeyId );
+			/** @var License $license */
+			$license = LicensesRepository::instance()->find( $licenseKeyId );
 
 			$licenseKey = $license->getDecryptedLicenseKey();
 			if ( ! is_wp_error( $license ) ) {
@@ -461,8 +461,8 @@ class Licenses {
 		$licenseKeys = array();
 
 		foreach ( $licenseKeyIds as $licenseKeyId ) {
-			/** @var LicenseResourceModel $license */
-			$license = LicenseResourceRepository::instance()->find( $licenseKeyId );
+			/** @var License $license */
+			$license = LicensesRepository::instance()->find( $licenseKeyId );
 
 			if ( ! $license ) {
 				continue;
@@ -569,8 +569,8 @@ class Licenses {
 		}
 
 		foreach ( $licenseKeyIds as $licenseKeyId ) {
-			/** @var LicenseResourceModel $license */
-			$license = LicenseResourceRepository::instance()->find( $licenseKeyId );
+			/** @var License $license */
+			$license = LicensesRepository::instance()->find( $licenseKeyId );
 			$data    = array();
 
 			if ( ! $license ) {

@@ -28,7 +28,7 @@ namespace IdeoLogix\DigitalLicenseManager\ListTables;
 use DateTime;
 use Exception;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\LicenseActivations;
 use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
@@ -461,7 +461,7 @@ class Activations extends AbstractListTable {
 
 		foreach ( $recordIds as $recordId ) {
 			$new_value = 'activate' === $status ? null : date( 'Y-m-d H:i:s' );
-			LicenseActivationResourceRepository::instance()->update( $recordId, array( 'deactivated_at' => $new_value ) );
+			LicenseActivations::instance()->update( $recordId, array( 'deactivated_at' => $new_value ) );
 			$count ++;
 		}
 
@@ -550,7 +550,7 @@ class Activations extends AbstractListTable {
 		$count = 0;
 
 		foreach ( $recordIds as $recordId ) {
-			$result = LicenseActivationResourceRepository::instance()->delete( $recordId );
+			$result = LicenseActivations::instance()->delete( $recordId );
 			if ( $result ) {
 				$count ++;
 			}

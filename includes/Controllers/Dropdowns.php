@@ -25,9 +25,8 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Models\License;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use WP_Query;
@@ -99,8 +98,8 @@ class Dropdowns {
 			// Search for a specific license
 			if ( $type === 'license' ) {
 
-				/** @var LicenseResourceModel $license */
-				$license = LicenseResourceRepository::instance()->find( (int) $term );
+				/** @var License $license */
+				$license = Licenses::instance()->find( (int) $term );
 
 				// Product exists.
 				if ( $license ) {
@@ -204,7 +203,7 @@ class Dropdowns {
 				}
 
 				foreach ( $licenses as $licenseId ) {
-					/** @var LicenseResourceModel $license */
+					/** @var License $license */
 					$text      = sprintf(
 						'#%s',
 						$licenseId

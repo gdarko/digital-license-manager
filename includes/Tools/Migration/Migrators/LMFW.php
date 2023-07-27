@@ -27,11 +27,11 @@ namespace IdeoLogix\DigitalLicenseManager\Tools\Migration\Migrators;
 
 use Defuse\Crypto\Key;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractToolMigrator;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\ApiKey as ApiKeyResourceRepository;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseActivation as LicenseActivationResourceRepository;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\LicenseMeta as LicenseMetaResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\ApiKeys;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\LicenseActivations;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\LicenseMeta;
 use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
 use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
@@ -233,7 +233,7 @@ class LMFW extends AbstractToolMigrator {
 				case 1:
 					$old_rows = $this->getRecords( $tables['licenses'], $page, $per_page );
 					if ( $preserve_ids ) {
-						LicenseResourceRepository::instance()->deleteBy( [
+						Licenses::instance()->deleteBy( [
 							'id' => [
 								'compare' => '>',
 								'value'   => 0,
@@ -269,13 +269,13 @@ class LMFW extends AbstractToolMigrator {
 							$new_row_data['id'] = $row['id'];
 						}
 
-						$new_row = LicenseResourceRepository::instance()->insert( $new_row_data );
+						$new_row = Licenses::instance()->insert( $new_row_data );
 
 						if ( ! empty( $new_row ) ) {
 
 							if ( ! empty( $row['times_activated'] ) ) {
 								for ( $i = 0; $i < $row['times_activated']; $i ++ ) {
-									LicenseActivationResourceRepository::instance()->insert( array(
+									LicenseActivations::instance()->insert( array(
 										'token'      => $licenseService->generateActivationToken( $license_key ),
 										'license_id' => $new_row->getId(),
 										'label'      => __( 'Untitled' ),
@@ -291,12 +291,12 @@ class LMFW extends AbstractToolMigrator {
 									if ( ! $preserve_ids ) {
 										$old_meta_row['license_id'] = $new_row->getId();
 									}
-									LicenseMetaResourceRepository::instance()->insert( $old_meta_row );
+									LicenseMeta::instance()->insert( $old_meta_row );
 								}
 							}
 
 							if ( ! $preserve_ids ) {
-								LicenseMetaResourceRepository::instance()->insert( array(
+								LicenseMeta::instance()->insert( array(
 									'license_id' => $new_row->getId(),
 									'meta_key'   => 'migrated_from',
 									'meta_value' => $row['id'],
@@ -314,7 +314,7 @@ class LMFW extends AbstractToolMigrator {
 				case 2:
 					$old_rows = $this->getRecords( $tables['generators'], $page, $per_page );
 					if ( $preserve_ids ) {
-						GeneratorResourceRepository::instance()->deleteBy( [
+						Generators::instance()->deleteBy( [
 							'id' => [
 								'compare' => '>',
 								'value'   => 0,
@@ -350,7 +350,7 @@ class LMFW extends AbstractToolMigrator {
 							$new_row_data['id'] = $row['id'];
 						}
 
-						$new_row = GeneratorResourceRepository::instance()->insert( $new_row_data );
+						$new_row = Generators::instance()->insert( $new_row_data );
 						if ( ! empty( $new_row ) ) {
 							$generator_map[ $row['id'] ] = $new_row->getId();
 						}
@@ -363,7 +363,7 @@ class LMFW extends AbstractToolMigrator {
 
 					$old_rows = $this->getRecords( $tables['api_keys'], $page, $per_page );
 					if ( $preserve_ids ) {
-						ApiKeyResourceRepository::instance()->deleteBy( [
+						ApiKeys::instance()->deleteBy( [
 							'id' => [
 								'compare' => '>',
 								'value'   => 0,
@@ -418,7 +418,7 @@ class LMFW extends AbstractToolMigrator {
 							}
 						}
 
-						ApiKeyResourceRepository::instance()->insert( $new_row_data );
+						ApiKeys::instance()->insert( $new_row_data );
 					}
 
 

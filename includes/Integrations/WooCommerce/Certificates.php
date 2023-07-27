@@ -25,7 +25,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
+use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
@@ -100,7 +100,7 @@ class Certificates {
 	/**
 	 * Return the license certification data
 	 *
-	 * @param LicenseResourceModel $license
+	 * @param License $license
 	 *
 	 * @return mixed|void
 	 */

@@ -25,7 +25,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
+use IdeoLogix\DigitalLicenseManager\Database\Models\Generator;
 use IdeoLogix\DigitalLicenseManager\Core\Services\GeneratorsService;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
@@ -141,7 +141,7 @@ class Generators {
 		$orderId     = null;
 		$productId   = null;
 
-		/** @var GeneratorResourceModel $generator */
+		/** @var Generator $generator */
 		$generator = $this->service->find( $generatorId );
 
 		if ( is_wp_error( $generator ) ) {

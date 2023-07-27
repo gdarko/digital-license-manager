@@ -27,7 +27,7 @@ namespace IdeoLogix\DigitalLicenseManager\ListTables;
 
 use Exception;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\ApiKey as ApiKeyResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\ApiKeys as ApiKeysRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher as AdminNotice;
@@ -378,7 +378,7 @@ class ApiKeys extends AbstractListTable {
 			$keys = array_map( 'intval', $keys );
 		}
 
-		if ( $count = ApiKeyResourceRepository::instance()->delete( $keys ) ) {
+		if ( $count = ApiKeysRepository::instance()->delete( $keys ) ) {
 			AdminNotice::success( sprintf( __( '%d API key(s) permanently deleted.', 'digital-license-manager' ), $count ) );
 		} else {
 			AdminNotice::error( __( 'There was a problem deleting the API key(s).', 'digital-license-manager' ) );

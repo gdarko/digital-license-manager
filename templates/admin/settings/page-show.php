@@ -23,11 +23,12 @@
  * Code written, maintained by Darko Gjorgjijoski (https://darkog.com)
  */
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\ApiKey as ApiKeyResourceModel;
+use IdeoLogix\DigitalLicenseManager\Database\Models\ApiKey;
 
 defined( 'ABSPATH' ) || exit;
 
-/** @var ApiKeyResourceModel $keyData */
+/** @var ApiKey $keyData */
+/** @var string $consumerKey */
 
 ?>
 

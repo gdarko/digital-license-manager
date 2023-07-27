@@ -23,7 +23,7 @@
  * Code written, maintained by Darko Gjorgjijoski (https://darkog.com)
  */
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
+use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -31,7 +31,7 @@ if ( empty( $expiresAt ) || '0000-00-00 00:00:00' === $expiresAt ) {
 	$expiresAt = '';
 }
 
-/** @var LicenseResourceModel $license */
+/** @var License $license */
 ?>
 
 <h1 class="wp-heading-inline"><?php esc_html_e( 'Edit license', 'digital-license-manager' ); ?></h1>

@@ -26,7 +26,7 @@
 namespace IdeoLogix\DigitalLicenseManager\Utils\Data;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
+use IdeoLogix\DigitalLicenseManager\Database\Models\Generator as GeneratorModel;
 use WP_Error;
 
 /**
@@ -41,7 +41,7 @@ class Generator {
 	 *
 	 * @param mixed $id The license key to be deleted.
 	 *
-	 * @return AbstractResourceModel|GeneratorResourceModel|\WP_Error
+	 * @return AbstractResourceModel|GeneratorModel|\WP_Error
 	 */
 	public static function find( $id ) {
 
@@ -71,7 +71,7 @@ class Generator {
 	 *
 	 * @param array $query Key/value pairs with the generator table column names as keys
 	 *
-	 * @return AbstractResourceModel[]|GeneratorResourceModel[]|WP_Error
+	 * @return AbstractResourceModel[]|GeneratorModel[]|WP_Error
 	 */
 	public static function get( $query = [] ) {
 
@@ -87,7 +87,7 @@ class Generator {
 	 *
 	 * @param array $data
 	 *
-	 * @return AbstractResourceModel|GeneratorResourceModel|\WP_Error
+	 * @return AbstractResourceModel|GeneratorModel|\WP_Error
 	 */
 	public static function create( $data = [] ) {
 
@@ -104,7 +104,7 @@ class Generator {
 	 * @param $id
 	 * @param $data
 	 *
-	 * @return AbstractResourceModel|GeneratorResourceModel|WP_Error
+	 * @return AbstractResourceModel|GeneratorModel|WP_Error
 	 */
 	public static function update( $id, $data = [] ) {
 
@@ -135,7 +135,7 @@ class Generator {
 	 * Bulk create license keys, if possible for given parameters.
 	 *
 	 * @param int $amount Number of license keys to be generated
-	 * @param GeneratorResourceModel $generator Generator used for the license keys
+	 * @param GeneratorModel $generator Generator used for the license keys
 	 * @param array $licenses Number of license keys to be generated
 	 * @param \WC_Order|null $order
 	 * @param \WC_Product|null $product

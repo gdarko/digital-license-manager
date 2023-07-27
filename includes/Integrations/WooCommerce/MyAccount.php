@@ -26,9 +26,8 @@
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Models\License;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
 use IdeoLogix\DigitalLicenseManager\Settings;
 
 defined( 'ABSPATH' ) || exit;
@@ -223,7 +222,7 @@ class MyAccount {
 	 * License actions
 	 *
 	 * @param array $actions
-	 * @param LicenseResourceModel $license
+	 * @param License $license
 	 * @param string $licenseKey
 	 *
 	 * @return array
@@ -245,7 +244,7 @@ class MyAccount {
 	/**
 	 * Single license page
 	 *
-	 * @param LicenseResourceModel $license
+	 * @param License $license
 	 */
 	public function addSingleLicenseContent( $license ) {
 
@@ -383,8 +382,8 @@ class MyAccount {
 			return array();
 		}
 
-		/** @var LicenseResourceModel[] $licenses */
-		$licenses = LicenseResourceRepository::instance()->findAllBy(
+		/** @var License[] $licenses */
+		$licenses = Licenses::instance()->findAllBy(
 			array(
 				'order_id' => $orderIds
 			)

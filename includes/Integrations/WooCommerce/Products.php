@@ -25,7 +25,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use WP_Error;
 use WP_Post;
@@ -372,7 +372,7 @@ class Products {
 	 */
 	private function getGeneratorOptions() {
 		$options    = array( '' => __( 'Please select a generator', 'digital-license-manager' ) );
-		$generators = GeneratorResourceRepository::instance()->findAll();
+		$generators = Generators::instance()->findAll();
 		if ( $generators ) {
 			foreach ( $generators as $generator ) {
 				$options[ $generator->getId() ] = sprintf(

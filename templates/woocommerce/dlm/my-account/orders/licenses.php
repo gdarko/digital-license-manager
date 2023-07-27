@@ -21,7 +21,7 @@
  * @var array $args
  */
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
+use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\StringFormatter;
 
@@ -42,7 +42,7 @@ foreach ( $data as $productId => $row ): ?>
         </thead>
         <tbody>
 		<?php
-		/** @var LicenseResourceModel $license */
+		/** @var License $license */
 		$is_order_received  = is_order_received_page();
 		$is_obscure_enabled = (int) Settings::get( 'hide_license_keys', Settings::SECTION_WOOCOMMERCE );
 

@@ -23,11 +23,11 @@
  * Code written, maintained by Darko Gjorgjijoski (https://darkog.com)
  */
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
+use IdeoLogix\DigitalLicenseManager\Database\Models\Generator;
 
 defined('ABSPATH') || exit;
 
-/** @var GeneratorResourceModel $generator */
+/** @var Generator $generator */
 /** @var \WC_Product[] $products */
 
 ?>

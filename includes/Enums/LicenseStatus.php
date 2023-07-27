@@ -25,7 +25,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Enums;
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License;
+use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use ReflectionClass;
 
 defined( 'ABSPATH' ) || exit;

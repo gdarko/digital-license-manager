@@ -23,7 +23,7 @@
  * Code written, maintained by Darko Gjorgjijoski (https://darkog.com)
  */
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\ApiKey as ApiKeyResourceModel;
+use IdeoLogix\DigitalLicenseManager\Database\Models\ApiKey;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Setup;
 
@@ -32,7 +32,7 @@ defined( 'ABSPATH' ) || exit;
 $date_format = get_option( 'date_format' );
 $time_format = get_option( 'time_format' );
 
-/** @var ApiKeyResourceModel $keyData */
+/** @var ApiKey $keyData */
 
 ?>
 

@@ -27,7 +27,7 @@ namespace IdeoLogix\DigitalLicenseManager\ListTables;
 
 use Exception;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators as GeneratorsModel;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Products;
@@ -377,7 +377,7 @@ class Generators extends AbstractListTable {
 			}
 		}
 
-		$result = GeneratorResourceRepository::instance()->delete( $generatorsToDelete );
+		$result = GeneratorsModel::instance()->delete( $generatorsToDelete );
 
 		if ( $result ) {
 			AdminNotice::success( sprintf( __( '%d generator(s) permanently deleted.', 'digital-license-manager' ), $result ) );

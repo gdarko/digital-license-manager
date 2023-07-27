@@ -27,10 +27,10 @@ namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractTool;
 use IdeoLogix\DigitalLicenseManager\Abstracts\SettingsFieldsTrait;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\ApiKey as ApiKeyResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\ApiKey as ApiKeyResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Models\ApiKey;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\ApiKeys;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
-use IdeoLogix\DigitalLicenseManager\ListTables\ApiKeys;
+use IdeoLogix\DigitalLicenseManager\ListTables\ApiKeys as ApiKeysListTable;
 use IdeoLogix\DigitalLicenseManager\Tools\Migration\Migration;
 use IdeoLogix\DigitalLicenseManager\Traits\Singleton;
 
@@ -249,7 +249,7 @@ class Settings {
 				}
 
 				$keyId   = 0;
-				$keyData = new ApiKeyResourceModel();
+				$keyData = new ApiKey();
 				$userId  = null;
 				$date    = null;
 
@@ -259,8 +259,8 @@ class Settings {
 
 				$users = [];
 				if ( $keyId !== 0 ) {
-					/** @var ApiKeyResourceModel $keyData */
-					$keyData     = ApiKeyResourceRepository::instance()->find( $keyId );
+					/** @var ApiKey $keyData */
+					$keyData     = ApiKeys::instance()->find( $keyId );
 					$userId      = (int) $keyData->getUserId();
 					$date_format = get_option( 'date_format' );
 					$time_format = get_option( 'time_formt' );
@@ -292,7 +292,7 @@ class Settings {
 						)
 					);
 				}
-				$keys = new ApiKeys();
+				$keys = new ApiKeysListTable();
 				break;
 			case 'show':
 				if ( ! current_user_can( 'dlm_read_api_keys' ) ) {

@@ -14,17 +14,17 @@
  *
  * Default variables
  *
- * @var LicenseResourceModel $license
+ * @var License $license
  * @var WC_Order $order
  * @var WC_Product $product
  * @var string $date_format
  * @var string $license_key
  * @var int $manual_activations_enabled
  * @var array $rowActions
- * @var \IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseActivation[] $activations
+ * @var \IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation[] $activations
  */
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
+use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Activations;

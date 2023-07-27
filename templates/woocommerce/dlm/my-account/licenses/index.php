@@ -14,12 +14,12 @@
  *
  * Default variables
  *
- * @var $licenses  LicenseResourceModel[]
+ * @var $licenses  License[]
  * @var $page        int
  * @var $date_format  string
  */
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
+use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 
@@ -56,7 +56,7 @@ defined( 'ABSPATH' ) || exit; ?>
             <tbody>
 
 			<?php
-			/** @var LicenseResourceModel $license */
+			/** @var License $license */
 			foreach ( $licenseData['licenses'] as $license ):
 
 				$timesActivated = $license->getTimesActivated() ? $license->getTimesActivated() : '0';

@@ -13,7 +13,7 @@
  * @version 1.0.0
  */
 
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License;
+use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 
 defined( 'ABSPATH' ) || exit;

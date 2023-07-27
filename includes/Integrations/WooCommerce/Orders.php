@@ -26,12 +26,12 @@
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
 use IdeoLogix\DigitalLicenseManager\Core\Services\GeneratorsService;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\Generator as GeneratorResourceRepository;
-use IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\License as LicenseResourceRepository;
+use IdeoLogix\DigitalLicenseManager\Database\Models\Generator;
+use IdeoLogix\DigitalLicenseManager\Database\Models\License;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
-use IdeoLogix\DigitalLicenseManager\ListTables\Licenses;
+use IdeoLogix\DigitalLicenseManager\ListTables\Licenses as LicensesListTable;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
@@ -253,9 +253,9 @@ class Orders {
 			/**
 			 * Retrieve the generator from the database and set up the args.
 			 * Skip the process if generator doesn't exist.
-			 * @var GeneratorResourceModel $generator
+			 * @var Generator $generator
 			 */
-			$generator = GeneratorResourceRepository::instance()->find( $generatorId );
+			$generator = Generators::instance()->find( $generatorId );
 			if ( ! $generator ) {
 				return false;
 			}
@@ -289,7 +289,7 @@ class Orders {
 		 * Set status to delivered if the setting is on.
 		 */
 		if ( Settings::isAutoDeliveryEnabled() ) {
-			LicenseResourceRepository::instance()->updateBy(
+			Licenses::instance()->updateBy(
 				array( 'order_id' => $order->get_id() ),
 				array( 'status' => LicenseStatus::DELIVERED )
 			);
@@ -298,13 +298,13 @@ class Orders {
 
 		/**
 		 * Set activations limit on the ordered licenses based on the max activations behavior.
-		 * @var LicenseResourceModel[] $orderedLicenses
+		 * @var License[] $orderedLicenses
 		 */
-		$orderedLicenses = LicenseResourceRepository::instance()->findAllBy( array( 'order_id' => $order->get_id() ) );
+		$orderedLicenses = Licenses::instance()->findAllBy( array( 'order_id' => $order->get_id() ) );
 		if ( 'quantity' === $maxActivationsBehavior ) {
 			foreach ( $orderedLicenses as $license ) {
-				LicenseResourceRepository::instance()->update( $license->getId(), [ 'activations_limit' => $quantity ] );
-				$orderedLicenses = LicenseResourceRepository::instance()->findAllBy( array( 'order_id' => $order->get_id() ) ); // Reload.
+				Licenses::instance()->update( $license->getId(), [ 'activations_limit' => $quantity ] );
+				$orderedLicenses = Licenses::instance()->findAllBy( array( 'order_id' => $order->get_id() ) ); // Reload.
 			}
 		}
 
@@ -379,7 +379,7 @@ class Orders {
 	public function addSendLicenseKeysAction( $actions ) {
 		global $post;
 
-		if ( LicenseResourceRepository::instance()->countBy( array( 'order_id' => $post->ID ) ) ) {
+		if ( Licenses::instance()->countBy( array( 'order_id' => $post->ID ) ) ) {
 			$actions['dlm_send_licenses'] = __( 'Resend license(s) to customer', 'digital-license-manager' );
 		}
 
@@ -416,8 +416,8 @@ class Orders {
 			$product
 		);
 
-		/** @var LicenseResourceModel[] $licenses */
-		$licenses = LicenseResourceRepository::instance()->findAllBy( $query );
+		/** @var License[] $licenses */
+		$licenses = Licenses::instance()->findAllBy( $query );
 
 		// No license keys? Nothing to do...
 		if ( ! $licenses ) {
@@ -445,7 +445,7 @@ class Orders {
 					$order_item->get_order_id(),
 					__( 'Hide license(s)', 'digital-license-manager' ),
 					__( 'Please wait...', 'digital-license-manager' ),
-					Licenses::SPINNER_URL,
+					LicensesListTable::SPINNER_URL,
 					__( 'Show license(s)', 'digital-license-manager' )
 				),
 				'after_html' => '',
@@ -527,8 +527,8 @@ class Orders {
 
 			$orderId = self::getLicenseOrderId( $orderId, $productId );
 
-			/** @var LicenseResourceModel[] $licenses */
-			$licenses = LicenseResourceRepository::instance()->findAllBy( array(
+			/** @var License[] $licenses */
+			$licenses = Licenses::instance()->findAllBy( array(
 				'order_id'   => $orderId,
 				'product_id' => $productId
 			) );

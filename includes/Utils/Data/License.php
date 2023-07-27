@@ -27,9 +27,9 @@ namespace IdeoLogix\DigitalLicenseManager\Utils\Data;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\Generator as GeneratorResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\License as LicenseResourceModel;
-use IdeoLogix\DigitalLicenseManager\Database\Models\Resources\LicenseActivation as LicenseActivationModel;
+use IdeoLogix\DigitalLicenseManager\Database\Models\Generator as GeneratorResourceModel;
+use IdeoLogix\DigitalLicenseManager\Database\Models\License as LicenseModel;
+use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation;
 use WP_Error;
 
 /**
@@ -44,7 +44,7 @@ class License {
 	 *
 	 * @param string $licenseKey The license key to be deleted.
 	 *
-	 * @return LicenseResourceModel|WP_Error
+	 * @return LicenseModel|WP_Error
 	 */
 	public static function find( $licenseKey ) {
 
@@ -61,7 +61,7 @@ class License {
 	 *
 	 * @param $licenseId
 	 *
-	 * @return LicenseResourceModel|WP_Error
+	 * @return LicenseModel|WP_Error
 	 */
 	public static function findById( $licenseId ) {
 
@@ -78,7 +78,7 @@ class License {
 	 *
 	 * @param array $query Key/value pairs with the license table column names as keys
 	 *
-	 * @return LicenseResourceModel[]|WP_Error
+	 * @return LicenseModel[]|WP_Error
 	 */
 	public static function get( $query = array() ) {
 
@@ -95,7 +95,7 @@ class License {
 	 * @param string $licenseKey The license key being added
 	 * @param array $licenseData Key/value pairs with the license table column names as keys
 	 *
-	 * @return LicenseResourceModel|\WP_Error
+	 * @return LicenseModel|\WP_Error
 	 */
 	public static function create( $licenseKey, $licenseData = array() ) {
 
@@ -115,7 +115,7 @@ class License {
 	 * @param string $licenseKey The license key being updated.
 	 * @param array $licenseData Key/value pairs of the updated data.
 	 *
-	 * @return LicenseResourceModel|WP_Error
+	 * @return LicenseModel|WP_Error
 	 */
 	public static function update( $licenseKey, $licenseData ) {
 
@@ -150,7 +150,7 @@ class License {
 	 * @param string $licenseKey The license key to be activated.
 	 * @param array $params
 	 *
-	 * @return LicenseActivationModel|WP_Error
+	 * @return LicenseActivation|WP_Error
 	 */
 	public static function activate( $licenseKey, $params ) {
 
@@ -200,7 +200,7 @@ class License {
 	/**
 	 * Checks if the license has an expiry date and if it has expired already.
 	 *
-	 * @param LicenseResourceModel $license
+	 * @param LicenseModel $license
 	 *
 	 * @return false|WP_Error
 	 */
@@ -217,7 +217,7 @@ class License {
 	/**
 	 * Checks if the license is disabled.
 	 *
-	 * @param LicenseResourceModel $license
+	 * @param LicenseModel $license
 	 *
 	 * @return false|WP_Error
 	 */
@@ -354,7 +354,7 @@ class License {
 	 * @param $order
 	 * @param $amount
 	 *
-	 * @return LicenseResourceModel[]|WP_Error
+	 * @return LicenseModel[]|WP_Error
 	 */
 	public static function assignLicensesFromStock( $product, $order, $amount, $activationsLimit = null ) {
 
@@ -369,7 +369,7 @@ class License {
 	/**
 	 * Mark imported license keys as sold
 	 *
-	 * @param LicenseResourceModel[] $licenses License key resource models
+	 * @param LicenseModel[] $licenses License key resource models
 	 * @param int $orderId WooCommerce Order ID
 	 * @param int $amount Amount to be marked as sold
 	 *
@@ -388,7 +388,7 @@ class License {
 	/**
 	 * Check the activations limit.
 	 *
-	 * @param LicenseResourceModel $license
+	 * @param LicenseModel $license
 	 *
 	 * @return bool|WP_Error
 	 */
