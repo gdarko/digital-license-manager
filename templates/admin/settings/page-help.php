@@ -59,9 +59,9 @@
 <h3><?php _e( 'About the Plugin', 'digital-license-manager' ); ?></h3>
 
 <p><?php _e( 'Digital License Manager is a software licensing plugin that focuses on new features, stability and regular updates.', 'digital-license-manager' ); ?></p>
-<p><?php _e( 'This plugin is early fork of the "License Manager for WooCommerce", initially it was used on site codeverve.com, however because of lack of support and missing features we dediced to create our own version and later released in public.', 'digital-license-manager' ); ?></p>
-<p><?php _e( 'The code has been completely rewritten to enable us to support the plugin, remove "code smell" and add new features.', 'digital-license-manager' ); ?></p>
-<p><?php _e( 'Also, some changes to the database design were made to enable better license activation tracking and download tracking (for upcoming Reporting features), flexible permissions per rest api credentials (not global), subscriptions support, etc.', 'digital-license-manager' ); ?></p>
+<p><?php _e( 'This plugin is early fork of the "License Manager for WooCommerce", initially we used it on the site codeverve.com, however because of lack of support and missing features we decided to create our own version and later released in public.', 'digital-license-manager' ); ?></p>
+<p><?php _e( 'Nowadays, the forked code has been almost completely rewritten to enable us to support the plugin, remove "code smell" and add new features.', 'digital-license-manager' ); ?></p>
+<p><?php _e( 'Some notable changes: Better license activation tracking and download tracking (for upcoming Reporting features), flexible permissions per rest api credentials (not global), Improved UI, API, Business logic.', 'digital-license-manager' ); ?></p>
 <p><?php echo sprintf( __( '&copy; %s CodeVerve.com / Darko Gjorgjijoski', 'digital-license-manager' ), date( 'Y' ) ); ?></p>
 
 
