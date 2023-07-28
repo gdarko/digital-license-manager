@@ -58,6 +58,10 @@ abstract class AbstractRestController extends WP_REST_Controller {
 	 * @param $code
 	 * @param $route
 	 *
+	 * Function inspired by "License Manager for WooCommerce" plugin
+	 * @copyright  2019-2021  Drazen Bebic
+	 * @copyright  2021-2023  WPExperts.io
+	 *
 	 * @return WP_REST_Response
 	 */
 	protected function response( $success, $data, $code = 200, $route = '' ) {

@@ -32,12 +32,6 @@ defined( 'ABSPATH' ) || exit;
  * @package IdeoLogix\DigitalLicenseManager\Enums
  */
 abstract class LicenseSource {
-	/**
-	 * The default enumerator value.
-	 *
-	 * @var int
-	 */
-	const __default = - 1;
 
 	/**
 	 * Enumerator value used for generators.

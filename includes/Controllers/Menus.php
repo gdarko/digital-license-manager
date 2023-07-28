@@ -32,7 +32,8 @@ use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Products;
 use IdeoLogix\DigitalLicenseManager\ListTables\Activations;
 use IdeoLogix\DigitalLicenseManager\ListTables\Generators as GeneratorsListTable;
-use IdeoLogix\DigitalLicenseManager\ListTables\Licenses;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
+use IdeoLogix\DigitalLicenseManager\ListTables\Licenses as LicensesListTable;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -194,7 +195,7 @@ class Menus {
 
 		add_screen_option( $option, $args );
 
-		$this->licenses = new Licenses();
+		$this->licenses = new LicensesListTable();
 	}
 
 	/**
@@ -379,17 +380,16 @@ class Menus {
 	 * @return string
 	 */
 	public function adminFooterText( $footerText ) {
-		if ( ! current_user_can( 'dlm_manage_settings' )
-		     || ! function_exists( 'wc_get_screen_ids' )
-		) {
+		if ( ! current_user_can( 'dlm_manage_settings' ) ) {
 			return $footerText;
 		}
 
 		$currentScreen = get_current_screen();
 
-		// Check to make sure we're on a WooCommerce admin page.
+		/**
+		 * Check if the user is on any of the plugin's pages
+		 */
 		if ( isset( $currentScreen->id ) && in_array( $currentScreen->id, $this->getPluginPageIDs() ) ) {
-			// Change the footer text
 			$footerText = sprintf(
 				__( 'If you like %1$s please leave us a %2$s rating. A massive thanks in advance!', 'digital-license-manager' ),
 				sprintf( '<strong>%s</strong>', esc_html__( 'Digital License Manager', 'digital-license-manager' ) ),

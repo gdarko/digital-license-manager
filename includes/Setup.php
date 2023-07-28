@@ -25,15 +25,16 @@
 
 namespace IdeoLogix\DigitalLicenseManager;
 
+use Exception;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\Key as DefuseCryptoKey;
-use Exception;
 use IdeoLogix\DigitalLicenseManager\Controllers\Settings as SettingsController;
 use IdeoLogix\DigitalLicenseManager\Database\Migrator;
+use IdeoLogix\DigitalLicenseManager\Database\Schema;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
+use IdeoLogix\DigitalLicenseManager\RestAPI\Setup as RestAPISetup;
 use IdeoLogix\DigitalLicenseManager\Utils\CompatibilityHelper;
 use WP_Roles;
-use function dbDelta;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -44,16 +45,21 @@ defined( 'ABSPATH' ) || exit;
 class Setup {
 
 	/**
+	 * The database version
 	 * @var int
 	 */
 	const DB_VERSION = 103;
 
 	/**
-	 * Installation script.
+	 * The minimum PHP version
+	 */
+	const MIN_PHP_VERSION = '5.6.0';
+
+	/**
+	 * Executed when plugin is installed.
 	 *
 	 * @param $network_wide
 	 *
-	 * @return void
 	 * @throws EnvironmentIsBrokenException
 	 */
 	public static function install( $network_wide ) {
@@ -62,7 +68,7 @@ class Setup {
 			return;
 		}
 
-		self::checkRequirements();
+		self::checkEnv();
 
 		if ( $network_wide ) {
 			foreach ( CompatibilityHelper::get_site_ids() as $blog_id ) {
@@ -81,7 +87,6 @@ class Setup {
 
 	/**
 	 * Install defaults.
-	 * @return void
 	 * @throws EnvironmentIsBrokenException
 	 */
 	public static function installDefaults() {
@@ -155,145 +160,34 @@ class Setup {
 	}
 
 	/**
-	 * Checks if all required plugin components are present.
+	 * Check requirements.
 	 *
 	 * @throws Exception
 	 */
-	public static function checkRequirements() {
-		if ( version_compare( phpversion(), '5.3.29', '<=' ) ) {
-			throw new Exception( 'PHP 5.3 or lower detected. Digital License Manager requires PHP 5.6 or greater.' );
+	public static function checkEnv() {
+		if ( self::isEnvCompatible() ) {
+			return; // All fine.
 		}
+		throw new Exception( sprintf( 'PHP %s or lower detected. Digital License Manager requires PHP 5.6 or greater.', self::MIN_PHP_VERSION ) );
 	}
 
 	/**
-	 * Create the necessary database tables.
+	 * Creates the application tables
 	 */
 	public static function createTables() {
-		global $wpdb;
-
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-
-		$table1 = $wpdb->prefix . DatabaseTable::LICENSES;
-		$table2 = $wpdb->prefix . DatabaseTable::GENERATORS;
-		$table3 = $wpdb->prefix . DatabaseTable::API_KEYS;
-		$table4 = $wpdb->prefix . DatabaseTable::LICENSE_META;
-		$table5 = $wpdb->prefix . DatabaseTable::LICENSE_ACTIVATIONS;
-		$table6 = $wpdb->prefix . DatabaseTable::PRODUCT_DOWNLOADS;
-
-		dbDelta( "
-            CREATE TABLE IF NOT EXISTS $table1 (
-                `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-                `order_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
-                `product_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
-                `user_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
-                `license_key` LONGTEXT NOT NULL COMMENT 'Encrypted License Key',
-                `hash` LONGTEXT NOT NULL COMMENT 'Hashed License Key ID	',
-                `valid_for` INT(10) UNSIGNED NULL DEFAULT NULL COMMENT 'Valid for X time (when ordered from stock)',
-                `expires_at` DATETIME NULL DEFAULT NULL COMMENT 'Expiration Date',
-                `source` VARCHAR(255) NOT NULL,
-                `status` TINYINT(1) UNSIGNED NOT NULL,
-                `activations_limit` INT(10) UNSIGNED NULL DEFAULT NULL,
-                `created_at` DATETIME NULL COMMENT 'Creation Date',
-                `created_by` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
-                `updated_at` DATETIME NULL DEFAULT NULL COMMENT 'Update Date',
-                `updated_by` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
-                PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-        " );
-
-		dbDelta( "
-            CREATE TABLE IF NOT EXISTS $table2 (
-                `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-                `name` VARCHAR(255) NOT NULL,
-                `charset` VARCHAR(255) NOT NULL,
-                `chunks` INT(10) UNSIGNED NOT NULL,
-                `chunk_length` INT(10) UNSIGNED NOT NULL,
-                `activations_limit` INT(10) UNSIGNED NULL DEFAULT NULL,
-                `separator` VARCHAR(255) NULL DEFAULT NULL,
-                `prefix` VARCHAR(255) NULL DEFAULT NULL,
-                `suffix` VARCHAR(255) NULL DEFAULT NULL,
-                `expires_in` INT(10) UNSIGNED NULL DEFAULT NULL,
-                `created_at` DATETIME NULL,
-                `created_by` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
-                `updated_at` DATETIME NULL DEFAULT NULL,
-                `updated_by` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
-                PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-        " );
-
-		dbDelta( "
-            CREATE TABLE IF NOT EXISTS $table3 (
-                `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-                `user_id` BIGINT(20) UNSIGNED NOT NULL,
-                `description` VARCHAR(200) NULL DEFAULT NULL,
-                `permissions` VARCHAR(10) NOT NULL,
-                `endpoints` LONGTEXT NULL DEFAULT NULL,
-                `consumer_key` CHAR(64) NOT NULL,
-                `consumer_secret` CHAR(43) NOT NULL,
-                `nonces` LONGTEXT NULL,
-                `truncated_key` CHAR(7) NOT NULL,
-                `last_access` DATETIME NULL DEFAULT NULL,
-                `created_at` DATETIME NULL,
-                `created_by` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
-                `updated_at` DATETIME NULL DEFAULT NULL,
-                `updated_by` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
-                PRIMARY KEY (`id`),
-                INDEX `consumer_key` (`consumer_key`),
-                INDEX `consumer_secret` (`consumer_secret`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-        " );
-
-		dbDelta( "
-            CREATE TABLE IF NOT EXISTS $table4 (
-                `meta_id` BIGINT(20) UNSIGNED AUTO_INCREMENT,
-                `license_id` BIGINT(20) UNSIGNED DEFAULT 0 NOT NULL,
-                `meta_key` VARCHAR(255) NULL,
-                `meta_value` LONGTEXT NULL,
-                `created_at` DATETIME NULL,
-                `created_by` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
-                `updated_at` DATETIME NULL DEFAULT NULL,
-                `updated_by` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
-                PRIMARY KEY (`meta_id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
-        " );
-
-		dbDelta( "
-            CREATE TABLE IF NOT EXISTS $table5 (
-                `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-                `token` LONGTEXT NOT NULL COMMENT 'Public identifier',
-                `license_id` BIGINT(20) UNSIGNED NOT NULL,
-                `label` VARCHAR(255) NULL DEFAULT NULL,
-                `source` VARCHAR(255) NOT NULL,
-                `ip_address` VARCHAR(255) NULL DEFAULT NULL,
-                `user_agent` TEXT NULL DEFAULT NULL,
-                `meta_data` LONGTEXT NULL DEFAULT NULL,
-                `created_at` DATETIME NULL DEFAULT NULL,
-                `updated_at` DATETIME NULL DEFAULT NULL,
-                `deactivated_at` DATETIME NULL DEFAULT NULL,
-                PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-        " );
-
-		dbDelta( "
-            CREATE TABLE IF NOT EXISTS $table6 (
-                `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-                `license_id` BIGINT(20) UNSIGNED NOT NULL,
-                `activation_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
-                `source` VARCHAR(255) NOT NULL,
-                `ip_address` VARCHAR(255) NULL DEFAULT NULL,
-                `user_agent` TEXT NULL DEFAULT NULL, 
-                `meta_data` LONGTEXT NULL DEFAULT NULL,
-                `created_at` DATETIME NULL DEFAULT NULL,
-                `updated_at` DATETIME NULL DEFAULT NULL,
-                PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-        " );
+		Schema::create();
 	}
 
 	/**
 	 * Sets up the default folder structure and creates the default files, if needed.
+	 *
 	 * @return string[]
 	 * @throws EnvironmentIsBrokenException
+	 *
+	 * Function inspired by "License Manager for WooCommerce" plugin
+	 * @copyright  2019-2021 Drazen Bebic
+	 * @copyright  2021-2023 WPExperts.io
+	 *
 	 */
 	public static function setDefaultFilesAndFolders() {
 		/**
@@ -415,7 +309,7 @@ class Setup {
 	}
 
 	/**
-	 * Set the default plugin options.
+	 * Sets the default plugin options.
 	 */
 	public static function setDefaultSettings() {
 
@@ -439,7 +333,7 @@ class Setup {
 	}
 
 	/**
-	 * Add Digital License Manager roles.
+	 * Creates the default Digital License Manager roles.
 	 */
 	public static function createRoles() {
 		global $wp_roles;
@@ -523,7 +417,7 @@ class Setup {
 	}
 
 	/**
-	 * Remove Digital License Manager roles
+	 * Removes the default Digital License Manager roles and capabilities
 	 */
 	public static function removeRoles() {
 		global $wp_roles;
@@ -624,94 +518,10 @@ class Setup {
 	/**
 	 * List of rest api endpoints.
 	 * @return array[]
+	 * @deprecated 1.5.0
 	 */
 	public static function restEndpoints() {
-		return apply_filters( 'dlm_rest_endpoints', array(
-			array(
-				'id'         => '010',
-				'name'       => 'v1/licenses',
-				'method'     => 'GET',
-				'deprecated' => false,
-			),
-			array(
-				'id'         => '011',
-				'name'       => 'v1/licenses/{license_key}',
-				'method'     => 'GET',
-				'deprecated' => false,
-			),
-			array(
-				'id'         => '012',
-				'name'       => 'v1/licenses',
-				'method'     => 'POST',
-				'deprecated' => false,
-			),
-			array(
-				'id'         => '013',
-				'name'       => 'v1/licenses/{license_key}',
-				'method'     => 'PUT',
-				'deprecated' => false,
-			),
-			array(
-				'id'         => '014',
-				'name'       => 'v1/licenses/{license_key}',
-				'method'     => 'DELETE',
-				'deprecated' => false,
-			),
-			array(
-				'id'         => '015',
-				'name'       => 'v1/licenses/activate/{license_key}',
-				'method'     => 'GET',
-				'deprecated' => false,
-			),
-			array(
-				'id'         => '016',
-				'name'       => 'v1/licenses/deactivate/{activation_token}',
-				'method'     => 'GET',
-				'deprecated' => false,
-			),
-			array(
-				'id'         => '017',
-				'name'       => 'v1/licenses/validate/{activation_token}',
-				'method'     => 'GET',
-				'deprecated' => false,
-			),
-			array(
-				'id'         => '022',
-				'name'       => 'v1/generators',
-				'method'     => 'GET',
-				'deprecated' => false,
-			),
-			array(
-				'id'         => '023',
-				'name'       => 'v1/generators/{id}',
-				'method'     => 'GET',
-				'deprecated' => false,
-			),
-			array(
-				'id'         => '024',
-				'name'       => 'v1/generators',
-				'method'     => 'POST',
-				'deprecated' => false,
-			),
-			array(
-				'id'         => '025',
-				'name'       => 'v1/generators/{id}',
-				'method'     => 'PUT',
-				'deprecated' => false,
-			),
-			array(
-				'id'         => '026',
-				'name'       => 'v1/generators/{id}',
-				'method'     => 'DELETE',
-				'deprecated' => false,
-			),
-			array(
-				'id'         => '027',
-				'name'       => 'v1/generators/{id}/generate',
-				'method'     => 'POST',
-				'deprecated' => false,
-			),
-		) );
+		return RestAPISetup::getEndpoints();
 	}
 
 	/**
@@ -723,5 +533,13 @@ class Setup {
 		if ( defined( 'DLM_ABSPATH' ) ) {
 			load_plugin_textdomain( 'digital-license-manager', false, DLM_ABSPATH . 'i18n/languages' );
 		}
+	}
+
+	/**
+	 * Is the environment compatible?
+	 * @return bool
+	 */
+	public static function isEnvCompatible() {
+		return ! version_compare( phpversion(), self::MIN_PHP_VERSION, '<=' );
 	}
 }

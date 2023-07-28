@@ -52,16 +52,109 @@ class Setup {
 			return;
 		}
 
-		foreach ( $this->getControllers() as $controller ) {
+		foreach ( self::getControllers() as $controller ) {
 			( new $controller() )->register_routes();
 		}
+	}
+
+	/**
+	 * Returns the application endpoints
+	 * @return mixed|null
+	 */
+	public static function getEndpoints() {
+		return apply_filters( 'dlm_rest_endpoints', array(
+			array(
+				'id'         => '010',
+				'name'       => 'v1/licenses',
+				'method'     => 'GET',
+				'deprecated' => false,
+			),
+			array(
+				'id'         => '011',
+				'name'       => 'v1/licenses/{license_key}',
+				'method'     => 'GET',
+				'deprecated' => false,
+			),
+			array(
+				'id'         => '012',
+				'name'       => 'v1/licenses',
+				'method'     => 'POST',
+				'deprecated' => false,
+			),
+			array(
+				'id'         => '013',
+				'name'       => 'v1/licenses/{license_key}',
+				'method'     => 'PUT',
+				'deprecated' => false,
+			),
+			array(
+				'id'         => '014',
+				'name'       => 'v1/licenses/{license_key}',
+				'method'     => 'DELETE',
+				'deprecated' => false,
+			),
+			array(
+				'id'         => '015',
+				'name'       => 'v1/licenses/activate/{license_key}',
+				'method'     => 'GET',
+				'deprecated' => false,
+			),
+			array(
+				'id'         => '016',
+				'name'       => 'v1/licenses/deactivate/{activation_token}',
+				'method'     => 'GET',
+				'deprecated' => false,
+			),
+			array(
+				'id'         => '017',
+				'name'       => 'v1/licenses/validate/{activation_token}',
+				'method'     => 'GET',
+				'deprecated' => false,
+			),
+			array(
+				'id'         => '022',
+				'name'       => 'v1/generators',
+				'method'     => 'GET',
+				'deprecated' => false,
+			),
+			array(
+				'id'         => '023',
+				'name'       => 'v1/generators/{id}',
+				'method'     => 'GET',
+				'deprecated' => false,
+			),
+			array(
+				'id'         => '024',
+				'name'       => 'v1/generators',
+				'method'     => 'POST',
+				'deprecated' => false,
+			),
+			array(
+				'id'         => '025',
+				'name'       => 'v1/generators/{id}',
+				'method'     => 'PUT',
+				'deprecated' => false,
+			),
+			array(
+				'id'         => '026',
+				'name'       => 'v1/generators/{id}',
+				'method'     => 'DELETE',
+				'deprecated' => false,
+			),
+			array(
+				'id'         => '027',
+				'name'       => 'v1/generators/{id}/generate',
+				'method'     => 'POST',
+				'deprecated' => false,
+			),
+		) );
 	}
 
 	/**
 	 * Return rest api routes
 	 * @return mixed|void
 	 */
-	public function getControllers() {
+	public static function getControllers() {
 
 		$controllers = array(
 			Licenses::class,

@@ -42,6 +42,10 @@ class Settings {
 	 * @param string $field
 	 * @param string $section
 	 *
+	 * Function inspired by "License Manager for WooCommerce" plugin
+	 * @copyright  2019-2021 Drazen Bebic
+	 * @copyright  2021-2023 WPExperts.io
+	 *
 	 * @return bool|mixed
 	 */
 	public static function get( $field, $section = self::SECTION_GENERAL ) {

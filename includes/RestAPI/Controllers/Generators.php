@@ -332,7 +332,7 @@ class Generators extends DLM_REST_Controller {
 	}
 
 	/**
-	 * Callback for the POST generators/{id}/generate route. Creates licenses
+	 * Callback for the POST generators/{id}/generate route that generates licenses.
 	 * using a generator with a save option.
 	 *
 	 * @param WP_REST_Request $request

@@ -52,41 +52,49 @@ class Boot {
 	use Singleton;
 
 	/**
+	 * The plugin version
 	 * @var string
 	 */
 	public $version;
 
 	/**
+	 * The main licenses controller
 	 * @var LicenseController
 	 */
 	public $licenses;
 
 	/**
+	 * The dropdown lazy loading data controller
 	 * @var DropdownsController
 	 */
 	public $dropdowns;
 
 	/**
+	 * The main generators screen controller
 	 * @var GeneratorController
 	 */
 	public $generators;
 
 	/**
+	 * The main api keys screen controller
 	 * @var ApiKeyController
 	 */
 	public $api_keys;
 
 	/**
+	 * The main woocommerce integration controller
 	 * @var WooCommerceController
 	 */
 	public $woocommerce;
 
 	/**
+	 * The main welcome screen controller
 	 * @var WelcomeController
 	 */
 	public $welcome;
 
 	/**
+	 * The main rest controller
 	 * @var RestController
 	 */
 	public $rest;
@@ -96,14 +104,12 @@ class Boot {
 	 * @return void
 	 */
 	protected function init() {
-		$this->_defineConstants();
 
-		$this->version = DLM_VERSION;
+		$this->defineConstants();
+		$this->initHooks();
 
-		$this->_initHooks();
-
-		add_action( 'init', array( $this, 'wpInit' ) );
-		add_action( 'admin_init', array( $this, 'adminInit' ) );
+		add_action( 'init', array( $this, 'onWpInit' ) );
+		add_action( 'admin_init', array( $this, 'onAdminInit' ) );
 
 		new RestAPI\Authentication();
 
@@ -116,7 +122,9 @@ class Boot {
 	 *
 	 * @return void
 	 */
-	private function _defineConstants() {
+	private function defineConstants() {
+
+		$this->version = DLM_VERSION;
 
 		if ( ! defined( 'ABSPATH_LENGTH' ) ) {
 			define( 'ABSPATH_LENGTH', strlen( ABSPATH ) );
@@ -185,7 +193,6 @@ class Boot {
 		wp_register_style( 'dlm_select', DLM_ASSETS_URL . 'css/shared/select.css', [ 'dlm_tomselect' ], $this->version );
 		wp_localize_script( 'dlm_select', 'dlm_select_i18n', [ 'loading' => __( 'Loading more results...', 'digital-license-manager' ) ] );
 
-
 		/**
 		 * Library: Fontello icons
 		 */
@@ -203,7 +210,6 @@ class Boot {
 		wp_register_style( 'dlm_manage_page', DLM_CSS_URL . 'admin/manage.css', array(), $this->version, 'all' );
 		wp_register_script( 'dlm_tools_page', DLM_JS_URL . 'admin/tools.js', array( 'dlm_http' ), $this->version );
 		wp_register_style( 'dlm_tools_page', DLM_CSS_URL . 'admin/tools.css', array(), $this->version, 'all' );
-
 
 		/**
 		 * Global assets
@@ -257,12 +263,12 @@ class Boot {
 				'show'              => wp_create_nonce( 'dlm_show_license_key' ),
 				'show_all'          => wp_create_nonce( 'dlm_show_all_license_keys' ),
 				'product_downloads' => Settings::get( 'product_downloads' ),
-				'security' => array(
-					'dropdownSearch' => wp_create_nonce('dlm_dropdown_search')
+				'security'          => array(
+					'dropdownSearch' => wp_create_nonce( 'dlm_dropdown_search' )
 				),
 				'i18n'              => array(
-					'confirm_dialog' => __( 'Are you sure? This action can not be reverted.', 'digital-license-manager' ),
-					'placeholderSearchUsers'     => __( 'Search by user login, name or email', 'digital-license-manager' ),
+					'confirm_dialog'         => __( 'Are you sure? This action can not be reverted.', 'digital-license-manager' ),
+					'placeholderSearchUsers' => __( 'Search by user login, name or email', 'digital-license-manager' ),
 				)
 			)
 		);
@@ -369,8 +375,8 @@ class Boot {
 				wp_localize_script( 'dlm_tools_page', 'DLM_Tools', array(
 					'ajax_url' => admin_url( 'admin-ajax.php' ),
 					'nonce'    => wp_create_nonce( 'dlm-tools' ),
-					'i18n' => [
-						'confirmation' => __('WARNING - Please take backups before running this tool. It can cause a damage to your database if not used properly.', 'digital-license-manager')
+					'i18n'     => [
+						'confirmation' => __( 'WARNING - Please take backups before running this tool. It can cause a damage to your database if not used properly.', 'digital-license-manager' )
 					]
 				) );
 			}
@@ -432,7 +438,7 @@ class Boot {
 	 *
 	 * @return void
 	 */
-	private function _initHooks() {
+	private function initHooks() {
 
 		register_activation_hook( DLM_PLUGIN_FILE, array( '\IdeoLogix\DigitalLicenseManager\Setup', 'install' ) );
 		register_deactivation_hook( DLM_PLUGIN_FILE, array( '\IdeoLogix\DigitalLicenseManager\Setup', 'deactivate' ) );
@@ -450,7 +456,7 @@ class Boot {
 	 *
 	 * @return void
 	 */
-	public function wpInit() {
+	public function onWpInit() {
 		Setup::migrate();
 
 		new MenuController();
@@ -476,7 +482,7 @@ class Boot {
 	/**
 	 * Init the admin interface/settings.
 	 */
-	public function adminInit() {
+	public function onAdminInit() {
 		SettingsController::instance()->register();
 
 		if ( get_option( 'dlm_needs_permalinks_flush' ) ) {
@@ -492,7 +498,7 @@ class Boot {
 	 *
 	 * @return bool
 	 */
-	private function isPluginActive( $pluginName ) {
+	public function isPluginActive( $pluginName ) {
 		return in_array( $pluginName, apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) );
 	}
 }
