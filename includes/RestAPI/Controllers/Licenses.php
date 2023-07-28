@@ -30,6 +30,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\LicenseActivations;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
+use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -358,8 +359,8 @@ class Licenses extends AbstractRestController {
 
 		$licenseKey = isset( $urlParams['license_key'] ) ? sanitize_text_field( $urlParams['license_key'] ) : '';
 
-		if ( $this->isJson( $request->get_body() ) ) {
-			$updateData = json_decode( $request->get_body() );
+		if ( JsonFormatter::validate( $request->get_body() ) ) {
+			$updateData = JsonFormatter::decode( $request->get_body() );
 		} else {
 			$updateData = $request->get_params();
 		}

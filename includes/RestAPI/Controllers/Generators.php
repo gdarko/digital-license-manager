@@ -33,6 +33,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
 use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
+use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use WP_Error;
 use WP_REST_Request;
@@ -294,8 +295,8 @@ class Generators extends DLM_REST_Controller {
 
 		// Set and sanitize the basic parameters to be used.
 		$generatorId = absint( $request->get_param( 'generator_id' ) );
-		if ( $this->isJson( $request->get_body() ) ) {
-			$updateData = json_decode( $request->get_body() );
+		if ( JsonFormatter::validate( $request->get_body() ) ) {
+			$updateData = JsonFormatter::decode( $request->get_body() );
 		} else {
 			$updateData = $request->get_params();
 		}
@@ -351,8 +352,8 @@ class Generators extends DLM_REST_Controller {
 			$generatorId = absint( $request->get_param( 'generator_id' ) );
 		}
 
-		if ( $this->isJson( $request->get_body() ) ) {
-			$body = json_decode( $request->get_body(), true );
+		if ( JsonFormatter::validate( $request->get_body() ) ) {
+			$body = JsonFormatter::decode( $request->get_body(), true );
 		} else {
 			$body = $request->get_params();
 		}

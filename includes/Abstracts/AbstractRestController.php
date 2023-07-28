@@ -38,28 +38,34 @@ use WP_REST_Response;
 defined( 'ABSPATH' ) || exit;
 
 abstract class AbstractRestController extends WP_REST_Controller {
+
 	/**
-	 * Returns a structured response object for the API.
+	 * List of possible errors during the validation
+	 * @var \string[][]
+	 */
+	protected $errors = [
+		'route_disabled' => [
+			'code'    => 'dlm_rest_route_disabled_error',
+			'message' => 'This route is disabled via the plugin settings.',
+		]
+	];
+
+	/**
+	 * Returns standardized rest response
 	 *
-	 * @param bool $success Indicates whether the request was successful or not
-	 * @param array $data Contains the response data
-	 * @param int $code Contains the response HTTP status code
-	 * @param string $route Contains the request route name
+	 * @param $success
+	 * @param $data
+	 * @param $code
+	 * @param $route
 	 *
 	 * @return WP_REST_Response
 	 */
 	protected function response( $success, $data, $code = 200, $route = '' ) {
-		return new WP_REST_Response(
-			array(
-				'success' => $success,
-				'data'    => apply_filters( 'dlm_rest_api_pre_response', $data, $_SERVER['REQUEST_METHOD'], $route )
-			),
-			$code
-		);
+		return new WP_REST_Response( array( 'success' => $success, 'data' => apply_filters( 'dlm_rest_api_pre_response', $data, $_SERVER['REQUEST_METHOD'], $route ) ), $code );
 	}
 
 	/**
-	 * Prepare the error response based on WP_Error object.
+	 * Returns the error response based on WP_Error object.
 	 *
 	 * @param WP_Error $error
 	 *
@@ -104,23 +110,10 @@ abstract class AbstractRestController extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if the given string is a JSON object.
+	 * Returns true if specified route is enabled
 	 *
-	 * @param string $string
-	 *
-	 * @return bool
-	 */
-	protected function isJson( $string ) {
-		json_decode( $string );
-
-		return ( json_last_error() === JSON_ERROR_NONE );
-	}
-
-	/**
-	 * Checks whether a specific API route is enabled.
-	 *
-	 * @param array $settings Plugin settings array
-	 * @param string $routeId Unique plugin API endpoint ID
+	 * @param $settings
+	 * @param $routeId
 	 *
 	 * @return bool
 	 */
@@ -137,67 +130,30 @@ abstract class AbstractRestController extends WP_REST_Controller {
 	}
 
 	/**
-	 * Returns the default error for disabled routes.
+	 * Returns status integer based on input
 	 *
-	 * @return WP_Error
-	 */
-	protected function routeDisabledError() {
-		return new WP_Error(
-			'dlm_rest_route_disabled_error',
-			'This route is disabled via the plugin settings.',
-			array( 'status' => 404 )
-		);
-	}
-
-	/**
-	 * Converts the passed status string to a valid enumerator value.
+	 * @depreacted 1.5.0
 	 *
-	 * @param string $enumerator
+	 * @param $name
 	 *
 	 * @return int
 	 */
-	protected function getLicenseStatus( $enumerator ) {
-		$status = LicenseStatus::INACTIVE;
-
-		if ( strtoupper( $enumerator ) === 'SOLD' ) {
-			return LicenseStatus::SOLD;
-		}
-
-		if ( strtoupper( $enumerator ) === 'DELIVERED' ) {
-			return LicenseStatus::DELIVERED;
-		}
-
-		if ( strtoupper( $enumerator ) === 'ACTIVE' ) {
-			return LicenseStatus::ACTIVE;
-		}
-
-		if ( strtoupper( $enumerator ) === 'INACTIVE' ) {
-			return LicenseStatus::INACTIVE;
-		}
-
-		if ( strtoupper( $enumerator ) === 'DISABLED' ) {
-			return LicenseStatus::DISABLED;
-		}
-
-		return $status;
+	protected function getLicenseStatus( $name ) {
+		return LicenseStatus::inputToStatus( $name );
 	}
 
 	/**
-	 * Callback method for the "permission_callback" argument of the
-	 * "register_rest_route" method.
+	 * Permission callback for the REST endpoints
 	 *
 	 * @param WP_REST_Request $request
 	 *
 	 * @return bool|WP_Error
 	 */
 	public function permissionCallback( $request ) {
-		$error = apply_filters( 'dlm_rest_permission_callback', $request );
 
-		if ( $error instanceof WP_Error ) {
-			return $error;
-		}
+		$request = apply_filters( 'dlm_rest_permission_callback', $request );
 
-		return true;
+		return is_wp_error( $request ) ? $request : true;
 	}
 
 	/**
@@ -225,7 +181,7 @@ abstract class AbstractRestController extends WP_REST_Controller {
 	protected function validateRequest( $request, $route_id, $capability ) {
 
 		if ( ! $this->isRouteEnabled( $this->settings, $route_id ) ) {
-			return $this->routeDisabledError();
+			return $this->responseError( $this->errors['route_disabled']['code'], $this->errors['route_disabled']['message'] );
 		}
 
 		if ( ! $this->capabilityCheck( $capability ) ) {
@@ -233,21 +189,14 @@ abstract class AbstractRestController extends WP_REST_Controller {
 				'permission_denied',
 				__( 'Sorry, you don\'t have access to this resource.', 'digital-license-manager' ),
 				array(
-					'status' => $this->authorizationRequiredCode()
+					'status' => is_user_logged_in() ? 403 : 401
 				)
 			);
 		}
 
-		return apply_filters( 'dlm_rest_api_' . $route_id . '_validate_request', true, $request, $capability, $this );
-	}
+		$state = apply_filters( 'dlm_rest_api_validate_request', true, $request, $capability, $this );
 
-	/**
-	 * Returns a contextual HTTP error code for authorization failure.
-	 *
-	 * @return int
-	 */
-	protected function authorizationRequiredCode() {
-		return is_user_logged_in() ? 403 : 401;
+		return apply_filters( 'dlm_rest_api_' . $route_id . '_validate_request', $state, $request, $capability, $this );
 	}
 
 	/**

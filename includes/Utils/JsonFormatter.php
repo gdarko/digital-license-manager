@@ -34,6 +34,22 @@ defined( 'ABSPATH' ) || exit;
 class JsonFormatter {
 
 	/**
+	 * Validates json
+	 * @param $data
+	 *
+	 * @return bool
+	 */
+	public static function validate( $data ) {
+
+		if ( function_exists( '\json_validate' ) ) {
+			return \json_validate( $data );
+		} else {
+			json_decode( $data, true );
+			return json_last_error() === JSON_ERROR_NONE;
+		}
+	}
+
+	/**
 	 * Decodes object. If data is not valid JSON, returns data.
 	 *
 	 * @param $data
@@ -49,6 +65,7 @@ class JsonFormatter {
 
 	/**
 	 * Encodes object.
+	 *
 	 * @param $data
 	 *
 	 * @return bool|float|int|string

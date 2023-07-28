@@ -163,7 +163,7 @@ abstract class LicenseStatus {
 	 */
 	public static function toHtml( $license, $args = [] ) {
 
-		$status = !empty($license) ? $license->getStatus() : 'unknown';
+		$status = ! empty( $license ) ? $license->getStatus() : 'unknown';
 
 		return self::statusToHtml( $status, $args );
 	}
@@ -172,7 +172,7 @@ abstract class LicenseStatus {
 	 * Creates "Expired" status
 	 * @return string
 	 */
-	public static function toHtmlExpired($license, $args = []) {
+	public static function toHtmlExpired( $license, $args = [] ) {
 
 		$args     = wp_parse_args( $args, [ 'style' => 'normal', 'text' => '' ] );
 		$cssClass = $args['style'] === 'normal' ? 'dlm-status' : 'dlm-status-' . $args['style'];
@@ -180,7 +180,7 @@ abstract class LicenseStatus {
 		return sprintf(
 			'<div class="%s dlm-status-inactive"><span class="dashicons dashicons-marker"></span> %s</div>',
 			$cssClass,
-			!empty($args['text']) ? esc_html($args['text']) : __( 'Expired', 'digital-license-manager' )
+			! empty( $args['text'] ) ? esc_html( $args['text'] ) : __( 'Expired', 'digital-license-manager' )
 		);
 	}
 
@@ -203,7 +203,7 @@ abstract class LicenseStatus {
 				$markup = sprintf(
 					'<div class="%s dlm-status-sold"><span class="dashicons dashicons-saved"></span> %s</div>',
 					$cssClass,
-					!empty($args['text']) ? esc_html($args['text']) : __( 'Sold&nbsp;&nbsp;&nbsp;', 'digital-license-manager' )
+					! empty( $args['text'] ) ? esc_html( $args['text'] ) : __( 'Sold&nbsp;&nbsp;&nbsp;', 'digital-license-manager' )
 				);
 				break;
 			case 'delivered':
@@ -211,7 +211,7 @@ abstract class LicenseStatus {
 				$markup = sprintf(
 					'<div class="%s dlm-status-delivered"><span class="dashicons dashicons-saved"></span> %s</div>',
 					$cssClass,
-					!empty($args['text']) ? esc_html($args['text']) : __( 'Delivered', 'digital-license-manager' )
+					! empty( $args['text'] ) ? esc_html( $args['text'] ) : __( 'Delivered', 'digital-license-manager' )
 				);
 				break;
 			case 'active':
@@ -219,7 +219,7 @@ abstract class LicenseStatus {
 				$markup = sprintf(
 					'<div class="%s dlm-status-active"><span class="dashicons dashicons-marker"></span> %s</div>',
 					$cssClass,
-					!empty($args['text']) ? esc_html($args['text']) : __( 'Active', 'digital-license-manager' )
+					! empty( $args['text'] ) ? esc_html( $args['text'] ) : __( 'Active', 'digital-license-manager' )
 				);
 				break;
 			case 'inactive':
@@ -227,7 +227,7 @@ abstract class LicenseStatus {
 				$markup = sprintf(
 					'<div class="%s dlm-status-inactive"><span class="dashicons dashicons-marker"></span> %s</div>',
 					$cssClass,
-					!empty($args['text']) ? esc_html($args['text']) : __( 'Inactive', 'digital-license-manager' )
+					! empty( $args['text'] ) ? esc_html( $args['text'] ) : __( 'Inactive', 'digital-license-manager' )
 				);
 				break;
 			case 'disabled':
@@ -235,7 +235,7 @@ abstract class LicenseStatus {
 				$markup = sprintf(
 					'<div class="%s dlm-status-disabled"><span class="dashicons dashicons-warning"></span> %s</div>',
 					$cssClass,
-					!empty($args['text']) ? esc_html($args['text']) : __( 'Disabled', 'digital-license-manager' )
+					! empty( $args['text'] ) ? esc_html( $args['text'] ) : __( 'Disabled', 'digital-license-manager' )
 				);
 				break;
 			default:
@@ -248,6 +248,21 @@ abstract class LicenseStatus {
 		}
 
 		return $markup;
+	}
+
+
+	/**
+	 * Returns the status based on input
+	 *
+	 * @param $input
+	 *
+	 * @return int|mixed
+	 */
+	public static function inputToStatus( $input ) {
+		$input  = strtolower( $input );
+		$status = self::INACTIVE;
+
+		return isset( self::$values[ $input ] ) ? self::$values[ $input ] : $status;
 	}
 
 }

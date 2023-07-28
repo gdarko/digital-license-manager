@@ -9,8 +9,5 @@ namespace IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces;
  */
 interface ResourceModelInterface
 {
-    /**
-     * @return array
-     */
-    public function toArray();
+
 }
