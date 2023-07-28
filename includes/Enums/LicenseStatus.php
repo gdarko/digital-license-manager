@@ -103,7 +103,7 @@ abstract class LicenseStatus {
 	 *
 	 * @return string
 	 */
-	public static function getExportLabel( $status ) {
+	public static function getLabel( $status ) {
 		$labels = array(
 			self::SOLD      => 'SOLD',
 			self::DELIVERED => 'DELIVERED',

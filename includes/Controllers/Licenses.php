@@ -578,7 +578,7 @@ class Licenses {
 						$data[ $exportColumn ] = esc_attr( $decrypted );
 						break;
 					case 'status':
-						$data[ $exportColumn ] = LicenseStatus::getExportLabel( $license->getStatus() );
+						$data[ $exportColumn ] = LicenseStatus::getLabel( $license->getStatus() );
 						break;
 					default:
 						$getter                = 'get' . StringFormatter::camelize( $exportColumn );

@@ -80,7 +80,7 @@ abstract class LicenseSource {
 	 *
 	 * @return string
 	 */
-	public static function getExportLabel( $source ) {
+	public static function getLabel( $source ) {
 		$labels = array(
 			self::GENERATOR => 'GENERATOR',
 			self::IMPORT    => 'IMPORT',
