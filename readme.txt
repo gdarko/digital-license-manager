@@ -174,7 +174,7 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 = 1.4.4 =
 *Release Date - 25 Jul 2023*
 
-* Add copyright information to the files, a nice welcome screen for code THIEVES
+* Add copyright information to the files, a nice welcome screen.
 * Improvements to the order_complete meta saving
 * Improvements to the license stock database query
 * Fix PHP warnings, improve PHP 8.2 compatibility
