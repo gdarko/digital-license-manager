@@ -184,9 +184,10 @@ class Setup {
 	 * @return string[]
 	 * @throws EnvironmentIsBrokenException
 	 *
-	 * Function inspired by "License Manager for WooCommerce" plugin
-	 * @copyright  2019-2021 Drazen Bebic
-	 * @copyright  2021-2023 WPExperts.io
+	 * Code inspired by "License Manager for WooCommerce" plugin
+	 * @copyright  2019-2022 Drazen Bebic
+	 * @copyright  2022-2023 WPExperts.io
+	 * @copyright  2020-2023 Darko Gjorgjijoski
 	 *
 	 */
 	public static function setDefaultFilesAndFolders() {

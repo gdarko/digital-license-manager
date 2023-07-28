@@ -25,11 +25,15 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Enums;
 
-defined( 'ABSPATH' ) || exit;
-
 /**
  * Class LicenseSource
  * @package IdeoLogix\DigitalLicenseManager\Enums
+ *
+ * Code inspired by "License Manager for WooCommerce" plugin
+ * @copyright  2019-2022 Drazen Bebic
+ * @copyright  2022-2023 WPExperts.io
+ * @copyright  2020-2023 Darko Gjorgjijoski
+ *
  */
 abstract class LicenseSource {
 

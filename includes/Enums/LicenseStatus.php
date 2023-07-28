@@ -28,11 +28,15 @@ namespace IdeoLogix\DigitalLicenseManager\Enums;
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use ReflectionClass;
 
-defined( 'ABSPATH' ) || exit;
-
 /**
  * Class LicenseStatus
  * @package IdeoLogix\DigitalLicenseManager\Enums
+ *
+ * Code inspired by "License Manager for WooCommerce" plugin
+ * @copyright  2019-2022 Drazen Bebic
+ * @copyright  2022-2023 WPExperts.io
+ * @copyright  2020-2023 Darko Gjorgjijoski
+ *
  */
 abstract class LicenseStatus {
 	/**

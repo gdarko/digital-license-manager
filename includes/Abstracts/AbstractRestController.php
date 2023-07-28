@@ -35,7 +35,6 @@ use WP_REST_Controller;
 use WP_REST_Request;
 use WP_REST_Response;
 
-defined( 'ABSPATH' ) || exit;
 
 abstract class AbstractRestController extends WP_REST_Controller {
 
@@ -58,9 +57,10 @@ abstract class AbstractRestController extends WP_REST_Controller {
 	 * @param $code
 	 * @param $route
 	 *
-	 * Function inspired by "License Manager for WooCommerce" plugin
-	 * @copyright  2019-2021  Drazen Bebic
-	 * @copyright  2021-2023  WPExperts.io
+	 * Code inspired by "License Manager for WooCommerce" plugin
+	 * @copyright  2019-2022  Drazen Bebic
+	 * @copyright  2022-2023 WPExperts.io
+	 * @copyright  2020-2023 Darko Gjorgjijoski
 	 *
 	 * @return WP_REST_Response
 	 */
