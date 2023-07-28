@@ -73,7 +73,7 @@ The REST API documentation can be found on the link below:
 The complete documentation can be found on the link below:
 
 <a href="https://docs.codeverve.com/digital-license-manager/handbook/woocommerce/products/" target="_blank">See Documentation</a>
-
+t
 ### 📃 Client Libraries
 
 The following client libraries and integrations are available:
@@ -92,6 +92,15 @@ The development can be tracked on our <a href="https://github.com/gdarko/digital
 Any contributions are welcome! Feel free to submit pull requests or report issues.
 
 * <a href="https://github.com/gdarko/digital-license-manager">Digital License Manager on Github</a>
+
+
+### 👏 Acknowledgements
+
+This plugin was early fork of License Manager for WooCommerce by Drazen Bebic and WPExperts. However, nowadays, the code has been completely rewritten in order to modernize it and provide better support, stability and new features.
+
+Other acknowledgments: Micromodal, Tom-Select, Flatpickr, defuse/PHP-Encryption, spipu/html2pdf, tecnickcom/tcpdf, 10quality/wp-query-builder, ignitekit/wp-notices.
+
+Props to <a href="https://profiles.wordpress.org/pondermatic/">@pondermatic</a> for contributing to our plugin.
 
 
 ### ✔ Important Note
