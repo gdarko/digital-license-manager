@@ -46,6 +46,9 @@ class Welcome {
 	 * Initializes the notice.
 	 */
 	public function init() {
+		if ( ! is_admin() ) {
+			return;
+		}
 		$key  = apply_filters( 'dlm_welcome_notice_key', 'dlm_welcome' );
 		$path = apply_filters( 'dlm_welcome_notice_path', DLM_ABSPATH . 'templates/admin/welcome.php' );
 		if ( file_exists( $path ) ) {
