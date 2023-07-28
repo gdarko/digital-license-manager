@@ -9,6 +9,12 @@ use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 class LicenseMeta extends AbstractDataModel {
 
 	/**
+	 * Are timestamps created_at/updated_at supported?
+	 * @var bool
+	 */
+	protected $timestamps = true;
+
+	/**
 	 * The primary key
 	 * @var string
 	 */

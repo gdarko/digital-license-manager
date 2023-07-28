@@ -9,6 +9,12 @@ use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
 class LicenseActivation extends AbstractDataModel {
 
 	/**
+	 * Are timestamps created_at/updated_at supported?
+	 * @var bool
+	 */
+	protected $timestamps = true;
+
+	/**
 	 * The primary key
 	 * @var string
 	 */

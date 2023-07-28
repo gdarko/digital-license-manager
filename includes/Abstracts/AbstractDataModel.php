@@ -11,6 +11,18 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 
 	use DataModelTrait;
 
+	/**
+	 * Are timestamps supported?
+	 * @var bool
+	 */
+	protected $timestamps;
+
+	/**
+	 * Dates
+	 * @var string
+	 */
+	public $created_at;
+	public $updated_at;
 
 	/**
 	 * Override the main constructor
@@ -113,15 +125,16 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 	 */
 	public function save( $force_insert = false ) {
 		global $wpdb;
+
 		if ( ! $force_insert && $this->{$this->primary_key} ) {
 			// Update
-			$success = $wpdb->update( $this->getTablenameAlias(), $this->getData(), [ $this->primary_key => $this->attributes[ $this->primary_key ] ], $this->getDataFormat() );
+			$success = $wpdb->update( $this->getTablenameAlias(), $this->getData('update'), [ $this->primary_key => $this->attributes[ $this->primary_key ] ], $this->getDataFormat() );
 			if ( $success ) {
 				do_action( 'data_model_' . $this->table . '_updated', $this );
 			}
 		} else {
 			// Insert
-			$success                    = $wpdb->insert( $this->getTablenameAlias(), $this->getData(), $this->getDataFormat() );
+			$success                    = $wpdb->insert( $this->getTablenameAlias(), $this->getData('create'), $this->getDataFormat() );
 			$this->{$this->primary_key} = $wpdb->insert_id;
 			$date                       = date( 'Y-m-d H:i:s' );
 			$this->created_at           = $date;
@@ -147,7 +160,7 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 		$format = [];
 
 		foreach ( $data as $key => $value ) {
-			if ( is_null( $value ) || 'null' == $value || 'NULL' === $value ) {
+			if ( is_null( $value ) || 'null' === strtolower( $value ) ) {
 				$format[] = null;
 			} else if ( is_numeric( $value ) ) {
 				if ( strpos( $value, '.' ) !== false ) {
@@ -164,7 +177,13 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 		return $format;
 	}
 
-	protected function getData() {
+	/**
+	 * Prepares the data
+	 * @param $op
+	 *
+	 * @return array
+	 */
+	protected function getData( $op = 'create' ) {
 		$protected = $this->protected_properties();
 
 		$data = array_filter( $this->attributes, function ( $key ) use ( $protected ) {
@@ -173,8 +192,20 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 
 
 		foreach ( $data as $key => $value ) {
-			if ( 'null' === $value || 'NULL' === $value ) {
+			if ( null !== $value && 'null' === strtolower( $value ) ) {
 				$data[ $key ] = null;
+			}
+		}
+
+		if ( $this->timestamps ) {
+			$stamp = date( 'Y-m-d H:i:s' );
+			switch ( $op ) {
+				case 'update':
+					$data['updated_at'] = $stamp;
+					break;
+				case 'create':
+					$data['created_at'] = $stamp;
+					break;
 			}
 		}
 

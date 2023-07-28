@@ -46,13 +46,13 @@ class ApiKeys {
 	 */
 	public function __construct() {
 		// Admin POST requests
-		add_action( 'admin_post_dlm_api_key_update', array( $this, 'saveApiKey' ), 10 );
+		add_action( 'admin_post_dlm_api_key_update', array( $this, 'store' ), 10 );
 	}
 
 	/**
 	 * Store a created API key to the database or updates an existing key.
 	 */
-	public function saveApiKey() {
+	public function store() {
 
 		$action = sanitize_text_field( wp_unslash( $_POST['dlm_action'] ) );
 

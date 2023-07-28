@@ -36,6 +36,12 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	protected $searchable;
 
 	/**
+	 * Whether timestamps are supported or not (created_at, updated_at)
+	 * @var bool
+	 */
+	protected $timestamps = true;
+
+	/**
 	 * Creates model instance
 	 *
 	 * @param $data
@@ -57,8 +63,11 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 */
 	public function create( $data ) {
 
-		$data  = $this->prepare( $data );
+		$data = $this->prepare( $data, 'create' );
+
+		/* @var $model AbstractDataModel */
 		$model = $this->createModel( $data );
+
 		$model->save();
 
 		return $model;
@@ -188,13 +197,14 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 * @return int
 	 * @throws \Exception
 	 */
-	public function _update( $where, $data ) {
-		if ( empty( $where ) ) {
+	public function updateWhere( $where, $data ) {
+		if ( empty( $where ) || empty( $data ) ) {
 			return 0;
 		}
 
 		$where = $this->buildWhere( $where );
 		try {
+			$data   = $this->prepare( $data, 'update' );
 			$result = $this->buildQuery( $where )->set( $data )->update();
 		} catch ( \Exception $e ) {
 			$result = 0;
@@ -231,7 +241,7 @@ class AbstractDataRepository implements DataRepositoryInterface {
 		}
 
 		try {
-			$updated = $this->_update( $id, $data );
+			$updated = $this->updateWhere( $id, $data );
 		} catch ( \Exception $e ) {
 			$updated = false;
 		}
@@ -254,7 +264,7 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 * @throws \Exception
 	 */
 	public function updateBy( $where, $data ) {
-		$updated = $this->_update( $where, $data );
+		$updated = $this->updateWhere( $where, $data );
 
 		return $updated === 0 ? 1 : $updated; // if zero rows are affected, count it as updated.
 	}
@@ -418,14 +428,20 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 * Prepare the data
 	 *
 	 * @param $data
+	 * @param string $type
 	 *
 	 * @return mixed
 	 */
-	private function prepare( $data ) {
+	private function prepare( $data, $type = 'create' ) {
 		foreach ( $data as $key => $value ) {
 			if ( ! is_scalar( $value ) ) {
 				$data[ $key ] = json_encode( $value );
 			}
+		}
+
+		if ( $this->timestamps ) {
+			$timestampKey          = $type === 'create' ? 'created_at' : 'updated_at';
+			$data[ $timestampKey ] = date( 'Y-m-d H:i:s' );
 		}
 
 		return $data;

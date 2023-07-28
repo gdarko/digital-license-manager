@@ -63,7 +63,7 @@ interface DataRepositoryInterface {
 	 *
 	 * @return object
 	 */
-	public function _update( $where, $data );
+	public function updateWhere( $where, $data );
 
 	/**
 	 * Deletes single object from the database
