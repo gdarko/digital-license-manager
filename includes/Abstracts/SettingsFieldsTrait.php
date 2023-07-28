@@ -73,7 +73,7 @@ trait SettingsFieldsTrait {
 		);
 		$html .= sprintf( '<span>%s</span>', esc_attr( $label ) );
 		$html .= '</label>';
-		$html .= sprintf( '<p class="description">%s</p>', esc_attr( $explain ) );
+		$html .= sprintf( '<p class="description">%s</p>', wp_kses( $explain, wp_kses_allowed_html() ) );
 		$html .= '</fieldset>';
 
 		echo $html;
@@ -96,7 +96,7 @@ trait SettingsFieldsTrait {
 		$html = '<fieldset>';
 		$html .= sprintf( '<label for="%s">%s</label>', esc_attr( $field ), esc_attr( $label ) );
 		$html .= $this->fieldImageUploadMarkup( $key, $field, $value, $placeholder );
-		$html .= sprintf( '<p class="description">%s</p>', esc_attr( $explain ) );
+		$html .= sprintf( '<p class="description">%s</p>', wp_kses( $explain, wp_kses_allowed_html() ) );
 		$html .= '</fieldset>';
 
 		echo $html;
@@ -168,7 +168,7 @@ trait SettingsFieldsTrait {
 			esc_attr( $args['value'] ),
 			esc_attr( $args['size'] )
 		);
-		$html .= "<p class='description'>" . esc_attr( $args['explain'] ) . "</p>";
+		$html .= "<p class='description'>" . wp_kses( $args['explain'], wp_kses_allowed_html() ) . "</p>";
 		echo $html;
 	}
 }
