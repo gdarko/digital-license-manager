@@ -106,6 +106,9 @@ class Boot {
 	protected function init() {
 
 		$this->defineConstants();
+
+		$this->version = DLM_VERSION;
+
 		$this->initHooks();
 
 		add_action( 'init', array( $this, 'onWpInit' ) );
@@ -123,8 +126,6 @@ class Boot {
 	 * @return void
 	 */
 	private function defineConstants() {
-
-		$this->version = DLM_VERSION;
 
 		if ( ! defined( 'ABSPATH_LENGTH' ) ) {
 			define( 'ABSPATH_LENGTH', strlen( ABSPATH ) );
