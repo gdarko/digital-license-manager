@@ -167,6 +167,7 @@ class Orders {
 	 * @param $quantity
 	 *
 	 * @return bool
+	 * @throws \Exception
 	 */
 	public static function createOrderLicenses( $order, $product, $quantity ) {
 
@@ -218,9 +219,7 @@ class Orders {
 		/**
 		 * Set the needed delivery amount
 		 */
-		$neededAmount = 'standard' === $maxActivationsBehavior ? ( absint( $quantity ) * $deliveredQuantity ) : $deliveredQuantity;
-
-
+		$neededAmount   = 'standard' === $maxActivationsBehavior ? ( absint( $quantity ) * $deliveredQuantity ) : $deliveredQuantity;
 		$licenseService = new LicensesService();
 
 		if ( $useStock ) {  // Sell Licenses through available stock.
@@ -235,14 +234,22 @@ class Orders {
 			 */
 			$assignedLicenses = [];
 			if ( $neededAmount <= $availableStock ) {
+				$order->add_order_note( sprintf( __( 'Delivering licenses from stock. (Current stock: %d | Required: %d).', 'digital-license-manager' ), $availableStock, $neededAmount ) );
 				$assignedLicenses = $licenseService->assignLicensesFromStock(
 					$product,
 					$order,
 					$neededAmount,
 					$activationsLimit
 				);
+
+				if ( is_wp_error( $assignedLicenses ) ) {
+					$order->add_order_note( sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $assignedLicenses->get_error_message() ) );
+				} else {
+					$order->add_order_note( sprintf( __( 'Delivered in total %d licenses from stock.', 'digital-license-manager' ), count( $assignedLicenses ) ) );
+				}
+
 			} else {
-				$order->add_order_note( sprintf( __( 'License delivery failed: Could not find enough licenses in stock (Current stock: %d | Required %d)' ), $availableStock, $neededAmount ) );
+				$order->add_order_note( sprintf( __( 'License delivery failed: Could not find enough licenses in stock (Current stock: %d | Required %d).' ), $availableStock, $neededAmount ) );
 			}
 
 			do_action( 'dlm_stock_delivery_assigned_licenses', $assignedLicenses, $neededAmount, $availableStock, $order, $product );
@@ -258,6 +265,8 @@ class Orders {
 			 */
 			$generator = Generators::instance()->find( $generatorId );
 			if ( ! $generator ) {
+				$order->add_order_note( sprintf( __( 'License delivery failed: No generator assigned for product #%d.', 'digital-license-manager' ), $product->get_id() ) );
+
 				return false;
 			}
 
@@ -267,7 +276,7 @@ class Orders {
 			$generatorsService = new GeneratorsService();
 			$generatedLicenses = $generatorsService->generateLicenses( $neededAmount, $generator, [], $order, $product );
 			if ( ! is_wp_error( $generatedLicenses ) ) {
-				$licenseService->saveGeneratedLicenseKeys(
+				$result = $licenseService->saveGeneratedLicenseKeys(
 					$order->get_id(),
 					$product->get_id(),
 					$generatedLicenses,
@@ -277,6 +286,13 @@ class Orders {
 					$activationsLimit,
 					false
 				);
+				if ( ! is_wp_error( $result ) ) {
+					$order->add_order_note( sprintf( __( 'Delivered %d licenses with generator #%d.', 'digital-license-manager' ), $neededAmount, $generatorId ) );
+				} else {
+					$order->add_order_note( sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $result->get_error_message() ) );
+				}
+			} else {
+				$order->add_order_note( sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $generatedLicenses->get_error_message() ) );
 			}
 		}
 

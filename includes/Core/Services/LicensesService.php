@@ -793,7 +793,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			global $wpdb;
 			$table = Licenses::instance()->getTable();
 			$query = $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE hash=%s AND id NOT LIKE %s", $hash, "%" . $licenseKeyId . "%" );
-			if ( $wpdb->get_var($query) ) {
+			if ( $wpdb->get_var( $query ) ) {
 				$duplicate = true;
 			}
 		}
@@ -1043,7 +1043,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 * @param int $amount
 	 * @param array $params
 	 *
-	 * @return bool|AbstractResourceModel|License
+	 * @return array|bool|\IdeoLogix\DigitalLicenseManager\Abstracts\AbstractDataModel[]|AbstractResourceModel|License
 	 */
 	public function getLicensesFromStock( $product, $amount = - 1, $params = [] ) {
 
@@ -1051,8 +1051,8 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 
 		return Licenses::instance()->findAllBy(
 			$query,
-			null,
-			null,
+			'created_at',
+			'asc',
 			- 1,
 			$amount
 		);
@@ -1064,8 +1064,9 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 * @param $product
 	 * @param $order
 	 * @param $amount
+	 * @param null $activationsLimit
 	 *
-	 * @return AbstractResourceModel[]|License[]|WP_Error
+	 * @return AbstractResourceModel|License|WP_Error
 	 */
 	public function assignLicensesFromStock( $product, $order, $amount, $activationsLimit = null ) {
 
