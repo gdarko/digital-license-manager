@@ -548,6 +548,10 @@ class Orders {
 				'product_id' => $productId
 			) );
 
+			if ( empty( $licenses ) ) {
+				continue;
+			}
+
 			$data[ $product->get_id() ]['name'] = $product->get_name();
 			$data[ $product->get_id() ]['keys'] = $licenses;
 		}
@@ -610,7 +614,7 @@ class Orders {
 			foreach ( $actions as $key => $action ) {
 				if ( ! empty( $action['after_html'] ) ) {
 					add_action( 'admin_footer', function () use ( $action ) {
-						echo wp_kses($action['after_html'], wp_kses_allowed_html());
+						echo wp_kses( $action['after_html'], wp_kses_allowed_html() );
 					}, 100000 );
 				}
 			}
