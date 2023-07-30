@@ -56,6 +56,12 @@ class Licenses extends AbstractListTable {
 	const SPINNER_URL = '/wp-admin/images/loading.gif';
 
 	/**
+	 * Can hide?
+	 * @var bool|null
+	 */
+	protected $canHide;
+
+	/**
 	 * LicensesList constructor.
 	 */
 	public function __construct() {
@@ -274,7 +280,12 @@ class Licenses extends AbstractListTable {
 	 * @return string
 	 */
 	public function column_license_key( $item ) {
-		if ( Settings::get( 'hide_license_keys' ) ) {
+
+		if ( is_null( $this->canHide ) ) {
+			$this->canHide = (bool) Settings::get( 'hide_license_keys' );
+		}
+
+		if ( $this->canHide ) {
 			$title = sprintf( '<code class="dlm-placeholder empty" data-id="%d"></code>', $item->getId() );
 			$title .= sprintf(
 				'<img class="dlm-spinner" data-id="%d" src="%s">',
@@ -321,16 +332,19 @@ class Licenses extends AbstractListTable {
 		}
 
 		// Hide/Show
-		$actions['show'] = sprintf(
-			'<a class="dlm-license-key-toggle dlm-license-key-show" data-id="%d">%s</a>',
-			$item->getId(),
-			__( 'Show', 'digital-license-manager' )
-		);
-		$actions['hide'] = sprintf(
-			'<a class="dlm-license-key-toggle dlm-license-key-hide" data-id="%d">%s</a>',
-			$item->getId(),
-			__( 'Hide', 'digital-license-manager' )
-		);
+		if ( $this->canHide ) {
+			$actions['show'] = sprintf(
+				'<a class="dlm-license-key-toggle dlm-license-key-show" data-id="%d">%s</a>',
+				$item->getId(),
+				__( 'Show', 'digital-license-manager' )
+			);
+			$actions['hide'] = sprintf(
+				'<a class="dlm-license-key-toggle dlm-license-key-hide" data-id="%d">%s</a>',
+				$item->getId(),
+				__( 'Hide', 'digital-license-manager' )
+			);
+		}
+
 
 		// Delete
 		if ( $this->canDelete ) {
