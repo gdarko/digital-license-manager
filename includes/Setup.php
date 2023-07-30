@@ -126,19 +126,7 @@ class Setup {
 			return;
 		}
 
-		global $wpdb;
-		$tables = array(
-			$wpdb->prefix . DatabaseTable::LICENSES,
-			$wpdb->prefix . DatabaseTable::GENERATORS,
-			$wpdb->prefix . DatabaseTable::API_KEYS,
-			$wpdb->prefix . DatabaseTable::LICENSE_META,
-			$wpdb->prefix . DatabaseTable::LICENSE_ACTIVATIONS,
-			$wpdb->prefix . DatabaseTable::PRODUCT_DOWNLOADS,
-		);
-
-		foreach ( $tables as $table ) {
-			$wpdb->query( "DROP TABLE IF EXISTS {$table}" );
-		}
+		Schema::drop();
 
 		self::removeRoles();
 		foreach ( SettingsController::instance()->all() as $tab ) {

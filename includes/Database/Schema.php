@@ -42,6 +42,26 @@ class Schema {
 	}
 
 	/**
+	 * Drops the tables
+	 * @return void
+	 */
+	public static function drop() {
+		global $wpdb;
+		$tables = array(
+			$wpdb->prefix . DatabaseTable::LICENSES,
+			$wpdb->prefix . DatabaseTable::GENERATORS,
+			$wpdb->prefix . DatabaseTable::API_KEYS,
+			$wpdb->prefix . DatabaseTable::LICENSE_META,
+			$wpdb->prefix . DatabaseTable::LICENSE_ACTIVATIONS,
+			$wpdb->prefix . DatabaseTable::PRODUCT_DOWNLOADS,
+		);
+
+		foreach ( $tables as $table ) {
+			$wpdb->query( "DROP TABLE IF EXISTS {$table}" );
+		}
+	}
+
+	/**
 	 * Defines the  tables
 	 * @return string[]
 	 */
