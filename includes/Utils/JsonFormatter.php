@@ -35,6 +35,7 @@ class JsonFormatter {
 
 	/**
 	 * Validates json
+	 *
 	 * @param $data
 	 *
 	 * @return bool
@@ -45,6 +46,7 @@ class JsonFormatter {
 			return \json_validate( $data );
 		} else {
 			json_decode( $data, true );
+
 			return json_last_error() === JSON_ERROR_NONE;
 		}
 	}
@@ -58,6 +60,11 @@ class JsonFormatter {
 	 * @return mixed
 	 */
 	public static function decode( $data, $associative = false ) {
+
+		if ( is_null( $data ) ) {
+			return null;
+		}
+
 		$result = json_decode( $data, $associative );
 
 		return json_last_error() === JSON_ERROR_NONE ? $result : $data;
