@@ -56,6 +56,7 @@ class ProductDownload extends AbstractDataModel {
 		'id'            => 'int',
 		'license_id'    => 'int',
 		'activation_id' => 'int',
+		'meta_data'     => 'json',
 	];
 
 	public function getId() {

@@ -56,6 +56,7 @@ class LicenseActivation extends AbstractDataModel {
 	protected $casts = [
 		'id'         => 'int',
 		'license_id' => 'int',
+		'meta_data'  => 'json',
 	];
 
 	/**
