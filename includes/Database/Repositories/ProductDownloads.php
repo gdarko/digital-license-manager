@@ -32,8 +32,6 @@ use IdeoLogix\DigitalLicenseManager\Traits\Singleton;
 
 class ProductDownloads extends AbstractDataRepository {
 
-	use Singleton;
-
 	/**
 	 * Initializes the repository
 	 * @return void

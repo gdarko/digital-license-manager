@@ -218,12 +218,16 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 	 * Guess the data format
 	 * @return array
 	 */
+	/**
+	 * Guess the data format
+	 * @return array
+	 */
 	protected function getDataFormat() {
 		$data   = $this->getData();
 		$format = [];
 
 		foreach ( $data as $key => $value ) {
-			if ( is_null( $value ) || 'null' === strtolower( $value ) ) {
+			if ( is_null( $value ) || ! empty( $value ) && is_scalar( $value ) && 'null' === strtolower( $value ) ) {
 				$format[] = null;
 			} else if ( is_numeric( $value ) ) {
 				if ( strpos( $value, '.' ) !== false ) {
@@ -256,7 +260,7 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 
 
 		foreach ( $data as $key => $value ) {
-			if ( null !== $value && 'null' === strtolower( $value ) ) {
+			if ( is_scalar( $value ) && null !== $value && 'null' === strtolower( $value ) ) {
 				$data[ $key ] = null;
 			}
 		}
