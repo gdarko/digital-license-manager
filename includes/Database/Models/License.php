@@ -74,6 +74,12 @@ class License extends AbstractDataModel {
 	protected $table = DatabaseTable::LICENSES;
 
 	/**
+	 * The decyrpted key cached
+	 * @var string
+	 */
+	protected $decrypted_key;
+
+	/**
 	 * The id
 	 * @return int
 	 */
@@ -118,12 +124,11 @@ class License extends AbstractDataModel {
 	 * @return string|\WP_Error
 	 */
 	public function getDecryptedLicenseKey() {
-		static $decrypted = null;
-		if ( is_null( $decrypted ) ) {
-			$decrypted = CryptoHelper::decrypt( $this->getLicenseKey() );
+		if ( is_null( $this->decrypted_key ) ) {
+			$this->decrypted_key = CryptoHelper::decrypt( $this->getLicenseKey() );
 		}
 
-		return $decrypted;
+		return $this->decrypted_key;
 	}
 
 	/**
