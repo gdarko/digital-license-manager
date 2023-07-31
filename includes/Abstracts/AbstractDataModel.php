@@ -111,7 +111,7 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 	 */
 	protected function cast( $attributes ) {
 		foreach ( $this->casts as $key => $type ) {
-			if ( ! array_key_exists( $key, $attributes ) || null === $attributes[ $key ] ) {
+			if ( ! array_key_exists( $key, $attributes ) || ( empty( $attributes[ $key ] ) && '0' !== $attributes[ $key ] ) ) {
 				continue;
 			}
 			switch ( $type ) {
@@ -196,6 +196,7 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 				do_action( 'data_model_' . $this->table . '_updated', $this );
 			}
 		} else {
+
 			// Insert
 			$success                    = $wpdb->insert( $this->getTablenameAlias(), $this->getData( 'create' ), $this->getDataFormat() );
 			$this->{$this->primary_key} = $wpdb->insert_id;
