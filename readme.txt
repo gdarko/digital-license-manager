@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce, k
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 6.3
-Stable tag: 1.5.0-rc1
+Stable tag: 1.5.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -181,19 +181,21 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 == Changelog ==
 
 = 1.5.0 =
-* Rewritten and improved data layer
-* Various code improvements
-* ...to be continued
+*Release Date - 01 Aug 2023*
+
+* Add copyright information to the files, a nice welcome screen.
+* Add more unit tests
+* Improvements to the data api
+* Improvements to the order_complete meta saving
+* Improvements to the license stock database query
+* Fix PHP warnings, improve PHP 8.2 compatibility
+* Fix generator crud bugs
+* Test with WordPress 6.3
+* Test with WooCommerce 8.0
 
 = 1.4.4 =
 *Release Date - 25 Jul 2023*
 
-* Add copyright information to the files, a nice welcome screen.
-* Improvements to the order_complete meta saving
-* Improvements to the license stock database query
-* Fix PHP warnings, improve PHP 8.2 compatibility
-* Test with WordPress 6.3
-* Test with WooCommerce 8.0
 
 = 1.4.3 =
 *Release Date - 03 May 2023*
