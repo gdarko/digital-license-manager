@@ -41,6 +41,25 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 	protected $timestamps;
 
 	/**
+	 * The appended timestamps
+	 * @var array
+	 */
+	protected $appends = [];
+
+	/**
+	 * The model casts
+	 * @var array
+	 */
+	protected $casts = [];
+
+
+	/**
+	 * Hidden from public
+	 * @var array
+	 */
+	protected $hidden = [];
+
+	/**
 	 * Dates
 	 * @var string
 	 */
@@ -65,7 +84,22 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 	 * @return array|void
 	 */
 	public function toArray() {
-		return $this->attributes;
+		$attributes = $this->attributes;
+
+		foreach ( $this->appends as $key ) {
+			if ( method_exists( $this, 'get' . ucfirst( $key ) . 'Alias' ) ) {
+				$value              = call_user_func_array( [ &$this, 'get' . ucfirst( $key ) . 'Alias' ], [] );
+				$attributes[ $key ] = $value;
+			}
+		}
+
+		foreach ( $this->hidden as $key ) {
+			if ( array_key_exists( $key, $attributes ) ) {
+				unset( $attributes[ $key ] );
+			}
+		}
+
+		return $attributes;
 	}
 
 	/**
@@ -76,24 +110,18 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 	 * @return mixed
 	 */
 	protected function cast( $attributes ) {
-
-		$allowed = [ $this->primary_key ];
-
-		foreach ( $attributes as $key => $value ) {
-
-			if ( ! in_array( $key, $allowed ) ) {
+		foreach ( $this->casts as $key => $type ) {
+			if ( ! array_key_exists( $key, $attributes ) || null === $attributes[ $key ] ) {
 				continue;
 			}
-
-			if ( is_numeric( $value ) ) {
-				if ( strpos( $value, '.' ) !== false ) {
-					$value = doubleval( $value );
-				} else {
-					$value = intval( $value );
-				}
+			switch ( $type ) {
+				case 'int':
+					$attributes[ $key ] = (int) $attributes[ $key ];
+					break;
+				case 'string':
+					$attributes[ $key ] = (string) $attributes[ $key ];
+					break;
 			}
-
-			$attributes[ $key ] = $value;
 		}
 
 		return $attributes;
@@ -151,13 +179,13 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 
 		if ( ! $force_insert && $this->{$this->primary_key} ) {
 			// Update
-			$success = $wpdb->update( $this->getTablenameAlias(), $this->getData('update'), [ $this->primary_key => $this->attributes[ $this->primary_key ] ], $this->getDataFormat() );
+			$success = $wpdb->update( $this->getTablenameAlias(), $this->getData( 'update' ), [ $this->primary_key => $this->attributes[ $this->primary_key ] ], $this->getDataFormat() );
 			if ( $success ) {
 				do_action( 'data_model_' . $this->table . '_updated', $this );
 			}
 		} else {
 			// Insert
-			$success                    = $wpdb->insert( $this->getTablenameAlias(), $this->getData('create'), $this->getDataFormat() );
+			$success                    = $wpdb->insert( $this->getTablenameAlias(), $this->getData( 'create' ), $this->getDataFormat() );
 			$this->{$this->primary_key} = $wpdb->insert_id;
 			$date                       = date( 'Y-m-d H:i:s' );
 			$this->created_at           = $date;
@@ -202,6 +230,7 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 
 	/**
 	 * Prepares the data
+	 *
 	 * @param $op
 	 *
 	 * @return array

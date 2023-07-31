@@ -50,6 +50,15 @@ class LicenseMeta extends AbstractDataModel {
 	protected $table = DatabaseTable::LICENSE_META;
 
 	/**
+	 * The casts
+	 * @var string[]
+	 */
+	protected $casts = [
+		'meta_id'    => 'int',
+		'license_id' => 'int',
+	];
+
+	/**
 	 * The meta id
 	 * @return int
 	 */

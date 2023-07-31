@@ -227,7 +227,7 @@ class Generators extends DLM_REST_Controller {
 
 		/** @var Generator $generator */
 		foreach ( $generators as $generator ) {
-			$response[] = $generator->toArray();
+			$response[] = $generator->toRe();
 		}
 
 		return $this->response( true, $response, 200, 'v1/generators' );

@@ -48,6 +48,17 @@ class Generator extends AbstractDataModel {
 	 */
 	protected $table = DatabaseTable::GENERATORS;
 
+	/**
+	 * The casts
+	 * @var string[]
+	 */
+	protected $casts = [
+		'id'                => 'int',
+		'chunks'            => 'int',
+		'chunk_length'      => 'int',
+		'activations_limit' => 'int',
+		'expires_in'        => 'int',
+	];
 
 	/**
 	 * The id

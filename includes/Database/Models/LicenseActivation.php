@@ -50,6 +50,15 @@ class LicenseActivation extends AbstractDataModel {
 	protected $table = DatabaseTable::LICENSE_ACTIVATIONS;
 
 	/**
+	 * The casts
+	 * @var string[]
+	 */
+	protected $casts = [
+		'id'         => 'int',
+		'license_id' => 'int',
+	];
+
+	/**
 	 * The id of the activation
 	 * @return int
 	 */
@@ -123,7 +132,7 @@ class LicenseActivation extends AbstractDataModel {
 	 * @return array|mixed
 	 */
 	public function getMetaData() {
-		return $this->getJson('meta_data', true);
+		return $this->getJson( 'meta_data', true );
 	}
 
 	/**

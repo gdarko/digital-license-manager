@@ -48,6 +48,15 @@ class ProductDownload extends AbstractDataModel {
 	 */
 	protected $table = DatabaseTable::PRODUCT_DOWNLOADS;
 
+	/**
+	 * The casts
+	 * @var string[]
+	 */
+	protected $casts = [
+		'id'            => 'int',
+		'license_id'    => 'int',
+		'activation_id' => 'int',
+	];
 
 	public function getId() {
 		return $this->get( 'id' );

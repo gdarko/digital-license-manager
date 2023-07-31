@@ -48,6 +48,26 @@ class License extends AbstractDataModel {
 	protected $primary_key = 'id';
 
 	/**
+	 * The appended attributes
+	 * @var array
+	 */
+	protected $appends = [ 'times_activated', 'is_expired' ];
+
+	/**
+	 * The casts
+	 * @var string[]
+	 */
+	protected $casts = [
+		'id'                => 'int',
+		'order_id'          => 'int',
+		'product_id'        => 'int',
+		'valid_for'         => 'int',
+		'source'            => 'int',
+		'status'            => 'int',
+		'activations_limit' => 'int'
+	];
+
+	/**
 	 * The table name
 	 * @var string
 	 */
@@ -212,17 +232,38 @@ class License extends AbstractDataModel {
 	}
 
 	/**
+	 * Is expired
+	 * @return bool
+	 */
+	public function getIs_expiredAlias() {
+
+		static $values = [];
+
+		$id = $this->getId();
+
+		if ( ! array_key_exists( $id, $values ) ) {
+			$value         = $this->isExpired();
+			$values[ $id ] = $value;
+		}
+
+		return $values[ $id ];
+	}
+
+	/**
 	 * Times activated alias
 	 * @return int|null
 	 */
-	public function getTimesActivatedAlias() {
-		static $total = null;
+	public function getTimes_activatedAlias() {
+		static $values = [];
 
-		if ( is_null( $total ) ) {
-			$total = $this->getTimesActivatedCount();
+		$id = $this->getId();
+
+		if ( ! array_key_exists( $id, $values ) ) {
+			$value         = $this->getTimesActivatedCount();
+			$values[ $id ] = $value;
 		}
 
-		return $total;
+		return $values[ $id ];
 	}
 
 	/**
@@ -230,7 +271,7 @@ class License extends AbstractDataModel {
 	 * @return int|null
 	 */
 	public function getTimesActivated() {
-		return $this->getTimesActivatedAlias();
+		return $this->getTimes_activatedAlias();
 	}
 
 	/**
