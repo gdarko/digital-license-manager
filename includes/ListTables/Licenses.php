@@ -599,7 +599,7 @@ class Licenses extends AbstractListTable {
 	 * @return string
 	 */
 	public function column_default( $item, $columnName ) {
-		return apply_filters( 'dlm_table_licenses_column_value', $item->get( $columnName ), $columnName );
+		return apply_filters( 'dlm_table_licenses_column_value', $item->get( $columnName ), $columnName, $item );
 	}
 
 	/**
