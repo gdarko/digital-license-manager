@@ -29,6 +29,7 @@ class DLM_ApiKeys_TestCase extends WP_UnitTestCase {
 				'consumer_secret' => 'cs_f124f5f9afcf807058adf0561c5a24adf19d1475',
 				'truncated_key'   => 'a51113b',
 				'last_access'     => '2023-07-25 09:45:10',
+				'user_id'         => '',
 				'created_at'      => '2023-07-25 07:41:18',
 			],
 		];
@@ -36,8 +37,10 @@ class DLM_ApiKeys_TestCase extends WP_UnitTestCase {
 
 	private function importData( $data ) {
 		$succeeded = [];
+		$user_id   = wp_create_user( 'someUser', 'pass123', 'john@doe.com' );
 		foreach ( $data as $object ) {
-			$result = \IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\ApiKey::instance()->insert( $object );
+			$object['user_id'] = $user_id;
+			$result            = \IdeoLogix\DigitalLicenseManager\Database\Repositories\Resources\ApiKey::instance()->insert( $object );
 			if ( $result && method_exists( $result, 'getId' ) ) {
 				$succeeded[] = $result;
 			}

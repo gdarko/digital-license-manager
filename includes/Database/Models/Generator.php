@@ -130,7 +130,7 @@ class Generator extends AbstractDataModel {
 	 * @return string
 	 */
 	public function getSuffix() {
-		return $this->get( 'prefix' );
+		return $this->get( 'suffix' );
 	}
 
 	/**

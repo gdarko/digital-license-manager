@@ -72,7 +72,7 @@ class QueryBuilder extends BaseQueryBuilder {
 						)
 					),
 				];
-			$this->builder['set'][] = implode( ' ', $statement );
+			$this->builder['set'][] = $this->buildStatement($statement);
 		}
 
 		return $this;
