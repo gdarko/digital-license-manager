@@ -129,6 +129,7 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 					}
 					break;
 				case 'mixed':
+					// If valid json, decode it. Otherwise return as it is.
 					$attributes[ $key ] = JsonFormatter::decode( $attributes[ $key ], true );
 					break;
 			}
