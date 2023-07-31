@@ -36,7 +36,7 @@ trait Singleton {
 	/**
 	 * Prevent new instances
 	 */
-	final private function __construct() {
+	private function __construct() {
 		$this->init();
 	}
 
@@ -44,7 +44,7 @@ trait Singleton {
 	 * The singleton instance
 	 * @return self
 	 */
-	final public static function instance() {
+	public static function instance() {
 
 		$calledClass = get_called_class();
 
@@ -66,20 +66,6 @@ trait Singleton {
 	 * Prevent cloning of the instance
 	 * @return void
 	 */
-	final private function __clone() {
-	}
-
-	/**
-	 * Prevent serialization of the instance
-	 * @return void
-	 */
-	final private function __sleep() {
-	}
-
-	/**
-	 * Prevent deserialization of the instance
-	 * @return void
-	 */
-	final private function __wakeup() {
+	private function __clone() {
 	}
 }
