@@ -39,7 +39,7 @@ class QueryBuilder extends BaseQueryBuilder {
 	 *
 	 * @return void
 	 */
-	public function _query_insert( &$query ) {
+	protected function _query_insert( &$query ) {
 		$query = trim( 'INSERT INTO ' . $this->builder['from'] . ' ' . '(' . implode( ', ', array_keys( $this->builder['values'] ) ) . ')' . ' VALUES(' . implode( ', ', array_values( $this->builder['values'] ) ) . ')' );
 	}
 
