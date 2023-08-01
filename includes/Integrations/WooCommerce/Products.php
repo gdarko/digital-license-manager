@@ -27,7 +27,7 @@ namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
-use IdeoLogix\DigitalLicenseManager\Utils\InputHelper;
+use IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper;
 use WP_Error;
 use WP_Post;
 
@@ -142,7 +142,7 @@ class Products {
 					if ( function_exists( 'woocommerce_wp_' . $field['type'] ) ) {
 						call_user_func( 'woocommerce_wp_' . $field['type'], $field['params'] );
 						if ( ! empty( $field['after'] ) ) {
-							echo wp_kses( $field['after'], InputHelper::ksesAllowedHtmlTags() );
+							echo wp_kses( $field['after'], SanitizeHelper::ksesAllowedHtmlTags() );
 						}
 					}
 				}
@@ -238,7 +238,7 @@ class Products {
 					echo '<div class="options_group">';
 					call_user_func( 'woocommerce_wp_' . $field['type'], $field['params'] );
 					if ( ! empty( $field['after'] ) ) {
-						echo wp_kses( $field['after'], InputHelper::ksesAllowedHtmlTags() );
+						echo wp_kses( $field['after'], SanitizeHelper::ksesAllowedHtmlTags() );
 					}
 					echo '</div>';
 				}

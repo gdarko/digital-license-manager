@@ -25,7 +25,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Utils;
 
-class InputHelper {
+class SanitizeHelper {
 
 	/**
 	 * Object sanitization
@@ -45,11 +45,7 @@ class InputHelper {
 
 		foreach ( $data as $dataKey => $value ) {
 			if ( is_numeric( $value ) ) {
-				if ( strpos( $value, '.' ) !== false ) {
-					$value = doubleval( $value );
-				} else {
-					$value = intval( $value );
-				}
+				$value = self::sanitizeNumeric( $value );
 			} else {
 
 				if ( is_array( $value ) || is_object( $value ) ) {
@@ -67,6 +63,30 @@ class InputHelper {
 		}
 
 		return $data;
+	}
+
+
+	/**
+	 * Sanitizes numeric value
+	 *
+	 * @param int|string $value
+	 *
+	 * @return int|string
+	 */
+	public static function sanitizeNumeric( $value ) {
+
+		if ( ! is_string( $value ) ) {
+			return $value;
+		}
+
+		$dot_count = substr_count( $value, '.' );
+		if ( $dot_count === 1 ) {
+			$value = doubleval( $value );
+		} else if ( $dot_count === 0 ) {
+			$value = intval( $value );
+		}
+
+		return $value;
 	}
 
 	/**
