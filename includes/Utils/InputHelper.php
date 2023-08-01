@@ -59,7 +59,7 @@ class InputHelper {
 				}
 			}
 
-			if ( $is_array ) {
+			if ( $is_array && isset( $data[ $dataKey ] ) ) {
 				$data[ $dataKey ] = $value;
 			} else if ( isset( $data->$dataKey ) ) {
 				$data->$dataKey = $value;
