@@ -125,9 +125,7 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 					if ( '[]' === $attributes[ $key ] ) {
 						$attributes[ $key ] = [];
 					} else {
-						if ( is_string( $attributes[ $key ] ) ) {
-							$attributes[ $key ] = JsonFormatter::decode( $attributes[ $key ], true );
-						}
+						$attributes[ $key ] = JsonFormatter::decode( $attributes[ $key ], true );
 					}
 					break;
 				case 'mixed':

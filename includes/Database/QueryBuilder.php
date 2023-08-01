@@ -29,6 +29,91 @@ use TenQuality\WP\Database\QueryBuilder as BaseQueryBuilder;
 
 class QueryBuilder extends BaseQueryBuilder {
 
+
+	protected $values = [];
+
+	/**
+	 * Prepares the insert query
+	 *
+	 * @param $query
+	 *
+	 * @return void
+	 */
+	public function _query_insert( &$query ) {
+		$query = trim( 'INSERT INTO ' . $this->builder['from'] . ' ' . '(' . implode( ', ', array_keys( $this->builder['values'] ) ) . ')' . ' VALUES(' . implode( ', ', array_values( $this->builder['values'] ) ) . ')' );
+	}
+
+	/**
+	 * The insert query
+	 * @return bool|int|\mysqli_result|resource|null
+	 */
+	public function insert() {
+		global $wpdb;
+		$this->builder = apply_filters( 'query_builder_insert_builder', $this->builder );
+		$this->builder = apply_filters( 'query_builder_insert_builder_' . $this->id, $this->builder );
+		// Build
+		// Query
+		$query = '';
+		$this->_query_insert( $query );
+		// Process
+		$query = apply_filters( 'query_builder_insert_query', $query );
+		$query = apply_filters( 'query_builder_insert_query_' . $this->id, $query );
+
+		$result = $wpdb->query( $query );
+
+		if ( false !== $result ) {
+			return $wpdb->insert_id;
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Adds values statement
+	 *
+	 * @param $args
+	 *
+	 * @return $this
+	 */
+	public function values( $args ) {
+		global $wpdb;
+
+		if ( ! isset( $this->builder['values'] ) ) {
+			$this->builder['values'] = [];
+		}
+
+		foreach ( $args as $key => $value ) {
+			// Value
+			$arg_value         = is_array( $value ) && array_key_exists( 'value', $value ) ? $value['value'] : $value;
+			$sanitize_callback = is_array( $value ) && array_key_exists( 'sanitize_callback', $value )
+				? $value['sanitize_callback']
+				: true;
+			if ( $sanitize_callback
+			     && $key !== 'raw'
+			     && ( ! is_array( $value ) || ! array_key_exists( 'raw', $value ) )
+			) {
+				$arg_value = $this->sanitize_value( $sanitize_callback, $arg_value );
+			}
+
+			$preparedKey = sprintf( '`%s`', $key );
+
+			if ( is_array( $value ) && array_key_exists( 'raw', $value ) ) {
+				$this->builder['values'][ $preparedKey ] = $value['raw'];
+			} else {
+				if ( is_array( $arg_value ) ) {
+					$this->builder['values'][ $preparedKey ] = ( '\'' . implode( ',', $arg_value ) . '\'' );
+				} else {
+					$this->builder['values'][ $preparedKey ] = ( $arg_value === null
+						? 'null'
+						: $wpdb->prepare( ( ! is_array( $value ) || ! array_key_exists( 'force_string', $value ) || ! $value['force_string'] ) && is_numeric( $arg_value ) ? '%d' : '%s', $arg_value )
+					);
+				}
+			}
+		}
+
+		return $this;
+	}
+
 	/**
 	 * Adds set statement (for update).
 	 *
@@ -72,11 +157,12 @@ class QueryBuilder extends BaseQueryBuilder {
 						)
 					),
 				];
-			$this->builder['set'][] = $this->buildStatement($statement);
+			$this->builder['set'][] = $this->buildStatement( $statement );
 		}
 
 		return $this;
 	}
+
 
 	/**
 	 * Sanitize value.

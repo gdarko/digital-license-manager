@@ -83,18 +83,16 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 *
 	 * @param array $data
 	 *
-	 * @return AbstractDataModel
+	 * @return AbstractDataModel|null
 	 */
 	public function create( $data ) {
-
-		$data = $this->prepare( $data, 'create' );
-
-		/* @var $model AbstractDataModel */
-		$model = $this->createModel( $data );
-
-		$model->save();
-
-		return $model;
+		$data      = $this->prepare( $data, 'create' );
+		$insert_id = $this->queryBuilder()->from( $this->dataTable )->values( $data )->insert();
+		if ( empty( $insert_id ) ) {
+			return null;
+		} else {
+			return $this->find( $insert_id );
+		}
 	}
 
 	/**
@@ -115,7 +113,7 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 *
 	 * @param $where
 	 *
-	 * @return object
+	 * @return object|AbstractDataModel
 	 */
 	public function find( $where ) {
 
