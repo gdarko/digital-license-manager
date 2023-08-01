@@ -25,6 +25,8 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 
+use IdeoLogix\DigitalLicenseManager\Utils\InputHelper;
+
 /**
  * Trait SettingsFields
  * @package IdeoLogix\DigitalLicenseManager\Abstracts
@@ -73,7 +75,7 @@ trait SettingsFieldsTrait {
 		);
 		$html .= sprintf( '<span>%s</span>', esc_attr( $label ) );
 		$html .= '</label>';
-		$html .= sprintf( '<p class="description">%s</p>', wp_kses( $explain, wp_kses_allowed_html() ) );
+		$html .= sprintf( '<p class="description">%s</p>', wp_kses( $explain, InputHelper::ksesAllowedHtmlTags() ) );
 		$html .= '</fieldset>';
 
 		echo $html;
@@ -96,7 +98,7 @@ trait SettingsFieldsTrait {
 		$html = '<fieldset>';
 		$html .= sprintf( '<label for="%s">%s</label>', esc_attr( $field ), esc_attr( $label ) );
 		$html .= $this->fieldImageUploadMarkup( $key, $field, $value, $placeholder );
-		$html .= sprintf( '<p class="description">%s</p>', wp_kses( $explain, wp_kses_allowed_html() ) );
+		$html .= sprintf( '<p class="description">%s</p>', wp_kses( $explain, InputHelper::ksesAllowedHtmlTags() ) );
 		$html .= '</fieldset>';
 
 		echo $html;
@@ -168,7 +170,7 @@ trait SettingsFieldsTrait {
 			esc_attr( $args['value'] ),
 			esc_attr( $args['size'] )
 		);
-		$html .= "<p class='description'>" . wp_kses( $args['explain'], wp_kses_allowed_html() ) . "</p>";
+		$html .= "<p class='description'>" . wp_kses( $args['explain'], InputHelper::ksesAllowedHtmlTags() ) . "</p>";
 		echo $html;
 	}
 }

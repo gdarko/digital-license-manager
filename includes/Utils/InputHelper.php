@@ -69,4 +69,31 @@ class InputHelper {
 		return $data;
 	}
 
+	/**
+	 * Return's the allowed html tags (same list as WP default, but added li,ul,ol,p,and a[_target] support.
+	 * @return array
+	 */
+	public static function ksesAllowedHtmlTags() {
+		return apply_filters( 'dlm_kses_allowed_html_tags', array(
+			'a'          => array( 'href' => true, 'title' => true, 'target' => true, ),
+			'abbr'       => array( 'title' => true, ),
+			'acronym'    => array( 'title' => true, ),
+			'b'          => array(),
+			'blockquote' => array( 'cite' => true, ),
+			'cite'       => array(),
+			'code'       => array(),
+			'del'        => array( 'datetime' => true, ),
+			'em'         => array(),
+			'i'          => array(),
+			'q'          => array( 'cite' => true, ),
+			's'          => array(),
+			'strike'     => array(),
+			'strong'     => array(),
+			'p'          => array(),
+			'ul'         => array(),
+			'ol'         => array(),
+			'li'         => array(),
+		) );
+	}
+
 }

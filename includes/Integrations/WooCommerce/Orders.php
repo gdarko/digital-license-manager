@@ -35,6 +35,7 @@ use IdeoLogix\DigitalLicenseManager\ListTables\Licenses as LicensesListTable;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
+use IdeoLogix\DigitalLicenseManager\Utils\InputHelper;
 use WC_Order;
 use WC_Order_Item_Product;
 use WC_Product;
@@ -630,7 +631,7 @@ class Orders {
 			foreach ( $actions as $key => $action ) {
 				if ( ! empty( $action['after_html'] ) ) {
 					add_action( 'admin_footer', function () use ( $action ) {
-						echo wp_kses( $action['after_html'], wp_kses_allowed_html() );
+						echo wp_kses( $action['after_html'], InputHelper::ksesAllowedHtmlTags() );
 					}, 100000 );
 				}
 			}
