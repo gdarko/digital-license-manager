@@ -53,7 +53,7 @@ class InputHelper {
 			} else {
 
 				if ( is_array( $value ) || is_object( $value ) ) {
-					$value = self::sanitizeComplex( $value );
+					$value = self::sanitizeComplex( $value, $text_callback );
 				} else {
 					$value = $text_callback && is_callable( $text_callback ) ? call_user_func_array( $text_callback, [ $dataKey, $value ] ) : sanitize_text_field( $value );
 				}
