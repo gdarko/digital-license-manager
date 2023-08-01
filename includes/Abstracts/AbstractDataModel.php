@@ -158,17 +158,7 @@ abstract class AbstractDataModel extends DataModel implements DataModelInterface
 	 * @return mixed
 	 */
 	protected function getJson( $key, $cached = true ) {
-		static $cache = [];
-		$cache_key = sprintf( '%s_%s_%s', $this->table, $this->get( $this->primary_key ), $key );
-		if ( $cached ) {
-			if ( ! isset( $cache[ $cache_key ] ) ) {
-				$cache[ $cache_key ] = JsonFormatter::decode( $this->get( $key ), true );
-			}
-
-			return $cache[ $cache_key ];
-		} else {
-			return JsonFormatter::decode( $this->get( $key ), true );
-		}
+		return JsonFormatter::decode( $this->get( $key ), true );
 	}
 
 	/**
