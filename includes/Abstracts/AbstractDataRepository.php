@@ -459,7 +459,10 @@ class AbstractDataRepository implements DataRepositoryInterface {
 
 		foreach ( $data as $key => $value ) {
 			if ( is_object( $value ) || ( is_array( $value ) && ( ! array_key_exists( 'raw', $value ) && ! array_key_exists( 'value', $value ) ) ) ) {
-				$data[ $key ] = json_encode( $value );
+				$data[ $key ] = [
+					'value' => $key,
+					'raw'   => sprintf( "'%s'", wp_json_encode( $this->sanitizeComplex( $key, $value ) ) ),
+				];
 			}
 		}
 
@@ -468,6 +471,18 @@ class AbstractDataRepository implements DataRepositoryInterface {
 			$data[ $timestampKey ] = date( 'Y-m-d H:i:s' );
 		}
 
+		return $data;
+	}
+
+	/**
+	 * Sanitizes arrays & objects.
+	 *
+	 * @param $key
+	 * @param $data
+	 *
+	 * @return array
+	 */
+	protected function sanitizeComplex( $key, $data ) {
 		return $data;
 	}
 }
