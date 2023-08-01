@@ -29,6 +29,7 @@ use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\DataRepositoryInterface
 use IdeoLogix\DigitalLicenseManager\Traits\Singleton;
 use IdeoLogix\DigitalLicenseManager\Utils\ArrayFormatter;
 use IdeoLogix\DigitalLicenseManager\Database\QueryBuilder;
+use IdeoLogix\DigitalLicenseManager\Utils\InputHelper;
 
 class AbstractDataRepository implements DataRepositoryInterface {
 
@@ -483,6 +484,6 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 * @return array
 	 */
 	protected function sanitizeComplex( $key, $data ) {
-		return $data;
+		return InputHelper::sanitizeComplex( $data );
 	}
 }
