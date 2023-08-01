@@ -458,7 +458,7 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	private function prepare( $data, $type = 'create' ) {
 
 		foreach ( $data as $key => $value ) {
-			if ( is_object( $value ) || is_array( $value ) ) {
+			if ( is_object( $value ) || ( is_array( $value ) && ( ! array_key_exists( 'raw', $value ) && ! array_key_exists( 'value', $value ) ) ) ) {
 				$data[ $key ] = json_encode( $value );
 			}
 		}
