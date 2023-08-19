@@ -11,9 +11,9 @@
     "ext-json": "*",
     "defuse/php-encryption": "^2.2",
     "ignitekit/wp-notices": "^1.0",
+    "ignitekit/wp-query-builder": "^1.1",
     "spipu/html2pdf": "^5.2",
-    "tecnickcom/tcpdf": "^6.4",
-    "10quality/wp-query-builder": "^1.0"
+    "tecnickcom/tcpdf": "^6.4"
   },
   "config": {
     "optimize-autoloader": true
