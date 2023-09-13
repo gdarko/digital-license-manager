@@ -25,6 +25,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager;
 
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractIntegrationController;
 use IdeoLogix\DigitalLicenseManager\Controllers\ApiKeys as ApiKeyController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Dropdowns as DropdownsController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Generators as GeneratorController;
@@ -33,6 +34,7 @@ use IdeoLogix\DigitalLicenseManager\Controllers\Menus as MenuController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Settings as SettingsController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Welcome as WelcomeController;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller as WooCommerceController;
+use IdeoLogix\DigitalLicenseManager\Integrations\WCPIPS\Controller as WCPIPSController;
 use IdeoLogix\DigitalLicenseManager\RestAPI\Setup as RestController;
 use IdeoLogix\DigitalLicenseManager\Traits\Singleton;
 use IdeoLogix\DigitalLicenseManager\Utils\CompatibilityHelper;
@@ -82,10 +84,10 @@ class Boot {
 	public $api_keys;
 
 	/**
-	 * The main woocommerce integration controller
-	 * @var WooCommerceController
+	 * The list of integrations
+	 * @var AbstractIntegrationController[]
 	 */
-	public $woocommerce;
+	public $integrations;
 
 	/**
 	 * The main welcome screen controller
@@ -190,7 +192,10 @@ class Boot {
 		/**
 		 * Internal Library: Select
 		 */
-		wp_register_script( 'dlm_select', DLM_ASSETS_URL . 'js/shared/select.js', [ 'dlm_tomselect', 'dlm_http' ], $this->version );
+		wp_register_script( 'dlm_select', DLM_ASSETS_URL . 'js/shared/select.js', [
+			'dlm_tomselect',
+			'dlm_http'
+		], $this->version );
 		wp_register_style( 'dlm_select', DLM_ASSETS_URL . 'css/shared/select.css', [ 'dlm_tomselect' ], $this->version );
 		wp_localize_script( 'dlm_select', 'dlm_select_i18n', [ 'loading' => __( 'Loading more results...', 'digital-license-manager' ) ] );
 
@@ -202,7 +207,11 @@ class Boot {
 		/**
 		 * Page specific
 		 */
-		wp_register_script( 'dlm_licenses_page', DLM_JS_URL . 'admin/licenses.js', array( 'jquery', 'dlm_select', 'dlm_flatpickr' ), $this->version );
+		wp_register_script( 'dlm_licenses_page', DLM_JS_URL . 'admin/licenses.js', array(
+			'jquery',
+			'dlm_select',
+			'dlm_flatpickr'
+		), $this->version );
 		wp_register_script( 'dlm_generators_page', DLM_JS_URL . 'admin/generators.js', array( 'dlm_select' ), $this->version );
 		wp_register_script( 'dlm_activations_page', DLM_JS_URL . 'admin/activations.js', array( 'dlm_select' ), $this->version );
 		wp_register_script( 'dlm_settings_page', DLM_JS_URL . 'admin/settings.js', array( 'dlm_utils' ), $this->version );
@@ -221,7 +230,10 @@ class Boot {
 		 * Global admin assets
 		 */
 		wp_register_style( 'dlm_admin', DLM_CSS_URL . 'admin/general.css', array(), $this->version );
-		wp_register_script( 'dlm_admin', DLM_JS_URL . 'admin/general.js', array( 'dlm_http', 'dlm_select' ), $this->version );
+		wp_register_script( 'dlm_admin', DLM_JS_URL . 'admin/general.js', array(
+			'dlm_http',
+			'dlm_select'
+		), $this->version );
 
 		do_action( 'dlm_register_scripts', $this->version );
 	}
@@ -472,9 +484,8 @@ class Boot {
 		$this->api_keys   = new ApiKeyController();
 		$this->welcome    = new WelcomeController();
 
-		if ( CompatibilityHelper::is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
-			$this->woocommerce = new WooCommerceController();
-		}
+		$this->initIntegrations();
+
 		$this->rest = new RestController();
 
 		do_action( 'dlm_init', $this );
@@ -489,6 +500,23 @@ class Boot {
 		if ( get_option( 'dlm_needs_permalinks_flush' ) ) {
 			flush_rewrite_rules( false );
 			delete_option( 'dlm_needs_permalinks_flush' );
+		}
+	}
+
+	/**
+	 * Register the integrations
+	 *
+	 * @since 1.5.1
+	 * @return void
+	 */
+	public function initIntegrations() {
+
+		if ( CompatibilityHelper::is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+			$this->integrations['woocommerce'] = new WooCommerceController();
+		}
+
+		if ( CompatibilityHelper::is_plugin_active( 'woocommerce-pdf-invoices-packing-slips/woocommerce-pdf-invoices-packingslips.php' ) ) {
+			$this->integrations['wcpips'] = new WCPIPSController();
 		}
 	}
 
