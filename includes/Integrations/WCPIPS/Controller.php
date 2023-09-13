@@ -27,7 +27,6 @@ namespace IdeoLogix\DigitalLicenseManager\Integrations\WCPIPS;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractIntegrationController;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\IntegrationControllerInterface;
-use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Orders;
 
 /**
