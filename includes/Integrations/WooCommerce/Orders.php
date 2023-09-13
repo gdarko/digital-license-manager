@@ -517,7 +517,7 @@ class Orders
         if (!$order) {
             return;
         }
-        $order->update_meta_data('dlm_order_complete');
+        $order->update_meta_data('dlm_order_complete', 1);
         $order->save();
 
     }
