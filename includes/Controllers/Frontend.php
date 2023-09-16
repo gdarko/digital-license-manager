@@ -156,7 +156,7 @@ class Frontend {
 				$query = [
 					'expires_at' => [ 'key' => 'expires_at', 'operator' => '<', 'value' => date( 'Y-m-d H:i:s', time() ) ],
 					'user_id'    => [ 'key' => 'user_id', 'operator' => '=', 'value' => $currentUserId ]
-				]
+				];
 				break;
 			default:
 				$query = [];
