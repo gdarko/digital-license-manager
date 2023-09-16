@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce, k
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 6.3
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -179,6 +179,16 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 15. Re-send licenses via Order page
 
 == Changelog ==
+
+= 1.5.1 =
+*Release Date - 16 Sep 2023*
+
+* Fix issue that caused no license key to be sent via email/order thank you page
+* Add Gutenberg Block: "DLM: Licenses Table" -> The block lists the licenses owned by the current user
+* Add Gutenberg Block: "DLM: Licenses Check" -> The block provides a form where user can check validity of a license key
+* Add Shortcode: "[dlm_licenses_table]" -> The shortcode lists the licenses owned by the current user
+* Add Shortcode: "[dlm_licenses_check]" -> The shortcode provides a form where user can check validity of a license key
+
 
 = 1.5.0 =
 *Release Date - 01 Aug 2023*
