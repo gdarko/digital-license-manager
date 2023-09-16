@@ -28,6 +28,7 @@ namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
+use IdeoLogix\DigitalLicenseManager\Utils\TemplateHelper;
 
 class Frontend {
 
@@ -77,7 +78,7 @@ class Frontend {
 		}
 
 		$expires  = $license->getExpiresAt();
-		$expiresF = $expires ? DateFormatter::convert( $license->getExpiresAt(), 'Y-m-d H:i:s', sprintf( '%s %s', get_option( 'date_format' ), get_option( 'time_format' ) ) ) : __( 'Valid permanently', 'digital-license-manager' );
+		$expiresF = $expires ? wp_date( DateFormatter::getExpirationFormat(), strtotime($expires) )  : __( 'Valid permanently', 'digital-license-manager' );
 		$status   = '';
 		if ( $license->isExpired() ) {
 			$status   = __( 'EXPIRED', 'digital-license-manager' );
@@ -124,7 +125,7 @@ class Frontend {
 	 */
 	public static function render_licenses_check( $params = [] ) {
 
-		return self::get_view( 'licenses-check', [
+		return TemplateHelper::render( 'licenses-check', [
 			'emailRequired' => isset( $params['emailRequired'] ) ? $params['emailRequired'] : false,
 		] );
 	}
@@ -137,21 +138,21 @@ class Frontend {
 
 		$params['records'] = [];
 
-		$status_filter = isset( $params['status_filter'] ) ? $params['status_filter'] : 'all';
+		$status_filter = isset( $params['status_filter'] ) ? strtolower($params['status_filter']) : 'all';
 
 		$current_user_id = is_user_logged_in() ? get_current_user_id() : md5( PHP_INT_MIN );
 
 		switch ( $status_filter ) {
-			case 'active':
+			case 'valid':
 				$query = [
-					[ 'key' => 'expires_at', 'operator', '>', date( 'Y-m-d H:i:s', time() ) ],
-					[ 'user_id' => $current_user_id ]
+					'expires_at' => [ 'key' => 'expires_at', 'operator' => '>', 'value' => date( 'Y-m-d H:i:s', time() ) ],
+					'user_id'    => [ 'key' => 'user_id', 'operator' => '=', 'value' => $current_user_id ]
 				];
 				break;
-			case 'inactive':
+			case 'expired':
 				$query = [
-					[ 'key' => 'expires_at', 'operator', '<', date( 'Y-m-d H:i:s', time() ) ],
-					[ 'user_id' => $current_user_id ]
+					'expires_at' => [ 'key' => 'expires_at', 'operator' => '<', 'value' => date( 'Y-m-d H:i:s', time() ) ],
+					'user_id'    => [ 'key' => 'user_id', 'operator' => '=', 'value' => $current_user_id ]
 				];
 				break;
 			default:
@@ -159,35 +160,12 @@ class Frontend {
 				break;
 		}
 
-		$query   = apply_filters( 'dlm_block_licenses_table_query', $query );
+		$query = apply_filters( 'dlm_block_licenses_table_query', $query );
+
 		$records = \IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses::instance()->findAllBy( $query );
 
-		return self::get_view( 'licenses-table', [
+		return TemplateHelper::render( 'licenses-table', [
 			'records' => $records
 		] );
 	}
-
-	/**
-	 * Return the licenses table
-	 *
-	 * @param $path
-	 * @param $data
-	 *
-	 * @return false|string
-	 */
-	private static function get_view( $path, $data = [] ) {
-
-		if ( ! empty( $data ) ) {
-			extract( $data );
-		}
-
-		$path = str_replace( '.', DIRECTORY_SEPARATOR, $path );
-		$path = DLM_TEMPLATES_DIR . 'frontend' . DIRECTORY_SEPARATOR . $path . '.php';
-
-		ob_start();
-		include $path;
-
-		return ob_get_clean();
-	}
-
 }

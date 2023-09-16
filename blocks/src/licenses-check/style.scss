@@ -24,8 +24,9 @@
  * Check
  */
 .dlm-block-licenses-check .dlm-block-licenses-check-results {
-  padding: 5px;
   position: relative;
+  margin-bottom: 10px;
+  padding:0;
 }
 
 .dlm-block-licenses-check .dlm-block-licenses-check--results-close {
@@ -36,12 +37,11 @@
   cursor:pointer;
 }
 
-.dlm-block-licenses-check .dlm-block-licenses-check--results-activem, .dlm-block-licenses-check .dlm-block-licenses-check--results-valid {
-  border: 2px solid #41c300;
+.dlm-block-licenses-check .dlm-block-licenses-check--results-active, .dlm-block-licenses-check .dlm-block-licenses-check--results-valid {
+  border: 2px solid #36be6c;
 }
-
-.dlm-block-licenses-check .dlm-block-licenses-check--results-inactive {
-  border: 2px solid #D50000;
+.dlm-block-licenses-check .dlm-block-licenses-check--results-expired {
+  border: 2px solid #dc3545;
 }
 
 .dlm-block-licenses-check--results > p {

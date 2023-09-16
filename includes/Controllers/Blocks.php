@@ -25,6 +25,8 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
+use IdeoLogix\DigitalLicenseManager\Utils\CompatibilityHelper;
+
 class Blocks {
 
 	/**
@@ -56,8 +58,8 @@ class Blocks {
 				'settings'  => [
 					'statuses' => [
 						[ 'label' => __( 'All', 'digital-license-manager' ), 'value' => 'all' ],
-						[ 'label' => __( 'Active', 'digital-license-manager' ), 'value' => 'active' ],
-						[ 'label' => __( 'Inactive', 'digital-license-manager' ), 'value' => 'inactive' ],
+						[ 'label' => __( 'Valid', 'digital-license-manager' ), 'value' => 'valid' ],
+						[ 'label' => __( 'Expired', 'digital-license-manager' ), 'value' => 'expired' ],
 					]
 				],
 				'custom_js' => false,
@@ -112,7 +114,8 @@ class Blocks {
 	 * @return void
 	 */
 	public function enqueue_scripts( $version ) {
-		if ( function_exists( 'has_block' ) && has_block( 'digital-license-manager/licenses-check' ) ) {
+		if ( CompatibilityHelper::has_block( 'digital-license-manager/licenses-check' ) ) {
+			wp_enqueue_style( 'dlm_global' );
 			wp_enqueue_script( 'dlm_licenses_check' );
 		}
 	}
@@ -138,7 +141,7 @@ class Blocks {
 	 *
 	 */
 	public function render_licenses_table_block( $block_attributes, $content ) {
-		return Frontend::render_licenses_table( $block_attributes);
+		return Frontend::render_licenses_table( $block_attributes );
 	}
 
 	/**
@@ -151,6 +154,5 @@ class Blocks {
 	public function render_licenses_check_block( $block_attributes, $content ) {
 		return Frontend::render_licenses_check( $block_attributes );
 	}
-
 
 }

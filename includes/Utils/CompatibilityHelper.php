@@ -73,4 +73,23 @@ class CompatibilityHelper {
 
 	}
 
+	/**
+	 * Determines whether a $post or a string contains a specific block type.
+	 *
+	 * @param string $block_name Full block type to look for.
+	 * @param int|string|\WP_Post|null $post Optional. Post content, post ID, or post object.
+	 *                                            Defaults to global $post.
+	 *
+	 * @return bool Whether the post content contains the specified block.
+	 * @see parse_blocks()
+	 *
+	 */
+	public static function has_block( $block_name, $post = null ) {
+		if ( function_exists( '\has_block' ) ) {
+			return \has_block( $block_name, $post );
+		} else {
+			return false;
+		}
+	}
+
 }
