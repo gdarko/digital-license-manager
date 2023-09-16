@@ -31,12 +31,14 @@ class Blocks {
 
 	/**
 	 * List of blocks
+	 * @since 1.5.1
 	 * @var array[]
 	 */
 	private $blocks;
 
 	/**
 	 * Constructor
+	 * @since 1.5.1
 	 */
 	public function __construct() {
 
@@ -78,6 +80,7 @@ class Blocks {
 	/**
 	 * Initialize blocks
 	 * @return void
+	 * @since 1.5.1
 	 */
 	public function register_blocks() {
 		$block_path = DLM_ABSPATH . 'blocks/dist/';
@@ -112,6 +115,7 @@ class Blocks {
 	 * @param $version
 	 *
 	 * @return void
+	 * @since 1.5.1
 	 */
 	public function enqueue_scripts( $version ) {
 		if ( CompatibilityHelper::has_block( 'digital-license-manager/licenses-check' ) ) {
@@ -123,6 +127,8 @@ class Blocks {
 	/**
 	 * Register the block editor assets
 	 * @return void
+	 *
+	 * @since 1.5.1
 	 */
 	public function register_block_editor_assets() {
 		$url  = DLM_PLUGIN_URL;
@@ -139,6 +145,7 @@ class Blocks {
 	 * @param array $block_attributes
 	 * @param string $content
 	 *
+	 * @since 1.5.1
 	 */
 	public function render_licenses_table_block( $block_attributes, $content ) {
 		return Frontend::render_licenses_table( $block_attributes );
@@ -150,6 +157,7 @@ class Blocks {
 	 * @param array $block_attributes
 	 * @param string $content
 	 *
+	 * @since 1.5.1
 	 */
 	public function render_licenses_check_block( $block_attributes, $content ) {
 		return Frontend::render_licenses_check( $block_attributes );

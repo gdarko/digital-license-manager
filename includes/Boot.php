@@ -125,6 +125,7 @@ class Boot {
 
 		new RestAPI\Authentication();
 		new Controllers\Blocks();
+		new Controllers\Shortcodes();
 
 		// Init other plugins dependant on DLM
 		do_action( 'dlm_boot' );

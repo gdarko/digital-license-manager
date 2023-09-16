@@ -56,6 +56,7 @@ class ArrayFormatter {
 
 	/**
 	 * Check if array is list
+	 *
 	 * @param $array
 	 *
 	 * @return bool
@@ -77,15 +78,34 @@ class ArrayFormatter {
 	}
 
 	/**
+	 * To camel case keys
+	 *
+	 * @param $array
+	 *
+	 * @return array
+	 */
+	public static function camelCaseKeys( $array ) {
+		$newArr = [];
+
+		foreach ( $array as $i => $v ) {
+			$k            = lcfirst( implode( '', array_map( 'ucfirst', explode( '_', $i ) ) ) );
+			$newArr[ $k ] = $v;
+		}
+
+		return $newArr;
+	}
+
+	/**
 	 * Obtain element from array
+	 *
 	 * @param $array
 	 * @param $key
 	 * @param $default
 	 *
 	 * @return void
 	 */
-	public static function get($array, $key, $default = null) {
-		return isset($array[$key]) ? $array[$key] : $default;
+	public static function get( $array, $key, $default = null ) {
+		return isset( $array[ $key ] ) ? $array[ $key ] : $default;
 	}
 
 }

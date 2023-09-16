@@ -29,10 +29,10 @@ const Edit = ({attributes, setAttributes}) => {
 
     const blockProps = useBlockProps();
 
-    const [statusFilter, setStatusFilter] = useState(attributes?.status_filter);
+    const [statusFilter, setStatusFilter] = useState(attributes?.statusFilter);
 
     useEffect(() => {
-        setAttributes({'status_filter': statusFilter});
+        setAttributes({'statusFilter': statusFilter});
     }, [statusFilter])
 
     return (

@@ -16,7 +16,7 @@ const { name } = json;
 // Register the block
 registerBlockType( name, {
 	attributes: {
-		status_filter: {
+		statusFilter: {
 			type: String,
 		}
 	},

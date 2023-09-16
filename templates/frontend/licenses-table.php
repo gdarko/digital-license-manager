@@ -5,6 +5,7 @@
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 
 $show_actions = apply_filters( 'dlm_block_license_table_actions', false, $records );
+
 ?>
 
 <table>

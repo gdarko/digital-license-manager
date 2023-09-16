@@ -34,6 +34,7 @@ class Frontend {
 
 	/**
 	 * Constructor
+	 * @since 1.5.1
 	 */
 	public function __construct() {
 		add_action( 'wp_ajax_dlm_licenses_check', [ $this, 'handle_licenses_check' ] );
@@ -43,6 +44,7 @@ class Frontend {
 	/**
 	 * Handles license check
 	 * @return void
+	 * @since 1.5.1
 	 */
 	public function handle_licenses_check() {
 
@@ -78,7 +80,7 @@ class Frontend {
 		}
 
 		$expires  = $license->getExpiresAt();
-		$expiresF = $expires ? wp_date( DateFormatter::getExpirationFormat(), strtotime($expires) )  : __( 'Valid permanently', 'digital-license-manager' );
+		$expiresF = $expires ? wp_date( DateFormatter::getExpirationFormat(), strtotime( $expires ) ) : __( 'Permanent Activation', 'digital-license-manager' );
 		$status   = '';
 		if ( $license->isExpired() ) {
 			$status   = __( 'EXPIRED', 'digital-license-manager' );
@@ -101,9 +103,7 @@ class Frontend {
 			$colorClass = strtolower( $status );
 		}
 
-		ob_start();
-		include( DLM_TEMPLATES_DIR . 'frontend' . DIRECTORY_SEPARATOR . 'licenses-check-results.php' );
-		$response['html'] = ob_get_clean();
+		$response['html'] = TemplateHelper::render( 'licenses-check-results', [ 'status' => $status, 'colorClass' => $colorClass, 'expires' => $expires, 'expiresF' => $expiresF, 'licenseKey' => $licenseKey ] );
 
 		wp_send_json_success( $response );
 		exit;
@@ -113,6 +113,7 @@ class Frontend {
 	/**
 	 * Checks the request referer
 	 * @return false|int|mixed|null
+	 * @since 1.5.1
 	 */
 	private static function check_referer() {
 		return check_ajax_referer( 'dlm_frontend', '_wpnonce', false );
@@ -122,6 +123,7 @@ class Frontend {
 	/**
 	 * Renders the licenses check
 	 * @return false|string
+	 * @since 1.5.1
 	 */
 	public static function render_licenses_check( $params = [] ) {
 
@@ -133,27 +135,28 @@ class Frontend {
 	/**
 	 * Renders the licenses table
 	 * @return false|string
+	 * @since 1.5.1
 	 */
 	public static function render_licenses_table( $params = [] ) {
 
 		$params['records'] = [];
 
-		$status_filter = isset( $params['status_filter'] ) ? strtolower($params['status_filter']) : 'all';
+		$statusFilter = isset( $params['statusFilter'] ) ? strtolower( $params['statusFilter'] ) : 'all';
 
-		$current_user_id = is_user_logged_in() ? get_current_user_id() : md5( PHP_INT_MIN );
+		$currentUserId = is_user_logged_in() ? get_current_user_id() : md5( PHP_INT_MIN );
 
-		switch ( $status_filter ) {
+		switch ( $statusFilter ) {
 			case 'valid':
 				$query = [
 					'expires_at' => [ 'key' => 'expires_at', 'operator' => '>', 'value' => date( 'Y-m-d H:i:s', time() ) ],
-					'user_id'    => [ 'key' => 'user_id', 'operator' => '=', 'value' => $current_user_id ]
+					'user_id'    => [ 'key' => 'user_id', 'operator' => '=', 'value' => $currentUserId ]
 				];
 				break;
 			case 'expired':
 				$query = [
 					'expires_at' => [ 'key' => 'expires_at', 'operator' => '<', 'value' => date( 'Y-m-d H:i:s', time() ) ],
-					'user_id'    => [ 'key' => 'user_id', 'operator' => '=', 'value' => $current_user_id ]
-				];
+					'user_id'    => [ 'key' => 'user_id', 'operator' => '=', 'value' => $currentUserId ]
+				]
 				break;
 			default:
 				$query = [];
