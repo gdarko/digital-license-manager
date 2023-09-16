@@ -36,6 +36,11 @@ The plugin is compatible with WooCommerce, although it can be used as standalone
 * Migration tool for migrating from other plugins
 * WooCommerce <a href="https://woocommerce.com/document/high-performance-order-storage/">High-Performance Order Storage</a> Support
 * PDF certificates of the licenses in WooCommerce -> My Account -> License page
+* Support for "WooCommerce PDF Invoices and Packing Slips" by WP Overnight. License key will be displayed in the invoice.
+* Gutenberg Block "DLM: Licenses Table". Lists the licenses owned by the current user
+* Gutenberg Block "DLM: Licenses Check". Provides a form where user can check validity of a license key
+* Shortcode "[dlm_licenses_table]". Lists the licenses owned by the current user
+* Shortcode "[dlm_licenses_check]"  Displays a form where user can check validity of a license key
 
 
 The plugin works fine even without WooCommerce. If you want to use the plugin as standalone license manager or if you have another solution for selling the keys, you can use the REST API to create licenses.
@@ -73,7 +78,7 @@ The REST API documentation can be found on the link below:
 The complete documentation can be found on the link below:
 
 <a href="https://docs.codeverve.com/digital-license-manager/handbook/woocommerce/products/" target="_blank">See Documentation</a>
-t
+
 ### 📃 Client Libraries
 
 The following client libraries and integrations are available:
@@ -188,6 +193,7 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 * Add Gutenberg Block: "DLM: Licenses Check" -> The block provides a form where user can check validity of a license key
 * Add Shortcode: "[dlm_licenses_table]" -> The shortcode lists the licenses owned by the current user
 * Add Shortcode: "[dlm_licenses_check]" -> The shortcode provides a form where user can check validity of a license key
+* Add support for "WooCommerce PDF Invoices and Packing Slips" by WP Overnight. License key will be displayed in the invoice.
 
 
 = 1.5.0 =
