@@ -33,6 +33,7 @@ use IdeoLogix\DigitalLicenseManager\Controllers\Licenses as LicenseController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Menus as MenuController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Settings as SettingsController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Welcome as WelcomeController;
+use IdeoLogix\DigitalLicenseManager\Controllers\Frontend as FrontendController;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller as WooCommerceController;
 use IdeoLogix\DigitalLicenseManager\Integrations\WCPIPS\Controller as WCPIPSController;
 use IdeoLogix\DigitalLicenseManager\RestAPI\Setup as RestController;
@@ -102,6 +103,12 @@ class Boot {
 	public $rest;
 
 	/**
+	 * The frontend controller
+	 * @var FrontendController
+	 */
+	public $frontend;
+
+	/**
 	 * Initializes the class
 	 * @return void
 	 */
@@ -117,6 +124,7 @@ class Boot {
 		add_action( 'admin_init', array( $this, 'onAdminInit' ) );
 
 		new RestAPI\Authentication();
+		new Controllers\Blocks();
 
 		// Init other plugins dependant on DLM
 		do_action( 'dlm_boot' );
@@ -220,6 +228,15 @@ class Boot {
 		wp_register_style( 'dlm_manage_page', DLM_CSS_URL . 'admin/manage.css', array(), $this->version, 'all' );
 		wp_register_script( 'dlm_tools_page', DLM_JS_URL . 'admin/tools.js', array( 'dlm_http' ), $this->version );
 		wp_register_style( 'dlm_tools_page', DLM_CSS_URL . 'admin/tools.css', array(), $this->version, 'all' );
+
+		/**
+		 * Element specific
+		 */
+		$frontend_nonce = wp_create_nonce('dlm_frontend');
+		wp_register_script( 'dlm_licenses_check', DLM_JS_URL . 'public/licenses-check.js', array( 'dlm_http' ), $this->version );
+		wp_localize_script('dlm_licenses_check', 'dlm_licenses_check', [
+			'ajax_url' => add_query_arg(['_wpnonce' => $frontend_nonce], admin_url('admin-ajax.php')),
+		]);
 
 		/**
 		 * Global assets
@@ -488,6 +505,8 @@ class Boot {
 
 		$this->rest = new RestController();
 
+		$this->frontend = new FrontendController();
+
 		do_action( 'dlm_init', $this );
 	}
 
@@ -506,8 +525,8 @@ class Boot {
 	/**
 	 * Register the integrations
 	 *
-	 * @since 1.5.1
 	 * @return void
+	 * @since 1.5.1
 	 */
 	public function initIntegrations() {
 

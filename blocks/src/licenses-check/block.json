@@ -1,0 +1,17 @@
+{
+	"$schema": "https://json.schemastore.org/block.json",
+	"apiVersion": 3,
+	"name": "digital-license-manager/licenses-check",
+	"title": "DLM: Licenses Check Form",
+	"textdomain": "digital-license-manager",
+	"icon": "feedback",
+	"category": "widgets",
+	"example": {},
+	"editorScript": "file:./index.js",
+	"editorStyle": [
+		"file:./style-index.css"
+	],
+	"style": [
+		"file:./style-index.css"
+	]
+}

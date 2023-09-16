@@ -1,0 +1,15 @@
+{
+	"$schema": "https://json.schemastore.org/block.json",
+	"apiVersion": 3,
+	"name": "digital-license-manager/licenses-table",
+	"title": "DLM: Licenses Table",
+	"textdomain": "digital-license-manager",
+	"icon": "editor-table",
+	"category": "widgets",
+	"example": {},
+	"editorScript": "file:./index.js",
+	"editorStyle": [
+		"file:./editor.css",
+		"dlm-licenses-table"
+	]
+}

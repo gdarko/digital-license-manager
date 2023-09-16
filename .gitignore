@@ -41,3 +41,5 @@ assets/etc/defuse.txt
 assets/etc/secret.txt
 logs/debug.log
 logs/error.log
+blocks/dist
+blocks/node_modules
