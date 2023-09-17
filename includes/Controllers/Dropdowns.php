@@ -158,33 +158,46 @@ class Dropdowns {
 
 			} elseif ( ! empty( $searchable_post_types ) && in_array( $type, $searchable_post_types ) ) {
 
-				global $wpdb;
+				$found_records = apply_filters( 'dlm_dropdown_search_post_type', null, $type, $term, $page, $limit );
 
-				$search_query_status_in = array_map( function ( $item ) {
-					return sprintf( "'%s'", esc_sql( $item ) );
-				}, $search_query_status );
+				if ( is_null( $found_records ) || empty( $found_records['records'] ) ) {
 
-				$search_query_status_in = implode( ',', $search_query_status_in );
+					global $wpdb;
 
-				$query   = $wpdb->prepare( "SELECT * FROM {$wpdb->posts} WHERE post_status IN (" . $search_query_status_in . ") AND post_type=%s AND ID LIKE %s LIMIT %d OFFSET %d", $type, '%' . $term . '%', $limit, $offset );
-				$records = $wpdb->get_results( $query );
-				$total   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_status IN (" . $search_query_status_in . ") AND post_type=%s AND ID LIKE %s", $type, '%' . $term . '%' ) );
+					$search_query_status_in = array_map( function ( $item ) {
+						return sprintf( "'%s'", esc_sql( $item ) );
+					}, $search_query_status );
 
-				if ( $total <= $limit ) {
-					$more = false;
-				}
+					$search_query_status_in = implode( ',', $search_query_status_in );
 
-				if ( ! empty( $records ) ) {
-					foreach ( $records as $record ) {
-						$results[] = $this->formatPost( $record );
+					$query   = $wpdb->prepare( "SELECT * FROM {$wpdb->posts} WHERE post_status IN (" . $search_query_status_in . ") AND post_type=%s AND ID LIKE %s LIMIT %d OFFSET %d", $type, '%' . $term . '%', $limit, $offset );
+					$records = $wpdb->get_results( $query );
+					$total   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_status IN (" . $search_query_status_in . ") AND post_type=%s AND ID LIKE %s", $type, '%' . $term . '%' ) );
+
+					if ( $total <= $limit ) {
+						$more = false;
 					}
+
+					if ( ! empty( $records ) ) {
+						foreach ( $records as $record ) {
+							$results[] = $this->formatPost( $record );
+						}
+					}
+				} else {
+					$results = $found_records['records'];
+					$more    = isset( $found_records['more'] ) ? $found_records['more'] : false;
 				}
 
 			} else {
 				$result = apply_filters( 'dlm_dropdown_search_single', [], $type, $term );
-				if ( ! empty( $result ) ) {
-					$results[] = $result;
+
+				if ( ! empty( $result['records'] ) ) {
+					$results = array_merge( $results, $result['records'] );
 				}
+				if ( isset( $result['more'] ) ) {
+					$more = $result['more'];
+				}
+
 			}
 		} else {
 			$args = array(
@@ -285,20 +298,26 @@ class Dropdowns {
 
 			} else if ( ! empty( $searchable_post_types ) && in_array( $type, $searchable_post_types ) ) {
 
-				$query = new WP_Query( array(
-					'post_type'      => $type,
-					's'              => esc_attr( $term ),
-					'paged'          => $page,
-					'posts_per_page' => $limit,
-					'post_status'    => $search_query_status,
-				) );
+				$found_records = apply_filters( 'dlm_dropdown_search_post_type', null, $type, $term, $page, $limit );
+				if ( is_null( $found_records ) || empty( $found_records['records'] ) ) {
+					$query = new WP_Query( array(
+						'post_type'      => $type,
+						's'              => esc_attr( $term ),
+						'paged'          => $page,
+						'posts_per_page' => $limit,
+						'post_status'    => $search_query_status,
+					) );
 
-				if ( $query->found_posts <= $limit ) {
-					$more = false;
-				}
+					if ( $query->found_posts <= $limit ) {
+						$more = false;
+					}
 
-				foreach ( $query->posts as $_post ) {
-					$results[] = $this->formatPost( $_post );
+					foreach ( $query->posts as $_post ) {
+						$results[] = $this->formatPost( $_post );
+					}
+				} else {
+					$results = $found_records['records'];
+					$more    = isset( $found_records['more'] ) ? $found_records['more'] : false;
 				}
 
 			} else {

@@ -87,6 +87,7 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 		add_filter( 'dlm_default_settings', array( $this, 'defaultWooCommerceSettings' ), 10, 1 );
 		add_filter( 'dlm_dropdown_searchable_post_types', array( $this, 'dropdownSearchablePostTypes' ), 10, 1 );
 		add_filter( 'dlm_dropdown_search_query_default_status', array( $this, 'dropdownSearchQDefaultStatus' ), 10, 2 );
+		add_filter( 'dlm_dropdown_search_post_type', array( $this, 'dropdownSearchPostTypeResults' ), 10, 5 );
 		add_filter( 'dlm_tools', array( $this, 'registerTools' ), 10, 1 );
 	}
 
@@ -127,6 +128,69 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 			'product',
 			'shop_order'
 		) );
+	}
+
+	/**
+	 * Search post type results
+	 *
+	 * @param $results
+	 * @param $type
+	 * @param $term
+	 * @param $page
+	 * @param $limit
+	 *
+	 * @return void
+	 */
+	public function dropdownSearchPostTypeResults( $results, $type, $term, $page, $limit ) {
+
+		if ( 'shop_order' === $type ) {
+			if ( is_numeric( $term ) ) {
+				$order  = wc_get_order( (int) $term );
+				$orders = $order ? [ $order ] : [];
+				$more   = false;
+			} else {
+				$orders = [];
+				$query  = wc_get_orders( [
+					'customer' => $term,
+					'paginate' => true,
+					'paged'    => $page,
+					'limit'    => $limit
+				] );
+				if ( ! empty( $query->orders ) ) {
+					$orders = $query->orders;
+				}
+				$more   = $page < $query->max_num_pages;
+			}
+			$records = [];
+			foreach ( $orders as $order ) {
+				/* @var \WC_Order $order */
+				$records[] = [
+					'id'   => $order->get_id(),
+					'text' => sprintf('#%d - %s %s', $order->get_id(), $order->get_billing_first_name(), $order->get_billing_last_name()),
+					'meta' => $term
+				];
+			}
+			$results = [ 'records' => $records, 'more' => $more ];
+
+		}
+
+		return $results;
+
+	}
+
+
+	/**
+	 * Format order for search
+	 *
+	 * @param  \WC_Order  $order
+	 *
+	 * @return array
+	 */
+	protected function formatOrderForSearch( $order ) {
+		return [
+			'id'   => $order->get_id(),
+			'text' => sprintf( '#%d - %s%s', $id, $title, $type )
+		];
 	}
 
 	/**

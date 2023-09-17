@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             plugins.push('virtual_scroll');
             var remote = options.remote;
             options.labelField = config.hasOwnProperty('labelField') ? config.hasOwnProperty('labelField') : 'text';
-            options.searchField = config.hasOwnProperty('searchField') ? config.hasOwnProperty('searchField') : 'text';
+            options.searchField = config.hasOwnProperty('searchField') ? config.hasOwnProperty('searchField') : ['text', 'meta'];
             options.valueField = config.hasOwnProperty('valueField') ? config.hasOwnProperty('valueField') : 'id';
             options.plugins = plugins;
             options.maxOptions = 200;
