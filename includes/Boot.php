@@ -233,11 +233,11 @@ class Boot {
 		/**
 		 * Element specific
 		 */
-		$frontend_nonce = wp_create_nonce('dlm_frontend');
+		$frontend_nonce = wp_create_nonce( 'dlm_frontend' );
 		wp_register_script( 'dlm_licenses_check', DLM_JS_URL . 'public/licenses-check.js', array( 'dlm_http' ), $this->version );
-		wp_localize_script('dlm_licenses_check', 'dlm_licenses_check', [
-			'ajax_url' => add_query_arg(['_wpnonce' => $frontend_nonce], admin_url('admin-ajax.php')),
-		]);
+		wp_localize_script( 'dlm_licenses_check', 'dlm_licenses_check', [
+			'ajax_url' => add_query_arg( [ '_wpnonce' => $frontend_nonce ], admin_url( 'admin-ajax.php' ) ),
+		] );
 
 		/**
 		 * Global assets
@@ -259,7 +259,7 @@ class Boot {
 	/**
 	 * Include JS and CSS files.
 	 *
-	 * @param string $hook
+	 * @param  string  $hook
 	 *
 	 * @return void
 	 */
@@ -431,13 +431,14 @@ class Boot {
 	/**
 	 * Add additional links to the plugin row meta.
 	 *
-	 * @param array $links Array of already present links
-	 * @param string $file File name
+	 * @param  array  $links  Array of already present links
+	 * @param  string  $file  File name
 	 *
 	 * @return array
 	 */
 	public function pluginRowMeta( $links, $file ) {
 		if ( strpos( $file, DLM_PLUGIN_BASENAME ) !== false ) {
+
 			$newLinks = array(
 				'github' => sprintf(
 					'<a href="%s" target="_blank">%s</a>',
@@ -463,6 +464,21 @@ class Boot {
 	}
 
 	/**
+	 * Show the Settings link in the action links in the Plugins screen
+	 *
+	 * @param $links
+	 *
+	 * @return mixed
+	 */
+	public function pluginActionLinks( $links ) {
+		$links = array_merge( [
+			'<a href="' . esc_url( SettingsController::getSettingsUrl() ) . '">' . __( 'Settings', 'digital-license-manager' ) . '</a>'
+		], $links );
+
+		return $links;
+	}
+
+	/**
 	 * Hook into actions and filters.
 	 *
 	 * @return void
@@ -478,6 +494,7 @@ class Boot {
 		add_action( 'admin_enqueue_scripts', array( $this, 'adminEnqueueScripts' ), 11 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'publicEnqueueScripts' ), 11 );
 		add_filter( 'plugin_row_meta', array( $this, 'pluginRowMeta' ), 10, 2 );
+		add_filter( 'plugin_action_links_' . DLM_PLUGIN_BASENAME, array( $this, 'pluginActionLinks' ), 10, 1 );
 	}
 
 	/**
@@ -541,7 +558,7 @@ class Boot {
 	/**
 	 * Checks if a plugin is active.
 	 *
-	 * @param string $pluginName
+	 * @param  string  $pluginName
 	 *
 	 * @return bool
 	 */
