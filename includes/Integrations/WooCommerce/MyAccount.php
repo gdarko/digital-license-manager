@@ -25,7 +25,6 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
-use Automattic\WooCommerce\Utilities\OrderUtil;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
@@ -304,7 +303,7 @@ class MyAccount {
 	 */
 	public function isOrderPage( $enabled, $hook ) {
 		global $post_type;
-		if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
+		if ( class_exists('\Automattic\WooCommerce\Utilities\OrderUtil') && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled() ) {
 			return 'woocommerce_page_wc-orders' === $hook && isset($_GET['page']) && 'wc-orders' === $_GET['page'];
 		} else {
 			return in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'shop_order' === $post_type;
