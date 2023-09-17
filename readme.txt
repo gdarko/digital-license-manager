@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce, k
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 6.3
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -172,18 +172,32 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 3. Licenses - CSV Export form
 4. Generators - Overview page
 5. Generators - Add/Edit form
-6. Generators - "Generate" page for generating license keys.
+6. Generators - "Generate" page for generating license keys
 7. Activations - Overview page
 8. Settings - General
 9. Settings - WooCommerce (if WooCommerce is activated)
 10. Settings - API Keys - Overview
 11. Settings - API Keys - Add/Edit form
-12. My Account - Licenses overview
-13. My Account - Single order page - Shows the licenses
-14. Order Email - Shows the licenses
-15. Re-send licenses via Order page
+12. Settings - Tools page. Includes tool for Migration from License Manager for WooCommerce, etc
+13. My Account - Licenses overview
+14. My Account - Single license page, includes: basic details, certificate download and activations log table
+15. My Account - Single license page > Manual Activation Form (if enabled)
+16. My Account - Single license page > PDF Certificate download
+17. My Account - Single order page that includes licenses
+18. Order Email - Shows the licenses
+19. Re-send licenses via Order page
+20. Gutenberg blocks for user licenses table and license check form
+21. Shortcodes for user licenses table and license check form
+22. User licenses table displayed by using block or shortcode
+23. License check form displayed by using block or shortcode
 
 == Changelog ==
+
+= 1.5.2 =
+*Release Date - 20 Sep 2023*
+
+* Fix High-Performance-Order-Storage compatibility issues
+* Fix issue when generating bulk licenses from the Generators > Generate page
 
 = 1.5.1 =
 *Release Date - 16 Sep 2023*
