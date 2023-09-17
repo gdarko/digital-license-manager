@@ -265,15 +265,13 @@ class Boot {
 	 */
 	public function adminEnqueueScripts( $hook ) {
 
-		global $post_type;
-
 		// Conditionals
 		$isLicenses    = $hook === 'toplevel_page_dlm_licenses';
 		$isGenerators  = $hook === 'license-manager_page_dlm_generators';
 		$isActivations = $hook === 'license-manager_page_dlm_activations';
 		$isSettings    = $hook === 'license-manager_page_dlm_settings';
-		$isProducts    = in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'product' === $post_type;
-		$isOrder       = in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'shop_order' === $post_type;
+		$isProducts    = apply_filters( 'dlm_is_product_page', false, $hook );
+		$isOrder       = apply_filters( 'dlm_is_order_page', false, $hook );
 		$isManage      = $isLicenses || $isGenerators || $isActivations || apply_filters( 'dlm_admin_stylesheet_is_manage', false );
 
 		/**

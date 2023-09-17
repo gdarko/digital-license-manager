@@ -25,6 +25,7 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
+use Automattic\WooCommerce\Utilities\OrderUtil;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
@@ -53,6 +54,8 @@ class MyAccount {
 		add_action( 'dlm_myaccount_licenses_single_page_end', array( $this, 'addSingleLicenseActivationsTable' ), 10, 5 );
 		add_action( 'dlm_register_scripts', array( $this, 'registerScripts' ), 10, 1 );
 		add_action( 'dlm_enqueue_scripts', array( $this, 'enqueueScripts' ), 10, 1 );
+		add_filter( 'dlm_is_order_page', array( $this, 'isOrderPage' ), 10, 2 );
+		add_filter( 'dlm_is_product_page', array( $this, 'isProductPage' ), 10, 2 );
 	}
 
 	/**
@@ -128,7 +131,7 @@ class MyAccount {
 	/**
 	 * Adds the plugin pages to the "My account" section.
 	 *
-	 * @param array $items
+	 * @param  array  $items
 	 *
 	 * @return array
 	 */
@@ -221,9 +224,9 @@ class MyAccount {
 	/**
 	 * License actions
 	 *
-	 * @param array $actions
-	 * @param License $license
-	 * @param string $licenseKey
+	 * @param  array  $actions
+	 * @param  License  $license
+	 * @param  string  $licenseKey
 	 *
 	 * @return array
 	 */
@@ -244,7 +247,7 @@ class MyAccount {
 	/**
 	 * Single license page
 	 *
-	 * @param License $license
+	 * @param  License  $license
 	 */
 	public function addSingleLicenseContent( $license ) {
 
@@ -292,9 +295,41 @@ class MyAccount {
 	}
 
 	/**
+	 * Is the single order page
+	 *
+	 * @param $enabled
+	 * @param $hook
+	 *
+	 * @return bool
+	 */
+	public function isOrderPage( $enabled, $hook ) {
+		global $post_type;
+		if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
+			return 'woocommerce_page_wc-orders' === $hook && isset($_GET['page']) && 'wc-orders' === $_GET['page'];
+		} else {
+			return in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'shop_order' === $post_type;
+		}
+
+	}
+
+	/**
+	 * Is the single product page
+	 *
+	 * @param $enabled
+	 * @param $hook
+	 *
+	 * @return bool
+	 */
+	public function isProductPage( $enabled, $hook ) {
+		global $post_type;
+
+		return in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'product' === $post_type;
+	}
+
+	/**
 	 * Prints out the licenses activation table
 	 *
-	 * @param License $license
+	 * @param  License  $license
 	 * @param $order
 	 * @param $product
 	 * @param $dateFormat
@@ -324,7 +359,7 @@ class MyAccount {
 
 		$rowActions = apply_filters( 'dlm_myaccount_license_activation_row_actions', array(), $license, $order, $product );
 
-		ksort($rowActions);
+		ksort( $rowActions );
 
 		return wc_get_template_html(
 			'dlm/my-account/licenses/partials/single-table-activations.php',
@@ -357,35 +392,10 @@ class MyAccount {
 			return array();
 		}
 
-		global $wpdb;
-		$query = "
-            SELECT
-                DISTINCT(pm1.post_id) AS orderId
-            FROM
-                {$wpdb->postmeta} AS pm1
-            INNER JOIN
-                {$wpdb->postmeta} AS pm2
-                ON 1=1
-                   AND pm1.post_id = pm2.post_id
-            WHERE
-                1=1
-                AND pm1.meta_key = 'dlm_order_complete'
-                AND pm1.meta_value = '1'
-                AND pm2.meta_key = '_customer_user'
-                AND pm2.meta_value = '{$userId}'
-        ;";
-
-		$result   = array();
-		$orderIds = $wpdb->get_col( $query );
-
-		if ( empty( $orderIds ) ) {
-			return array();
-		}
-
 		/** @var License[] $licenses */
 		$licenses = Licenses::instance()->findAllBy(
 			array(
-				'order_id' => $orderIds
+				'user_id' => get_current_user_id()
 			)
 		);
 

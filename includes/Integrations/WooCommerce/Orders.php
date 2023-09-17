@@ -56,7 +56,7 @@ class Orders {
 
 		add_action( 'woocommerce_order_action_dlm_send_licenses', array( $this, 'actionResendLicenses' ), 10, 1 );
 		add_action( 'woocommerce_order_details_after_order_table', array( $this, 'showBoughtLicenses' ), 10, 1 );
-		add_filter( 'woocommerce_order_actions', array( $this, 'addSendLicenseKeysAction' ), 10, 1 );
+		add_filter( 'woocommerce_order_actions', array( $this, 'addSendLicenseKeysAction' ), 10, 2 );
 		add_action( 'woocommerce_after_order_itemmeta', array( $this, 'showOrderedLicenses' ), 10, 3 );
 		add_filter( 'dlm_woocommerce_order_item_actions', array( $this, 'orderItemActions' ), 10, 4 );
 		add_action( 'dlm_generated_licenses_saved', array( $this, 'markOrderAsComplete' ), 10, 3 );
@@ -387,17 +387,17 @@ class Orders {
 
 	}
 
-	/**
-	 * Adds a new order action used to resend the sold license keys.
-	 *
-	 * @param array $actions
-	 *
-	 * @return array
-	 */
-	public function addSendLicenseKeysAction( $actions ) {
-		global $post;
+    /**
+     * Adds a new order action used to resend the sold license keys.
+     *
+     * @param  array  $actions
+     * @param \WC_Order $order
+     *
+     * @return array
+     */
+	public function addSendLicenseKeysAction( $actions, $order ) {
 
-		if ( Licenses::instance()->countBy( array( 'order_id' => $post->ID ) ) ) {
+		if ( Licenses::instance()->countBy( array( 'order_id' => $order->get_id() ) ) ) {
 			$actions['dlm_send_licenses'] = __( 'Resend license(s) to customer', 'digital-license-manager' );
 		}
 
