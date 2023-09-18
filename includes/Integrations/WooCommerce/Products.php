@@ -105,7 +105,7 @@ class Products {
 		$tabs[ self::ADMIN_TAB_NAME ] = array(
 			'label'    => __( 'License Manager', 'digital-license-manager' ),
 			'target'   => self::ADMIN_TAB_TARGET,
-			'class'    => array( 'show_if_simple', 'show_if_variable' ),
+			'class' => apply_filters( 'dlm_woocommerce_product_edit_show_if', array( 'show_if_simple', 'show_if_subscription' ), $tabs, self::ADMIN_TAB_NAME ),
 			'priority' => 21
 		);
 
