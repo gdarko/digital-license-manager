@@ -483,7 +483,7 @@ class Orders {
 	 * @return bool
 	 */
 	public function validateOrderId( $isValid, $orderId ) {
-		$isValid = function_exists( 'wc_get_order' ) && ! wc_get_order( $orderId );
+		$isValid = function_exists( 'wc_get_order' ) && wc_get_order( $orderId );
 
 		return $isValid;
 	}

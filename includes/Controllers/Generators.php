@@ -154,12 +154,12 @@ class Generators {
 			$productId = absint( $_POST['product_id'] );
 		}
 
-		if ( $orderId && apply_filters( 'dlm_validate_order_id', true, $orderId ) ) {
+		if ( $orderId && ! apply_filters( 'dlm_validate_order_id', true, $orderId ) ) {
 			NoticeFlasher::error( __( 'The selected order does not exist.', 'digital-license-manager' ) );
 			HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s&action=generate', PageSlug::GENERATORS ) ) );
 		}
 
-		if ( $productId && apply_filters( 'dlm_validate_product_id', true, $productId ) ) {
+		if ( $productId && ! apply_filters( 'dlm_validate_product_id', true, $productId ) ) {
 			NoticeFlasher::error( __( 'The selected product does not exist.', 'digital-license-manager' ) );
 			HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s&action=generate', PageSlug::GENERATORS ) ) );
 		}

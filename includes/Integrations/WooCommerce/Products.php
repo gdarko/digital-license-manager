@@ -301,7 +301,7 @@ class Products {
 	 * @return bool
 	 */
 	public function validateProductId( $isValid, $productId ) {
-		return function_exists( 'wc_get_product' ) && ! wc_get_product( $productId );
+		return function_exists( 'wc_get_product' ) && wc_get_product( $productId );
 	}
 
 	/**
