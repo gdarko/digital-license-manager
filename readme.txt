@@ -198,6 +198,8 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 
 * Fix High-Performance-Order-Storage compatibility issues
 * Fix issue when generating bulk licenses from the Generators > Generate page
+* Add filter to allow adjustments to the WooCommerce product edit tab classes
+* Fix confusing logic on the dlm_validate_product/order_id filters
 
 = 1.5.1 =
 *Release Date - 16 Sep 2023*
