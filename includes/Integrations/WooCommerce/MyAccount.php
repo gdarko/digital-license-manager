@@ -199,7 +199,7 @@ class MyAccount {
 			$licenseService = new LicensesService();
 			$license        = $licenseService->findById( $licenseID );
 
-			if ( is_wp_error( $license ) || $license->getUserId() != $user->ID ) {
+			if ( is_wp_error( $license ) || $license->getUserId() !== $user->ID ) {
 				echo sprintf( '<h3>%s</h3>', __( 'Not found', 'digital-license-manager' ) );
 				echo sprintf( '<p>%s</p>', __( 'The license you are looking for is not found.', 'digital-license-manager' ) );
 

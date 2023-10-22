@@ -108,7 +108,7 @@ class License extends AbstractDataModel {
 	 * @return int
 	 */
 	public function getUserId() {
-		return $this->get( 'user_id' );
+		return (int) $this->get( 'user_id' );
 	}
 
 	/**
