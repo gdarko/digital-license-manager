@@ -8,7 +8,7 @@
  * Text Domain: digital-license-manager
  * Domain Path: /i18n/languages/
  * WC requires at least: 2.7
- * WC tested up to: 8.1
+ * WC tested up to: 8.2
  * License: GPLv3
  *
  ****************************************************************************
