@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce, k
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 6.3
-Stable tag: 1.5.2
+Stable tag: 1.5.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -192,6 +192,13 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 23. License check form displayed by using block or shortcode
 
 == Changelog ==
+
+= 1.5.3 =
+*Release Date - 22 Oct 2023*
+
+* Fix activating license as customer "permission denied" from My Account page
+* Update block dependencies
+* Test with WooCommerce 8.2
 
 = 1.5.2 =
 *Release Date - 20 Sep 2023*
