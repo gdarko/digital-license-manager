@@ -605,9 +605,4 @@ class LMFW extends AbstractToolMigrator {
 		return null;
 	}
 
-	public function test() {
-		$data2 = $this->getProducts( 1, 3 );
-		var_dump( $data2 );
-		echo 'done';
-	}
 }
