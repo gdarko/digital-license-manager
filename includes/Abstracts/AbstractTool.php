@@ -194,18 +194,18 @@ abstract class AbstractTool {
 				$next_step         = isset( $steps[ $step + 1 ] ) ? $step + 1 : - 1;
 				$data['next_step'] = $next_step;
 				$data['next_page'] = isset( $steps[ $step + 1 ] ) ? 1 : - 1;
-				$data['message']   = sprintf( __( 'Processing "%s" (%d/%d)', 'digital-license-manager' ), $steps[ $step ]['name'], $page, $total_pages );
+				$data['message']   = sprintf( __( 'Processing "%s" - Page: %d/%d', 'digital-license-manager' ), $steps[ $step ]['name'], $page, $total_pages );
 			} else if ( $page < $total_pages ) {
 				$next_step         = $step;
 				$data['next_step'] = $next_step;
 				$data['next_page'] = $next_page;
-				$data['message']   = sprintf( __( 'Processing "%s" (%d/%d)', 'digital-license-manager' ), $steps[ $step ]['name'], $page, $total_pages );
+				$data['message']   = sprintf( __( 'Processing "%s" - Page: %d/%d', 'digital-license-manager' ), $steps[ $step ]['name'], $page, $total_pages );
 			} else if ( isset( $steps[ $step + 1 ] ) ) {
 				$next_page         = 1;
 				$next_step         = $step + 1;
 				$data['next_step'] = $next_step;
 				$data['next_page'] = $next_page;
-				$data['message']   = sprintf( __( 'Processing "%s" (%d/%d)', 'digital-license-manager' ), $steps[ $step ]['name'], $page, $total_pages );
+				$data['message']   = sprintf( __( 'Processing "%s" - Page: %d/%d', 'digital-license-manager' ), $steps[ $step ]['name'], $page, $total_pages );
 
 			} else {
 				$next_step         = - 1;
