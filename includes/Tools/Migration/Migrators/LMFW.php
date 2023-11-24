@@ -53,7 +53,7 @@ class LMFW extends AbstractToolMigrator {
 	 */
 	public function getSteps() {
 
-		$default_per_page = 25;
+		$default_per_page = (int) apply_filters( 'dlm_migrator_lmfw_batch_size', 25 );
 
 		$tables = $this->getTables();
 
@@ -216,7 +216,7 @@ class LMFW extends AbstractToolMigrator {
 	public function doStep( $step, $page, $data = array() ) {
 		$step     = (int) $step;
 		$page     = (int) $page;
-		$per_page = 25;
+		$per_page = (int) apply_filters( 'dlm_migrator_lmfw_batch_size', 25 );
 
 		$licenseService = new LicensesService();
 
