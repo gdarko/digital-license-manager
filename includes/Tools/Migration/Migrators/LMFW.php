@@ -120,7 +120,7 @@ class LMFW extends AbstractToolMigrator {
 		}
 
 		$args = array(
-			'meta_key'     => 'dlm_licensed_product',
+			'meta_key'     => 'lmfwc_licensed_product',
 			'meta_value'   => 1,
 			'meta_compare' => '=',
 			'type'         => array( 'simple', 'variation' ),
