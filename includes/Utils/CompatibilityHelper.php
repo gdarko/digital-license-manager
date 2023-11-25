@@ -34,6 +34,20 @@ defined( 'ABSPATH' ) || exit;
 class CompatibilityHelper {
 
 	/**
+	 * Is the legacy "LMFWC" plugin used?
+	 * @return bool|null
+	 */
+	public static function is_legacy_used() {
+		static $state = null;
+		if ( is_null( $state ) ) {
+			$settings = get_option( 'lmfwc_settings_general' );
+			$state    = ! empty( $settings );
+		}
+
+		return $state;
+	}
+
+	/**
 	 * Check if is plugin active
 	 *
 	 * @param $plugin

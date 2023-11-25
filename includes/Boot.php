@@ -32,7 +32,7 @@ use IdeoLogix\DigitalLicenseManager\Controllers\Generators as GeneratorControlle
 use IdeoLogix\DigitalLicenseManager\Controllers\Licenses as LicenseController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Menus as MenuController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Settings as SettingsController;
-use IdeoLogix\DigitalLicenseManager\Controllers\Welcome as WelcomeController;
+use IdeoLogix\DigitalLicenseManager\Controllers\Notices as NoticeController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Frontend as FrontendController;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller as WooCommerceController;
 use IdeoLogix\DigitalLicenseManager\Integrations\WCPIPS\Controller as WCPIPSController;
@@ -92,9 +92,9 @@ class Boot {
 
 	/**
 	 * The main welcome screen controller
-	 * @var WelcomeController
+	 * @var NoticeController
 	 */
-	public $welcome;
+	public $notices;
 
 	/**
 	 * The main rest controller
@@ -515,7 +515,7 @@ class Boot {
 		$this->licenses   = new LicenseController();
 		$this->generators = new GeneratorController();
 		$this->api_keys   = new ApiKeyController();
-		$this->welcome    = new WelcomeController();
+		$this->notices    = new NoticeController();
 
 		$this->initIntegrations();
 

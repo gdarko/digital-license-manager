@@ -28,6 +28,7 @@ $url_docs      = DLM_DOCUMENTATION_URL;
 $url_purchase  = DLM_PURCHASE_URL;
 $url_github    = DLM_GITHUB_URL;
 $url_wordpress = DLM_WP_FORUM_URL;
+$url_migration = DLM_DOCUMENTATION_URL
 ?>
 
 <div class="instructions dgv-instructions">
@@ -35,24 +36,35 @@ $url_wordpress = DLM_WP_FORUM_URL;
         <div class="dgv-instructions-row dgv-instructions-header">
             <div class="dgv-instructions-colf">
                 <p class="lead"><?php _e( 'Thanks for installing <strong class="green">Digital License Manager</strong>', 'digital-license-manager' ); ?></p>
-                <p class="desc"><?php _e( 'Digital License Manager provides complete <strong class="underline">licensing</strong> solution for your software and as well as selling Licenses. The plugin goal is to provide consistent support and feature releases.', 'digital-license-manager' ); ?></p>
+                <p class="desc"><?php _e( 'Digital License Manager is a WordPress plugin that allows you to <strong>sell</strong> your licence keys through WooCommerce.', 'digital-license-manager' ); ?></p>
+                <p class="desc"><?php _e( 'The plugin supports various features like email notifications, separate activations table, pdf certifications, import/export, WooCommerce HPOS and more.' ); ?></p>
                 <p class="desc"><?php _e( 'If you found this plugin <strong>useful</strong> for your business, we will greatly appreciate if you take a minute to <a target="_blank" title="Give this plugin a good five star rating :)" href="https://wordpress.org/support/plugin/digital-license-manager/reviews/#new-post">rate it. &#9733;&#9733;&#9733;&#9733;&#9733;</a>', 'digital-license-manager' ); ?></p>
-                <p class="desc"><?php _e( sprintf( '<a target="_blank" class="button button-primary" title="Plugin Documentation" href="%s">Read Docs</a>', $url_docs ), 'digital-license-manager' ); ?></p>
+                <p class="desc"><?php _e( sprintf( '<a target="_blank" class="button button-primary" title="Plugin Documentation" href="%s">Documentation</a>', $url_docs ), 'digital-license-manager' ); ?></p>
             </div>
         </div>
         <div class="dgv-instructions-row dgv-instructions-mb-10">
+			<?php if ( \IdeoLogix\DigitalLicenseManager\Utils\CompatibilityHelper::is_legacy_used() ): ?>
+                <div class="dgv-instructions-colf dgv-highlighted">
+                    <div class="dgv-instructions-extra">
+                        <h4 class="navy"><?php _e( 'Looking to migrate from License Manager for WooCommerce?', 'digital-license-manager' ); ?></h4>
+                        <p style="margin-bottom: 0;">
+							<?php _e( sprintf( 'We <u>noticed</u> that you used <strong>License Manager for WooCommerce</strong> previously. If you want to migrate you data, <a target="_blank" href="%s">read more</a>.', $url_github ), 'digital-license-manager' ); ?>
+                        </p>
+                    </div>
+                </div>
+			<?php endif; ?>
             <div class="dgv-instructions-colf">
                 <div class="dgv-instructions-extra">
                     <h4 class="navy"><?php _e( 'Found problem? Report it!', 'digital-license-manager' ); ?></h4>
                     <p style="margin-bottom: 0;">
-						<?php _e( sprintf( 'If you found a bug or you want to report a problem please open a support ticket <a target="_blank" href="%s">here</a> or on <a target="_blank" href="%s">Github!</a>', $url_wordpress, $url_github ), 'digital-license-manager' ); ?>
+						<?php _e( sprintf( 'If you found a bug or you want to report a problem please open a support ticket <a target="_blank" href="%s">here</a> or on <a target="_blank" href="%s">Github</a>.', $url_wordpress, $url_github ), 'digital-license-manager' ); ?>
                     </p>
                 </div>
             </div>
-            <div class="dgv-instructions-colf" style="padding-top:0;">
+            <div class="dgv-instructions-colf">
                 <div class="dgv-instructions-extra">
                     <h4 style="margin-top:0;"
-                        class="navy"><?php _e( 'Want more features? try the PRO version!', 'digital-license-manager' ); ?></h4>
+                        class="navy"><?php _e( 'Need more features? try the PRO version!', 'digital-license-manager' ); ?></h4>
                     <p>
 						<?php _e( sprintf( 'If you need some additional functionality like WooCommerce Subscriptions integration, Software/Release management and distribution through the REST API and more, try the <a target="_blank" href="%s">PRO version.</a>', $url_purchase ), 'digital-license-manager' ); ?>
                     </p>
@@ -86,7 +98,7 @@ $url_wordpress = DLM_WP_FORUM_URL;
     .instructions .dgv-instructions-card .dgv-instructions-header p.lead {
         font-size: 23px;
         color: #1a1a1a;
-        margin-bottom: 5px;
+        margin-bottom: 8px;
 
     }
 
@@ -100,9 +112,17 @@ $url_wordpress = DLM_WP_FORUM_URL;
     }
 
     .instructions .dgv-instructions-colf {
-        width: 100%;
-        float: left;
         padding: 1%;
+    }
+
+    .instructions .dgv-instructions-colf:first-child {
+        margin-top: 5px;
+    }
+
+    .instructions .dgv-instructions-colf.dgv-highlighted {
+        background-color: #dfffea;
+        border-radius: 5px;
+        border: 2px solid #bdd3cf;
     }
 
     .instructions .dgv-instructions-col3 {
@@ -120,6 +140,7 @@ $url_wordpress = DLM_WP_FORUM_URL;
     .instructions h4 {
         margin-top: 5px;
         margin-bottom: 10px;
+        font-weight: 500;
     }
 
     .dgv-notice-dismiss {
@@ -171,6 +192,16 @@ $url_wordpress = DLM_WP_FORUM_URL;
 
     .instructions.is-dismissible {
         padding-right: 0 !important;
+    }
+
+    .dg-notice.notice-custom:before {
+        content: '';
+        position: absolute;
+        left: -4px;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: linear-gradient(to bottom, #1abc9c 0%, #11725e 100%)
     }
 
 </style>

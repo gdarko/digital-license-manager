@@ -25,35 +25,71 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
+use IdeoLogix\DigitalLicenseManager\Utils\CompatibilityHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeManager;
+use IgniteKit\WP\Notices\NoticesInterface;
 
-defined( 'ABSPATH' ) || exit;
-
-/**
- * Class Welcome
- * @package IdeoLogix\DigitalLicenseManager\Controllers
- */
-class Welcome {
+class Notices {
 
 	/**
-	 * Welcome constructor.
+	 * State
+	 * @var array
+	 */
+	private $showing = [
+		'welcome' => false,
+		'lmfwc'   => false
+	];
+
+	/**
+	 * Constructor
+	 * @return void
 	 */
 	public function __construct() {
-		$this->init();
+
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		$this->notice_welcome();
+		$this->notice_lmfwc();
 	}
 
 	/**
 	 * Initializes the notice.
+	 * @return void
 	 */
-	public function init() {
-		if ( ! is_admin() ) {
-			return;
-		}
+	private function notice_welcome() {
 		$key  = apply_filters( 'dlm_welcome_notice_key', 'dlm_welcome' );
 		$path = apply_filters( 'dlm_welcome_notice_path', DLM_ABSPATH . 'templates/admin/welcome.php' );
 		if ( file_exists( $path ) ) {
-			$path = trim( $path );
-			NoticeManager::instance()->add_custom( $key, "file://{$path}", "never" );
+			$path                     = trim( $path );
+			$notice                   = NoticeManager::instance()->add_custom( $key, "file://{$path}", "never" );
+			$this->showing['welcome'] = ! $notice->is_dismissed();
 		}
 	}
+
+	/**
+	 * Show notice about the lmfwc plugin migration
+	 *
+	 * @return void
+	 */
+	private function notice_lmfwc() {
+
+		if ( $this->showing['welcome'] ) {
+			return; // Do not show multiple notices at once.
+		}
+
+		if ( ! CompatibilityHelper::is_legacy_used() ) {
+			return;
+		}
+
+		$notice = NoticeManager::instance()->add_info(
+			'dlm_lmfwc',
+			sprintf( 'file://%s', DLM_ABSPATH . 'templates/admin/recommend.php' ),
+			NoticesInterface::DISMISS_FOREVER
+		);
+
+		$this->showing['lmfwc'] = $notice->is_dismissed();
+	}
+
 }
