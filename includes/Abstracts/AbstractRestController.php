@@ -188,6 +188,16 @@ abstract class AbstractRestController extends WP_REST_Controller {
 			return $this->responseError( $this->errors['route_disabled']['code'], $this->errors['route_disabled']['message'] );
 		}
 
+		if( ! is_user_logged_in() ) {
+			return $this->responseError(
+				'permission_denied',
+				__( 'API Key could not be authenticated.', 'digital-license-manager' ),
+				array(
+					'status' => 401
+				)
+			);
+		}
+
 		if ( ! $this->capabilityCheck( $capability ) ) {
 			return $this->responseError(
 				'permission_denied',
