@@ -411,7 +411,7 @@ class LMFW extends AbstractToolMigrator {
 							];
 							foreach ( $map as $dlm_id => $lmfwc_id ) {
 								$value                    = isset( $settings_general['lmfwc_enabled_api_routes'][ $lmfwc_id ] ) ? $settings_general['lmfwc_enabled_api_routes'][ $lmfwc_id ] : 0;
-								$new_endpoints[ $dlm_id ] = $value;
+								$new_endpoints[ $dlm_id ] = strval( $value );
 							}
 							if ( ! empty( $new_endpoints ) ) {
 								$new_row_data['endpoints'] = $new_endpoints;
@@ -488,10 +488,11 @@ class LMFW extends AbstractToolMigrator {
 	protected function getRecords( $table, $page, $per_page ) {
 		global $wpdb;
 
-		$offset = $page <= 1 ? 0 : ( $page - 1 ) * $per_page;
-		$query  = $wpdb->prepare( "SELECT * FROM {$table} LIMIT %d, %d", $offset, $per_page );
+		$per_page = (int) $per_page;
 
-		return $wpdb->get_results( $query, ARRAY_A );
+		$offset = $page <= 1 ? 0 : ( $page - 1 ) * $per_page;
+
+		return $wpdb->get_results( "SELECT * FROM {$table} LIMIT {$offset}, {$per_page}", ARRAY_A );
 	}
 
 	/**
@@ -603,6 +604,20 @@ class LMFW extends AbstractToolMigrator {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Is the legacy "LMFWC" plugin used?
+	 * @return bool|null
+	 */
+	public static function is_lmfw_used() {
+		static $state = null;
+		if ( is_null( $state ) ) {
+			$settings = get_option( 'lmfwc_settings_general' );
+			$state    = ! empty( $settings );
+		}
+
+		return $state;
 	}
 
 }
