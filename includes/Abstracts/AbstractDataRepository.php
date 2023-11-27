@@ -327,6 +327,15 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	}
 
 	/**
+	 * Truncates table
+	 * @return bool|int
+	 */
+	public function truncate() {
+		global $wpdb;
+		return $wpdb->query('TRUNCATE TABLE '.$this->getTable());
+	}
+
+	/**
 	 * Counts rows in the database
 	 * @return int
 	 */
