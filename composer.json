@@ -4,7 +4,10 @@
   "autoload": {
     "psr-4": {
       "IdeoLogix\\DigitalLicenseManager\\": "includes/"
-    }
+    },
+    "files": [
+      "./helpers.php"
+    ]
   },
   "require": {
     "ext-openssl": "*",

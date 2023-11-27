@@ -1216,7 +1216,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			return new WP_Error( 'license_not_found', __( 'Unknown license', 'digital-license-manager' ), array( 'status' => 404 ) );
 		}
 
-		$timesActivated   = $license->getTimesActivated();
+		$timesActivated   = $license->getActivationsCount(['active' => 1]);
 		$activationsLimit = $license->getActivationsLimit();
 
 		if ( empty( $licenseKey ) ) {
@@ -1403,7 +1403,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 *
 	 * @return bool
 	 */
-	public function deleteMEta( $id, $key, $value = null ) {
+	public function deleteMeta( $id, $key, $value = null ) {
 		$license = Licenses::instance()->find( $id );
 
 		if ( ! $license ) {

@@ -131,10 +131,10 @@ $time_format = get_option( 'time_format' );
 
 					$value = $keyData ? $keyData->getEndpoints() : array();
 
-					foreach ( Setup::restEndpoints() as $route ) {
+					foreach ( \IdeoLogix\DigitalLicenseManager\RestAPI\Setup::getEndpoints() as $route ) {
 						$checked = false;
 
-						if ( is_array( $value ) && array_key_exists( $route['id'], $value ) && $value[ $route['id'] ] === '1' ) {
+						if ( is_array( $value ) && array_key_exists( $route['id'], $value ) && (int) $value[ $route['id'] ] === 1 ) {
 							$checked = true;
 						}
 

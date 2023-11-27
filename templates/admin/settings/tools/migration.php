@@ -30,10 +30,11 @@ defined( 'ABSPATH' ) || exit;
 
 <h3><?php _e( 'Database Migration', 'digital-license-manager' ); ?></h3>
 <p><?php _e( 'This is one-click migration tool that makes it possible to migrate from other plugins easily. Please take database backups before starting this operation.', 'digital-license-manager' ); ?></p>
-<form class="dlm-tool-form" method="POST" action="">
+<form class="dlm-tool-form dlm-tool-form--database-migration" method="POST" action="">
     <div class="dlm-tool-form-row">
         <label for="identifier"><?php _e( 'Select plugin', 'digital-license-manager' ); ?></label>
         <select id="identifier" name="identifier">
+            <option value="none">---</option>
 			<?php foreach ( $plugins as $plugin ): ?>
                 <option value="<?php echo esc_attr( $plugin->getId() ); ?>"><?php echo esc_attr( $plugin->getName() ); ?></option>
 			<?php endforeach; ?>
@@ -56,4 +57,5 @@ defined( 'ABSPATH' ) || exit;
         <input type="hidden" name="tool" value="<?php echo esc_attr( $tool->getSlug() ); ?>">
         <button type="submit" class="button button-small button-primary"><?php _e( 'Migrate', 'digital-license-manager' ); ?></button>
     </div>
+    <div class="dlm-tool-form-row dlm-tool-form-status" style="display:none;"></div>
 </form>

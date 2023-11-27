@@ -172,6 +172,14 @@ class License extends AbstractDataModel {
 		return $this->get( 'valid_for' );
 	}
 
+	/**
+	 * The activations limit
+	 * @backcompat License Manager for WooCommerce
+	 * @return int
+	 */
+	public function getTimesActivatedMax() {
+		return $this->getActivationsLimit();
+	}
 
 	/**
 	 * The activations limit

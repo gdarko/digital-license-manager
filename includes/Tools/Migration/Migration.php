@@ -170,4 +170,51 @@ class Migration extends AbstractTool {
 	public function getIdentifier() {
 		return isset( $_REQUEST['identifier'] ) ? sanitize_text_field( $_REQUEST['identifier'] ) : '';
 	}
+
+	/**
+	 * Set the tool status
+	 * @return void
+	 */
+	public function setStatus($args) {
+		$data = wp_parse_args($args, [
+			'completed_at' => null,
+		]);
+		update_option($this->getStatusKey(), $data);
+	}
+
+	/**
+	 * Get the tool status
+	 * @return mixed
+	 */
+	public function getStatus() {
+		return get_option( $this->getStatusKey() );
+	}
+
+	/**
+	 * Reset the tool status
+	 * @return void
+	 */
+	public function resetStatus() {
+		delete_option($this->getStatusKey());
+	}
+
+	/**
+	 * Marks as complete
+	 * @param $args
+	 *
+	 * @return void
+	 */
+	public function markAsComplete() {
+		$this->setStatus([
+			'completed_at' => date('Y-m-d H:i:s')
+		]);
+	}
+
+	/**
+	 * The status key
+	 * @return string
+	 */
+	private function getStatusKey() {
+		return sprintf( 'dlm_database_migration_%s', $this->getIdentifier());
+	}
 }

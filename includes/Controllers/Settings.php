@@ -33,6 +33,7 @@ use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\ListTables\ApiKeys as ApiKeysListTable;
 use IdeoLogix\DigitalLicenseManager\Tools\Migration\Migration;
 use IdeoLogix\DigitalLicenseManager\Traits\Singleton;
+use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 
 /**
  * Class Settings
@@ -60,6 +61,8 @@ class Settings {
 		$this->tools = apply_filters( 'dlm_tools', $this->tools );
 		add_action( 'dlm_settings_sanitized', array( $this, 'afterSanitize' ), 10, 2 );
 		add_action( 'wp_ajax_dlm_handle_tool_process', array( $this, 'handleToolProcess' ), 50 );
+		add_action( 'wp_ajax_dlm_database_migration_tool_status', array( $this, 'handleToolStatus' ), 50 );
+		add_action( 'wp_ajax_dlm_database_migration_tool_undo', array( $this, 'handleToolUndo' ), 50 );
 	}
 
 	/**
@@ -542,20 +545,20 @@ class Settings {
 			exit;
 		} else {
 
-			$this->tools = apply_filters( 'dlm_tools', $this->tools );
+			$this->loadTools();
 
 			$tool_slug = isset( $_POST['tool'] ) ? sanitize_text_field( $_POST['tool'] ) : null;
-			$tool_id = isset( $_POST['id'] ) ? sanitize_text_field( $_POST['id'] ) : null;
+			$tool_id   = isset( $_POST['id'] ) ? sanitize_text_field( $_POST['id'] ) : null;
 			if ( is_null( $tool_slug ) || ! isset( $this->tools[ $tool_slug ] ) ) {
 				wp_send_json_error( [ 'message' => __( 'Unknown tool selected.' ) ] );
 				exit;
 			}
 
-			$step       = isset( $_POST['step'] ) ? intval( $_POST['step'] ) : null;
-			$page       = isset( $_POST['page'] ) ? intval( $_POST['page'] ) : null;
+			$step = isset( $_POST['step'] ) ? intval( $_POST['step'] ) : null;
+			$page = isset( $_POST['page'] ) ? intval( $_POST['page'] ) : null;
 
 			/* @var AbstractTool $tool */
-			$tool = new $this->tools[ $tool_slug ]($tool_id);
+			$tool = new $this->tools[ $tool_slug ]( $tool_id );
 
 			$init = isset( $_POST['init'] ) ? (int) $_POST['init'] : 0;
 			if ( $init ) {
@@ -580,9 +583,13 @@ class Settings {
 					exit;
 				} else {
 
-					$result               = $tool->doStep( $step, $page );
-					$step_message         = sprintf( __( 'Page %d of step %d completed successfully.' ), $page, $step );
-					$next['step_message'] = is_wp_error( $result ) ? $result->get_error_message() : $step_message;
+					if ( $next['next_step'] !== - 1 ) {
+						$result          = $tool->doStep( $step, $page );
+						$next['message'] = is_wp_error( $result ) ? $result->get_error_message() : $next['message'];
+					} else {
+						$tool->markAsComplete();
+						update_option( 'nc_info_dlm_lmfwc', 'yes' );
+					}
 					wp_send_json_success( $next );
 
 					exit;
@@ -590,6 +597,61 @@ class Settings {
 			}
 		}
 
+	}
+
+	/**
+	 * Handles Database Migration tool status
+	 * @return void
+	 */
+	public function handleToolStatus() {
+		if ( ! check_ajax_referer( 'dlm-tools', '_wpnonce', false ) || ! current_user_can( 'dlm_manage_settings' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Permission denied.' ) ] );
+			exit;
+		} else {
+
+			$this->loadTools();
+
+			$tool  = new Migration( time() );
+			$value = $tool->getStatus();
+
+			wp_send_json_success( [
+				'status' => $value && ! empty( $value['completed_at'] ) ? sprintf( __( 'Migration completed on: %s.', 'digital-license-manager' ), DateFormatter::convert( $value['completed_at'], 'Y-m-d H:i:s' ) ) : '',
+			] );
+
+			exit;
+		}
+	}
+
+	/**
+	 * Handles the undo tool
+	 * @return void
+	 */
+	public function handleToolUndo() {
+		if ( ! check_ajax_referer( 'dlm-tools', '_wpnonce', false ) || ! current_user_can( 'dlm_manage_settings' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Permission denied.' ) ] );
+			exit;
+		} else {
+			$this->loadTools();
+
+			$tool = new Migration( time() );
+			set_time_limit( 0 );
+			wp_raise_memory_limit( 'image' );
+			if ( $tool->getPlugin()->undo() ) {
+				delete_option( 'nc_info_dlm_lmfwc' );
+				wp_send_json_success();
+			} else {
+				wp_send_json_error( [ 'message' => __( 'Operation Error.' ) ] );
+			}
+			exit;
+		}
+	}
+
+	/**
+	 * Load the tools
+	 * @return void
+	 */
+	private function loadTools() {
+		$this->tools = apply_filters( 'dlm_tools', $this->tools );
 	}
 
 	/**

@@ -23,37 +23,30 @@
  * Code written, maintained by Darko Gjorgjijoski (https://darkog.com)
  */
 
-namespace IdeoLogix\DigitalLicenseManager\Controllers;
+namespace IdeoLogix\DigitalLicenseManager\RestAPI\Compat\LMFWC;
 
-use IdeoLogix\DigitalLicenseManager\Utils\NoticeManager;
+use IdeoLogix\DigitalLicenseManager\RestAPI\Compat\LMFWC\Controllers\Generators;
+use IdeoLogix\DigitalLicenseManager\RestAPI\Compat\LMFWC\Controllers\Licenses;
 
-defined( 'ABSPATH' ) || exit;
-
-/**
- * Class Welcome
- * @package IdeoLogix\DigitalLicenseManager\Controllers
- */
-class Welcome {
+class Setup {
 
 	/**
-	 * Welcome constructor.
+	 * Constructor
 	 */
 	public function __construct() {
-		$this->init();
+		add_filter( 'dlm_rest_controllers', [ $this, 'register_rest_controllers' ] );
 	}
 
 	/**
-	 * Initializes the notice.
+	 * Register the REST controllers
+	 * @return void
 	 */
-	public function init() {
-		if ( ! is_admin() ) {
-			return;
-		}
-		$key  = apply_filters( 'dlm_welcome_notice_key', 'dlm_welcome' );
-		$path = apply_filters( 'dlm_welcome_notice_path', DLM_ABSPATH . 'templates/admin/welcome.php' );
-		if ( file_exists( $path ) ) {
-			$path = trim( $path );
-			NoticeManager::instance()->add_custom( $key, "file://{$path}", "never" );
-		}
+	public function register_rest_controllers($list) {
+
+		$list[] = Licenses::class;
+		$list[] = Generators::class;
+
+		return $list;
 	}
+
 }

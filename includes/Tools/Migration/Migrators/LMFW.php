@@ -53,7 +53,7 @@ class LMFW extends AbstractToolMigrator {
 	 */
 	public function getSteps() {
 
-		$default_per_page = 25;
+		$default_per_page = (int) apply_filters( 'dlm_migrator_lmfw_batch_size', 25 );
 
 		$tables = $this->getTables();
 
@@ -94,14 +94,7 @@ class LMFW extends AbstractToolMigrator {
 	 * @return string[]
 	 */
 	protected function getTables() {
-		global $wpdb;
-
-		return [
-			'licenses'     => $wpdb->prefix . 'lmfwc_licenses',
-			'generators'   => $wpdb->prefix . 'lmfwc_generators',
-			'api_keys'     => $wpdb->prefix . 'lmfwc_api_keys',
-			'license_meta' => $wpdb->prefix . 'lmfwc_licenses_meta',
-		];
+		return self::_getTables();
 	}
 
 	/**
@@ -120,7 +113,7 @@ class LMFW extends AbstractToolMigrator {
 		}
 
 		$args = array(
-			'meta_key'     => 'dlm_licensed_product',
+			'meta_key'     => 'lmfwc_licensed_product',
 			'meta_value'   => 1,
 			'meta_compare' => '=',
 			'type'         => array( 'simple', 'variation' ),
@@ -188,9 +181,7 @@ class LMFW extends AbstractToolMigrator {
 	 * @return int
 	 */
 	public function getRecordsCount( $table ) {
-		global $wpdb;
-
-		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $table" ) );
+		return self::getRowCount( $table );
 	}
 
 	/**
@@ -216,7 +207,7 @@ class LMFW extends AbstractToolMigrator {
 	public function doStep( $step, $page, $data = array() ) {
 		$step     = (int) $step;
 		$page     = (int) $page;
-		$per_page = 25;
+		$per_page = (int) apply_filters( 'dlm_migrator_lmfw_batch_size', 25 );
 
 		$licenseService = new LicensesService();
 
@@ -232,13 +223,8 @@ class LMFW extends AbstractToolMigrator {
 				 */
 				case 1:
 					$old_rows = $this->getRecords( $tables['licenses'], $page, $per_page );
-					if ( $preserve_ids ) {
-						Licenses::instance()->deleteBy( [
-							'id' => [
-								'compare' => '>',
-								'value'   => 0,
-							]
-						] );
+					if ( $preserve_ids && $page === 1 ) {
+						Licenses::instance()->truncate();
 					}
 
 					foreach ( $old_rows as $row ) {
@@ -313,18 +299,11 @@ class LMFW extends AbstractToolMigrator {
 				 */
 				case 2:
 					$old_rows = $this->getRecords( $tables['generators'], $page, $per_page );
-					if ( $preserve_ids ) {
-						Generators::instance()->deleteBy( [
-							'id' => [
-								'compare' => '>',
-								'value'   => 0,
-							]
-						] );
-					}
+					if ( $preserve_ids && $page === 1 ) {
+						Generators::instance()->truncate();
+					};
 
-					delete_transient( 'dlm_generator_map' );
-
-					$generator_map = [];
+					$generator_map = $this->getGeneratorMap();
 
 					foreach ( $old_rows as $row ) {
 
@@ -356,19 +335,14 @@ class LMFW extends AbstractToolMigrator {
 						}
 					}
 
-					set_transient( 'dlm_generator_map', $generator_map, HOUR_IN_SECONDS * 24 );
+					$this->updateGeneratorMap($generator_map);
 
 					break;
 				case 3:
 
 					$old_rows = $this->getRecords( $tables['api_keys'], $page, $per_page );
-					if ( $preserve_ids ) {
-						ApiKeys::instance()->deleteBy( [
-							'id' => [
-								'compare' => '>',
-								'value'   => 0,
-							]
-						] );
+					if ( $preserve_ids && $page === 1 ) {
+						ApiKeys::instance()->truncate();
 					}
 
 					foreach ( $old_rows as $row ) {
@@ -411,13 +385,14 @@ class LMFW extends AbstractToolMigrator {
 							];
 							foreach ( $map as $dlm_id => $lmfwc_id ) {
 								$value                    = isset( $settings_general['lmfwc_enabled_api_routes'][ $lmfwc_id ] ) ? $settings_general['lmfwc_enabled_api_routes'][ $lmfwc_id ] : 0;
-								$new_endpoints[ $dlm_id ] = $value;
+								$new_endpoints[ $dlm_id ] = strval( $value );
 							}
 							if ( ! empty( $new_endpoints ) ) {
 								$new_row_data['endpoints'] = $new_endpoints;
 							}
 						}
 
+						ApiKeys::instance()->delete(['consumer_key' => $row['consumer_key'], 'consumer_secret' => $row['consumer_secret']]); // Delete all existing matchin before inserting.
 						ApiKeys::instance()->insert( $new_row_data );
 					}
 
@@ -427,7 +402,7 @@ class LMFW extends AbstractToolMigrator {
 
 					$query = $this->getProducts( $page, $per_page );
 					if ( ! empty( $query['products'] ) ) {
-						$generator_map = get_transient( 'dlm_generator_map' );
+						$generator_map = $this->getGeneratorMap();
 						foreach ( $query['products'] as $product ) {
 							/* @var \WC_Product $product */
 							$quantity      = (int) get_post_meta( $product->get_id(), 'lmfwc_licensed_product_delivered_quantity', true );
@@ -463,6 +438,7 @@ class LMFW extends AbstractToolMigrator {
 
 					$settings_general      = (array) get_option( 'lmfwc_settings_general', array() );
 					$settings_order_status = (array) get_option( 'lmfwc_settings_order_status', array() );
+					// TODO: Implement.
 
 					break;
 
@@ -488,10 +464,11 @@ class LMFW extends AbstractToolMigrator {
 	protected function getRecords( $table, $page, $per_page ) {
 		global $wpdb;
 
-		$offset = $page <= 1 ? 0 : ( $page - 1 ) * $per_page;
-		$query  = $wpdb->prepare( "SELECT * FROM {$table} LIMIT %d, %d", $offset, $per_page );
+		$per_page = (int) $per_page;
 
-		return $wpdb->get_results( $query, ARRAY_A );
+		$offset = $page <= 1 ? 0 : ( $page - 1 ) * $per_page;
+
+		return $wpdb->get_results( "SELECT * FROM {$table} LIMIT {$offset}, {$per_page}", ARRAY_A );
 	}
 
 	/**
@@ -546,6 +523,43 @@ class LMFW extends AbstractToolMigrator {
 		$query  = $wpdb->prepare( "SELECT * FROM {$table} WHERE license_id=%d", $license_id );
 
 		return $wpdb->get_results( $query, ARRAY_A );
+	}
+
+	/**
+	 * Undo migration
+	 *
+	 * @return bool
+	 */
+	public function undo() {
+		// Delete imported licenses
+		$per_page = apply_filters( 'dlm_migrator_lmfw_undo_batch_size', 50 );
+		$total    = LicenseMeta::instance()->count( [ 'meta_key' => 'migrated_from' ] );
+		$pages    = $total > $per_page ? ceil( $total / $per_page ) : 1;
+		$all      = [];
+		for ( $i = 1; $i <= $pages; $i ++ ) {
+			$offset = ( $i - 1 ) * $per_page;
+			$rows   = LicenseMeta::instance()->get( [ 'meta_key' => 'migrated_from' ], $sortBy = null, $sortDir = 'DESC', $offset, $per_page );
+			foreach ( $rows as $row ) {
+				$all[] = [ 'licenseId' => $row->getLicenseId(), 'metaId' => $row->getMetaId() ];
+			}
+		}
+		foreach($all as $item) {
+			Licenses::instance()->delete( [ 'id' => (int) $item['licenseId'] ] );
+			LicenseMeta::instance()->delete( [ 'meta_id' => (int) $item['metaId'] ] );
+			LicenseActivations::instance()->delete( [ 'license_id' => (int) $item['licenseId'] ] );
+		}
+		// Delete imported generators
+		$map = $this->getGeneratorMap();
+		if(!empty($map) && is_array($map)) {
+			foreach($map as $old_id => $new_id) {
+				Generators::instance()->delete(['id' => (int) $new_id]);
+			}
+		}
+		// House keeping
+		delete_option('dlm_database_migration_'.$this->getId());
+		$this->deleteGeneratorMap();
+
+		return true;
 	}
 
 	/**
@@ -605,9 +619,93 @@ class LMFW extends AbstractToolMigrator {
 		return null;
 	}
 
-	public function test() {
-		$data2 = $this->getProducts( 1, 3 );
-		var_dump( $data2 );
-		echo 'done';
+	/**
+	 * Get the rows count in specific table
+	 * @param $table
+	 *
+	 * @return int
+	 */
+	public static function getRowCount($table) {
+		global $wpdb;
+
+		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM $table" );
 	}
+
+	/**
+	 * Return the tables
+	 * @return string[]
+	 */
+	public static function _getTables() {
+		global $wpdb;
+
+		return [
+			'licenses'     => $wpdb->prefix . 'lmfwc_licenses',
+			'generators'   => $wpdb->prefix . 'lmfwc_generators',
+			'api_keys'     => $wpdb->prefix . 'lmfwc_api_keys',
+			'license_meta' => $wpdb->prefix . 'lmfwc_licenses_meta',
+		];
+	}
+
+	/**
+	 * Retrieves the generator map
+	 * @return false|mixed|null
+	 */
+	protected function getGeneratorMap() {
+		$value = get_option('dlm_lmfw_migration_generator_map');
+		return empty($value) || !is_array($value) ? [] : $value;
+	}
+
+	/**
+	 * Set generator map
+	 *
+	 * @param array $new_map
+	 *
+	 * @return void
+	 */
+	protected function updateGeneratorMap( $new_map ) {
+		update_option( 'dlm_lmfw_migration_generator_map', $new_map );
+	}
+
+	/**
+	 * Deletes the generator map
+	 * @return void
+	 */
+	protected function deleteGeneratorMap() {
+		delete_option('dlm_lmfw_migration_generator_map');
+	}
+
+	/**
+	 * Is the legacy "LMFWC" plugin used?
+	 * @return bool|null
+	 */
+	public static function isUsed() {
+		static $state = null;
+		if ( is_null( $state ) ) {
+			$settings = get_option( 'lmfwc_settings_general' );
+			$state    = ! empty( $settings );
+		}
+
+		return $state;
+	}
+
+	/**
+	 * Data exists
+	 * @return mixed|string|null
+	 */
+	public static function dataFound() {
+		global $wpdb;
+		$tables = self::_getTables();
+		$licenses = $tables['licenses'];
+		return self::getRowCount($licenses) ;
+	}
+
+	/**
+	 * Already migrated?
+	 * @return bool
+	 */
+	public static function alreadyMigrated() {
+		$info = get_option('dlm_database_migration_lmfw');
+		return !empty($info['completed_at']);
+	}
+
 }

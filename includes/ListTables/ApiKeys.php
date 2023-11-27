@@ -229,7 +229,7 @@ class ApiKeys extends AbstractListTable {
 		return esc_html( sprintf(
 			__( '%1$s at %2$s', 'digital-license-manager' ),
 			date_i18n( $this->dateFormat, strtotime( $item->getLastAccess() ) ),
-			date_i18n( $this->dateFormat, strtotime( $item->getLastAccess() ) )
+			date_i18n( $this->timeFormat, strtotime( $item->getLastAccess() ) )
 		) );
 	}
 

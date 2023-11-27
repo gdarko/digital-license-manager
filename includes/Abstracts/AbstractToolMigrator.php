@@ -87,4 +87,11 @@ abstract class AbstractToolMigrator {
 	 */
 	abstract public function doStep( $step, $page, $data = array() );
 
+	/**
+	 * Undoes the migration process
+	 *
+	 * @return bool
+	 */
+	abstract public function undo();
+
 }
