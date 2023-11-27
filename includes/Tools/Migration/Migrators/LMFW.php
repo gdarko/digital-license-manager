@@ -223,7 +223,7 @@ class LMFW extends AbstractToolMigrator {
 				 */
 				case 1:
 					$old_rows = $this->getRecords( $tables['licenses'], $page, $per_page );
-					if ( $preserve_ids ) {
+					if ( $preserve_ids && $page === 1 ) {
 						Licenses::instance()->truncate();
 					}
 
@@ -299,7 +299,7 @@ class LMFW extends AbstractToolMigrator {
 				 */
 				case 2:
 					$old_rows = $this->getRecords( $tables['generators'], $page, $per_page );
-					if ( $preserve_ids ) {
+					if ( $preserve_ids && $page === 1 ) {
 						Generators::instance()->truncate();
 					};
 
@@ -341,7 +341,7 @@ class LMFW extends AbstractToolMigrator {
 				case 3:
 
 					$old_rows = $this->getRecords( $tables['api_keys'], $page, $per_page );
-					if ( $preserve_ids ) {
+					if ( $preserve_ids && $page === 1 ) {
 						ApiKeys::instance()->truncate();
 					}
 
@@ -438,6 +438,7 @@ class LMFW extends AbstractToolMigrator {
 
 					$settings_general      = (array) get_option( 'lmfwc_settings_general', array() );
 					$settings_order_status = (array) get_option( 'lmfwc_settings_order_status', array() );
+					// TODO: Implement.
 
 					break;
 
