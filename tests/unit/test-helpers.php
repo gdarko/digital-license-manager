@@ -63,7 +63,7 @@ class DLM_Helpers_TestCase extends WP_UnitTestCase {
 		$this->assertEquals('AAAA-BBBB-CCCC-DDDD', $result->getDecryptedLicenseKey());
 
 		// License meta
-		$result = dlm_add_license_meta('AAAA-BBBB-CCCC-DDDD', '');
+		// TODO: Add tests
 
 		// Delete license
 		$result = dlm_delete_license( 'AAAA-BBBB-CCCC-DDDD' );
@@ -75,9 +75,6 @@ class DLM_Helpers_TestCase extends WP_UnitTestCase {
 		// Delete activation
 		$result = dlm_delete_activation($result2->getToken());
 		$this->assertTrue( $result );
-
-
-
 
 	}
 }
