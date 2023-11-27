@@ -521,6 +521,10 @@ class Boot {
 
 		$this->rest = new RestController();
 
+		if ( apply_filters( 'dlm_compatibility_layer_for_lmfwc', false ) ) {
+			new \IdeoLogix\DigitalLicenseManager\RestAPI\Compat\LMFWC\Setup();
+		}
+
 		$this->frontend = new FrontendController();
 
 		do_action( 'dlm_init', $this );
