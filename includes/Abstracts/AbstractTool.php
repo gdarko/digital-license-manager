@@ -142,6 +142,15 @@ abstract class AbstractTool {
 	 */
 	abstract public function doStep( $step, $page );
 
+
+	/**
+	 * Mark as complete (Not all tools needs this)
+	 * @return void
+	 */
+	public function markAsComplete() {
+
+	}
+
 	/**
 	 * Return the next step
 	 *

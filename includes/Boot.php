@@ -405,6 +405,10 @@ class Boot {
 					'ajax_url' => admin_url( 'admin-ajax.php' ),
 					'nonce'    => wp_create_nonce( 'dlm-tools' ),
 					'i18n'     => [
+						'loading'      => '<img alt="Loading..." src="' . DLM_PLUGIN_URL . '/assets/img/loader.gif" width="20" height="20"/>',
+						'undo'         => __( 'Undo', 'digital-license-manager' ),
+						'undo_confirm' => __( 'Are you sure you want to undo this migration? This will remove any imported licenses using this Database Migration tool. This action is useful only if you want to re-run the migration process, but in most cases is unecessary. And, if your database is huge, you may need to re-run this multiple times until it is done.', 'digital-license-manager' ),
+						'finished'     => __( 'Process finished', 'digital-license-manager' ),
 						'confirmation' => __( 'WARNING - Please take backups before running this tool. It can cause a damage to your database if not used properly.', 'digital-license-manager' )
 					]
 				) );

@@ -58,3 +58,15 @@
     border: 1px solid #ccc;
     margin-bottom: 17px;
 }
+
+.dlm-migration-tool-undo > img {
+    width: 15px;
+    height: 15px;
+    position: relative;
+    top: 3px;
+}
+
+.dlm-migration-tool-undo {
+    outline: none;
+    text-decoration: none;
+}

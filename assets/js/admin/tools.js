@@ -70,6 +70,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         var http = new window.DLM.Http();
         var url = DLM_Tools.ajax_url + '?action=dlm_handle_tool_process&_wpnonce=' + DLM_Tools.nonce;
 
+        var statusRow = this.form.querySelector('.dlm-tool-form-status');
         var submitButton = this.form.querySelector('button[type=submit]');
         submitButton.classList.add('disabled');
         window.onbeforeunload = function () {
@@ -94,6 +95,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                     window.onbeforeunload = null;
                     submitButton.classList.remove('disabled');
                     submitButton.style.display = 'none';
+                    self.setProgress(DLM_Tools.i18n.finished, 100);
                 }
             },
             error: function (response, responseStatus, responseHeaders) {
@@ -117,11 +119,86 @@ document.addEventListener("DOMContentLoaded", function (event) {
         for (var i = 0; i < forms.length; i++) {
             forms[i].addEventListener('submit', function (e) {
                 e.preventDefault();
+                console.log(this.classList);
+                if(this.querySelector('button[type=submit]').classList.contains('disabled')) {
+                    // Do nothing.
+                    return;
+                }
                 if (confirm(DLM_Tools.i18n.confirmation)) {
                     var tools = new window.DLM.AdminTools(this);
                     tools.init(1, 1);
                 }
             })
+        }
+    }
+
+    /**
+     * Database migration tool related
+     */
+        // Migration tool status
+    var selector = document.querySelector('.dlm-tool-form--database-migration #identifier');
+    if(selector) {
+        let cache = {};
+        let _dlm_output_results = function(statusRow, submitButton, response) {
+            if('' !== response.data.status) {
+                statusRow.innerHTML = '<p style="color: green;">' + response.data.status + ' (<a href="#" class="dlm-migration-tool-undo" data-identifier="lmfw">'+DLM_Tools.i18n.undo+'</a>)</p>';
+                statusRow.style.display = '';
+                submitButton.classList.add('disabled')
+                initUndoBtn();
+            }
+        }
+        selector.addEventListener('change', function(){
+            var http = new window.DLM.Http();
+            var url = DLM_Tools.ajax_url + '?action=dlm_database_migration_tool_status&_wpnonce=' + DLM_Tools.nonce;
+            var statusRow = selector.closest('form').querySelector('.dlm-tool-form-status');
+            var submitButton = selector.closest('form').querySelector('button[type=submit]');
+            submitButton.classList.remove('disabled');
+            statusRow.style.display = 'none';
+            statusRow.innerHTML = '';
+            if (cache.hasOwnProperty(selector.value)) {
+                _dlm_output_results(statusRow, submitButton, cache[selector.value]);
+            } else {
+                http.post(url, {
+                    data: {identifier: selector.value},
+                    success: function (response, responseStatus, responseHeaders) {
+                        if (response.success) {
+                            cache[selector.value] = response;
+                            _dlm_output_results(statusRow, submitButton, cache[selector.value]);
+                        } else {
+                            alert(response.data.message)
+                        }
+                    },
+                    error: function (response, responseStatus, responseHeaders) {
+                    }
+                });
+            }
+        })
+    }
+
+    let initUndoBtn = function() {
+        // Migration tool undo
+        let undoBtn = document.querySelector('.dlm-tool-form--database-migration .dlm-migration-tool-undo');
+        if(undoBtn) {
+            undoBtn.addEventListener('click', function (e){
+                if(confirm(DLM_Tools.i18n.undo_confirm)) {
+                    var http = new window.DLM.Http();
+                    var url = DLM_Tools.ajax_url + '?action=dlm_database_migration_tool_undo&_wpnonce=' + DLM_Tools.nonce;
+                    var id = this.dataset.identifier;
+                    this.innerHTML = undoBtn.innerHTML + ' ' + DLM_Tools.i18n.loading;
+                    http.post(url, {
+                        data: {identifier: id},
+                        success: function (response, responseStatus, responseHeaders) {
+                            if (response.success) {
+                                window.location.reload();
+                            } else {
+                                alert(response.data.message)
+                            }
+                        },
+                        error: function (response, responseStatus, responseHeaders) {
+                        }
+                    });
+                }
+            });
         }
     }
 });
