@@ -627,7 +627,7 @@ class LMFW extends AbstractToolMigrator {
 	public static function getRowCount($table) {
 		global $wpdb;
 
-		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $table" ) );
+		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM $table" );
 	}
 
 	/**
