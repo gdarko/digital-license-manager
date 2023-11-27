@@ -45,7 +45,7 @@ $url_migration = trailingslashit(DLM_DOCUMENTATION_URL) . 'migration/migrate-fro
             </div>
         </div>
         <div class="dgv-instructions-row dgv-instructions-mb-10">
-			<?php if ( LMFW::is_lmfw_used() ): ?>
+			<?php if ( LMFW::isUsed() ): ?>
                 <div class="dgv-instructions-colf dgv-highlighted">
                     <div class="dgv-instructions-extra">
                         <h4 class="navy"><?php _e( 'Looking to migrate from License Manager for WooCommerce?', 'digital-license-manager' ); ?></h4>
