@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce, k
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 6.4
-Stable tag: 1.5.4
+Stable tag: 1.5.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -159,7 +159,7 @@ To validate a license through the REST API, please follow this <a href="http://d
 
 = I am using "License Manager for WooCommerce", how to migrate to Digital License Manager?
 
-To migrate to Digital License Manager, please navigate to "License Manager" > "Settings" > "Tools" and here you can find the migration tool. This will copy your data to Digital License Manager supported format. If you used the REST API, we will be providing a fallback REST API for license activation/deactivation/validation endpoints that will be the same url structure as the "License Manager for WooCommerce" but utilize our backend APIs for backwards compatibility. Stay tuned!
+Looking to migrate from License Manager for WooCommerce? <a href="https://docs.codeverve.com/digital-license-manager/migration/migrate-from-license-manager-for-woocommerce/">Read more</a>!
 
 = Can i assign license keys to past WooCommerce orders that were placed before i installed Digital Licnese Manager?
 
@@ -193,12 +193,20 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 
 == Changelog ==
 
+= 1.5.5 =
+*Release date - 27 Nov 2023
+
+* Fix issue related to notice display
+
 = 1.5.4 =
 *Release date - 27 Nov 2023*
 
-* Improvements to the migration tool from License Manager for WooCommerce
-* Add Compatibility layer for the REST API for License Manager for WooCommerce
-* Add
+* Improvements to the <a href="https://docs.codeverve.com/digital-license-manager/migration/migrate-from-license-manager-for-woocommerce/">migration tool</a> from License Manager for WooCommerce
+* Add <a href="https://docs.codeverve.com/digital-license-manager/migration/migrate-from-license-manager-for-woocommerce/">Compatibility layer</a> for the REST API for License Manager for WooCommerce
+* Add public <a href="https://github.com/gdarko/digital-license-manager/blob/master/helpers.php">helper functions</a> that can be used to interact with the plugin's database
+* Add migration notices
+* Fixes various smaller issues here and there
+* Improves the unit tests collection
 
 = 1.5.3 =
 *Release Date - 22 Oct 2023*
