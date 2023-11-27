@@ -24,11 +24,13 @@
  */
 
 // Urls
+use IdeoLogix\DigitalLicenseManager\Tools\Migration\Migrators\LMFW;
+
 $url_docs      = DLM_DOCUMENTATION_URL;
 $url_purchase  = DLM_PURCHASE_URL;
 $url_github    = DLM_GITHUB_URL;
 $url_wordpress = DLM_WP_FORUM_URL;
-$url_migration = DLM_DOCUMENTATION_URL
+$url_migration = trailingslashit(DLM_DOCUMENTATION_URL) . 'migration/migrate-from-license-manager-for-woocommerce/';
 ?>
 
 <div class="instructions dgv-instructions">
@@ -43,12 +45,12 @@ $url_migration = DLM_DOCUMENTATION_URL
             </div>
         </div>
         <div class="dgv-instructions-row dgv-instructions-mb-10">
-			<?php if ( \IdeoLogix\DigitalLicenseManager\Utils\CompatibilityHelper::is_legacy_used() ): ?>
+			<?php if ( LMFW::is_lmfw_used() ): ?>
                 <div class="dgv-instructions-colf dgv-highlighted">
                     <div class="dgv-instructions-extra">
                         <h4 class="navy"><?php _e( 'Looking to migrate from License Manager for WooCommerce?', 'digital-license-manager' ); ?></h4>
                         <p style="margin-bottom: 0;">
-							<?php _e( sprintf( 'We <u>noticed</u> that you used <strong>License Manager for WooCommerce</strong> previously. If you want to migrate you data, <a target="_blank" href="%s">read more</a>.', $url_github ), 'digital-license-manager' ); ?>
+							<?php _e( sprintf( 'We <u>noticed</u> that you used <strong>License Manager for WooCommerce</strong> previously. If you want to migrate you data, <a target="_blank" href="%s">read more</a>.', $url_migration ), 'digital-license-manager' ); ?>
                         </p>
                     </div>
                 </div>

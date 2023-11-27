@@ -25,7 +25,9 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
+use IdeoLogix\DigitalLicenseManager\Tools\Migration\Migrators\LMFW;
 use IdeoLogix\DigitalLicenseManager\Utils\CompatibilityHelper;
+use IdeoLogix\DigitalLicenseManager\Utils\EnvironmentHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeManager;
 use IgniteKit\WP\Notices\NoticesInterface;
 
@@ -76,16 +78,21 @@ class Notices {
 	private function notice_lmfwc() {
 
 		if ( $this->showing['welcome'] ) {
-			return; // Do not show multiple notices at once.
+			return; // Do not show multiple notices at once
 		}
 
-		if ( ! CompatibilityHelper::is_legacy_used() ) {
+		if ( isset( $_GET['page'] ) && 'dlm_settings' === $_GET['page'] && isset( $_GET['tab'] ) && 'tools' === $_GET['tab'] ) {
+			return; // Do not show on the tools page.
+		}
+
+		if ( LMFW::isUsed() && LMFW::dataFound() && LMFW::alreadyMigrated() ) {
+			// Do not nag, when all of those met.
 			return;
 		}
 
 		$notice = NoticeManager::instance()->add_info(
 			'dlm_lmfwc',
-			sprintf( 'file://%s', DLM_ABSPATH . 'templates/admin/recommend.php' ),
+			sprintf( 'file://%s', DLM_ABSPATH . 'templates/admin/migration.php' ),
 			NoticesInterface::DISMISS_FOREVER
 		);
 
