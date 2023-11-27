@@ -81,22 +81,36 @@ class Authentication {
 	 * Checks if the request is meant to be processed by the REST API.
 	 *
 	 * This code was inspired by and taken from the following copyright holders:
+	 * @return bool
 	 * @copyright WooCommerce/Automattic
 	 * @url https://github.com/woocommerce/woocommerce/blob/7.9.0/plugins/woocommerce/includes/class-wc-rest-authentication.php#L53
 	 *
-	 * @return bool
 	 */
 	protected function isRequestToRestApi() {
-		if ( empty( $_SERVER['REQUEST_URI'] ) ) {
+
+		$requestUri = ! empty( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
+
+		if ( empty( $requestUri ) ) {
 			return false;
 		}
 
 		$restPrefix = trailingslashit( rest_get_url_prefix() );
 
-		// Check if our endpoint.
-		$dlm = ( false !== strpos( $_SERVER['REQUEST_URI'], $restPrefix . 'dlm/' ) );
+		if ( false !== strpos( $requestUri, $restPrefix . 'dlm/' ) ) {
+			return true;
+		}
 
-		return $dlm;
+		/**
+		 * Compatibility layer for License Manager for WooCommerce
+		 * @url https://docs.codeverve.com/digital-license-manager/migration/migrate-from-license-manager-for-woocommerce/
+		 */
+		if ( apply_filters( 'dlm_compatibility_layer_for_lmfwc', false ) ) {
+			if ( false !== strpos( $requestUri, $restPrefix . 'lmfwc/' ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
