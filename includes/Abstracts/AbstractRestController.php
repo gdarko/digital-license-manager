@@ -236,7 +236,7 @@ abstract class AbstractRestController extends WP_REST_Controller {
 			}
 		}
 
-		return apply_filters( 'dlm_rest_api_params', $params );
+		return apply_filters( 'dlm_rest_api_prepare_input', $params );
 	}
 
 	/**
