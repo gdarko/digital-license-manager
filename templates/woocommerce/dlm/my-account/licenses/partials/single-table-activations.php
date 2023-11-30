@@ -149,7 +149,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
                         </h2>
                         <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
                     </header>
-                    <form method="POST" action="<?php echo home_url(); ?>" id="dlm-manual-activation-add--form">
+                    <form method="POST" action="<?php echo esc_url( \IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\MyAccount::getProcessingEndpointUrl() ); ?>" id="dlm-manual-activation-add--form">
                         <main class="modal__content" id="dlm-manual-activation-add--content">
                             <div class="dlm-form-row">
                                 <label for="label"><?php _e( 'Label' ); ?></label>

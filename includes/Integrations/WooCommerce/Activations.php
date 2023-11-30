@@ -103,12 +103,12 @@ class Activations {
 			$license    = $service->find( $licenseKey );
 
 			if ( is_wp_error( $result ) ) {
-				\wc_add_notice( $result->get_error_message(), 'error' );
+				$this->addNotice( 'error', $result->get_error_message() );
 			} else {
 				if ( $result ) {
-					\wc_add_notice( __( 'License activation deleted successfully.', 'digital-license-manager' ), 'success' );
+					$this->addNotice( 'success', __( 'License activation deleted successfully.', 'digital-license-manager' ) );
 				} else {
-					\wc_add_notice( __( 'Unable to delete license activation.', 'digital-license-manager' ), 'error' );
+					$this->addNotice( 'error', __( 'Unable to delete license activation.', 'digital-license-manager' ) );
 				}
 			}
 
@@ -130,22 +130,38 @@ class Activations {
 		$license      = $service->find( $licenseKey );
 
 		if ( is_wp_error( $license ) ) {
-			\wc_add_notice( $license->get_error_message(), 'error' );
+			$this->addNotice( 'error', $license->get_error_message() );
 			HttpHelper::redirect( wc_get_account_endpoint_url( 'digital-licenses' ) );
 		}
 		if ( current_user_can( 'administrator' ) || $license->getUserId() === get_current_user_id() ) {
 			$result = $service->activate( $licenseKey, [ 'label' => $licenseLabel, 'source' => ActivationSource::WEB ] );
 			if ( is_wp_error( $result ) ) {
-				\wc_add_notice( $result->get_error_message(), 'error' );
+				$this->addNotice( 'error', $result->get_error_message() );
 			} else {
-				\wc_add_notice( __( 'License activated successfully!', 'digital-license-manager' ), 'success' );
+				$this->addNotice( 'success', __( 'License activated successfully!', 'digital-license-manager' ) );
 			}
 		} else {
-			\wc_add_notice( __( 'Permission denied. User does not have access to activate this license.', 'digital-license-manager' ), 'error' );
+			$this->addNotice( 'error', __( 'Permission denied. User does not have access to activate this license.', 'digital-license-manager' ) );
 		}
 
 		HttpHelper::redirect( wc_get_account_endpoint_url( sprintf( 'digital-licenses/%s', $license->getId() ) ) );
 		exit;
 	}
+
+	/**
+	 * Adds a notice the queue
+	 *
+	 * @param $type
+	 * @param $message
+	 *
+	 * @since 1.5.6
+	 *
+	 * @return void
+	 */
+	public function addNotice( $type, $message ) {
+
+		\wc_add_notice( $message, $type );
+	}
+
 
 }

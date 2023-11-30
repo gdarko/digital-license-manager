@@ -411,4 +411,15 @@ class MyAccount {
 		return $result;
 	}
 
+	/**
+	 * Returns the processing endpoint url
+	 *
+	 * @since 1.5.6
+	 *
+	 * @return string
+	 */
+	public static function getProcessingEndpointUrl() {
+		return apply_filters( 'dlm_myaccount_processing_endpoint_url', add_query_arg( [ 'dlm_action_handler' => 1 ], trailingslashit( home_url() ) ) );
+	}
+
 }
