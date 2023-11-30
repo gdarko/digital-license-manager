@@ -38,7 +38,6 @@ class Activations {
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_action( 'wp_ajax_dlm_manual_activation', array( $this, 'handleManualActivation' ), 10 );
 		add_filter( 'dlm_myaccount_license_activation_row_actions', array( $this, 'licenseActivationRowActions' ), 10, 4 );
 		add_action( 'dlm_myaccount_handle_action_activation_row_actions', array( $this, 'handleLicenseActivationActions' ) );
 		add_action( 'dlm_myaccount_handle_action_manual_activation', array( $this, 'handleManualLicenseActivation' ) );
