@@ -360,7 +360,7 @@ class Licenses extends AbstractRestController {
 		$licenseKey = isset( $urlParams['license_key'] ) ? sanitize_text_field( $urlParams['license_key'] ) : '';
 
 		if ( JsonFormatter::validate( $request->get_body() ) ) {
-			$updateData = JsonFormatter::decode( $request->get_body() );
+			$updateData = JsonFormatter::decode( $request->get_body(), true );
 		} else {
 			$updateData = $this->prepareInput( $request->get_params() );
 		}

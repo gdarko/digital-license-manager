@@ -296,7 +296,7 @@ class Generators extends DLM_REST_Controller {
 		// Set and sanitize the basic parameters to be used.
 		$generatorId = absint( $request->get_param( 'generator_id' ) );
 		if ( JsonFormatter::validate( $request->get_body() ) ) {
-			$updateData = JsonFormatter::decode( $request->get_body() );
+			$updateData = JsonFormatter::decode( $request->get_body(), true );
 		} else {
 			$updateData = $request->get_params();
 		}
