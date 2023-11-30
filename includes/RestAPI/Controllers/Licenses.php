@@ -257,7 +257,7 @@ class Licenses extends AbstractRestController {
 			return $isValid;
 		}
 
-		$query = $request->get_params();
+		$query = $this->prepareInput( $request->get_params() );
 
 		$licenses = $this->service->get( $query );
 		if ( is_wp_error( $licenses ) ) {
@@ -312,7 +312,7 @@ class Licenses extends AbstractRestController {
 			return $isValid;
 		}
 
-		$body = $request->get_params();
+		$body = $this->prepareInput( $request->get_params() );
 
 		$orderId          = isset( $body['order_id'] ) ? absint( $body['order_id'] ) : null;
 		$productId        = isset( $body['product_id'] ) ? absint( $body['product_id'] ) : null;
@@ -362,7 +362,7 @@ class Licenses extends AbstractRestController {
 		if ( JsonFormatter::validate( $request->get_body() ) ) {
 			$updateData = JsonFormatter::decode( $request->get_body() );
 		} else {
-			$updateData = $request->get_params();
+			$updateData = $this->prepareInput( $request->get_params() );
 		}
 
 		$updatedLicense = $this->service->update( $licenseKey, $updateData );

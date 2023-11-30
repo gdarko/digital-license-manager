@@ -214,6 +214,32 @@ abstract class AbstractRestController extends WP_REST_Controller {
 	}
 
 	/**
+	 * Prepares query parameters from input ( removes unwanted data )
+	 *
+	 * @param $params
+	 *
+	 * @since 1.5.6
+	 *
+	 * @return mixed
+	 */
+	protected function prepareInput( $params ) {
+
+		if ( ! is_array( $params ) || empty( $params ) ) {
+			return $params;
+		}
+
+		$excluded = [ 'consumer_key', 'consumer_secret' ];
+
+		foreach ( $excluded as $key ) {
+			if ( isset( $params[ $key ] ) ) {
+				unset( $params[ $key ] );
+			}
+		}
+
+		return apply_filters( 'dlm_rest_api_params', $params );
+	}
+
+	/**
 	 * Return the request credentials
 	 * @return array
 	 */
