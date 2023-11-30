@@ -136,6 +136,11 @@ class Setup {
 			delete_option( 'dlm_settings_' . $tab['slug'] );
 		}
 
+		delete_option( 'nc_info_dlm_lmfwc' );
+		delete_option( 'dlm_lmfw_migration_generator_map' );
+		delete_option( 'dlm_db_version' );
+		delete_option( 'dlm_needs_permalinks_flush' );
+
 		define( 'DLM_UNINSTALLED', true );
 	}
 
