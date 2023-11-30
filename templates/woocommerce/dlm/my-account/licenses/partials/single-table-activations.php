@@ -129,7 +129,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 		<?php else: ?>
 
             <tr>
-                <td colspan="4">
+                <td colspan="5">
                     <p><?php _e( 'No activations found.', 'digital-license-manager' ); ?></p>
                 </td>
             </tr>
