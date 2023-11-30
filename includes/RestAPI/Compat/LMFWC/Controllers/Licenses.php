@@ -249,7 +249,7 @@ class Licenses extends AbstractRestController {
 			return $isValid;
 		}
 
-		$query = $request->get_params();
+		$query = $this->prepareInput( $request->get_params() );
 
 		$licenses = $this->service->get( $query );
 		if ( is_wp_error( $licenses ) ) {
