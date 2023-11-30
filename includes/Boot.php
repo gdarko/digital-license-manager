@@ -26,6 +26,7 @@
 namespace IdeoLogix\DigitalLicenseManager;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractIntegrationController;
+use IdeoLogix\DigitalLicenseManager\Controllers\Admin as AdminController;
 use IdeoLogix\DigitalLicenseManager\Controllers\ApiKeys as ApiKeyController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Dropdowns as DropdownsController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Generators as GeneratorController;
@@ -59,6 +60,12 @@ class Boot {
 	 * @var string
 	 */
 	public $version;
+
+	/**
+	 * The admin controller
+	 * @var AdminController
+	 */
+	public $admin;
 
 	/**
 	 * The main licenses controller
@@ -515,6 +522,7 @@ class Boot {
 		NoticeFlasher::instance();
 		NoticeManager::instance();
 
+		$this->admin      = new AdminController();
 		$this->dropdowns  = new DropdownsController();
 		$this->licenses   = new LicenseController();
 		$this->generators = new GeneratorController();

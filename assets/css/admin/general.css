@@ -135,6 +135,22 @@ Flatpickr
 }
 
 /**
+ Edit screens
+ */
+body.dlm-single-admin-page .dlm .wp-heading-inline {
+	background: #fff;
+	width: 100%;
+	margin-top: 10px;
+	border-top: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	padding: 20px 30px;
+	box-sizing: border-box;
+	max-width: 1722px;
+	margin-bottom: 0 !important;
+}
+
+/**
 Orders
  */
 .dlm-license-keys-toggle-all .dlm-spinner {
