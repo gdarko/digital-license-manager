@@ -175,7 +175,7 @@ class Generators extends DLM_REST_Controller {
 			return $isValid;
 		}
 
-		$query = $request->get_params();
+		$query = $this->prepareInput( $request->get_params() );
 
 		$generators = $this->service->get( $query );
 		if ( is_wp_error( $generators ) ) {
