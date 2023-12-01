@@ -1,10 +1,10 @@
 ﻿=== Digital License Manager ===
 Contributors: darkog, codeverve
-Tags: license key, license manager, software license, serial key, woocommerce, keys
+Tags: license key, license manager, software license, serial key, woocommerce
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 6.4
-Stable tag: 1.5.5
+Stable tag: 1.5.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -12,53 +12,57 @@ Sell and manage your digital licenses through your WordPress or WooCommerce webs
 
 == Description ==
 
-**Digital License Manager is licensing plugin for WordPress that can be used sell your license keys form your site. Supported and maintained by friendly team behind. 😎**
+**Digital License Manager is licensing plugin for WordPress that can be used sell your license keys form your site 😎**
 
 The plugin is compatible with WooCommerce, although it can be used as standalone License Manager without WooCommerce.
 
-### ✨ Free Features
+### ✨ Core Features
 
-* Manage your Licenses (status, license key, activations, etc)
-* Manage License Activations. Keeps separate records of Activations identified by unique token instead of single activations count variable.
-* Manage License Generators. Makes it possible to generate Licenses by specific rules (separator, chunks, length, allowed characters, prefix, suffix etc)
-* Assign Generators to one or more WooCommerce products to generate Licenses based on the rules of the Generator when the product is purchased on certain Order status
-* Automatically generate, sell and deliver keys through WooCommerce. Supports both Simple and Variable products.
-* Manual License Activations in MyAccount order page when using with WooCommerce
-* Separate page for Licenses in MyAccount when using with WooCommerce
-* Separate page for each License in My Account when using with WooCommerce
-* License Certificates in PDF format downloadable from the single License page in My Account page when using with WooCommerce
-* The purchased Licenses are included in the WooCommerce Emails (completed order, etc)
-* License delivery Order statuses can be selected from the plugin Settings
-* Create, update, activate, deactivate and validate licenses through the REST API
-* Create and update generators through the REST API
-* Import licenses form file
-* Export licenses to PDF or CSV format. Allows column selection
-* Migration tool for migrating from other plugins
-* WooCommerce <a href="https://woocommerce.com/document/high-performance-order-storage/">High-Performance Order Storage</a> Support
-* PDF certificates of the licenses in WooCommerce -> My Account -> License page
-* Support for "WooCommerce PDF Invoices and Packing Slips" by WP Overnight. License key will be displayed in the invoice.
-* Gutenberg Block "DLM: Licenses Table". Lists the licenses owned by the current user
-* Gutenberg Block "DLM: Licenses Check". Provides a form where user can check validity of a license key
+* Supperts Licenses (key, status, activations)
+* Supports License Activations (in separate database table table)
+* Supports Generators (Allows to configure & generate license keys in specific format)
+* WooCommerce HPOS (<a href="https://woocommerce.com/document/high-performance-order-storage/">High-Performance Order Storage</a>) Support
+* Supports generating a license on product purchase with assigned Generator
+* Supports delivering a license on product purchase from stock (stock licenses with ACTIVE status)
+* Supports both Simple and Variable products for License key delivery
+* Manual License Activations in WooCommerce MyAccount page
+* Displays all the Licenses in WooCommerce MyAccount page
+* Displays each License on a separate subpage in WooCommerce My Account page
+* Supports downloading License Certificate in PDF Format from the licnese page in WooCommerce My Account
+* Option to include purchased License in the WooCommerce order confirmation email
+* Option to select on which WooCommerce order statuses to deliver Licenses
+* Rest API endpoints for Licenses (create, update, delete, list, show, activate, deactivate, validate)
+* Rest API endpoints for Generators (create, update, delete, list, show, generate licenses)
+* Rest API protected with API Key and configurable permissions per API Key
+* Option to Import licenses form CSV file
+* Option to Export licenses to PDF or CSV file. Allows column selection
+* Migration tool for migrating from other plugins like License Manager for WooCommerce
+* Support for "WooCommerce PDF Invoices and Packing Slips" by WP Overnight to display license key in invoice
+* Gutenberg Block that lists all the licenses owned by the current user
+* Gutenberg Block that provides a form where user can check validity of a license key
 * Shortcode "[dlm_licenses_table]". Lists the licenses owned by the current user
 * Shortcode "[dlm_licenses_check]"  Displays a form where user can check validity of a license key
-
+* PHP functions and hooks for developers, easily extendible.
 
 The plugin works fine even without WooCommerce. If you want to use the plugin as standalone license manager or if you have another solution for selling the keys, you can use the REST API to create licenses.
 
-### ✨ PRO Version Features
+### ✨ Additional Features
 
-The PRO version focuses on making it possible to generate consistent cash flow through the integration with WooCommerce Subscriptions and provide updates through the Digital License Manager REST API to the users that purchased and activated their license. List of the additional features as follows:
+Our PRO version focuses on support for WooCommerce Subscriptions, detailed software showcase in the product page tabs, software update delivery through special REST API endpoints and can be configured as WordPress update server to deliver updates to your premium plugins/themes.
 
-* WooCommerce Subscriptions <a href="https://docs.codeverve.com/digital-license-manager/handbook/woocommerce/subscriptions/" target="_blank" rel="noopener">support</a>. It extends existing license or generates new one upon subscription renewal based on your product settings.
-* Subscriptions for WooCommerce support. This is free alternative to WooCommerce Subscriptions. Similarly as WooCommerce Subscriptions, it extends existing license or generates new one upon subscription renewal based on your product settings.
+List of the additional features as follows:
+
+* WooCommerce Subscriptions <a href="https://docs.codeverve.com/digital-license-manager/handbook/woocommerce/subscriptions/" target="_blank" rel="noopener">support</a>. Extend or generates new license upon subscription renewal.
+* Subscriptions for WooCommerce support, a free alternative to WooCommerce Subscriptions. Extend or generates new license upon subscription renewal.
 * <a href="https://docs.codeverve.com/digital-license-manager/handbook/software/managing-software/" target="_blank" rel="noopener">Software management</a>. If you sell software, you will be able to add your software, setup a gallery, support information, FAQs that appear on the product page.
 * <a href="https://docs.codeverve.com/digital-license-manager/handbook/software/manage-releases/" target="_blank" rel="noopener">Software release management</a>. Downloadable software can be distributed as a releases. For each version you create a release in the Software editor.
 * Software <a href="https://docs.codeverve.com/digital-license-manager/rest-api/software/single/" target="_blank">details REST Endpoint</a> to get information about specific software. This is useful if you want to perform update check from your premium software.
 * Software <a href="https://docs.codeverve.com/digital-license-manager/rest-api/software/download/" target="_blank">download REST Endpoint</a> to download the latest release for specific software. This is useful if you want to provide updates for your software.
-* Separate Battle-tested and well-documented WordPress package to create License Activation form and provide updates through your Digital License Manager Software API. Start your WordPress theme/plugin shop today!
+* Separate Battle-tested and well-documented WordPress package to create License Activation form and deliver plugin/theme updates through your Digital License Manager Software API.
 * Ready to use <a href="https://docs.codeverve.com/digital-license-manager/wordpress-theme-plugin-updates/" target="_blank" rel="noopener">theme/plugin updater</a> library with integration guide. Useful if you want to integrate license activations to your plugins/themes.
-* Additional <a href="https://docs.codeverve.com/digital-license-manager/handbook/configuration/#WooCommerce" target="_blank" rel="noopener">Options</a> to enable or disable features like the "Licenses" access in My Account.
+* Additional plugin <a href="https://docs.codeverve.com/digital-license-manager/handbook/configuration/#WooCommerce" target="_blank" rel="noopener">Options</a> to enable or disable features like the "Licenses" access in My Account.
 * WPML support. The plugin will share the stock to the translations of the original product. If you configure licenses from stock on the original product then you pick the same setting on the translation products, it should work correctly.
+* Polylang support. (Coming soon)
 * Software download statistics (Coming soon)
 
 <a href="https://codeverve.com/product/digital-license-manager-pro/" target="_blank">Get PRO Version</a>
@@ -141,6 +145,10 @@ Yes it does.
 
 The License activations are stored as a separate database entries and not using a counter. This allows easier management of License Activation per device/installation/etc.
 
+= I am using "License Manager for WooCommerce", how to migrate to Digital License Manager?
+
+Looking to migrate from License Manager for WooCommerce? <a href="https://docs.codeverve.com/digital-license-manager/migration/migrate-from-license-manager-for-woocommerce/">Read more</a>!
+
 = How to create a license through the REST API? =
 
 To create a license through the REST API, please follow this <a href="http://docs.codeverve.com/digital-license-manager/rest-api/licenses/create/" target="_blank">guide</a>.
@@ -157,11 +165,7 @@ To deactivate a license through the REST API, please follow this <a href="http:/
 
 To validate a license through the REST API, please follow this <a href="http://docs.codeverve.com/digital-license-manager/rest-api/licenses/validate/" target="_blank">guide</a>.
 
-= I am using "License Manager for WooCommerce", how to migrate to Digital License Manager?
-
-Looking to migrate from License Manager for WooCommerce? <a href="https://docs.codeverve.com/digital-license-manager/migration/migrate-from-license-manager-for-woocommerce/">Read more</a>!
-
-= Can i assign license keys to past WooCommerce orders that were placed before i installed Digital Licnese Manager?
+= Can I assign license keys to past WooCommerce orders that were placed before i installed Digital Licnese Manager?
 
 Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past Orders". You must select a Generator that will be used to generate keys for the orders.
 
@@ -192,6 +196,15 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 23. License check form displayed by using block or shortcode
 
 == Changelog ==
+
+= 1.5.6 =
+*Release date - 01 Dec 2023*
+
+* Fix the License Activations table display in My Account
+* Fix issues related to API calls
+* Improvements to single License/Generator UI
+* Improvements to the uninstallation cleanup procedure
+* Removed unused wp_ajax endpoint
 
 = 1.5.5 =
 *Release date - 27 Nov 2023
