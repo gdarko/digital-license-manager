@@ -3,7 +3,7 @@
  * This file comes from the "Digital License Manager" WordPress plugin.
  * https://darkog.com/p/digital-license-manager/
  *
- * Copyright (C) 2020-2023  Darko Gjorgjijoski. All Rights Reserved.
+ * Copyright (C) 2020-2024  Darko Gjorgjijoski. All Rights Reserved.
  *
  * Digital License Manager is free software; you can redistribute it
  * and/or modify it under the terms of the GNU General Public License
@@ -34,7 +34,7 @@ namespace IdeoLogix\DigitalLicenseManager\Abstracts;
  *
  * @copyright  2019-2022 Drazen Bebic
  * @copyright  2022-2023 WPExperts.io
- * @copyright  2020-2023 Darko Gjorgjijoski
+ * @copyright  2020-2024 Darko Gjorgjijoski
  *
  * @depreacted 1.5.0 - Deprecated in favor of Traits/Singleton
  */
