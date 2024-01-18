@@ -2,13 +2,13 @@
 /**
  * Plugin Name: Digital License Manager
  * Description: Easily manage and sell your license keys on your website. Compatible with WooCommerce for selling licenses but also works without it.
- * Version: 1.5.6
+ * Version: 1.5.7-beta
  * Author: Darko Gjorgjijoski
  * Author URI: https://darkog.com/
  * Text Domain: digital-license-manager
  * Domain Path: /i18n/languages/
  * WC requires at least: 2.7
- * WC tested up to: 8.3.1
+ * WC tested up to: 8.5.1
  * License: GPLv3
  *
  ****************************************************************************
@@ -39,7 +39,7 @@
 defined( 'ABSPATH' ) || exit;
 
 if ( ! defined( 'DLM_VERSION' ) ) {
-	define( 'DLM_VERSION', '1.5.6' );
+	define( 'DLM_VERSION', '1.5.7-beta' );
 }
 if ( ! defined( 'DLM_PURCHASE_URL' ) ) {
 	define( 'DLM_PURCHASE_URL', 'https://codeverve.com/product/digital-license-manager-pro/' );
@@ -80,7 +80,7 @@ add_action( 'before_woocommerce_init', function() {
 
 if ( ! function_exists( 'digital_license_manager' ) ) {
 	function digital_license_manager() {
-		return IdeoLogix\DigitalLicenseManager\Boot::instance();
+		return \IdeoLogix\DigitalLicenseManager\Boot::instance();
 	}
 }
 
