@@ -62,7 +62,7 @@ foreach ( $data as $productId => $row ): ?>
 			?>
             <tr>
                 <td colspan="<?php echo ( $license && $license->getExpiresAt() ) ? '' : '2'; ?>">
-                    <span class="dlm-myaccount-license-key"><?php echo esc_html( $decrypted ); ?></span>
+                    <span class="dlm-myaccount-license-key" title="<?php _e('Copy to clipboard', 'digital-license-manager'); ?>"><?php echo esc_html( $decrypted ); ?></span>
                 </td>
 				<?php if ( $license->getExpiresAt() ): ?>
 					<?php

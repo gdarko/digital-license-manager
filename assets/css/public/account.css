@@ -24,10 +24,6 @@
 }
 
 /** My Account **/
-.dlm-myaccount-license-key {
-    font-family: Consolas, monospace;
-    font-size: 13px;
-}
 .dlm-header h3, .dlm-header button {
     display:inline-block;
     width:auto;
@@ -60,4 +56,33 @@
 }
 .micromodal-slide form {
     margin-bottom: 0;
+}
+
+.dlm-myaccount-license-key:hover {
+    background-image: linear-gradient(to right, #6fd4a1, #36be6c);
+    color: #ffffff;
+}
+
+.dlm-myaccount-license-key {
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    background-image: linear-gradient(to right, #f0f0f0, #f9f9f9);
+    padding: 2px 7px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.dlm-clipboard {
+    font-family: Consolas, monospace;
+    background-color: #f0f0f0;
+    color: #334;
+    padding: 7px 14px;
+    border: 1px solid rgba(0,0,0,.1);
+    border-radius: 3px;
+    opacity: 1;
+    -webkit-box-shadow: 2px 3px 5px rgba(0,0,0,.1);
+    box-shadow: 2px 3px 5px rgba(0,0,0,.1);
+    -webkit-transition: all .5s ease-out;
+    -o-transition: all .5s ease-out;
+    transition: all .5s ease-out;
 }

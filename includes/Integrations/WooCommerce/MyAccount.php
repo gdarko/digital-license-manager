@@ -109,6 +109,9 @@ class MyAccount {
 		wp_localize_script( 'dlm_myaccount', 'DLM_MyAccount', [
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
 			'_wpnonce' => wp_create_nonce( Activations::NONCE ),
+			'i18n' => [
+				'copiedToClipboard' => __('Key copied to clipboard.', 'digital-license-manager')
+			]
 		] );
 	}
 
