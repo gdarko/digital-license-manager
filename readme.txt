@@ -198,10 +198,10 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 == Changelog ==
 
 = 1.5.7 =
-*Release date - 18 Jan 2023*
+*Release date - 22 Jan 2023*
 
 * Fix fatal error reported by customer
-* Add copy to clipboard functionality (TODO)
+* Add copy to clipboard functionality
 
 = 1.5.6 =
 *Release date - 01 Dec 2023*
