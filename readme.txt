@@ -198,12 +198,12 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 == Changelog ==
 
 = 1.5.8 =
-*Release date - 23 Jan 2023*
+*Release date - 23 Jan 2024*
 
 * Fix PHP warning in My Account page
 
 = 1.5.7 =
-*Release date - 22 Jan 2023*
+*Release date - 22 Jan 2024*
 
 * Fix fatal error reported by customer
 * Add copy to clipboard functionality
