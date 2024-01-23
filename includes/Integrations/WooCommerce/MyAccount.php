@@ -401,14 +401,21 @@ class MyAccount {
 			)
 		);
 
+		$result = array();
+
 		foreach ( $licenses as $license ) {
-			$product = wc_get_product( $license->getProductId() );
-			if ( ! $product ) {
-				$result[ $license->getProductId() ]['name'] = '#' . $license->getProductId();
-			} else {
-				$result[ $license->getProductId() ]['name'] = $product->get_formatted_name();
+
+			$product_id = $license->getProductId();
+			$product = wc_get_product( $product_id );
+			if ( ! isset( $result[ $product_id ] ) ) {
+				$result[ $product_id ] = array();
 			}
-			$result[ $license->getProductId() ]['licenses'][] = $license;
+			if ( ! $product ) {
+				$result[ $product_id ]['name'] = '#' . $license->getProductId();
+			} else {
+				$result[ $product_id ]['name'] = $product->get_formatted_name();
+			}
+			$result[ $product_id ]['licenses'][] = $license;
 		}
 
 		return $result;
