@@ -249,7 +249,12 @@ class Authentication {
 	 * @return bool|WP_Error
 	 */
 	private function checkPermissions( $method ) {
-		$permissions = $this->user->permissions;
+
+		if ( ! $this->consumer ) {
+			return false;
+		}
+
+		$permissions = $this->consumer->permissions;
 
 		switch ( $method ) {
 			case 'HEAD':
@@ -340,10 +345,6 @@ class Authentication {
 	 * @return mixed
 	 */
 	public function checkUserPermissions( $result, $server, $request ) {
-
-		if ( empty( $this->user ) ) {
-			return $result;
-		}
 
 		$allowed = $this->checkPermissions( $request->get_method() );
 		if ( is_wp_error( $allowed ) ) {
