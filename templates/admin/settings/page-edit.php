@@ -209,7 +209,7 @@ $time_format = get_option( 'time_format' );
 						   add_query_arg(
 							   array(
 								   'action' => 'delete',
-								   'key'    => $keyId
+								   'id'    => $keyId
 							   ),
 							   sprintf(
 								   admin_url( 'admin.php?page=%s&tab=rest_api' ),
