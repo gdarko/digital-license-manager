@@ -77,18 +77,24 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 
 		$data = Orders::getLicenses( [ 'order' => $order ] );
 
-		if ( ! empty( $data['data'] ) ) {
-			foreach ( $data['data'] as $item ) {
+		$product_id = !empty($item['variation_id']) ? $item['variation_id'] : $item['product_id'];
 
-				if ( empty( $item['keys'] ) ) {
+		if ( ! empty( $data['data'] ) ) {
+			foreach ( $data['data'] as $key => $license_item ) {
+
+				if($key != $product_id) {
+					continue;
+				}
+
+				if ( empty( $license_item['keys'] ) ) {
 					continue;
 				}
 
 				echo '<p style="margin-bottom: 0; margin-top:5px; font-weight:bold; padding-left:5px; font-size:7pt;">' . __( 'Licenses:', 'digital-license-manager' ) . '</p>';
 
-				$licenses = array_map( function ( $item ) {
-					return sprintf( '<span style="background-color: green; color: #fff; padding: 1px 8px; border-radius: 15px; font-weight:bold;">%s</span>', $item->getDecryptedLicenseKey() );
-				}, $item['keys'] );
+				$licenses = array_map( function ( $current ) {
+					return sprintf( '<span style="background-color: green; color: #fff; padding: 1px 8px; border-radius: 15px; font-weight:bold;">%s</span>', $current->getDecryptedLicenseKey() );
+				}, $license_item['keys'] );
 
 
 				echo '<p style="margin-top:0;">' . implode( ', ', $licenses ) . '</p>';
