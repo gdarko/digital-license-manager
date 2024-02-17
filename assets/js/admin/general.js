@@ -24,7 +24,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
         if (confirmDialogs) {
             for (var i = 0; i < confirmDialogs.length; i++) {
                 confirmDialogs[i].addEventListener('click', function (e) {
-                    return confirm(DLM_MAIN.i18n.confirm_dialog);
+                    if(!confirm(DLM_MAIN.i18n.confirm_dialog)) {
+                        e.preventDefault();
+                    }
                 })
             }
         }
