@@ -68,13 +68,16 @@ defined( 'ABSPATH' ) || exit; ?>
 					continue;
 				}
 
-				$actions = apply_filters( 'dlm_myaccount_licenses_row_actions', array(
-					10 => array(
+				$actions = array();
+				if ( ! empty( $order ) ) {
+					$actions[10] = array(
 						'href'  => esc_url( $order->get_view_order_url() ),
 						'class' => 'button',
 						'text'  => __( 'Order', 'digital-license-manager' ),
-					)
-				), $license, $decrypted, $order );
+					);
+				}
+
+				$actions = apply_filters( 'dlm_myaccount_licenses_row_actions', $actions, $license, $decrypted, $order );
 
 				ksort( $actions );
 
