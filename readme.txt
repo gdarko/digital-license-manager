@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 6.4
-Stable tag: 1.5.8
+Stable tag: 1.5.9
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -196,6 +196,16 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 23. License check form displayed by using block or shortcode
 
 == Changelog ==
+
+= 1.5.9 =
+*Release date - 17 Feb 2024*
+
+* Fix API last access date
+* Fix duplicate license keys in PDF invoices
+* Fix delete confirmation dialog issue in API keys settings
+* Fix delete button on single api key edit page in settings
+* Add improvements to the Rest API permissions check
+* Resync the .pot template
 
 = 1.5.8 =
 *Release date - 23 Jan 2024*
