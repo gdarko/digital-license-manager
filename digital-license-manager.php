@@ -38,8 +38,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-if ( ! defined( 'DLM_VERSION' ) ) {
-	define( 'DLM_VERSION', '1.6.0-beta1' );
+if ( ! defined( 'DLM_PLUGIN_VERSION' ) ) {
+	define( 'DLM_PLUGIN_VERSION', '1.6.0' );
 }
 if ( ! defined( 'DLM_PURCHASE_URL' ) ) {
 	define( 'DLM_PURCHASE_URL', 'https://codeverve.com/product/digital-license-manager-pro/' );
@@ -60,11 +60,11 @@ if ( defined( 'DLM_SHORT_INIT' ) && DLM_SHORT_INIT ) {
 	return;
 }
 
-if ( ! defined( 'DLM_PLUGIN_FILE' ) ) {
-	define( 'DLM_PLUGIN_FILE', __FILE__ );
+if ( ! defined( 'DLM_PLUGIN_ROOT_FILE' ) ) {
+	define( 'DLM_PLUGIN_ROOT_FILE', __FILE__ );
 }
 if ( ! defined( 'DLM_ABSPATH' ) ) {
-	define( 'DLM_ABSPATH', trailingslashit( plugin_dir_path( DLM_PLUGIN_FILE ) ) );
+	define( 'DLM_ABSPATH', trailingslashit( plugin_dir_path( DLM_PLUGIN_ROOT_FILE ) ) );
 }
 if ( ! defined( 'DLM_PLUGIN_URL' ) ) {
 	define( 'DLM_PLUGIN_URL', trailingslashit( plugin_dir_url( __FILE__ ) ) );

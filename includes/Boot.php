@@ -123,7 +123,7 @@ class Boot {
 
 		$this->defineConstants();
 
-		$this->version = DLM_VERSION;
+		$this->version = DLM_PLUGIN_VERSION;
 
 		$this->initHooks();
 
@@ -148,21 +148,21 @@ class Boot {
 		if ( ! defined( 'ABSPATH_LENGTH' ) ) {
 			define( 'ABSPATH_LENGTH', strlen( ABSPATH ) );
 		}
-		if ( ! defined( 'DLM_PLUGIN_FILE' ) ) {
-			define( 'DLM_PLUGIN_FILE', plugin_dir_path( dirname( __FILE__ ) ) . 'digital-license-manager.php' );  // One level backwards, for composer support.
+		if ( ! defined( 'DLM_PLUGIN_ROOT_FILE' ) ) {
+			define( 'DLM_PLUGIN_ROOT_FILE', plugin_dir_path( dirname( __FILE__ ) ) . 'digital-license-manager.php' );  // One level backwards, for composer support.
 		}
 		if ( ! defined( 'DLM_PLUGIN_URL' ) ) {
 			define( 'DLM_PLUGIN_URL', plugin_dir_url( dirname( __FILE__ ) ) ); // One level backwards, for composer support.
 		}
 		if ( ! defined( 'DLM_ABSPATH' ) ) {
-			define( 'DLM_ABSPATH', trailingslashit( dirname( DLM_PLUGIN_FILE ) ) );
+			define( 'DLM_ABSPATH', trailingslashit( dirname( DLM_PLUGIN_ROOT_FILE ) ) );
 		}
-		if ( ! defined( 'DLM_VERSION' ) ) {
-			define( 'DLM_SHORT_INIT', true ); // Just a short init, only the DLM_VERSION constant is initialized in this call.
-			require_once DLM_PLUGIN_FILE;
+		if ( ! defined( 'DLM_PLUGIN_VERSION' ) ) {
+			define( 'DLM_SHORT_INIT', true ); // Just a short init, only the DLM_PLUGIN_VERSION constant is initialized in this call.
+			require_once DLM_PLUGIN_ROOT_FILE;
 		}
 
-		define( 'DLM_PLUGIN_BASENAME', plugin_basename( DLM_PLUGIN_FILE ) );
+		define( 'DLM_PLUGIN_BASENAME', plugin_basename( DLM_PLUGIN_ROOT_FILE ) );
 
 		// Directories
 		define( 'DLM_ASSETS_DIR', DLM_ABSPATH . 'assets' . DIRECTORY_SEPARATOR );
@@ -496,9 +496,9 @@ class Boot {
 	 */
 	private function initHooks() {
 
-		register_activation_hook( DLM_PLUGIN_FILE, array( '\IdeoLogix\DigitalLicenseManager\Setup', 'install' ) );
-		register_deactivation_hook( DLM_PLUGIN_FILE, array( '\IdeoLogix\DigitalLicenseManager\Setup', 'deactivate' ) );
-		register_uninstall_hook( DLM_PLUGIN_FILE, array( '\IdeoLogix\DigitalLicenseManager\Setup', 'uninstall' ) );
+		register_activation_hook( DLM_PLUGIN_ROOT_FILE, array( '\IdeoLogix\DigitalLicenseManager\Setup', 'install' ) );
+		register_deactivation_hook( DLM_PLUGIN_ROOT_FILE, array( '\IdeoLogix\DigitalLicenseManager\Setup', 'deactivate' ) );
+		register_uninstall_hook( DLM_PLUGIN_ROOT_FILE, array( '\IdeoLogix\DigitalLicenseManager\Setup', 'uninstall' ) );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'registerAssets' ), 10 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'registerAssets' ), 10 );
