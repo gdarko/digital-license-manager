@@ -110,11 +110,11 @@ class Settings {
 						),
 						70 => array(
 							'id'       => 'enable_certificates',
-							'title'    => __( 'Enable Certificates', 'digital-license-manager' ),
+							'title'    => __( 'Enable "PDF Certificates"', 'digital-license-manager' ),
 							'callback' => array( $this, 'fieldCheckbox' ),
 							'args'     => array(
-								'label'   => __( "Enable license PDF certificates in the single license page in My Account dashboard.", 'digital-license-manager' ),
-								'explain' => __( "Use this option if you want to allow customers to download license certificate from the single license page.", 'digital-license-manager' ),
+								'label'   => __( "Enable License PDF certificates in the single license page in My Account dashboard.", 'digital-license-manager' ),
+								'explain' => __( "Use this option if you want to allow customers to download License certificate from the single license page.", 'digital-license-manager' ),
 							)
 						),
 					)
