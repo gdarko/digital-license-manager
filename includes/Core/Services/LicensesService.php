@@ -98,6 +98,25 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	}
 
 	/**
+	 * Retrieves single item from the database by hash
+	 * @param $hash
+	 *
+	 * @since 1.6.0
+	 *
+	 * @return AbstractResourceModel|License|WP_Error|object
+	 */
+	public function findByHash( $hash ) {
+		$license = Licenses::instance()->findBy([
+			'hash' => $hash
+		]);
+		if ( ! $license ) {
+			return new WP_Error( 'data_error', sprintf( __( "The license id '%s' could not be found", 'digital-license-manager' ), $hash ), array( 'code' => 404 ) );
+		}
+
+		return $license;
+	}
+
+	/**
 	 * Retrieves multiple items by a query array.
 	 *
 	 * @param array $query

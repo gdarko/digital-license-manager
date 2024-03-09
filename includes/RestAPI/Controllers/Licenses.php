@@ -287,7 +287,7 @@ class Licenses extends AbstractRestController {
 			return $isValid;
 		}
 
-		$licenseKey = sanitize_text_field( $request->get_param( 'license_key' ) );
+		$licenseKey = $this->prepareLicenseKey( $request->get_param( 'license_key' ) );
 		$license    = $this->service->find( $licenseKey );
 		if ( is_wp_error( $license ) ) {
 			return $this->maybeErrorResponse( $license );
@@ -357,7 +357,7 @@ class Licenses extends AbstractRestController {
 
 		$urlParams = $request->get_url_params();
 
-		$licenseKey = isset( $urlParams['license_key'] ) ? sanitize_text_field( $urlParams['license_key'] ) : '';
+		$licenseKey = isset( $urlParams['license_key'] ) ? $this->prepareLicenseKey( sanitize_text_field( $urlParams['license_key'] ) ) : '';
 
 		if ( JsonFormatter::validate( $request->get_body() ) ) {
 			$updateData = JsonFormatter::decode( $request->get_body(), true );
@@ -390,7 +390,7 @@ class Licenses extends AbstractRestController {
 		}
 
 		$urlParams  = $request->get_url_params();
-		$licenseKey = isset( $urlParams['license_key'] ) ? sanitize_text_field( $urlParams['license_key'] ) : '';
+		$licenseKey = isset( $urlParams['license_key'] ) ? $this->prepareLicenseKey( sanitize_text_field( $urlParams['license_key'] ) ) : '';
 		$deleted    = $this->service->delete( $licenseKey );
 
 		if ( is_wp_error( $deleted ) ) {
@@ -414,7 +414,7 @@ class Licenses extends AbstractRestController {
 			return $isValid;
 		}
 
-		$licenseKey      = sanitize_text_field( $request->get_param( 'license_key' ) );
+		$licenseKey = $this->prepareLicenseKey( $request->get_param( 'license_key' ) );
 		$activationMeta  = $request->get_param( 'meta' );
 		$activationLabel = $request->get_param( 'label' );
 		$existingToken   = $request->get_param( 'token' );
@@ -584,6 +584,21 @@ class Licenses extends AbstractRestController {
 		}
 
 		return $licenseData;
+	}
+
+	/**
+	 * Prepare license key.
+	 * @return bool
+	 */
+	public function prepareLicenseKey($key) {
+		$hash_prefix = apply_filters( 'dlm_rest_api_license_hash_prefix', 'hashed-' );
+		if ( strpos( $key, $hash_prefix ) !== false ) {
+			$hash    = str_replace( $hash_prefix, '', $key );
+			$license = $this->service->findByHash( $hash );
+			return is_wp_error($license) ? $key : $license->getDecryptedLicenseKey();
+		}
+
+		return $key;
 	}
 
 }
