@@ -60,6 +60,7 @@ class Settings {
 	public function __construct() {
 		$this->tools = apply_filters( 'dlm_tools', $this->tools );
 		add_action( 'dlm_settings_sanitized', array( $this, 'afterSanitize' ), 15, 2 );
+		add_action( 'admin_init', array( $this, 'flushPermalinks'), 11 );
 		add_action( 'wp_ajax_dlm_handle_tool_process', array( $this, 'handleToolProcess' ), 50 );
 		add_action( 'wp_ajax_dlm_database_migration_tool_status', array( $this, 'handleToolStatus' ), 50 );
 		add_action( 'wp_ajax_dlm_database_migration_tool_undo', array( $this, 'handleToolUndo' ), 50 );
@@ -513,16 +514,23 @@ class Settings {
 	public function afterSanitize( $settings ) {
 
 		$flushKeys = apply_filters( 'dlm_settings_flush_keys', [ 'myaccount_endpoint' ], $settings );
-		$needFlush = false;
 		foreach ( $flushKeys as $key ) {
 			if ( array_key_exists( $key, $settings ) ) {
-				$needFlush = true;
+				set_transient( 'dlm_permalinks_needs_flush', 1, DAY_IN_SECONDS * 5 );
 				break;
 			}
 		}
+	}
 
-		if ( $needFlush ) {
+	/**
+	 * Flushes the permalinks
+	 * @since 1.6.0
+	 * @return void
+	 */
+	public function flushPermalinks() {
+		if ( (int) get_transient( 'dlm_permalinks_needs_flush' ) ) {
 			flush_rewrite_rules( true );
+			delete_transient( 'dlm_permalinks_needs_flush' );
 		}
 	}
 

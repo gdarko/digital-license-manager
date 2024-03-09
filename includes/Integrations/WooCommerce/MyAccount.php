@@ -41,8 +41,9 @@ class MyAccount {
 	 * MyAccount constructor.
 	 */
 	public function __construct() {
-		add_rewrite_endpoint( 'digital-licenses', EP_ROOT | EP_PAGES );
 
+		$this->rewriteEndpoints();
+		add_action( 'wp_loaded', [ $this, 'rewriteEndpoints' ], 10 );
 		add_filter( 'the_title', array( $this, 'accountItemTitles' ) );
 		add_action( 'template_redirect', array( $this, 'handleAccountActions' ) );
 		add_filter( 'woocommerce_account_menu_items', array( $this, 'accountMenuItems' ), 10, 1 );
@@ -55,6 +56,22 @@ class MyAccount {
 		add_action( 'dlm_enqueue_scripts', array( $this, 'enqueueScripts' ), 10, 1 );
 		add_filter( 'dlm_is_order_page', array( $this, 'isOrderPage' ), 10, 2 );
 		add_filter( 'dlm_is_product_page', array( $this, 'isProductPage' ), 10, 2 );
+	}
+
+	/**
+	 * Register the rewrite endpoints
+	 * @since 1.6.0
+	 * @return void
+	 */
+	public function rewriteEndpoints() {
+
+		$endpoints = apply_filters('dlm_myaccount_rewrite_endpoints', [
+			'digital-licenses' => EP_ROOT | EP_PAGES,
+		]);
+
+		foreach($endpoints as $slug => $places) {
+			add_rewrite_endpoint( $slug, $places );
+		}
 	}
 
 	/**
