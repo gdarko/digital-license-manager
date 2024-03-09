@@ -287,7 +287,7 @@ class Licenses extends AbstractRestController {
 			return $isValid;
 		}
 
-		$licenseKey = $this->prepareLicenseKey( $request->get_param( 'license_key' ) );
+		$licenseKey = $this->prepareLicenseKey( sanitize_text_field( $request->get_param( 'license_key' ) ) );
 		$license    = $this->service->find( $licenseKey );
 		if ( is_wp_error( $license ) ) {
 			return $this->maybeErrorResponse( $license );
@@ -414,7 +414,7 @@ class Licenses extends AbstractRestController {
 			return $isValid;
 		}
 
-		$licenseKey = $this->prepareLicenseKey( $request->get_param( 'license_key' ) );
+		$licenseKey = $this->prepareLicenseKey( sanitize_text_field( $request->get_param( 'license_key' ) ) );
 		$activationMeta  = $request->get_param( 'meta' );
 		$activationLabel = $request->get_param( 'label' );
 		$existingToken   = $request->get_param( 'token' );
