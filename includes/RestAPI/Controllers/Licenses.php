@@ -588,7 +588,8 @@ class Licenses extends AbstractRestController {
 
 	/**
 	 * Prepare license key.
-	 * @return bool
+	 * @return string|WP_Error
+	 * @since 1.6.0
 	 */
 	public function prepareLicenseKey($key) {
 		$hash_prefix = apply_filters( 'dlm_rest_api_license_hash_prefix', 'hashed-' );
