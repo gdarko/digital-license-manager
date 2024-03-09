@@ -59,7 +59,7 @@ class Settings {
 	 */
 	public function __construct() {
 		$this->tools = apply_filters( 'dlm_tools', $this->tools );
-		add_action( 'dlm_settings_sanitized', array( $this, 'afterSanitize' ), 10, 2 );
+		add_action( 'dlm_settings_sanitized', array( $this, 'afterSanitize' ), 15, 2 );
 		add_action( 'wp_ajax_dlm_handle_tool_process', array( $this, 'handleToolProcess' ), 50 );
 		add_action( 'wp_ajax_dlm_database_migration_tool_status', array( $this, 'handleToolStatus' ), 50 );
 		add_action( 'wp_ajax_dlm_database_migration_tool_undo', array( $this, 'handleToolUndo' ), 50 );
@@ -511,7 +511,17 @@ class Settings {
 	 * @return void
 	 */
 	public function afterSanitize( $settings ) {
-		if ( isset( $settings['myaccount_endpoint'] ) ) {
+
+		$flushKeys = apply_filters( 'dlm_settings_flush_keys', [ 'myaccount_endpoint' ], $settings );
+		$needFlush = false;
+		foreach ( $flushKeys as $key ) {
+			if ( array_key_exists( $key, $settings ) ) {
+				$needFlush = true;
+				break;
+			}
+		}
+
+		if ( $needFlush ) {
 			flush_rewrite_rules( true );
 		}
 	}
