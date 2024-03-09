@@ -86,3 +86,19 @@
     -o-transition: all .5s ease-out;
     transition: all .5s ease-out;
 }
+
+.dlm-form {
+    width: 100%;
+}
+
+.dlm-form .dlm-form-row {
+    width: 100%;
+    margin-bottom: 10px;
+}
+.dlm-form .dlm-form-row label,
+.dlm-form .dlm-form-row input[type=text],
+.dlm-form .dlm-form-row input[type=email],
+.dlm-form .dlm-form-row input[type=password] {
+    display:block;
+    width: 100%;
+}
