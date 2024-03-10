@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2020-2024 Darko Gjorgjijoski <https://darkog.com>
+ * Copyright (C) 2020-2024 IDEOLOGIX MEDIA DOOEL <https://ideologix.com>
  * All Rights Reserved.
  * Licensed under GPLv3.
  */

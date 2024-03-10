@@ -4,6 +4,7 @@
  * https://darkog.com/p/digital-license-manager/
  *
  * Copyright (C) 2020-2024  Darko Gjorgjijoski. All Rights Reserved.
+ * Copyright (C) 2020-2024  IDEOLOGIX MEDIA DOOEL. All Rights Reserved.
  *
  * Digital License Manager is free software; you can redistribute it
  * and/or modify it under the terms of the GNU General Public License
