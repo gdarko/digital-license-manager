@@ -1,5 +1,8 @@
 <?php
 /**
+ * Copyright (C) 2024 Darko Gjorgjijoski <dg@darkog.com> - All Rights Reserved
+ * Copyright (C) 2024 IDEOLOGIX MEDIA DOOEL <info@ideologix.com> - All Rights Reserved
+ *
  * The template which contains the license delivery notice, instead of the license.
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/dlm/emails/email-order-license-notice.php.

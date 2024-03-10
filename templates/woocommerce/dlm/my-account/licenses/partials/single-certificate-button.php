@@ -1,8 +1,11 @@
 <?php
 /**
+ * Copyright (C) 2024 Darko Gjorgjijoski <dg@darkog.com> - All Rights Reserved
+ * Copyright (C) 2024 IDEOLOGIX MEDIA DOOEL <info@ideologix.com> - All Rights Reserved
+ *
  * The template for the "Download" button of the license certificate functionality in "My Account"
  *
- * This template can be overridden by copying it to yourtheme/woocommerce/dlm/myaccount/licenses/partials/single-certificate.php
+ * This template can be overridden by copying it to yourtheme/woocommerce/dlm/myaccount/licenses/partials/single-certificate-button.php
  *
  * HOWEVER, on occasion I will need to update template files and you
  * (the developer) will need to copy the new files to your theme to

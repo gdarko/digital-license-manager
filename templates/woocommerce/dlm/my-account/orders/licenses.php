@@ -1,5 +1,8 @@
 <?php
 /**
+ * Copyright (C) 2024 Darko Gjorgjijoski <dg@darkog.com> - All Rights Reserved
+ * Copyright (C) 2024 IDEOLOGIX MEDIA DOOEL <info@ideologix.com> - All Rights Reserved
+ *
  * The template displays the purchased licenses in the order pages (My Account, after checkout, etc)
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/dlm/my-account/orders/licenses.php.

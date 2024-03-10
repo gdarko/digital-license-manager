@@ -1,5 +1,8 @@
 <?php
 /**
+ * Copyright (C) 2024 Darko Gjorgjijoski <dg@darkog.com> - All Rights Reserved
+ * Copyright (C) 2024 IDEOLOGIX MEDIA DOOEL <info@ideologix.com> - All Rights Reserved
+ *
  * The template for the activation row actions in single license page in "My Account"
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/dlm/licenses/partials/table-activations-row-actions.php.
