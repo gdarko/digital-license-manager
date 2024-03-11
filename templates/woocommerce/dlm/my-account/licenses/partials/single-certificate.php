@@ -24,7 +24,7 @@
  */
 ?>
 
-<div style="padding:60px 120px;">
+<div style="padding:60px 90px;">
 	<?php if ( ! empty( $logo ) ): ?>
         <div style="margin-bottom: 35px;">
             <img alt="Logo" src="<?php echo esc_attr( $logo ); ?>" style="max-width: 300px;" width="300">
@@ -32,7 +32,7 @@
 	<?php else: ?>
         <h3><?php echo esc_html( $title ); ?></h3>
 	<?php endif; ?>
-    <div style="border: 1px dashed #ccc;padding:20px; width:800px; margin-top: 30px;">
+    <div style="border: 1px dashed #aaaaaa;padding:20px; width:860px; margin-top: 30px;">
         <h1 style="font-size: 32px;margin-top: 0; margin-bottom: 30px;">
 	        <?php echo apply_filters( 'dlm_license_certification_title', __( 'License Certificate', 'digital-license-manager' ) ); ?>
         </h1>
@@ -43,7 +43,7 @@
 			<?php esc_html_e( 'Details of the license can be accessed from your dashboard page.', 'digital-license-manger' ); ?>
         </p>
 		<?php if ( ! empty( $license_details ) ): ?>
-            <table style="margin-top:0; margin-bottom: 20px;font-size: 16px; border-spacing: 15px; border: 1px solid black; border-collapse: collapse; width: 100%;">
+            <table style="margin-top:0; margin-bottom: 20px;font-size: 16px; border-spacing: 15px; border: 1px solid #aaaaaa; border-collapse: collapse; width: 100%;">
                 <tbody>
 				<?php foreach ( $license_details as $detail ): ?>
                     <tr>
