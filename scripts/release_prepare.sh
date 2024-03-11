@@ -43,6 +43,7 @@ zip -r "$PLUGIN_SLUG.zip" "$PLUGIN_SLUG" \
   -x="*blocks/node_modules*" \
   -x="*blocks/package.json*" \
   -x="*blocks/package-lock.json*" \
+  -x="*vendor/bin*" \
   -x="*.git*" \
   -x="*.phpunit.result.cache*" \
   -x="*.travis.yml*" \
