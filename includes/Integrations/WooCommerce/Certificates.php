@@ -152,22 +152,22 @@ class Certificates {
 			$expiry_date = wp_date( DateFormatter::getExpirationFormat(), strtotime( $expiry_date ) );
 		}
 		$license_details = array(
-			array(
+			'license_id'         => array(
 				'title' => __( 'License ID', 'digital-license-manager' ),
 				'value' => sprintf( '#%d', $license->getId() ),
 			),
-			array(
+			'license_key'        => array(
 				'title' => __( 'License Key', 'digital-license-manager' ),
 				'value' => $license->getDecryptedLicenseKey(),
 			),
-			array(
+			'license_expires_at' => array(
 				'title' => __( 'Expiry Date', 'digital-license-manager' ),
 				'value' => $expiry_date,
 			)
 		);
 		if ( $customer ) {
 			$customer          = get_user_by( 'id', $customer );
-			$license_details[] = array(
+			$license_details['licensee'] = array(
 				'title' => __( 'Licensee', 'digital-license-manager' ),
 				'value' => sprintf(
 					'%s (#%d - %s)',
@@ -177,22 +177,22 @@ class Certificates {
 				)
 			);
 			if ( $order ) {
-				$license_details[] = array(
+				$license_details['order_id'] = array(
 					'title' => __( 'Order ID', 'digital-license-manager' ),
 					'value' => sprintf( '#%d', $order->get_id() ),
 				);
-				$license_details[] = array(
+				$license_details['order_date'] = array(
 					'title' => __( 'Order Date', 'digital-license-manager' ),
 					'value' => date_i18n( wc_date_format(), strtotime( $order->get_date_paid() ) ),
 				);
 			}
 		}
 		if ( $product ) {
-			$license_details[] = array(
+			$license_details['product_name'] = array(
 				'title' => __( 'Product Name', 'digital-license-manager' ),
 				'value' => $product->get_formatted_name(),
 			);
-			$license_details[] = array(
+			$license_details['product_url'] = array(
 				'title' => __( 'Product URL', 'digital-license-manager' ),
 				'value' => $product->get_permalink(),
 			);
