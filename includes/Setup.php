@@ -309,10 +309,24 @@ class Setup {
 	public static function setDefaultSettings() {
 
 		$default_settings = array(
-			'dlm_settings_general' => array(
+			'dlm_settings_general'     => array(
 				'hide_license_keys' => 0,
+				'expiration_format' => '{{DATE_FORMAT}}, {{TIME_FORMAT}} T',
 				'disable_api_ssl'   => 0,
 				'safeguard_data'    => 1,
+			),
+			'dlm_settings_woocommerce' => array(
+				'auto_delivery'             => 1,
+				'order_delivery_statuses'   => array(
+					'wc-processing' => array( 'send' => 1 ),
+					'wc-completed'  => array( 'send' => 1 ),
+				),
+				'stock_management'          => 1,
+				'hide_license_keys'         => 0,
+				'myaccount_endpoint'        => 1,
+				'enable_activations_table'  => 1,
+				'enable_manual_activations' => 1,
+				'enable_certificates'       => 1,
 			)
 		);
 
