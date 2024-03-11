@@ -48,13 +48,13 @@ class Activations extends AbstractListTable {
 	 *  Whether user can activate records
 	 * @var bool
 	 */
-	protected $canActivate;
+	protected $canEnable;
 
 	/**
-	 *  Whether user can deactivate records
+	 *  Whether user can disable records
 	 * @var bool
 	 */
-	protected $canDeactivate;
+	protected $canDisable;
 
 	/**
 	 * ActivationsList constructor.
@@ -75,9 +75,9 @@ class Activations extends AbstractListTable {
 		$this->timeFormat = get_option( 'time_format' );
 		$this->gmtOffset  = get_option( 'gmt_offset' );
 
-		$this->canActivate   = current_user_can( 'dlm_activate_licenses' );
-		$this->canDeactivate = current_user_can( 'dlm_deactivate_licenses' );
-		$this->canDelete     = current_user_can( 'dlm_delete_activations' );
+		$this->canEnable   = current_user_can( 'dlm_activate_licenses' );
+		$this->canDisable  = current_user_can( 'dlm_deactivate_licenses' );
+		$this->canDelete   = current_user_can( 'dlm_delete_activations' );
 	}
 
 	/**
@@ -201,31 +201,31 @@ class Activations extends AbstractListTable {
 		$title         = '<strong>' . $title . '</strong>';
 		$actions['id'] = sprintf( __( 'ID: %d', 'digital-license-manager' ), (int) $item->getId() );
 
-		if ( ! empty( $item->getDeactivatedAt() ) && $this->canActivate ) {
-			$actions['activate'] = sprintf(
+		if ( ! empty( $item->getDeactivatedAt() ) && $this->canEnable ) {
+			$actions['enable'] = sprintf(
 				'<a href="%s">%s</a>',
 				admin_url(
 					sprintf(
-						'admin.php?page=%s&action=activate&id=%d&_wpnonce=%s',
+						'admin.php?page=%s&action=enable&id=%d&_wpnonce=%s',
 						$this->slug,
 						(int) $item->getId(),
-						wp_create_nonce( 'activate' )
+						wp_create_nonce( 'dlm_' . 'enable' )
 					)
 				),
-				__( 'Activate', 'digital-license-manager' )
+				__( 'Enable', 'digital-license-manager' )
 			);
-		} else if ( empty( $item->getDeactivatedAt() ) && $this->canDeactivate ) {
-			$actions['deactivate'] = sprintf(
+		} else if ( empty( $item->getDeactivatedAt() ) && $this->canDisable ) {
+			$actions['disable'] = sprintf(
 				'<a href="%s">%s</a>',
 				admin_url(
 					sprintf(
-						'admin.php?page=%s&action=deactivate&id=%d&_wpnonce=%s',
+						'admin.php?page=%s&action=disable&id=%d&_wpnonce=%s',
 						$this->slug,
 						(int) $item->getId(),
-						wp_create_nonce( 'deactivate' )
+						wp_create_nonce( 'dlm_' . 'disable' )
 					)
 				),
-				__( 'Deactivate', 'digital-license-manager' )
+				__( 'Disable', 'digital-license-manager' )
 			);
 		}
 
@@ -402,14 +402,14 @@ class Activations extends AbstractListTable {
 		$action = $this->current_action();
 
 		switch ( $action ) {
-			case 'activate':
-				if ( $this->canActivate ) {
-					$this->toggleStatus( 'activate' );
+			case 'enable':
+				if ( $this->canEnable ) {
+					$this->toggleStatus( 'enable' );
 				}
 				break;
-			case 'deactivate':
-				if ( $this->canDeactivate ) {
-					$this->toggleStatus( 'deactivate' );
+			case 'disable':
+				if ( $this->canDisable ) {
+					$this->toggleStatus( 'disable' );
 				}
 				break;
 			case 'delete':
@@ -433,9 +433,9 @@ class Activations extends AbstractListTable {
 	protected function toggleStatus( $status ) {
 
 		switch ( $status ) {
-			case 'activate':
-			case 'deactivate':
-				$nonce = $status;
+			case 'enable':
+			case 'disable':
+				$nonce = 'dlm_' . $status;
 				break;
 			default:
 				$nonce = null;
@@ -452,7 +452,7 @@ class Activations extends AbstractListTable {
 		$count = 0;
 
 		foreach ( $recordIds as $recordId ) {
-			$new_value = 'activate' === $status ? null : date( 'Y-m-d H:i:s' );
+			$new_value = 'enable' === $status ? null : date( 'Y-m-d H:i:s' );
 			LicenseActivations::instance()->update( $recordId, array( 'deactivated_at' => $new_value ) );
 			$count ++;
 		}
@@ -621,11 +621,11 @@ class Activations extends AbstractListTable {
 	public function get_bulk_actions() {
 
 		$actions = array();
-		if ( $this->canActivate ) {
-			$actions['activate'] = __( 'Activate', 'digital-license-manager' );
+		if ( $this->canEnable ) {
+			$actions['enable'] = __( 'Enable', 'digital-license-manager' );
 		}
-		if ( $this->canDeactivate ) {
-			$actions['deactivate'] = __( 'Deactivate', 'digital-license-manager' );
+		if ( $this->canDisable ) {
+			$actions['disable'] = __( 'Disable', 'digital-license-manager' );
 		}
 		if ( $this->canDelete ) {
 			$actions['delete'] = __( 'Delete', 'digital-license-manager' );
