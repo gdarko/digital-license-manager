@@ -27,7 +27,7 @@
 <div style="padding:60px 120px;">
 	<?php if ( ! empty( $logo ) ): ?>
         <div style="margin-bottom: 35px;">
-            <img alt="Logo" src="<?php echo esc_attr( $logo ); ?>" style="max-width: 400px;">
+            <img alt="Logo" src="<?php echo esc_attr( $logo ); ?>" style="max-width: 300px;" width="300">
         </div>
 	<?php else: ?>
         <h3><?php echo esc_html( $title ); ?></h3>
