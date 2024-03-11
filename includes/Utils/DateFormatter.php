@@ -156,7 +156,7 @@ class DateFormatter {
 				if ( $timestampNow >= $timestampInput ) {
 					return sprintf(
 						'<span class="dlm-date dlm-date-expired" title="%s">%s</span>%s',
-						__( 'Expired' ),
+						__( 'Expired', 'digital-license-manager' ),
 						wp_date( DateFormatter::getExpirationFormat(), $timestampInput ),
 						$args['br'] ? '<br/>' : ''
 					);
@@ -168,7 +168,7 @@ class DateFormatter {
 					return sprintf(
 						'<span class="dlm-date %s" title="%s">%s</span>%s',
 						$statusClass,
-						__( 'Active' ),
+						__( 'Active', 'digital-license-manager' ),
 						wp_date( DateFormatter::getExpirationFormat(), $timestampInput ),
 						$args['br'] ? '<br/>' : ''
 					);

@@ -265,7 +265,7 @@ class LMFW extends AbstractToolMigrator {
 									LicenseActivations::instance()->insert( array(
 										'token'      => $licenseService->generateActivationToken( $license_key ),
 										'license_id' => $new_row->getId(),
-										'label'      => __( 'Untitled' ),
+										'label'      => __( 'Untitled', 'digital-license-manager' ),
 										'source'     => ActivationSource::MIGRATION,
 									) );
 								}

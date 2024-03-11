@@ -469,7 +469,7 @@ class Boot {
 
 		$coreBasename = str_replace( '-pro', '', DLM_PLUGIN_BASENAME );
 		if ( $file === $coreBasename ) {
-			$links[] = '<a style="font-weight:bold;color:#3eb03e;" target="_blank" href="' . DLM_PURCHASE_URL . '"><strong>' . __( 'Buy PRO Version', 'wp-vimeo-videos' ) . '</strong></a>';
+			$links[] = '<a style="font-weight:bold;color:#3eb03e;" target="_blank" href="' . DLM_PURCHASE_URL . '"><strong>' . __( 'Buy PRO Version', 'digital-license-manager' ) . '</strong></a>';
 		}
 
 		return $links;
