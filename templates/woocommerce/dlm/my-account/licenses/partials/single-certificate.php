@@ -27,7 +27,7 @@
 <div style="padding:60px 90px;">
 	<?php if ( ! empty( $logo ) ): ?>
         <div style="margin-bottom: 35px;">
-            <img alt="Logo" src="<?php echo esc_attr( $logo ); ?>" style="max-width: 300px;" width="300">
+            <img alt="Logo" src="<?php echo esc_attr( $logo ); ?>" style="max-width: 300px;" width="<?php echo esc_attr(apply_filters('dlm_license_certification_logo_width', 300)); ?>">
         </div>
 	<?php else: ?>
         <h3><?php echo esc_html( $title ); ?></h3>
