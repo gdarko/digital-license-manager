@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         }
 
         // Copy to clipboard
-        let keys = document.querySelectorAll('.dlm-myaccount-license-key');
+        let keys = document.querySelectorAll('.dlm-myaccount-license-key-copy');
         if (keys) {
             for (var i = 0; i < keys.length; i++) {
                 keys[i].addEventListener('click', self.copyLicenseToClipboard.bind(keys[i]));

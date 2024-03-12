@@ -78,7 +78,7 @@ foreach ( $data as $productId => $row ): ?>
 					$date = wp_date( $date_format, strtotime( $license->getExpiresAt() ) );
 					?>
                     <td>
-                        <span class="dlm-myaccount-license-key"><?php printf( '%s <strong>%s</strong>', $valid_until, $date ); ?></span>
+                        <?php printf( '%s <strong>%s</strong>', $valid_until, $date ); ?>
                     </td>
 				<?php endif; ?>
                 <td class="license-key-actions">

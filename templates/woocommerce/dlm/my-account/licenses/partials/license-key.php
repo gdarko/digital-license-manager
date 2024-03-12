@@ -28,9 +28,10 @@ $markup = apply_filters( 'dlm_myaccount_license_key_markup', null, $license );
 
 ?>
 
-<?php if ( ! empty( $markup ) ): ?>
-	<?php echo wp_kses( $markup, \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?>
-<?php else: ?>
-    <span class="dlm-myaccount-license-key" title="<?php _e( 'Copy to clipboard', 'digital-license-manager' ); ?>"><?php echo esc_html( $license->getDecryptedLicenseKey() ); ?></span>
-<?php endif; ?>
-
+<div class="dlm-myaccount-license-key">
+    <?php if ( ! empty( $markup ) ): ?>
+        <?php echo wp_kses( $markup, \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?>
+    <?php else: ?>
+        <span class="dlm-myaccount-license-key-copy" title="<?php _e( 'Copy to clipboard', 'digital-license-manager' ); ?>"><?php echo esc_html( $license->getDecryptedLicenseKey() ); ?></span>
+    <?php endif; ?>
+</div>

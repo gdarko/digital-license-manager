@@ -59,12 +59,16 @@
     margin-bottom: 0;
 }
 
-.dlm-myaccount-license-key:hover {
+.dlm-myaccount-license-key {
+    display: inline-block;
+}
+
+.dlm-myaccount-license-key-copy:hover {
     background-image: linear-gradient(to right, #6fd4a1, #36be6c);
     color: #ffffff;
 }
 
-.dlm-myaccount-license-key {
+.dlm-myaccount-license-key-copy {
     font-family: Consolas, monospace;
     font-size: 13px;
     background-image: linear-gradient(to right, #f0f0f0, #f9f9f9);
