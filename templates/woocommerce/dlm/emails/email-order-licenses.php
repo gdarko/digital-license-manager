@@ -13,11 +13,12 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -40,17 +41,16 @@ defined( 'ABSPATH' ) || exit;
 			<tbody>
 			<?php
 			/** @var License $license */
-			foreach ( $row['keys'] as $license ):
-				$decrypted = $license->getDecryptedLicenseKey();
-				if ( is_wp_error( $decrypted ) ) {
-					$decrypted = '';
-				}
-				?>
+			foreach ( $row['keys'] as $license ): ?>
                 <tr>
                     <td class="td" style="text-align: left; vertical-align: middle; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;" colspan="<?php echo ( $license->getExpiresAt() ) ? '1' : '2'; ?>">
-                        <code><?php echo esc_html( $decrypted ); ?></code>
+	                    <?php
+	                    echo wc_get_template_html( 'dlm/emails/partials/license-key.php', array(
+		                    'mode' => 'email',
+		                    'license' => $license,
+	                    ), '', Controller::getTemplatePath() )
+	                    ?>
                     </td>
-
 					<?php if ( $license->getExpiresAt() ): ?><?php
 						$date = wp_date( DateFormatter::getExpirationFormat(), strtotime( $license->getExpiresAt() ) );
 						?>

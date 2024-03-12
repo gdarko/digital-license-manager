@@ -100,8 +100,13 @@ class Activations {
 				$result = $service->deleteActivation( $token );
 			}
 
-			$licenseKey = isset( $_POST['license'] ) ? sanitize_text_field( $_POST['license'] ) : '';
-			$license    = $service->find( $licenseKey );
+			if ( isset( $_POST['license'] ) ) {
+				$licenseKey = isset( $_POST['license'] ) ? sanitize_text_field( $_POST['license'] ) : null;
+				$license    = $service->find( $licenseKey );
+				$licenseId  = is_wp_error( $license ) ? '' : $license->getId();
+			} else {
+				$licenseId = isset( $_POST['license_id'] ) ? sanitize_text_field( $_POST['license_id'] ) : null;
+			}
 
 			if ( is_wp_error( $result ) ) {
 				$this->addNotice( 'error', $result->get_error_message() );
@@ -113,7 +118,7 @@ class Activations {
 				}
 			}
 
-			HttpHelper::redirect( wc_get_account_endpoint_url( sprintf( 'digital-licenses/%s', $license->getId() ) ) );
+			HttpHelper::redirect( wc_get_account_endpoint_url( sprintf( 'digital-licenses/%s', $licenseId ) ) );
 
 		}
 
@@ -126,16 +131,21 @@ class Activations {
 	public function handleManualLicenseActivation() {
 
 		$service      = new LicensesService();
-		$licenseKey   = isset( $_POST['license'] ) ? sanitize_text_field( $_POST['license'] ) : null;
+		if ( isset( $_POST['license'] ) ) {
+			$licenseKey = isset( $_POST['license'] ) ? sanitize_text_field( $_POST['license'] ) : null;
+			$license    = $service->find( $licenseKey );
+		} else {
+			$licenseId = isset( $_POST['license_id'] ) ? sanitize_text_field( $_POST['license_id'] ) : null;
+			$license   = $service->findById( $licenseId );
+		}
 		$licenseLabel = isset( $_POST['label'] ) ? sanitize_text_field( $_POST['label'] ) : null;
-		$license      = $service->find( $licenseKey );
 
 		if ( is_wp_error( $license ) ) {
 			$this->addNotice( 'error', $license->get_error_message() );
 			HttpHelper::redirect( wc_get_account_endpoint_url( 'digital-licenses' ) );
 		}
 		if ( current_user_can( 'administrator' ) || $license->getUserId() === get_current_user_id() ) {
-			$result = $service->activate( $licenseKey, [ 'label' => $licenseLabel, 'source' => ActivationSource::WEB ] );
+			$result = $service->activate( $license->getDecryptedLicenseKey(), [ 'label' => $licenseLabel, 'source' => ActivationSource::WEB ] );
 			if ( is_wp_error( $result ) ) {
 				$this->addNotice( 'error', $result->get_error_message() );
 			} else {

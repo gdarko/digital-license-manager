@@ -5,7 +5,7 @@
  *
  * The template for the overview of a single license inside "My Account"
  *
- * This template can be overridden by copying it to yourtheme/woocommerce/dlm/myaccount/licenses/single.php
+ * This template can be overridden by copying it to yourtheme/woocommerce/dlm/my-account/licenses/single.php
  *
  * HOWEVER, on occasion I will need to update template files and you
  * (the developer) will need to copy the new files to your theme to
@@ -13,11 +13,12 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @version 1.0.0
+ * @version 1.0.1
  *
  * Default variables
  *
  * @var License $license
+ * @var string $license_key
  * @var WC_Product $product
  * @var WC_Order $order
  * @var string $date_format
@@ -28,6 +29,7 @@
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -58,7 +60,11 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
     <tr class="woocommerce-table__line-item license_keys">
         <th scope="row"><?php _e( 'License key', 'digital-license-manager' ); ?></th>
         <td>
-            <span class="dlm-myaccount-license-key" title="<?php _e('Copy to clipboard', 'digital-license-manager'); ?>"><?php echo esc_html( $license_key ); ?></span>
+	        <?php
+            echo wc_get_template_html( 'dlm/my-account/licenses/partials/license-key.php', array(
+                    'license' => $license,
+                ), '', Controller::getTemplatePath() );
+            ?>
         </td>
     </tr>
     <tr class="woocommerce-table__line-item activations_limit">

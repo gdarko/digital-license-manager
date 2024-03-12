@@ -13,7 +13,7 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @version 1.0.0
+ * @version 1.0.1
  *
  * Default variables
  *
@@ -27,6 +27,7 @@
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\StringFormatter;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 
 defined( 'ABSPATH' ) || exit; ?>
 
@@ -51,21 +52,26 @@ foreach ( $data as $productId => $row ): ?>
 
 		foreach ( $row['keys'] as $license ):
 
-			$decrypted = $license->getDecryptedLicenseKey();
-			if ( is_wp_error( $decrypted ) ) {
-				$decrypted = '';
+			$licenseKey = $license->getDecryptedLicenseKey();
+			if ( is_wp_error( $licenseKey ) ) {
+				$licenseKey = '';
 			}
-			$actions = apply_filters( 'dlm_myaccount_licenses_keys_row_actions', array(), $license, $decrypted, $data );
+			$actions = apply_filters( 'dlm_myaccount_licenses_keys_row_actions', array(), $license, $licenseKey, $data );
 			if ( is_array( $actions ) ) {
 				ksort( $actions );
-			}
-			if ( $is_order_received && $is_obscure_enabled ) {
-				$decrypted = StringFormatter::obfuscateString( $decrypted );
 			}
 			?>
             <tr>
                 <td colspan="<?php echo ( $license && $license->getExpiresAt() ) ? '' : '2'; ?>">
-                    <span class="dlm-myaccount-license-key" title="<?php _e('Copy to clipboard', 'digital-license-manager'); ?>"><?php echo esc_html( $decrypted ); ?></span>
+                    <?php
+                    if ( $is_order_received && $is_obscure_enabled ) {
+	                    echo StringFormatter::obfuscateString( $licenseKey );
+                    } else {
+	                    echo wc_get_template_html( 'dlm/my-account/licenses/partials/license-key.php', array(
+		                    'license' => $license,
+	                    ), '', Controller::getTemplatePath() );
+                    }
+                    ?>
                 </td>
 				<?php if ( $license->getExpiresAt() ): ?>
 					<?php

@@ -96,7 +96,7 @@ class SanitizeHelper {
 	 */
 	public static function ksesAllowedHtmlTags() {
 		return apply_filters( 'dlm_kses_allowed_html_tags', array(
-			'a'          => array( 'href' => true, 'title' => true, 'target' => true, ),
+			'a'          => array( 'href' => true, 'title' => true, 'target' => true, 'class' => true ),
 			'abbr'       => array( 'title' => true, ),
 			'acronym'    => array( 'title' => true, ),
 			'b'          => array(),
@@ -110,10 +110,11 @@ class SanitizeHelper {
 			's'          => array(),
 			'strike'     => array(),
 			'strong'     => array(),
-			'p'          => array(),
-			'ul'         => array(),
-			'ol'         => array(),
+			'p'          => array( 'class' => true ),
+			'ul'         => array( 'class' => true ),
+			'ol'         => array( 'class' => true ),
 			'li'         => array(),
+			'span'       => array( 'class' => true ),
 		) );
 	}
 

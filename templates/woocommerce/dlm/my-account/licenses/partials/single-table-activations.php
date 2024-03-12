@@ -5,7 +5,7 @@
  *
  * The template for the overview of all license activations on the single license page in "My Account"
  *
- * This template can be overridden by copying it to yourtheme/woocommerce/dlm/myaccount/licenses/single-table-activations.php
+ * This template can be overridden by copying it to yourtheme/woocommerce/dlm/my-account/licenses/single-table-activations.php
  *
  * HOWEVER, on occasion I will need to update template files and you
  * (the developer) will need to copy the new files to your theme to
@@ -162,7 +162,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
                         <footer class="modal__footer">
                             <input type="hidden" name="dlm_action" value="manual_activation">
                             <input type="hidden" name="dlm_nonce" value="<?php echo wp_create_nonce( Activations::NONCE ); ?>">
-                            <input type="hidden" name="license" value="<?php echo esc_attr($license->getDecryptedLicenseKey()); ?>">
+                            <input type="hidden" name="license_id" value="<?php echo esc_attr($license->getId()); ?>">
                             <button type="submit" class="button button-primary"><?php _e( 'Create', 'digital-license-manager' ); ?></button>
                         </footer>
                     </form>

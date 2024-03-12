@@ -5,7 +5,7 @@
  *
  * The template for the overview of all customer licenses, across all orders, inside "My Account"
  *
- * This template can be overridden by copying it to yourtheme/woocommerce/dlm/myaccount/licenses/index.php
+ * This template can be overridden by copying it to yourtheme/woocommerce/dlm/my-account/licenses/index.php
  *
  * HOWEVER, on occasion I will need to update template files and you
  * (the developer) will need to copy the new files to your theme to
@@ -13,7 +13,7 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @version 1.0.0
+ * @version 1.0.1
  *
  * Default variables
  *
@@ -24,6 +24,7 @@
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 
 defined( 'ABSPATH' ) || exit; ?>
@@ -86,7 +87,13 @@ defined( 'ABSPATH' ) || exit; ?>
 
 				?>
                 <tr>
-                    <td><span class="dlm-myaccount-license-key"><?php echo esc_attr( $decrypted ); ?></span></td>
+                    <td>
+                    <?php
+                        echo wc_get_template_html( 'dlm/my-account/licenses/partials/license-key.php', array(
+                            'license'     => $license,
+                        ), '', Controller::getTemplatePath() )
+                    ?>
+                    </td>
                     <td>
                         <span><?php esc_html_e( $timesActivated ); ?></span>
                         <span>/</span>

@@ -279,11 +279,14 @@ class MyAccount {
 			echo wc_get_template_html(
 				'dlm/my-account/licenses/single.php',
 				array(
-					'license'     => $license,
-					'license_key' => $license->getDecryptedLicenseKey(),
-					'product'     => ! empty( $license->getProductId() ) ? wc_get_product( $license->getProductId() ) : null,
-					'order'       => ! empty( $license->getOrderId() ) ? wc_get_order( $license->getOrderId() ) : null,
-					'date_format' => get_option( 'date_format' ),
+					'license'          => $license,
+					'license_key'      => $license->getDecryptedLicenseKey(),
+					'license_key_html' => wc_get_template_html( 'dlm/my-account/licenses/partials/key.php', array(
+						'license'     => $license,
+					), '', Controller::getTemplatePath() ),
+					'product'          => ! empty( $license->getProductId() ) ? wc_get_product( $license->getProductId() ) : null,
+					'order'            => ! empty( $license->getOrderId() ) ? wc_get_order( $license->getOrderId() ) : null,
+					'date_format'      => get_option( 'date_format' ),
 				),
 				'',
 				Controller::getTemplatePath()
