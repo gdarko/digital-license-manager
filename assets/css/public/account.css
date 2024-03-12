@@ -63,18 +63,19 @@
     display: inline-block;
 }
 
-.dlm-myaccount-license-key-copy:hover {
+.dlm-myaccount-license-key > .dlm-myaccount-license-key-action:hover {
     background-image: linear-gradient(to right, #6fd4a1, #36be6c);
     color: #ffffff;
 }
 
-.dlm-myaccount-license-key-copy {
+.dlm-myaccount-license-key > .dlm-myaccount-license-key-action {
     font-family: Consolas, monospace;
     font-size: 13px;
     background-image: linear-gradient(to right, #f0f0f0, #f9f9f9);
     padding: 2px 7px;
     border-radius: 5px;
     cursor: pointer;
+    text-decoration: none !important;
 }
 
 .dlm-clipboard {
