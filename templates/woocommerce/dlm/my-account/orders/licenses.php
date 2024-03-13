@@ -49,7 +49,7 @@ foreach ( $data as $productId => $row ): ?>
 		/** @var License $license */
 		$is_order_received  = is_order_received_page();
 		$is_obscure_enabled = (int) Settings::get( 'hide_license_keys', Settings::SECTION_WOOCOMMERCE );
-		$should_obfuscate = apply_filters( 'dlm_myaccount_licenses_should_obfuscate', $is_order_received && $is_obscure_enabled );
+		$should_obfuscate = $is_order_received && $is_obscure_enabled;
 
 		foreach ( $row['keys'] as $license ):
 
@@ -65,7 +65,7 @@ foreach ( $data as $productId => $row ): ?>
             <tr>
                 <td colspan="<?php echo ( $license && $license->getExpiresAt() ) ? '' : '2'; ?>">
                     <?php
-                    if ( $should_obfuscate ) {
+                    if (  apply_filters( 'dlm_myaccount_licenses_should_obfuscate', $should_obfuscate, $license ) ) {
 	                    echo StringFormatter::obfuscateString( $licenseKey );
                     } else {
 	                    echo wc_get_template_html( 'dlm/my-account/licenses/partials/license-key.php', array(
