@@ -27,6 +27,8 @@
 defined('ABSPATH') || exit;
 ?>
 
+<hr class="wp-header-end">
+
 <h1 class="wp-heading-inline"><?php esc_html_e('Licenses', 'digital-license-manager'); ?></h1>
 <a class="page-title-action" href="<?php echo esc_url($addLicenseUrl); ?>">
     <span><?php esc_html_e('Add new', 'digital-license-manager');?></span>

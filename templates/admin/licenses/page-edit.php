@@ -35,8 +35,9 @@ if ( empty( $expiresAt ) || '0000-00-00 00:00:00' === $expiresAt ) {
 /** @var License $license */
 ?>
 
-<h1 class="wp-heading-inline"><?php esc_html_e( 'Edit license', 'digital-license-manager' ); ?></h1>
 <hr class="wp-header-end">
+
+<h1 class="wp-heading-inline"><?php esc_html_e( 'Edit license', 'digital-license-manager' ); ?></h1>
 
 <div class="postbox">
     <div class="inside">
@@ -215,6 +216,8 @@ if ( empty( $expiresAt ) || '0000-00-00 00:00:00' === $expiresAt ) {
                         </p>
                     </td>
                 </tr>
+
+                <?php do_action( 'dlm_admin_license_form_end', $license ); ?>
 
                 </tbody>
             </table>

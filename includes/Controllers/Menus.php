@@ -187,6 +187,11 @@ class Menus {
 	 * Adds the supported screen options for the licenses list.
 	 */
 	public function licensesPageScreenOptions() {
+
+		if ( ! empty( $_GET['action'] ) ) {
+			return;
+		}
+
 		$option = 'per_page';
 		$args   = array(
 			'label'   => __( 'Licenses per page', 'digital-license-manager' ),
@@ -397,7 +402,7 @@ class Menus {
 				'<a href="https://wordpress.org/support/plugin/digital-license-manager/reviews/?rate=5#new-post" target="_blank" class="wc-rating-link" data-rated="' . esc_attr__( 'Thanks :)', 'digital-license-manager' ) . '">&#9733;&#9733;&#9733;&#9733;&#9733;</a>'
 			);
 			if(!defined('DLM_PRO_VERSION')) {
-			    $footerText .= '<br/>Need more functionality? Buy <a style="font-weight:bold;color:#3eb03e;" target="_blank" href="'.DLM_PURCHASE_URL.'"><strong>'.__('Digital License Manager PRO', 'wp-vimeo-videos').'</strong></a>';
+			    $footerText .= '<br/>Need more functionality? Check <a style="font-weight:bold;color:#3eb03e;" target="_blank" href="'.DLM_PURCHASE_URL.'"><strong>'.__('Digital License Manager PRO', 'wp-vimeo-videos').'</strong></a>';
             }
 		}
 

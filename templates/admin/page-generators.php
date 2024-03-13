@@ -27,7 +27,7 @@
 defined( 'ABSPATH' ) || exit;
 ?>
 
-<div class="wrap dlm">
+<div class="wrap dlm dlm-admin-generators">
 	<?php
 	if ( $action === 'list'
 	     || $action === 'delete'

@@ -28,8 +28,9 @@ defined('ABSPATH') || exit;
 
 ?>
 
-<h1 class="wp-heading-inline"><?php esc_html_e('Import Licenses', 'digital-license-manager'); ?></h1>
 <hr class="wp-header-end">
+
+<h1 class="wp-heading-inline"><?php esc_html_e('Import Licenses', 'digital-license-manager'); ?></h1>
 
 <div class="postbox">
     <div class="inside">

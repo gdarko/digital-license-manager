@@ -5,6 +5,11 @@
  * Licensed under GPLv3.
  */
 
+/* Admin glboal */
+.wc-rating-link {
+	color: #27b229;
+}
+
 /* Admin tables */
 .table-view-list.licenses,
 .table-view-list.activations {

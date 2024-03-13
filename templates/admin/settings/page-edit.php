@@ -37,8 +37,7 @@ $time_format = get_option( 'time_format' );
 
 ?>
 
-<h2><?php esc_html_e( 'Key details', 'digital-license-manager' ); ?></h2>
-<hr class="wp-header-end">
+<h3><?php esc_html_e( 'Key details', 'digital-license-manager' ); ?></h3>
 
 <div class="dlm-settings-edit">
     <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
