@@ -421,6 +421,10 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 
 		if ( ! $license ) {
 			return new WP_Error( 'server_error', sprintf( __( "The license key '%s' could not be found.", 'digital-license-manager' ), $licenseKey ), array( 'code' => 500 ) );
+		} else {
+			LicenseActivations::instance()->deleteBy( [ 'license_id' => $oldLicense->getId() ] );
+			LicenseMetaRepository::instance()->deleteBy( [ 'license_id' => $oldLicense->getId() ] );
+			do_action( 'dlm_license_deleted', $oldLicense );
 		}
 
 		return true;

@@ -29,6 +29,7 @@ namespace IdeoLogix\DigitalLicenseManager\ListTables;
 use DateTime;
 use Exception;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractListTable;
+use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses as LicensesRepository;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\LicenseActivations;
@@ -868,22 +869,20 @@ class Licenses extends AbstractListTable {
 		$this->validateNonce( 'delete' );
 		$this->validateSelection();
 
+        $service = new LicensesService();
+
 		$licenseKeyIds = isset( $_REQUEST['id'] ) ? array_map( 'intval', (array) $_REQUEST['id'] ) : array();
 
 		$count = 0;
 		foreach ( $licenseKeyIds as $licenseKeyId ) {
 			/** @var License $license */
-			$license = LicensesRepository::instance()->find( $licenseKeyId );
-			if ( ! $license ) {
+			$license = $service->findById( $licenseKeyId );
+			if ( is_wp_error( $license ) ) {
 				continue;
 			}
-			$result = LicensesRepository::instance()->delete( (array) $licenseKeyId );
-			if ( $result ) {
-				// Update the stock
-				if ( $license->getProductId() !== null && $license->getStatus() === LicenseStatus::ACTIVE ) {
-					Stock::syncrhonizeProductStock( $license->getProductId() );
-				}
 
+			$result = $service->delete( $license->getDecryptedLicenseKey() );
+			if ( ! is_wp_error( $result ) ) {
 				$count += $result;
 			}
 		}
