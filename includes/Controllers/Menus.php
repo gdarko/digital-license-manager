@@ -188,7 +188,7 @@ class Menus {
 	 */
 	public function licensesPageScreenOptions() {
 
-		if ( ! empty( $_GET['action'] ) ) {
+		if ( ! empty( $_GET['action'] ) && in_array( $_GET['action'], [ 'edit', 'add' ] ) ) {
 			return;
 		}
 

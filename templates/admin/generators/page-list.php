@@ -35,6 +35,7 @@ defined( 'ABSPATH' ) || exit;
  */
 
 ?>
+<hr class="wp-header-end">
 
 <h1 class="wp-heading-inline"><?php esc_html_e( 'Generators', 'digital-license-manager' ); ?></h1>
 <?php if ( current_user_can( 'dlm_create_generators' ) ): ?>

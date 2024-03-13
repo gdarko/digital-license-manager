@@ -36,7 +36,6 @@ defined('ABSPATH') || exit;
 <a class="page-title-action" href="<?php echo esc_url($importLicenseUrl); ?>">
     <span><?php esc_html_e('Import', 'digital-license-manager');?></span>
 </a>
-<hr class="wp-header-end">
 
 <form method="post" id="dlm-license-table">
     <?php
