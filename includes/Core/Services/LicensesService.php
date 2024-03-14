@@ -867,7 +867,9 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		$result['failed']     = 0;
 		$result['duplicates'] = 0;
 
-		if ( ! intval( Settings::get( 'allow_duplicates', Settings::SECTION_GENERAL ) ) ) {
+		$allowDuplicates = (int) Settings::get( 'allow_duplicates', Settings::SECTION_GENERAL );
+
+		if ( ! $allowDuplicates ) {
 			$origLicensesCount    = count( $cleanLicenseKeys );
 			$licenseKeys          = array_unique( $licenseKeys ); // filter for duplicates
 			$currLicensesCount    = count( $licenseKeys );
@@ -882,6 +884,11 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 				return $encrypted;
 			}
 			$hashed = StringHasher::license( $licenseKey );
+
+			if ( ! $allowDuplicates && Licenses::instance()->count( [ 'hash' => $hashed ] ) > 0 ) {
+				$result['duplicates'] ++;
+				continue;
+			}
 
 			$license = Licenses::instance()->insert(
 				array(
