@@ -491,6 +491,32 @@ class Boot {
 	}
 
 	/**
+	 * Show deactivate feedback form on plugin deactivation
+	 *
+	 * @since 1.6.0
+	 *
+	 * @return void
+	 */
+	public function initPluginDeactivateFeedback() {
+		if ( ! class_exists( '\IgniteKit\WP\DeactivateFeedbackClient\Main' ) ) {
+			return;
+		}
+		try {
+			new \IgniteKit\WP\DeactivateFeedbackClient\Main( [
+				'name'        => 'Digital License Manager',
+				'slug'        => 'digital-license-manager',
+				'version'     => DLM_PLUGIN_VERSION,
+				'prefix'      => 'dlmcore_',
+				'public_path' => str_replace( '/', DIRECTORY_SEPARATOR, DLM_ABSPATH . 'vendor/ignitekit/wp-deactivate-feedback-client/public/' ),
+				'public_url'  => DLM_PLUGIN_URL . 'vendor/ignitekit/wp-deactivate-feedback-client/public/',
+				'api_url'     => 'https://codeverve.com/wp-json/deactivate-feedback/v1/send/',
+				'data'        => [ 'website', 'system', 'contact' ],
+			] );
+		} catch ( \Exception $e ) {
+		}
+	}
+
+	/**
 	 * Hook into actions and filters.
 	 *
 	 * @return void
@@ -500,6 +526,8 @@ class Boot {
 		register_activation_hook( DLM_PLUGIN_ROOT_FILE, array( '\IdeoLogix\DigitalLicenseManager\Setup', 'install' ) );
 		register_deactivation_hook( DLM_PLUGIN_ROOT_FILE, array( '\IdeoLogix\DigitalLicenseManager\Setup', 'deactivate' ) );
 		register_uninstall_hook( DLM_PLUGIN_ROOT_FILE, array( '\IdeoLogix\DigitalLicenseManager\Setup', 'uninstall' ) );
+
+		$this->initPluginDeactivateFeedback();
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'registerAssets' ), 10 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'registerAssets' ), 10 );
