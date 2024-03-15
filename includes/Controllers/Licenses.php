@@ -385,7 +385,7 @@ class Licenses {
 			}
 		} elseif ( 'csv' === $ext ) {
 			$licenseKeys = array();
-			if ( ( $handle = fopen( DLM_ASSETS_DIR . $tmp_file, 'r' ) ) !== false ) {
+			if ( ( $handle = fopen( $filePath, 'r' ) ) !== false ) {
 				while ( ( $data = fgetcsv( $handle, 1000, ',' ) ) !== false ) {
 					if ( $data && is_array( $data ) && count( $data ) > 0 ) {
 						$licenseKeys[] = $data[0];
