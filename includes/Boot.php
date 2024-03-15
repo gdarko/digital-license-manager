@@ -498,6 +498,9 @@ class Boot {
 	 * @return void
 	 */
 	public function initPluginDeactivateFeedback() {
+		if ( ! apply_filters( 'dlm_admin_deactivate_feedback', true ) ) {
+			return;
+		}
 		if ( ! class_exists( '\IgniteKit\WP\DeactivateFeedbackClient\Main' ) ) {
 			return;
 		}
@@ -609,5 +612,13 @@ class Boot {
 	 */
 	public function isPluginActive( $pluginName ) {
 		return in_array( $pluginName, apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) );
+	}
+
+	/**
+	 * Returns the file constant
+	 * @return string
+	 */
+	public function getFile() {
+		return __FILE__;
 	}
 }
