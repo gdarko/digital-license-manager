@@ -115,7 +115,7 @@ $url_migration = trailingslashit(DLM_DOCUMENTATION_URL) . 'migration/migrate-fro
     }
 
     .instructions .dgv-instructions-colf {
-        padding: 1%;
+        padding: 10px;
     }
 
     .instructions .dgv-instructions-colf:first-child {
