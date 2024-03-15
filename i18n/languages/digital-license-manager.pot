@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Digital License Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-13 16:36+0000\n"
+"POT-Creation-Date: 2024-03-15 01:35+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -250,8 +250,8 @@ msgstr ""
 msgid "Amount"
 msgstr ""
 
-#: includes/Core/Services/LicensesService.php:1109
-#: includes/Core/Services/LicensesService.php:1188
+#: includes/Core/Services/LicensesService.php:1116
+#: includes/Core/Services/LicensesService.php:1195
 msgid "Amount is invalid."
 msgstr ""
 
@@ -319,10 +319,6 @@ msgstr ""
 
 #: includes/Controllers/Settings.php:112
 msgid "Branding"
-msgstr ""
-
-#: includes/Boot.php:472
-msgid "Buy PRO Version"
 msgstr ""
 
 #: templates/woocommerce/dlm/my-account/licenses/partials/single-certificate-button.php:26
@@ -828,6 +824,10 @@ msgstr ""
 msgid "Get in touch with us, do not hesitate to do that."
 msgstr ""
 
+#: includes/Boot.php:472
+msgid "Get PRO Version"
+msgstr ""
+
 #: includes/Boot.php:458
 msgid "GitHub"
 msgstr ""
@@ -993,7 +993,7 @@ msgstr ""
 msgid "Invalid license key ID"
 msgstr ""
 
-#: includes/Core/Services/LicensesService.php:1101
+#: includes/Core/Services/LicensesService.php:1108
 msgid "Invalid order provided."
 msgstr ""
 
@@ -1097,12 +1097,12 @@ msgstr ""
 msgid "License keys"
 msgstr ""
 
-#: includes/Core/Services/LicensesService.php:1180
+#: includes/Core/Services/LicensesService.php:1187
 msgid "License Keys are invalid."
 msgstr ""
 
 #: includes/Core/Services/LicensesService.php:852
-#: includes/Core/Services/LicensesService.php:937
+#: includes/Core/Services/LicensesService.php:944
 msgid "License Keys must be provided as array"
 msgstr ""
 
@@ -1134,7 +1134,7 @@ msgid "License Manager - Settings"
 msgstr ""
 
 #: includes/Core/Services/LicensesService.php:856
-#: includes/Core/Services/LicensesService.php:933
+#: includes/Core/Services/LicensesService.php:940
 msgid "License Status is invalid"
 msgstr ""
 
@@ -1299,7 +1299,7 @@ msgstr ""
 msgid "No licence keys found for your query."
 msgstr ""
 
-#: includes/Core/Services/LicensesService.php:945
+#: includes/Core/Services/LicensesService.php:952
 msgid "No License Keys were provided"
 msgstr ""
 
@@ -1459,7 +1459,7 @@ msgstr ""
 msgid "Order ID"
 msgstr ""
 
-#: includes/Core/Services/LicensesService.php:1184
+#: includes/Core/Services/LicensesService.php:1191
 msgid "Order ID is invalid."
 msgstr ""
 
@@ -1663,7 +1663,7 @@ msgstr ""
 msgid "Require license owner email to confirm if user owns the license"
 msgstr ""
 
-#: includes/Core/Services/LicensesService.php:1115
+#: includes/Core/Services/LicensesService.php:1122
 msgid "Required amout of %d licenses was not found in stock."
 msgstr ""
 
@@ -2263,7 +2263,7 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: includes/Core/Services/LicensesService.php:1240
+#: includes/Core/Services/LicensesService.php:1247
 msgid "Unknown license"
 msgstr ""
 
@@ -2357,11 +2357,11 @@ msgstr ""
 msgid "Valid for (days)"
 msgstr ""
 
-#: includes/Core/Services/LicensesService.php:1211
+#: includes/Core/Services/LicensesService.php:1218
 msgid "Valid for invalid."
 msgstr ""
 
-#: includes/Core/Services/LicensesService.php:1132
+#: includes/Core/Services/LicensesService.php:1139
 msgid "Valid for is not set or invalid."
 msgstr ""
 
