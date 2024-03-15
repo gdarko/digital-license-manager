@@ -498,7 +498,7 @@ class Boot {
 	 * @return void
 	 */
 	public function initPluginDeactivateFeedback() {
-		if ( ! apply_filters( 'dlm_admin_deactivate_feedback', true ) ) {
+		if ( ! apply_filters( 'dlm_admin_deactivate_feedback', true, __FILE__ ) ) {
 			return;
 		}
 		if ( ! class_exists( '\IgniteKit\WP\DeactivateFeedbackClient\Main' ) ) {
