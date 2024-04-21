@@ -29,6 +29,7 @@ namespace IdeoLogix\DigitalLicenseManager\Controllers;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Generator;
 use IdeoLogix\DigitalLicenseManager\Core\Services\GeneratorsService;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
+use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
 use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
@@ -167,20 +168,27 @@ class Generators {
 
 		$licenses = $this->service->generateLicenses( $amount, $generator );
 
+		// Overrides
+		if ( empty( $validFor ) ) {
+			$validFor = $generator->getExpiresIn();
+		}
+
 		if ( ! is_wp_error( $licenses ) ) {
 			// Save the license keys.
 			$licensesService = new LicensesService();
 			$result = $licensesService->createMultiple( $licenses, [
-				'order_id'   => $orderId,
-				'product_id' => $productId,
-				'status'     => $status,
-				'valid_for'  => $validFor,
-				'complete'   => true,
+				'order_id'          => $orderId,
+				'product_id'        => $productId,
+				'status'            => $status,
+				'source'            => LicenseSource::GENERATOR,
+				'valid_for'         => $validFor,
+				'activations_limit' => $generator->getActivationsLimit(),
+				'complete'          => true,
 			] );
 			if ( is_wp_error( $result ) ) {
 				NoticeFlasher::error( $result->get_error_message() );
 			} else {
-				NoticeFlasher::success( sprintf( __( 'Successfully generated %d license(s).', 'digital-license-manager' ), $amount ) );
+				NoticeFlasher::success( sprintf( __( 'Successfully generated %d license(s).', 'digital-license-manager' ), count($result['licenses']) ) );
 			}
 		} else {
 			NoticeFlasher::error( $licenses->get_error_message() );

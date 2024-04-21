@@ -275,6 +275,11 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			return new WP_Error( 'data_error', __( 'No valid status provided.' ) );
 		}
 
+		// Validate source
+		if ( is_null( $source ) ) {
+			return new WP_Error( 'data_error', __( 'No valid source provided.' ) );
+		}
+
 		// Filter for dups
 		if ( ! $allowDups ) {
 			$keys = array_unique( $keys );
@@ -334,7 +339,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			do_action_deprecated( 'dlm_generated_licenses_saved', [ $orderId, [], $params['complete'] ], '1.6.1', 'dlm_licenses_created' ); // deprecated.
 		}
 
-		if ( ! empty( $created ) ) {
+		if ( ! empty( $result['licenses'] ) ) {
 			do_action( 'dlm_licenses_created', $result, [
 				'order_id' => $orderId,
 				'complete' => isset( $params['complete'] ) ? $params['complete'] : false,
@@ -944,14 +949,15 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 
 		_deprecated_function(__METHOD__, '1.6.1', 'LicensesService::createMultiple()');
 
-		$result = $this->createMultiple($licenseKeys, [
-			'status' => $status,
-			'order_id' => $orderId,
-			'product_id' => $productId,
-			'user_id' => $userId,
-			'valid_for'=> $validFor,
+		$result = $this->createMultiple( $licenseKeys, [
+			'status'            => $status,
+			'source'            => LicenseSource::GENERATOR,
+			'order_id'          => $orderId,
+			'product_id'        => $productId,
+			'user_id'           => $userId,
+			'valid_for'         => $validFor,
 			'activations_limit' => $activationsLimit,
-		]);
+		] );
 
 		return is_wp_error($result) ? $result : $result['licenses'];
 	}
@@ -975,14 +981,15 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 
 		_deprecated_function(__METHOD__, '1.6.1', 'LicensesService::createMultiple()');
 
-		$result = $this->createMultiple($licenseKeys, [
-			'order_id' => $orderId,
-			'product_id' => $productId,
-			'status' => $status,
-			'valid_for' => $validFor,
+		$result = $this->createMultiple( $licenseKeys, [
+			'order_id'          => $orderId,
+			'product_id'        => $productId,
+			'status'            => $status,
+			'source'            => LicenseSource::GENERATOR,
+			'valid_for'         => $validFor,
 			'activations_limit' => $activationsLimit,
-			'complete' => $markAsComplete
-		]);
+			'complete'          => $markAsComplete
+		] );
 
 		return is_wp_error($result) ? $result : $result['licenses'];
 	}

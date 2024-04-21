@@ -30,6 +30,7 @@ use Exception;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses as LicensesRepository;
+use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
@@ -135,6 +136,7 @@ class Licenses {
 			'product_id'        => $productId,
 			'user_id'           => $userId,
 			'status'            => $status,
+			'source'            => LicenseSource::GENERATOR,
 			'valid_for'         => $validFor,
 			'activations_limit' => $maxActivations,
 		] );

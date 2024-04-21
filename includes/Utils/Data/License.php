@@ -31,6 +31,7 @@ use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Generator as GeneratorResourceModel;
 use IdeoLogix\DigitalLicenseManager\Database\Models\License as LicenseModel;
 use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation;
+use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
 use WP_Error;
 
 /**
@@ -273,6 +274,7 @@ class License {
 			'order_id'          => $orderId,
 			'product_id'        => $productId,
 			'status'            => $status,
+			'source'            => LicenseSource::GENERATOR,
 			'user_id'           => $userId,
 			'valid_for'         => $validFor,
 			'activations_limit' => $activationsLimit,
@@ -301,6 +303,7 @@ class License {
 			'order_id'          => $orderId,
 			'product_id'        => $productId,
 			'status'            => $status,
+			'source'            => LicenseSource::GENERATOR,
 			'valid_for'         => $validFor,
 			'activations_limit' => $activationsLimit,
 		] );

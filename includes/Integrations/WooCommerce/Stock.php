@@ -49,9 +49,8 @@ class Stock {
 			'handleCustomQueryVars'
 		), 10, 2 );
 
-		add_action( 'dlm_license_deleted', [ $this, 'onLicenseDeleted' ] );
-		add_action( 'dlm_licenses_imported', [ $this, 'onLicensesImported' ] );
-		add_action( 'dlm_licenses_generated', [ $this, 'onLicensesGenerated' ] );
+		add_action( 'dlm_license_deleted', [ $this, 'onLicenseDeleted' ], 10, 1 );
+		add_action( 'dlm_licenses_created', [ $this, 'onLicensesCreated' ], 10, 1 );
 	}
 
 	/**
@@ -256,18 +255,8 @@ class Stock {
 	 *
 	 * @return void
 	 */
-	public function onLicensesGenerated( $licenses ) {
-		$this->resyncMultiple( $licenses );
-	}
-
-	/**
-	 * Resync the stock
-	 *
-	 * @param License[] $licenses
-	 *
-	 * @return void
-	 */
-	public function onLicensesImported( $licenses ) {
+	public function onLicensesCreated( $result ) {
+		$licenses = isset( $result['licenses'] ) ? $result['licenses'] : [];
 		$this->resyncMultiple( $licenses );
 	}
 
