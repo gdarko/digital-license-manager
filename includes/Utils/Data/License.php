@@ -269,8 +269,14 @@ class License {
 
 		$instance = new LicensesService();
 
-		return $instance->saveImportedLicenseKeys( $licenseKeys, $status, $orderId, $productId, $userId, $validFor, $activationsLimit );
-
+		return $instance->createMultiple( $licenseKeys, [
+			'order_id'          => $orderId,
+			'product_id'        => $productId,
+			'status'            => $status,
+			'user_id'           => $userId,
+			'valid_for'         => $validFor,
+			'activations_limit' => $activationsLimit,
+		] );
 	}
 
 	/**
@@ -291,7 +297,13 @@ class License {
 
 		$instance = new LicensesService();
 
-		return $instance->saveGeneratedLicenseKeys( $orderId, $productId, $licenseKeys, $status, $generator, $validFor, $activationsLimit );
+		return $instance->createMultiple( $licenseKeys, [
+			'order_id'          => $orderId,
+			'product_id'        => $productId,
+			'status'            => $status,
+			'valid_for'         => $validFor,
+			'activations_limit' => $activationsLimit,
+		] );
 	}
 
 	/**

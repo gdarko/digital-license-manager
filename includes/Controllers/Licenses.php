@@ -130,15 +130,15 @@ class Licenses {
 		$maxActivations = isset( $_POST['activations_limit'] ) ? intval( $_POST['activations_limit'] ) : null;
 
 		// Save the imported keys
-		$result = $this->service->saveImportedLicenseKeys(
-			$licenseKeys,
-			$status,
-			$orderId,
-			$productId,
-			$userId,
-			$validFor,
-			$maxActivations
-		);
+		$result = $this->service->createMultiple( $licenseKeys, [
+			'order_id'          => $orderId,
+			'product_id'        => $productId,
+			'user_id'           => $userId,
+			'status'            => $status,
+			'valid_for'         => $validFor,
+			'activations_limit' => $maxActivations,
+		] );
+
 		if ( is_wp_error( $result ) ) {
 			NoticeFlasher::error( __( $result->get_error_message(), 'digital-license-manager' ) );
 			HttpHelper::redirect( $backUrl );
@@ -147,7 +147,8 @@ class Licenses {
 		// Redirect according to $result.
 		$message  = '';
 		$callback = '';
-		$resync   = false;
+
+		$result['added'] = count($result['licenses']);
 
 		if ( $result['failed'] == 0 && $result['added'] == 0 ) {
 			$callback = 'error';
@@ -160,7 +161,6 @@ class Licenses {
 				$callback = 'success';
 				$message  = sprintf( __( '%d license(s) added successfully.', 'digital-license-manager' ), (int) $result['added'] );
 			}
-			$resync = true;
 		} else if ( $result['failed'] > 0 && $result['added'] == 0 ) {
 			$callback = 'error';
 			if ( ! empty( $result['duplicates'] ) ) {
@@ -175,11 +175,6 @@ class Licenses {
 			} else {
 				$message = sprintf( __( '%d key(s) have been imported, while %d key(s) were not imported.', 'digital-license-manager' ), (int) $result['added'], (int) $result['failed'] );
 			}
-			$resync = true;
-		}
-
-		if ( $resync && $status === LicenseStatus::ACTIVE ) {
-			Stock::syncrhonizeProductStock( $productId );
 		}
 
 		if ( method_exists( NoticeFlasher::class, $callback ) ) {

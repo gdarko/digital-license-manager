@@ -100,16 +100,17 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 
 	/**
 	 * Retrieves single item from the database by hash
+	 *
 	 * @param $hash
 	 *
+	 * @return AbstractResourceModel|License|WP_Error|object
 	 * @since 1.6.0
 	 *
-	 * @return AbstractResourceModel|License|WP_Error|object
 	 */
 	public function findByHash( $hash ) {
-		$license = Licenses::instance()->findBy([
+		$license = Licenses::instance()->findBy( [
 			'hash' => $hash
-		]);
+		] );
 		if ( ! $license ) {
 			return new WP_Error( 'data_error', sprintf( __( "The license id '%s' could not be found", 'digital-license-manager' ), $hash ), array( 'code' => 404 ) );
 		}
@@ -225,6 +226,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		);
 
 		/** @var License $license */
+		$license = apply_filters( 'dlm_license_pre_create_params', $queryData );
 		$license = Licenses::instance()->insert( $queryData );
 
 		if ( ! $license ) {
@@ -237,6 +239,109 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		}
 
 		return $license;
+	}
+
+	/**
+	 * Create multiple licenses
+	 *
+	 * @param $keys
+	 * @param $params
+	 *
+	 * @return array|WP_Error
+	 */
+	public function createMultiple( $keys, $params ) {
+
+		if ( ! is_array( $keys ) || empty( $keys ) ) {
+			return new WP_Error( 'data_error', __( 'No keys provided.' ) );
+		}
+
+		$keys      = array_map( 'sanitize_text_field', $keys );
+		$status    = isset( $params['status'] ) && in_array( (int) $params['status'], LicenseStatusEnum::$status ) ? (int) $params['status'] : null;
+		$orderId   = isset( $params['order_id'] ) ? (int) $params['order_id'] : null;
+		$userId    = isset( $params['user_id'] ) ? (int) $params['user_id'] : null;
+		$productId = isset( $params['product_id'] ) ? (int) $params['product_id'] : null;
+		$validFor  = isset( $params['valid_for'] ) ? (int) $params['valid_for'] : null;
+		$limit     = isset( $params['activations_limit'] ) ? (int) $params['activations_limit'] : null;
+		$source    = isset( $params['source'] ) ? $params['source'] : null;
+		$allowDups = (int) Settings::get( 'allow_duplicates', Settings::SECTION_GENERAL );
+
+		// Allow license user to be filtered
+		if ( $orderId && null === $userId ) {
+			$userId = apply_filters( 'dlm_locate_order_user_id', $userId, $orderId );
+		}
+
+		// Validate status
+		if ( is_null( $status ) ) {
+			return new WP_Error( 'data_error', __( 'No valid status provided.' ) );
+		}
+
+		// Filter for dups
+		if ( ! $allowDups ) {
+			$keys = array_unique( $keys );
+		}
+
+		// Set expires at.
+		$expiresAt = null;
+		if ( ! empty( $validFor ) && is_numeriC($validFor) && $validFor > 0 && $status == LicenseStatusEnum::SOLD ) {
+			try {
+				$expiresAt = DateFormatter::addDaysInFuture( $validFor, 'now', 'Y-m-d H:i:s' );
+			} catch ( \Exception $e ) {
+				return new WP_Error( 'data_error', $e->getMessage(), array( 'code' => 500 ) );
+			}
+		}
+
+		// Defaults
+		$result = [
+			'licenses'   => [],
+			'duplicates' => 0,
+			'failed'     => 0,
+		];
+
+		// Go through and create licenses.
+		foreach ( $keys as $key ) {
+			$encrypted = CryptoHelper::encrypt( $key );
+			if ( is_wp_error( $encrypted ) ) {
+				$result['failed'] ++;
+				continue;
+			}
+			$hashed = StringHasher::license( $key );
+			if ( ! $allowDups && Licenses::instance()->count( [ 'hash' => $hashed ] ) > 0 ) {
+				$result['duplicates'] ++;
+				continue;
+			}
+			$params   = array(
+				'order_id'          => $orderId,
+				'product_id'        => $productId,
+				'user_id'           => $userId,
+				'license_key'       => $encrypted,
+				'hash'              => $hashed,
+				'source'            => $source,
+				'status'            => $status,
+				'valid_for'         => $validFor,
+				'activations_limit' => $limit,
+				'expires_at'        => $expiresAt,
+			);
+			$params   = apply_filters( 'dlm_license_pre_create_params', $params );
+			$inserted = Licenses::instance()->insert( $params );
+			if ( $inserted ) {
+				$result['licenses'][] = $inserted;
+			} else {
+				$result['failed'] ++;
+			}
+		}
+
+		if ( isset( $params['complete'] ) && $params['complete'] ) {
+			do_action_deprecated( 'dlm_generated_licenses_saved', [ $orderId, [], $params['complete'] ], '1.6.1', 'dlm_licenses_created' ); // deprecated.
+		}
+
+		if ( ! empty( $created ) ) {
+			do_action( 'dlm_licenses_created', $result, [
+				'order_id' => $orderId,
+				'complete' => isset( $params['complete'] ) ? $params['complete'] : false,
+			] );
+		}
+
+		return $result;
 	}
 
 	/**
@@ -406,11 +511,6 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 				'hash' => StringHasher::license( $licenseKey )
 			)
 		);
-
-		// Update the stock
-		if ( $oldLicense && $oldLicense->getProductId() !== null && $oldLicense->getStatus() === LicenseStatusEnum::ACTIVE ) {
-			Stock::syncrhonizeProductStock( $oldLicense->getProductId() );
-		}
 
 		/** @var License $license */
 		$license = Licenses::instance()->deleteBy(
@@ -828,6 +928,8 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	/**
 	 * Imports an array of un-encrypted license keys.
 	 *
+	 * @deprecated Since 1.6.1 - Replace it with LicensesService::createMultiple()
+	 *
 	 * @param array $licenseKeys License keys to be stored
 	 * @param int $status License key status
 	 * @param int $orderId WooCommerce Order ID
@@ -836,86 +938,28 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 * @param int $validFor Validity period (in days)
 	 * @param int $activationsLimit Maximum activation count
 	 *
-	 * @return array|WP_Error
+	 * @return AbstractResourceModel[]|License[]|WP_Error
 	 */
 	public function saveImportedLicenseKeys( $licenseKeys, $status, $orderId, $productId, $userId, $validFor, $activationsLimit ) {
-		$result                = array();
-		$cleanLicenseKeys      = array();
-		$cleanStatus           = $status ? absint( $status ) : null;
-		$cleanOrderId          = $orderId ? absint( $orderId ) : null;
-		$cleanProductId        = $productId ? absint( $productId ) : null;
-		$cleanUserId           = $userId ? absint( $userId ) : null;
-		$cleanValidFor         = $validFor ? absint( $validFor ) : null;
-		$cleanActivationsLimit = $activationsLimit ? absint( $activationsLimit ) : null;
 
-		if ( ! is_array( $licenseKeys ) ) {
-			return new WP_Error( 'data_error', __( 'License Keys must be provided as array', 'digital-license-manager' ), array( 'code' => 422 ) );
-		}
+		_deprecated_function(__METHOD__, '1.6.1', 'LicensesService::createMultiple()');
 
-		if ( ! $cleanStatus || ! in_array( $cleanStatus, LicenseStatusEnum::$status ) ) {
-			return new WP_Error( 'data_error', __( 'License Status is invalid', 'digital-license-manager' ), array( 'code' => 422 ) );
-		}
+		$result = $this->createMultiple($licenseKeys, [
+			'status' => $status,
+			'order_id' => $orderId,
+			'product_id' => $productId,
+			'user_id' => $userId,
+			'valid_for'=> $validFor,
+			'activations_limit' => $activationsLimit,
+		]);
 
-		foreach ( $licenseKeys as $licenseKey ) {
-			if ( empty( $licenseKey ) ) {
-				continue;
-			}
-			array_push( $cleanLicenseKeys, sanitize_text_field( $licenseKey ) );
-		}
-
-		$result['added']      = 0;
-		$result['failed']     = 0;
-		$result['duplicates'] = 0;
-
-		$allowDuplicates = (int) Settings::get( 'allow_duplicates', Settings::SECTION_GENERAL );
-
-		if ( ! $allowDuplicates ) {
-			$origLicensesCount    = count( $cleanLicenseKeys );
-			$licenseKeys          = array_unique( $licenseKeys ); // filter for duplicates
-			$currLicensesCount    = count( $licenseKeys );
-			$result['duplicates'] = $origLicensesCount - $currLicensesCount;
-		}
-
-		// Add the keys to the database table.
-		foreach ( $cleanLicenseKeys as $licenseKey ) {
-
-			$encrypted = CryptoHelper::encrypt( $licenseKey );
-			if ( is_wp_error( $encrypted ) ) {
-				return $encrypted;
-			}
-			$hashed = StringHasher::license( $licenseKey );
-
-			if ( ! $allowDuplicates && Licenses::instance()->count( [ 'hash' => $hashed ] ) > 0 ) {
-				$result['duplicates'] ++;
-				continue;
-			}
-
-			$license = Licenses::instance()->insert(
-				array(
-					'order_id'          => $cleanOrderId,
-					'product_id'        => $cleanProductId,
-					'user_id'           => $cleanUserId,
-					'license_key'       => $encrypted,
-					'hash'              => $hashed,
-					'source'            => LicenseSource::IMPORT,
-					'status'            => $cleanStatus,
-					'valid_for'         => $cleanValidFor,
-					'activations_limit' => $cleanActivationsLimit,
-				)
-			);
-
-			if ( $license ) {
-				$result['added'] ++;
-			} else {
-				$result['failed'] ++;
-			}
-		}
-
-		return $result;
+		return is_wp_error($result) ? $result : $result['licenses'];
 	}
 
 	/**
 	 * Save the license keys for a given product to the database.
+	 *
+	 * @deprecated  Since 1.6.1 - Replace it with LicensesService::createMultiple()
 	 *
 	 * @param int|null $orderId WooCommerce Order ID
 	 * @param int|null $productId WooCommerce Product ID
@@ -925,113 +969,22 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 * @param int|null $validFor
 	 * @param int|null $activationsLimit
 	 *
-	 * @return array|bool|WP_Error
+	 * @return AbstractResourceModel[]|License[]|WP_Error
 	 */
 	public function saveGeneratedLicenseKeys( $orderId, $productId, $licenseKeys, $status, $generator, $validFor = null, $activationsLimit = null, $markAsComplete = true ) {
 
-		$cleanLicenseKeys = array();
-		$cleanOrderId     = ( $orderId ) ? absint( $orderId ) : null;
-		$cleanProductId   = ( $productId ) ? absint( $productId ) : null;
-		$cleanStatus      = ( $status ) ? absint( $status ) : null;
-		$validFor         = is_numeric( $validFor ) && absint( $validFor ) > 0 ? absint( $validFor ) : null;
-		$userId           = null;
+		_deprecated_function(__METHOD__, '1.6.1', 'LicensesService::createMultiple()');
 
-		if ( ! $cleanStatus || ! in_array( $cleanStatus, LicenseStatusEnum::$status ) ) {
-			return new WP_Error( 'data_error', __( 'License Status is invalid', 'digital-license-manager' ), array( 'code' => 422 ) );
-		}
+		$result = $this->createMultiple($licenseKeys, [
+			'order_id' => $orderId,
+			'product_id' => $productId,
+			'status' => $status,
+			'valid_for' => $validFor,
+			'activations_limit' => $activationsLimit,
+			'complete' => $markAsComplete
+		]);
 
-		if ( ! is_array( $licenseKeys ) ) {
-			return new WP_Error( 'data_error', __( 'License Keys must be provided as array', 'digital-license-manager' ), array( 'code' => 422 ) );
-		}
-
-		foreach ( $licenseKeys as $licenseKey ) {
-			array_push( $cleanLicenseKeys, sanitize_text_field( $licenseKey ) );
-		}
-
-		if ( count( $cleanLicenseKeys ) === 0 ) {
-			return new WP_Error( 'data_error', __( 'No License Keys were provided', 'digital-license-manager' ), array( 'code' => 422 ) );
-		}
-
-		/** @var WC_Order $order */
-		if ( function_exists( 'wc_get_order' ) ) {
-			if ( $order = wc_get_order( $orderId ) ) {
-				$userId = $order->get_user_id();
-			}
-		}
-
-		try {
-			$expiresAt = null;
-			if ( $generator->getExpiresIn() && $status == LicenseStatusEnum::SOLD ) {
-				$expiresAt = null;
-				if ( is_numeric( $generator->getExpiresIn() ) && $generator->getExpiresIn() > 0 ) {
-					$expiresAt = DateFormatter::addDaysInFuture( $generator->getExpiresIn(), 'now', 'Y-m-d H:i:s' );
-				}
-			}
-		} catch ( \Exception $e ) {
-			return new WP_Error( 'data_error', $e->getMessage(), array( 'code' => 500 ) );
-		}
-
-		// Add the keys to the database table.
-		$invalidKeysAmount = 0;
-		foreach ( $cleanLicenseKeys as $licenseKey ) {
-			// Key exists, up the invalid keys count.
-			if ( $this->isKeyDuplicate( $licenseKey ) ) {
-				$invalidKeysAmount ++;
-				continue;
-			}
-
-			// Key doesn't exist, add it to the database table.
-			$encryptedLicenseKey = CryptoHelper::encrypt( $licenseKey );
-			if ( is_wp_error( $encryptedLicenseKey ) ) {
-				return $encryptedLicenseKey;
-			}
-			$hashedLicenseKey = StringHasher::license( $licenseKey );
-
-			$generatorActivationsLimit = ! empty( $generator->getActivationsLimit() ) ? $generator->getActivationsLimit() : null;
-			$activationsLimit          = is_numeric( $activationsLimit ) ? (int) $activationsLimit : $generatorActivationsLimit;
-
-			// Save to database.
-			Licenses::instance()->insert(
-				array(
-					'order_id'          => $cleanOrderId,
-					'product_id'        => $cleanProductId,
-					'user_id'           => $userId,
-					'license_key'       => $encryptedLicenseKey,
-					'hash'              => $hashedLicenseKey,
-					'expires_at'        => $expiresAt,
-					'source'            => LicenseSource::GENERATOR,
-					'status'            => $cleanStatus,
-					'activations_limit' => $activationsLimit,
-					'valid_for'         => $validFor,
-				)
-			);
-		}
-
-		// There have been duplicate keys, regenerate and add them.
-		if ( $invalidKeysAmount > 0 ) {
-
-			$generatorsService = new GeneratorsService();
-			$newKeys           = $generatorsService->generateLicenses( $invalidKeysAmount, $generator );
-			if ( is_wp_error( $newKeys ) ) {
-				return $newKeys;
-			}
-
-			return $this->saveGeneratedLicenseKeys(
-				$cleanOrderId,
-				$cleanProductId,
-				$newKeys,
-				$cleanStatus,
-				$generator,
-				$validFor
-			);
-		} else {
-			// Keys have been generated and saved, this order is now complete.
-			if ( $markAsComplete ) {
-				do_action( 'dlm_generated_licenses_saved', $cleanOrderId, [], $markAsComplete );
-			}
-
-			return true;
-		}
+		return is_wp_error($result) ? $result : $result['licenses'];
 	}
 
 	/**
@@ -1097,7 +1050,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	 * @param $amount
 	 * @param null $activationsLimit
 	 *
-	 * @return AbstractResourceModel|License|WP_Error
+	 * @return AbstractResourceModel[]|License[]|WP_Error
 	 */
 	public function assignLicensesFromStock( $product, $order, $amount, $activationsLimit = null ) {
 
@@ -1247,7 +1200,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			return new WP_Error( 'license_not_found', __( 'Unknown license', 'digital-license-manager' ), array( 'status' => 404 ) );
 		}
 
-		$timesActivated   = $license->getActivationsCount(['active' => 1]);
+		$timesActivated   = $license->getActivationsCount( [ 'active' => 1 ] );
 		$activationsLimit = $license->getActivationsLimit();
 
 		if ( empty( $licenseKey ) ) {

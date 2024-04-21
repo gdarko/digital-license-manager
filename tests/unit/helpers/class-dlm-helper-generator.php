@@ -123,7 +123,13 @@ class DLM_Helper_Generator {
 		$licenses = $gService->generateLicenses( $max, $generator, [], null, $product );
 
 		$lService = new \IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService();
-		$lService->saveGeneratedLicenseKeys( null, $product->get_id(), $licenses, \IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus::ACTIVE, $generator );
+		$lService->createMultiple($licenses, [
+			'order_id' => null,
+			'product_id' => $product->get_id(),
+			'activations_limit' => $max,
+			'status' => \IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus::ACTIVE,
+			'complete' => true,
+		]);
 
 		return $licenses;
 

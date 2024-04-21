@@ -31,6 +31,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\Generator;
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
+use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\ListTables\Licenses as LicensesListTable;
 use IdeoLogix\DigitalLicenseManager\Settings;
@@ -60,8 +61,9 @@ class Orders {
 		add_filter( 'woocommerce_order_actions', array( $this, 'addSendLicenseKeysAction' ), 10, 2 );
 		add_action( 'woocommerce_after_order_itemmeta', array( $this, 'showOrderedLicenses' ), 10, 3 );
 		add_filter( 'dlm_woocommerce_order_item_actions', array( $this, 'orderItemActions' ), 10, 4 );
-		add_action( 'dlm_generated_licenses_saved', array( $this, 'markOrderAsComplete' ), 10, 3 );
+		add_action( 'dlm_licenses_created', array( $this, 'markOrderAsComplete' ), 10, 2 );
 		add_filter( 'dlm_validate_order_id', array( $this, 'validateOrderId' ), 10, 2 );
+		add_filter( 'dlm_locate_order_user_id', array( $this, 'locateOrderUserId' ), 10, 2 );
 	}
 
 	/**
@@ -278,18 +280,18 @@ class Orders {
 			$generatorsService = new GeneratorsService();
 			$generatedLicenses = $generatorsService->generateLicenses( $neededAmount, $generator, [], $order, $product );
 			if ( ! is_wp_error( $generatedLicenses ) ) {
-				$result = $licenseService->saveGeneratedLicenseKeys(
-					$order->get_id(),
-					$product->get_id(),
-					$generatedLicenses,
-					LicenseStatus::SOLD,
-					$generator,
-					null,
-					$activationsLimit,
-					false
-				);
+				$result = $licenseService->createMultiple($generatedLicenses, [
+					'order_id'          => $order->get_id(),
+					'product_id'        => $product->get_id(),
+					'user_id'           => $order->get_user_id(),
+					'status'            => LicenseStatus::SOLD,
+					'source'            => LicenseSource::GENERATOR,
+					'validFor'          => $generator->getExpiresIn(),
+					'activations_limit' => $activationsLimit,
+				]);
 				if ( ! is_wp_error( $result ) ) {
-					$order->add_order_note( sprintf( __( 'Delivered %d licenses with generator #%d.', 'digital-license-manager' ), $neededAmount, $generatorId ) );
+					$total = count($result['licenses']);
+					$order->add_order_note( sprintf( __( 'Delivered %d of %d licenses with generator #%d.', 'digital-license-manager' ), $total, $neededAmount, $generatorId ) );
 				} else {
 					$order->add_order_note( sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $result->get_error_message() ) );
 				}
@@ -489,17 +491,35 @@ class Orders {
 		return $isValid;
 	}
 
+
+	/**
+	 * Retreve order user id if possible
+	 *
+	 * @return int|null
+	 */
+	public function locateOrderUserId($userId, $orderId) {
+		if ( function_exists( 'wc_get_order' ) ) {
+			if ( $order = wc_get_order( $orderId ) ) {
+				$userId = $order->get_user_id();
+			}
+		}
+		return $userId;
+	}
+
 	/**
 	 * Mark as complete
 	 *
-	 * @param $order_id
 	 * @param $licenses
-	 * @param $shouldMark
+	 * @param array $params
 	 *
 	 * @return void
 	 */
-	public function markOrderAsComplete( $order_id, $licenses, $shouldMark ) {
-		if ( ! $shouldMark ) {
+	public function markOrderAsComplete( $licenses, $params = [] ) {
+		if ( ! isset( $params['complete'] ) || ! $params['complete'] ) {
+			return;
+		}
+		$order_id = isset( $params['order_id'] ) ? $params['order_id'] : false;
+		if ( ! $order_id ) {
 			return;
 		}
 		$order = wc_get_order( $order_id );
@@ -508,7 +528,6 @@ class Orders {
 		}
 		$order->update_meta_data( 'dlm_order_complete', 1 );
 		$order->save();
-
 	}
 
 	/**

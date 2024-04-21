@@ -185,19 +185,16 @@ class GeneratePastOrderLicenses extends AbstractTool {
 						if ( isset( $productGenerators[ $productId ] ) ) {
 							$licenses = $generatorServ->generateLicenses( $quantity, $generator, [] );
 							if ( ! is_wp_error( $licenses ) ) {
-								$status = $licensesServ->saveGeneratedLicenseKeys(
-									$item->get_order_id(),
-									$productId,
-									$licenses,
-									LicenseStatus::SOLD,
-									$generator,
-									null,
-									null,
-									false
-								);
+
+								$status = $licensesServ->createMultiple($licenses, [
+									'order_id' => $item->get_order_id(),
+									'product_id' =>$productId,
+									'status' => LicenseStatus::SOLD,
+								]);
 
 								if ( ! is_wp_error( $status ) ) {
-									$order->add_order_note( sprintf( __( 'Generated %d license(s) for order item #%d (product #%d) with generator #%d via the "Past Orders License Generator" tool.', 'digital-license-manager' ), count( $licenses ), $item->get_id(), $item->get_product_id(), $productGenerators[ $productId ]->getId() ) );
+									$total = count( $status['licenses'] );
+									$order->add_order_note( sprintf( __( 'Generated %d license(s) for order item #%d (product #%d) with generator #%d via the "Past Orders License Generator" tool.', 'digital-license-manager' ), $total, $item->get_id(), $item->get_product_id(), $productGenerators[ $productId ]->getId() ) );
 									$item->add_meta_data( 'generated_licenses', time() );
 									$item->save_meta_data();
 									$generated ++;

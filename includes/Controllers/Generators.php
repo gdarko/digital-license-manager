@@ -170,9 +170,15 @@ class Generators {
 		if ( ! is_wp_error( $licenses ) ) {
 			// Save the license keys.
 			$licensesService = new LicensesService();
-			$status          = $licensesService->saveGeneratedLicenseKeys( $orderId, $productId, $licenses, $status, $generator, $validFor );
-			if ( is_wp_error( $status ) ) {
-				NoticeFlasher::error( $status->get_error_message() );
+			$result = $licensesService->createMultiple( $licenses, [
+				'order_id'   => $orderId,
+				'product_id' => $productId,
+				'status'     => $status,
+				'valid_for'  => $validFor,
+				'complete'   => true,
+			] );
+			if ( is_wp_error( $result ) ) {
+				NoticeFlasher::error( $result->get_error_message() );
 			} else {
 				NoticeFlasher::success( sprintf( __( 'Successfully generated %d license(s).', 'digital-license-manager' ), $amount ) );
 			}

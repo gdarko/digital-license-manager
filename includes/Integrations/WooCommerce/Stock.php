@@ -26,6 +26,8 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
+use IdeoLogix\DigitalLicenseManager\Database\Models\License;
+use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use WC_Product;
@@ -46,6 +48,10 @@ class Stock {
 			$this,
 			'handleCustomQueryVars'
 		), 10, 2 );
+
+		add_action( 'dlm_license_deleted', [ $this, 'onLicenseDeleted' ] );
+		add_action( 'dlm_licenses_imported', [ $this, 'onLicensesImported' ] );
+		add_action( 'dlm_licenses_generated', [ $this, 'onLicensesGenerated' ] );
 	}
 
 	/**
@@ -225,5 +231,68 @@ class Stock {
 		}
 
 		return $query;
+	}
+
+	/**
+	 * Resync the stock
+	 *
+	 * @param License $license
+	 *
+	 * @return void
+	 */
+	public function onLicenseDeleted( $license ) {
+		$productId     = (int) $license->getProductId();
+		$licneseStatus = (int) $license->getStatus();
+
+		if ( ! empty( $productId ) && $licneseStatus === LicenseStatus::ACTIVE ) {
+			Stock::syncrhonizeProductStock( $productId );
+		}
+	}
+
+	/**
+	 * Resync on new licenses generated
+	 *
+	 * @param License[] $licenses
+	 *
+	 * @return void
+	 */
+	public function onLicensesGenerated( $licenses ) {
+		$this->resyncMultiple( $licenses );
+	}
+
+	/**
+	 * Resync the stock
+	 *
+	 * @param License[] $licenses
+	 *
+	 * @return void
+	 */
+	public function onLicensesImported( $licenses ) {
+		$this->resyncMultiple( $licenses );
+	}
+
+	/**
+	 * Resync the stock
+	 *
+	 * @param License[] $licenses
+	 *
+	 * @return void
+	 */
+	private function resyncMultiple( $licenses ) {
+		if ( empty( $licenses ) ) {
+			return;
+		}
+		$products = [];
+		foreach ( $licenses as $license ) {
+			$productId = $license->getProductId();
+			if ( empty( $productId ) ) {
+				continue;
+			}
+			$products[] = $productId;
+		}
+		$products = array_unique( $products );
+		foreach ( $products as $productId ) {
+			Stock::syncrhonizeProductStock( $productId );
+		}
 	}
 }

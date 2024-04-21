@@ -31,6 +31,9 @@ use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractResourceModel;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\ServiceInterface;
 use IdeoLogix\DigitalLicenseManager\Database\Models\Generator;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators;
+use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
+use IdeoLogix\DigitalLicenseManager\Settings;
+use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use WP_Error;
 
 class GeneratorsService implements ServiceInterface {
@@ -328,7 +331,7 @@ class GeneratorsService implements ServiceInterface {
 	 *
 	 * @param int $amount Number of license keys to be generated
 	 * @param Generator $generator Generator used for the license keys
-	 * @param array $licenses Number of license keys to be generated
+	 * @param array $licenses Existing license keys
 	 * @param \WC_Order|null $order
 	 * @param \WC_Product|null $product
 	 *
@@ -336,9 +339,31 @@ class GeneratorsService implements ServiceInterface {
 	 */
 	public function generateLicenses( $amount, $generator, $licenses = array(), $order = null, $product = null ) {
 
-		$generatorInstance = $this->getGeneratorUtilityInstance( $generator, $order, $product );
+		$amount = intval($amount);
 
-		return $generatorInstance->generate( $amount, $licenses );
+		$generatorInstance = $this->getGeneratorUtilityInstance( $generator, $order, $product );
+		$generated = $generatorInstance->generate( $amount, $licenses );
+		$allowDups = (int) Settings::get( 'allow_duplicates', Settings::SECTION_GENERAL );
+
+		if ( ! $allowDups ) {
+			$filtered  = [];
+			$generated = array_unique( $generated );
+			foreach ( $generated as $licenseKey ) {
+				$hashed = StringHasher::license( $licenseKey );
+				if ( Licenses::instance()->count( [ 'hash' => $hashed ] ) == 0 ) {
+					$filtered[] = $licenseKey;
+				}
+			}
+			$totalFiltered = count( $filtered );
+			$totalMissing  = $amount - $totalFiltered;
+			if ( $totalMissing > 0 ) {
+				$newlyGenerated = $this->generateLicenses( $totalMissing, $generator, $licenses, $order, $product );
+				if ( ! empty( $newlyGenerated ) && is_array( $newlyGenerated ) ) {
+					$generated = array_merge( $generated, $newlyGenerated );
+				}
+			}
+		}
+		return $generated;
 	}
 
 
