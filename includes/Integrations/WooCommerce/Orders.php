@@ -37,6 +37,7 @@ use IdeoLogix\DigitalLicenseManager\ListTables\Licenses as LicensesListTable;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
+use IdeoLogix\DigitalLicenseManager\Utils\DebugLogger;
 use IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper;
 use WC_Order;
 use WC_Order_Item_Product;
@@ -105,6 +106,8 @@ class Orders {
 		 * Licenses have already been generated for this order.
 		 */
 		if ( Orders::isComplete( $orderId ) ) {
+			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses: Already generated for %d', $orderId ) );
+
 			return;
 		}
 
@@ -112,6 +115,7 @@ class Orders {
 		 * Allow developers to skip the whole process for specific order.
 		 */
 		if ( apply_filters( 'dlm_skip_licenses_generation_for_order', false, $orderId ) ) {
+			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses: Skipped for %d', $orderId ) );
 			return;
 		}
 
@@ -122,6 +126,7 @@ class Orders {
 		 */
 		$order = is_numeric( $orderId ) ? wc_get_order( $orderId ) : $orderId;
 		if ( ! $order ) {
+			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses: Order %d not found.', $orderId ) );
 			return;
 		}
 
@@ -130,8 +135,8 @@ class Orders {
 		 *
 		 * @var WC_Order_Item_Product [] $items
 		 */
-		$items = $order->get_items( 'line_item' );
-		foreach ( $items as $orderItem ) {
+		$items     = $order->get_items( 'line_item' );
+		foreach ( $items as $number => $orderItem ) {
 
 			$product = $orderItem->get_product();
 
@@ -153,6 +158,7 @@ class Orders {
 			);
 			$skip = apply_filters( 'dlm_skip_licenses_generation_for_order_product', $skip, $orderId, $product->get_id(), $orderItem );
 			if ( $skip ) {
+				DebugLogger::info( sprintf( 'WC -> Generate Order Licenses: Skipped for product %d, order %d', $product->get_id(), $orderId ) );
 				continue;
 			}
 
@@ -205,6 +211,7 @@ class Orders {
 		if ( ! $deliveredQuantity ) {
 			$deliveredQuantity = 1;
 		}
+		DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): Delivered quantity SET to %d.', $order->get_id(), $product->get_id(), $deliveredQuantity ) );
 
 		/**
 		 * Determines whether max activations field in the generated license
@@ -214,16 +221,27 @@ class Orders {
 		if ( empty( $maxActivationsBehavior ) ) {
 			$maxActivationsBehavior = 'standard';
 		}
+		DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): Max Activations Behavior SET to "%s"', $order->get_id(), $product->get_id(), $maxActivationsBehavior ) );
 
 		/**
 		 * Override activations limit in case on quantity behavior
 		 */
-		$activationsLimit = 'quantity' === $maxActivationsBehavior ? $quantity : null;
+		$activationsLimit = null;
+		if('quantity' === $maxActivationsBehavior) {
+			$activationsLimit = $quantity;
+			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): Activations Limit SET to %d based on quantity', $order->get_id(), $product->get_id(), $activationsLimit ) );
+		}
 
 		/**
 		 * Set the needed delivery amount
 		 */
-		$neededAmount   = 'standard' === $maxActivationsBehavior ? ( absint( $quantity ) * $deliveredQuantity ) : $deliveredQuantity;
+		if('standard' === $maxActivationsBehavior) {
+			$neededAmount = ( absint( $quantity ) * $deliveredQuantity );
+		} else {
+			$neededAmount = $deliveredQuantity;
+		}
+		DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): Needed amount SET to %d based on max activations behavior "%s"', $order->get_id(), $product->get_id(), $neededAmount, $maxActivationsBehavior ) );
+
 		$licenseService = new LicensesService();
 
 		if ( $useStock ) {  // Sell Licenses through available stock.
@@ -247,14 +265,17 @@ class Orders {
 				);
 
 				if ( is_wp_error( $assignedLicenses ) ) {
-					$order->add_order_note( sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $assignedLicenses->get_error_message() ) );
+					$log_msg = sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $assignedLicenses->get_error_message() );
 				} else {
-					$order->add_order_note( sprintf( __( 'Delivered in total %d licenses from stock.', 'digital-license-manager' ), count( $assignedLicenses ) ) );
+					$log_msg = sprintf( __( 'Delivered in total %d licenses from stock.', 'digital-license-manager' ), count( $assignedLicenses ) );
 				}
 
 			} else {
-				$order->add_order_note( sprintf( __( 'License delivery failed: Could not find enough licenses in stock (Current stock: %d | Required %d).' ), $availableStock, $neededAmount ) );
+				$log_msg = sprintf( __( 'License delivery failed: Could not find enough licenses in stock (Current stock: %d | Required %d).' ), $availableStock, $neededAmount );
 			}
+
+			$order->add_order_note( $log_msg );
+			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): %s', $order->get_id(), $product->get_id(), $log_msg ));
 
 			do_action( 'dlm_stock_delivery_assigned_licenses', $assignedLicenses, $neededAmount, $availableStock, $order, $product );
 
@@ -270,6 +291,7 @@ class Orders {
 			$generator = Generators::instance()->find( $generatorId );
 			if ( ! $generator ) {
 				$order->add_order_note( sprintf( __( 'License delivery failed: No generator assigned for product #%d.', 'digital-license-manager' ), $product->get_id() ) );
+				DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): License delivery failed. No generator assigned to product.', $order->get_id(), $product->get_id() ) );
 
 				return false;
 			}
@@ -299,13 +321,21 @@ class Orders {
 				] );
 				if ( ! is_wp_error( $result ) ) {
 					$total = count($result['licenses']);
-					$order->add_order_note( sprintf( __( 'Delivered %d of %d licenses with generator #%d.', 'digital-license-manager' ), $total, $neededAmount, $generatorId ) );
+					if( $total === 1 ) {
+						$log_msg = sprintf( __( 'Delivered %d licenses with generator #%d.', 'digital-license-manager' ), $total, $generatorId );
+					} else {
+						$log_msg = sprintf( __( 'Delivered %d of %d licenses with generator #%d.', 'digital-license-manager' ), $total, $neededAmount, $generatorId );
+					}
 				} else {
-					$order->add_order_note( sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $result->get_error_message() ) );
+					$log_msg = sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $result->get_error_message() );
 				}
 			} else {
-				$order->add_order_note( sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $generatedLicenses->get_error_message() ) );
+				$log_msg = sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $generatedLicenses->get_error_message() );
 			}
+
+			$order->add_order_note( $log_msg );
+			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): %s', $order->get_id(), $product->get_id(), $log_msg ) );
+
 		}
 
 		/**
@@ -322,6 +352,7 @@ class Orders {
 				array( 'order_id' => $order->get_id() ),
 				array( 'status' => LicenseStatus::DELIVERED )
 			);
+			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): Order licenses status SET to DELIVERED.', $order->get_id(), $product->get_id() ) );
 		}
 
 
