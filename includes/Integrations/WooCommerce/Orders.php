@@ -275,20 +275,28 @@ class Orders {
 			}
 
 			/**
+			 * Check if activationsLimit has been derived from the quantity before
+			 * If not, then retrieve activations limit from the generator itself.
+			 */
+			if ( is_null( $activationsLimit ) ) {
+				$activationsLimit = $generator->getActivationsLimit();
+			}
+
+			/**
 			 * Run the generator and create the licenses, if everything ok, save them.
 			 */
 			$generatorsService = new GeneratorsService();
 			$generatedLicenses = $generatorsService->generateLicenses( $neededAmount, $generator, [], $order, $product );
 			if ( ! is_wp_error( $generatedLicenses ) ) {
-				$result = $licenseService->createMultiple($generatedLicenses, [
+				$result = $licenseService->createMultiple( $generatedLicenses, [
 					'order_id'          => $order->get_id(),
 					'product_id'        => $product->get_id(),
 					'user_id'           => $order->get_user_id(),
 					'status'            => LicenseStatus::SOLD,
 					'source'            => LicenseSource::GENERATOR,
-					'validFor'          => $generator->getExpiresIn(),
-					'activations_limit' => $activationsLimit,
-				]);
+					'valid_for'         => $generator->getExpiresIn(),
+					'activations_limit' => $activationsLimit
+				] );
 				if ( ! is_wp_error( $result ) ) {
 					$total = count($result['licenses']);
 					$order->add_order_note( sprintf( __( 'Delivered %d of %d licenses with generator #%d.', 'digital-license-manager' ), $total, $neededAmount, $generatorId ) );
