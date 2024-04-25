@@ -287,7 +287,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 
 		// Set expires at.
 		$expiresAt = null;
-		if ( ! empty( $validFor ) && is_numeriC($validFor) && $validFor > 0 && $status == LicenseStatusEnum::SOLD ) {
+		if ( ! empty( $validFor ) && is_numeric($validFor) && $validFor > 0 && $status == LicenseStatusEnum::SOLD ) {
 			try {
 				$expiresAt = DateFormatter::addDaysInFuture( $validFor, 'now', 'Y-m-d H:i:s' );
 			} catch ( \Exception $e ) {
@@ -1091,9 +1091,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 
 			if ( $validFor ) {
 				try {
-					$date         = new DateTime();
-					$dateInterval = new DateInterval( 'P' . $validFor . 'D' );
-					$expiresAt    = $date->add( $dateInterval )->format( 'Y-m-d H:i:s' );
+					$expiresAt = DateFormatter::addDaysInFuture( $validFor, 'now', 'Y-m-d H:i:s' );
 				} catch ( Exception $e ) {
 					if ( empty( $expiresAt ) ) {
 						return new WP_Error( 'data_error', __( 'Valid for is not set or invalid.', 'digital-license-manager' ), array( 'code' => 422 ) );
