@@ -281,7 +281,7 @@ class MyAccount {
 				array(
 					'license'          => $license,
 					'license_key'      => $license->getDecryptedLicenseKey(),
-					'license_key_html' => wc_get_template_html( 'dlm/my-account/licenses/partials/key.php', array(
+					'license_key_html' => wc_get_template_html( 'dlm/my-account/licenses/partials/license-key.php', array(
 						'license'     => $license,
 					), '', Controller::getTemplatePath() ),
 					'product'          => ! empty( $license->getProductId() ) ? wc_get_product( $license->getProductId() ) : null,
