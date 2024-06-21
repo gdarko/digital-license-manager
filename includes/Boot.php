@@ -274,7 +274,7 @@ class Boot {
 	public function adminEnqueueScripts( $hook ) {
 
 		// Conditionals
-		$isLicenses    = strpos( $hook, 'page_dlm_settings' ) !== false;
+		$isLicenses    = strpos( $hook, 'page_dlm_licenses' ) !== false;
 		$isGenerators  = strpos( $hook, 'page_dlm_generators' ) !== false;
 		$isActivations = strpos( $hook, 'page_dlm_activations' ) !== false;
 		$isSettings    = strpos( $hook, 'page_dlm_settings' ) !== false;
