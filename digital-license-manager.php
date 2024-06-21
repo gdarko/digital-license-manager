@@ -3,13 +3,13 @@
  * Plugin Name: Digital License Manager
  * Plugin URI: https://codeverve.com/product/digital-license-manager-pro/
  * Description: Easily manage and sell your license keys on your website. Compatible with WooCommerce for selling licenses but also works without it.
- * Version: 1.6.3
+ * Version: 1.6.4
  * Author: CodeVerve
  * Author URI: https://codeverve.com/
  * Text Domain: digital-license-manager
  * Domain Path: /i18n/languages/
  * WC requires at least: 2.7
- * WC tested up to: 8.8.3
+ * WC tested up to: 9.0.1
  * License: GPLv3
  *
  ****************************************************************************
@@ -41,7 +41,7 @@
 defined( 'ABSPATH' ) || exit;
 
 if ( ! defined( 'DLM_PLUGIN_VERSION' ) ) {
-	define( 'DLM_PLUGIN_VERSION', '1.6.3' );
+	define( 'DLM_PLUGIN_VERSION', '1.6.4' );
 }
 if ( ! defined( 'DLM_PURCHASE_URL' ) ) {
 	define( 'DLM_PURCHASE_URL', 'https://codeverve.com/product/digital-license-manager-pro/' );
