@@ -274,10 +274,10 @@ class Boot {
 	public function adminEnqueueScripts( $hook ) {
 
 		// Conditionals
-		$isLicenses    = $hook === 'toplevel_page_dlm_licenses';
-		$isGenerators  = $hook === 'license-manager_page_dlm_generators';
-		$isActivations = $hook === 'license-manager_page_dlm_activations';
-		$isSettings    = $hook === 'license-manager_page_dlm_settings';
+		$isLicenses    = strpos( $hook, 'page_dlm_settings' ) !== false;
+		$isGenerators  = strpos( $hook, 'page_dlm_generators' ) !== false;
+		$isActivations = strpos( $hook, 'page_dlm_activations' ) !== false;
+		$isSettings    = strpos( $hook, 'page_dlm_settings' ) !== false;
 		$isProducts    = apply_filters( 'dlm_is_product_page', false, $hook );
 		$isOrder       = apply_filters( 'dlm_is_order_page', false, $hook );
 		$isManage      = $isLicenses || $isGenerators || $isActivations || apply_filters( 'dlm_admin_stylesheet_is_manage', false );
