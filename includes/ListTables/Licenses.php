@@ -381,9 +381,14 @@ class Licenses extends AbstractListTable {
 
 		if ( function_exists( 'wc_get_order' ) ) {
 			if ( $order = wc_get_order( $order_id ) ) {
+
+				$edit_link = class_exists('\Automattic\WooCommerce\Utilities\OrderUtil')
+                        && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled()
+                            ? admin_url('admin.php?page=wc-orders&action=edit&id='.(int) $order_id ) : get_edit_post_link( $order_id );
+
 				$html = sprintf(
 					'<a href="%s" target="_blank">#%s</a>',
-					get_edit_post_link( $order_id ),
+					$edit_link,
 					$order->get_order_number()
 				);
 			}
