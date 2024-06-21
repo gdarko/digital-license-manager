@@ -38,13 +38,15 @@ defined( 'ABSPATH' ) || exit;
  * @package IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce
  */
 class MyAccount {
+
+	protected $endpoints = [];
 	/**
 	 * MyAccount constructor.
 	 */
 	public function __construct() {
 
 		$this->rewriteEndpoints();
-		add_action( 'wp_loaded', [ $this, 'rewriteEndpoints' ], 10 );
+		add_action( 'init', [ $this, 'rewriteEndpoints' ], 9 );
 		add_filter( 'the_title', array( $this, 'accountItemTitles' ) );
 		add_action( 'template_redirect', array( $this, 'handleAccountActions' ) );
 		add_filter( 'woocommerce_account_menu_items', array( $this, 'accountMenuItems' ), 10, 1 );
@@ -66,11 +68,11 @@ class MyAccount {
 	 */
 	public function rewriteEndpoints() {
 
-		$endpoints = apply_filters('dlm_myaccount_rewrite_endpoints', [
+		$this->endpoints = apply_filters('dlm_myaccount_rewrite_endpoints', [
 			'digital-licenses' => EP_ROOT | EP_PAGES,
 		]);
 
-		foreach($endpoints as $slug => $places) {
+		foreach($this->endpoints as $slug => $places) {
 			add_rewrite_endpoint( $slug, $places );
 		}
 	}
