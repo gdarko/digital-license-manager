@@ -34,7 +34,7 @@
 	<?php endif; ?>
     <div style="border: 1px dashed #aaaaaa;padding:20px; width:860px; margin-top: 30px;">
         <h1 style="font-size: 32px;margin-top: 0; margin-bottom: 30px;">
-	        <?php echo apply_filters( 'dlm_license_certification_title', __( 'License Certificate', 'digital-license-manager' ) ); ?>
+	        <?php echo apply_filters( 'dlm_license_certification_title', esc_html__( 'License Certificate', 'digital-license-manager' ) ); ?>
         </h1>
         <p style="font-size: 16px; margin-bottom: 20px; margin-top:0;">
 			<?php printf( __( ' This document certifies the purchase of license key for: <strong>%s</strong>.', 'digital-license-manager' ), esc_attr( wp_strip_all_tags( $license_product_name ) ) ); ?>

@@ -46,23 +46,23 @@ class Blocks {
 		$this->blocks = [
 			'licenses-check' => [
 				'i18n'      => [
-					'block_title'                 => __( 'Licenses Table', 'digital-license-manager' ),
-					'checkbox_require_email'      => __( 'Require email', 'digital-license-manager' ),
-					'checkbox_require_email_help' => __( 'Require license owner email to confirm if user owns the license', 'digital-license-manager' ),
+					'block_title'                 => esc_html__( 'Licenses Table', 'digital-license-manager' ),
+					'checkbox_require_email'      => esc_html__( 'Require email', 'digital-license-manager' ),
+					'checkbox_require_email_help' => esc_html__( 'Require license owner email to confirm if user owns the license', 'digital-license-manager' ),
 				],
 				'custom_js' => true,
 			],
 			'licenses-table' => [
 				'i18n'      => [
-					'block_title'           => __( 'Licenses Table', 'digital-license-manager' ),
-					'block_settings_title'  => __( 'Licenses Table Settings', 'digital-license-manager' ),
-					'settings_label_status' => __( 'Status', 'digital-license-manager' ),
+					'block_title'           => esc_html__( 'Licenses Table', 'digital-license-manager' ),
+					'block_settings_title'  => esc_html__( 'Licenses Table Settings', 'digital-license-manager' ),
+					'settings_label_status' => esc_html__( 'Status', 'digital-license-manager' ),
 				],
 				'settings'  => [
 					'statuses' => [
-						[ 'label' => __( 'All', 'digital-license-manager' ), 'value' => 'all' ],
-						[ 'label' => __( 'Valid', 'digital-license-manager' ), 'value' => 'valid' ],
-						[ 'label' => __( 'Expired', 'digital-license-manager' ), 'value' => 'expired' ],
+						[ 'label' => esc_html__( 'All', 'digital-license-manager' ), 'value' => 'all' ],
+						[ 'label' => esc_html__( 'Valid', 'digital-license-manager' ), 'value' => 'valid' ],
+						[ 'label' => esc_html__( 'Expired', 'digital-license-manager' ), 'value' => 'expired' ],
 					]
 				],
 				'custom_js' => false,

@@ -44,8 +44,8 @@ class ResendOrderLicenses extends WC_Email {
 	public function __construct() {
 
 		$this->id             = 'dlm_email_customer_deliver_licenses';
-		$this->title          = __( 'Order License Keys', 'digital-license-manager' );
-		$this->description    = __( 'A manual email to send out license keys to the customer.', 'digital-license-manager' );
+		$this->title          = esc_html__( 'Order License Keys', 'digital-license-manager' );
+		$this->description    = esc_html__( 'A manual email to send out license keys to the customer.', 'digital-license-manager' );
 		$this->template_html  = 'dlm/emails/email-customer-deliver-licenses.php';
 		$this->template_plain = 'dlm/emails/plain/email-customer-deliver-licenses.php';
 		$this->template_base  = Controller::getTemplatePath();
@@ -65,7 +65,7 @@ class ResendOrderLicenses extends WC_Email {
 	 * @since  1.0.0
 	 */
 	public function get_default_heading() {
-		return __( 'Your Digital License(s) - Order #{order_number}', 'digital-license-manager' );
+		return esc_html__( 'Your Digital License(s) - Order #{order_number}', 'digital-license-manager' );
 	}
 
 	/**
@@ -75,7 +75,7 @@ class ResendOrderLicenses extends WC_Email {
 	 * @since  1.0.0
 	 */
 	public function get_default_subject() {
-		return __( '[{site_title}]: Your digital licenses for order #{order_number}', 'digital-license-manager' );
+		return esc_html__( '[{site_title}]: Your digital licenses for order #{order_number}', 'digital-license-manager' );
 	}
 
 	/**
@@ -147,7 +147,7 @@ class ResendOrderLicenses extends WC_Email {
 				$this->get_attachments()
 			);
 			if ( $res ) {
-				$order->add_order_note( __( 'Order licenses resent to customer.', 'digital-license-manager' ), false );
+				$order->add_order_note( esc_html__( 'Order licenses resent to customer.', 'digital-license-manager' ), false );
 			}
 		}
 

@@ -23,7 +23,7 @@ defined('ABSPATH') || exit; ?>
     /* translators: %s: Order ID. */
     echo wp_kses_post(
         sprintf(
-            __(
+            esc_html__(
                 '(Order #%s)', 'digital-license-manager') . ' (<time datetime="%s">%s</time>)',
                 $order->get_order_number(),
                 $order->get_date_created()->format('c'),

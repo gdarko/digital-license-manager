@@ -102,18 +102,18 @@ class GeneratePastOrderLicenses extends AbstractTool {
 	public function initProcess() {
 
 		if ( empty( $_POST['generator'] ) ) {
-			return ( new \WP_Error( 'data_error', __( 'Please select a generator that will be used to generate the licenses.', 'digital-license-manager' ) ) );
+			return ( new \WP_Error( 'data_error', esc_html__( 'Please select a generator that will be used to generate the licenses.', 'digital-license-manager' ) ) );
 		}
 
 		$query   = $this->getOrdersQuery();
 		$results = wc_get_orders( $query );
 
 		if ( isset( $results->total ) && $results->total === 0 ) {
-			return ( new \WP_Error( 'data_error', __( 'No orders found without licenses.', 'digital-license-manager' ) ) );
+			return ( new \WP_Error( 'data_error', esc_html__( 'No orders found without licenses.', 'digital-license-manager' ) ) );
 		}
 
 		if ( $this->isRiskyQuery( $query ) ) {
-			return ( new \WP_Error( 'data_warn', __( 'WARNING - Looks like you modified the data query of the tool by a filter. We noticed that no check against the dlm_order_complete meta is present that is intended to limit the query to only those products that doesn\'t have licenses assigned from previously. This means your procedure will run on all the past orders, even the ones that have a license. Only continue if you agree with this, otherwise update your filter and include the dlm_order_complete meta check.', 'digital-license-manager' ) ) );
+			return ( new \WP_Error( 'data_warn', esc_html__( 'WARNING - Looks like you modified the data query of the tool by a filter. We noticed that no check against the dlm_order_complete meta is present that is intended to limit the query to only those products that doesn\'t have licenses assigned from previously. This means your procedure will run on all the past orders, even the ones that have a license. Only continue if you agree with this, otherwise update your filter and include the dlm_order_complete meta check.', 'digital-license-manager' ) ) );
 		}
 
 		return true;
@@ -138,7 +138,7 @@ class GeneratePastOrderLicenses extends AbstractTool {
 
 				$results = wc_get_orders( $query );
 				if ( empty( $results->orders ) ) {
-					return new \WP_Error( 'not_found', sprintf( __( 'No orders found for step "%s", page "%s"' ), $step, $page ) );
+					return new \WP_Error( 'not_found', sprintf( esc_html__( 'No orders found for step "%s", page "%s"' ), $step, $page ) );
 				}
 				$generatorId    = isset( $_POST['generator'] ) ? intval( $_POST['generator'] ) : 0;
 				$useProductConf = isset( $_POST['use_product_licensing_configuration'] ) ? intval( $_POST['use_product_licensing_configuration'] ) : 0;
@@ -198,7 +198,7 @@ class GeneratePastOrderLicenses extends AbstractTool {
 
 								if ( ! is_wp_error( $status ) ) {
 									$total = count( $status['licenses'] );
-									$order->add_order_note( sprintf( __( 'Generated %d license(s) for order item #%d (product #%d) with generator #%d via the "Past Orders License Generator" tool.', 'digital-license-manager' ), $total, $item->get_id(), $item->get_product_id(), $productGenerators[ $productId ]->getId() ) );
+									$order->add_order_note( sprintf( esc_html__( 'Generated %d license(s) for order item #%d (product #%d) with generator #%d via the "Past Orders License Generator" tool.', 'digital-license-manager' ), $total, $item->get_id(), $item->get_product_id(), $productGenerators[ $productId ]->getId() ) );
 									$item->add_meta_data( 'generated_licenses', time() );
 									$item->save_meta_data();
 									$generated ++;
@@ -218,7 +218,7 @@ class GeneratePastOrderLicenses extends AbstractTool {
 					}
 				}
 
-				return $generated ? true : new \WP_Error( 'not_generated', __( 'No licenses generated for this page.', 'digital-license-manager' ) );
+				return $generated ? true : new \WP_Error( 'not_generated', esc_html__( 'No licenses generated for this page.', 'digital-license-manager' ) );
 			case 2:
 
 				$query = array_merge( $this->getOrdersQuery(), [
@@ -230,7 +230,7 @@ class GeneratePastOrderLicenses extends AbstractTool {
 				if ( empty( $results->orders ) ) {
 					$this->deleteData();
 
-					return new \WP_Error( 'not_found', sprintf( __( 'No orders found for step "%s", page "%s"' ), $step, $page ) );
+					return new \WP_Error( 'not_found', sprintf( esc_html__( 'No orders found for step "%s", page "%s"' ), $step, $page ) );
 				}
 
 				foreach ( $results->orders as $order ) {

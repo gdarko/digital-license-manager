@@ -425,9 +425,9 @@ class Dropdowns {
 
 		$type = '';
 		if ( $product->is_type( 'variable' ) ) {
-			$type .= ' (' . __( 'Variable', 'digital-license-manager' ).')';
+			$type .= ' (' . esc_html__( 'Variable', 'digital-license-manager' ).')';
 		} else if ( $product->is_type( 'variation' ) ) {
-			$type .= ' (' . __( 'Variation', 'digital-license-manager' ).')';
+			$type .= ' (' . esc_html__( 'Variation', 'digital-license-manager' ).')';
 		}
 
 		if($product->is_type( 'variation' )) {

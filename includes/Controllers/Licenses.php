@@ -82,7 +82,7 @@ class Licenses {
 		$backUrl = sprintf( 'admin.php?page=%s&action=import', PageSlug::LICENSES );
 
 		if ( ! current_user_can( 'dlm_create_licenses' ) ) {
-			NoticeFlasher::error( __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
 			HttpHelper::redirect( $backUrl );
 		}
 
@@ -116,14 +116,14 @@ class Licenses {
 		}
 
 		if ( ! is_array( $licenseKeys ) ) {
-			NoticeFlasher::error( __( 'There was a problem importing the license keys. Invalid format provided.', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'There was a problem importing the license keys. Invalid format provided.', 'digital-license-manager' ) );
 			HttpHelper::redirect( $backUrl );
 		}
 
 		$curLicensesCount = count( $licenseKeys );
 
 		if ( $curLicensesCount <= 0 ) {
-			NoticeFlasher::error( __( 'No valid license keys found from import.', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'No valid license keys found from import.', 'digital-license-manager' ) );
 			HttpHelper::redirect( $backUrl );
 		}
 
@@ -142,7 +142,7 @@ class Licenses {
 		] );
 
 		if ( is_wp_error( $result ) ) {
-			NoticeFlasher::error( __( $result->get_error_message(), 'digital-license-manager' ) );
+			NoticeFlasher::error( $result->get_error_message() );
 			HttpHelper::redirect( $backUrl );
 		}
 
@@ -154,28 +154,28 @@ class Licenses {
 
 		if ( $result['failed'] == 0 && $result['added'] == 0 ) {
 			$callback = 'error';
-			$message  = __( 'No valid license keys were found to be imported.', 'digital-license-manager' );
+			$message  = esc_html__( 'No valid license keys were found to be imported.', 'digital-license-manager' );
 		} else if ( $result['failed'] == 0 && $result['added'] > 0 ) {
 			if ( ! empty( $result['duplicates'] ) ) {
 				$callback = 'warning';
-				$message  = sprintf( __( '%d license(s) added successfully and %d duplicate key(s) ignored.', 'digital-license-manager' ), (int) $result['added'], (int) $result['duplicates'] );
+				$message  = sprintf( esc_html__( '%d license(s) added successfully and %d duplicate key(s) ignored.', 'digital-license-manager' ), (int) $result['added'], (int) $result['duplicates'] );
 			} else {
 				$callback = 'success';
-				$message  = sprintf( __( '%d license(s) added successfully.', 'digital-license-manager' ), (int) $result['added'] );
+				$message  = sprintf( esc_html__( '%d license(s) added successfully.', 'digital-license-manager' ), (int) $result['added'] );
 			}
 		} else if ( $result['failed'] > 0 && $result['added'] == 0 ) {
 			$callback = 'error';
 			if ( ! empty( $result['duplicates'] ) ) {
-				$message = sprintf( __( 'No licence key(s) imported successfully, %d failed to import and %d duplicate key(s) were found.', 'digital-license-manager' ), (int) $result['failed'], (int) $result['duplicates'] );
+				$message = sprintf( esc_html__( 'No licence key(s) imported successfully, %d failed to import and %d duplicate key(s) were found.', 'digital-license-manager' ), (int) $result['failed'], (int) $result['duplicates'] );
 			} else {
-				$message = sprintf( __( 'No licence key(s) imported successfully, %d failed to import.', 'digital-license-manager' ), (int) $result['failed'] );
+				$message = sprintf( esc_html__( 'No licence key(s) imported successfully, %d failed to import.', 'digital-license-manager' ), (int) $result['failed'] );
 			}
 		} else if ( $result['failed'] > 0 && $result['added'] > 0 ) {
 			$callback = 'warning';
 			if ( ! empty( $result['duplicates'] ) ) {
-				$message = sprintf( __( '%d key(s) have been imported, while %d key(s) were not imported and %d duplicate key(s) ignored.', 'digital-license-manager' ), (int) $result['added'], (int) $result['failed'], (int) $result['duplicates'] );
+				$message = sprintf( esc_html__( '%d key(s) have been imported, while %d key(s) were not imported and %d duplicate key(s) ignored.', 'digital-license-manager' ), (int) $result['added'], (int) $result['failed'], (int) $result['duplicates'] );
 			} else {
-				$message = sprintf( __( '%d key(s) have been imported, while %d key(s) were not imported.', 'digital-license-manager' ), (int) $result['added'], (int) $result['failed'] );
+				$message = sprintf( esc_html__( '%d key(s) have been imported, while %d key(s) were not imported.', 'digital-license-manager' ), (int) $result['added'], (int) $result['failed'] );
 			}
 		}
 
@@ -194,7 +194,7 @@ class Licenses {
 		check_admin_referer( 'dlm_add_license_key' );
 
 		if ( ! current_user_can( 'dlm_create_licenses' ) ) {
-			NoticeFlasher::error( __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
 			HttpHelper::redirect( sprintf( 'admin.php?page=%s', PageSlug::LICENSES ) );
 		} else {
 			$licenseKey  = isset( $_POST['license_key'] ) ? sanitize_text_field( $_POST['license_key'] ) : '';
@@ -215,10 +215,10 @@ class Licenses {
 				if ( 'data_error' === $license->get_error_code() ) {
 					NoticeFlasher::error( $license->get_error_message() );
 				} else {
-					NoticeFlasher::error( __( 'There was a problem adding the license key.', 'digital-license-manager' ) );
+					NoticeFlasher::error( esc_html__( 'There was a problem adding the license key.', 'digital-license-manager' ) );
 				}
 			} else {
-				NoticeFlasher::success( __( '1 license(s) added successfully.', 'digital-license-manager' ) );
+				NoticeFlasher::success( esc_html__( '1 license(s) added successfully.', 'digital-license-manager' ) );
 			}
 
 			HttpHelper::redirect( sprintf( 'admin.php?page=%s&action=add', PageSlug::LICENSES ) );
@@ -235,7 +235,7 @@ class Licenses {
 		check_admin_referer( 'dlm_update_license_key' );
 
 		if ( ! current_user_can( 'dlm_edit_licenses' ) ) {
-			NoticeFlasher::error( __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
 			HttpHelper::redirect( sprintf( 'admin.php?page=%s', PageSlug::LICENSES ) );
 		} else {
 			$licenseId   = isset( $_POST['license_id'] ) ? absint( $_POST['license_id'] ) : null;
@@ -255,10 +255,10 @@ class Licenses {
 				if ( 'data_error' === $license->get_error_code() ) {
 					NoticeFlasher::error( $license->get_error_message() );
 				} else {
-					NoticeFlasher::error( __( sprintf( 'There was a problem updating the license key. (%s)', $license->get_error_message() ), 'digital-license-manager' ) );
+					NoticeFlasher::error( esc_html__( sprintf( 'There was a problem updating the license key. (%s)', $license->get_error_message() ), 'digital-license-manager' ) );
 				}
 			} else {
-				NoticeFlasher::success( __( 'Your license key has been updated successfully.', 'digital-license-manager' ) );
+				NoticeFlasher::success( esc_html__( 'Your license key has been updated successfully.', 'digital-license-manager' ) );
 			}
 			HttpHelper::redirect( sprintf( 'admin.php?page=%s&action=edit&id=%d', PageSlug::LICENSES, $licenseId ) );
 		}
@@ -277,7 +277,7 @@ class Licenses {
 		}
 
 		if ( $_SERVER['REQUEST_METHOD'] !== 'POST' ) {
-			wp_die( __( 'Invalid request.', 'digital-license-manager' ) );
+			wp_die( esc_html__( 'Invalid request.', 'digital-license-manager' ) );
 		}
 
 		/** @var License $license */
@@ -306,7 +306,7 @@ class Licenses {
 		}
 
 		if ( $_SERVER['REQUEST_METHOD'] != 'POST' ) {
-			wp_die( __( 'Invalid request.', 'digital-license-manager' ) );
+			wp_die( esc_html__( 'Invalid request.', 'digital-license-manager' ) );
 		}
 
 		$licenseKeysIds = array();
@@ -347,7 +347,7 @@ class Licenses {
 		 * Validate the file extension
 		 */
 		if ( ! in_array( $ext, array( 'txt', 'csv' ) ) || ! in_array( $_FILES['file']['type'], $mimes ) ) {
-			NoticeFlasher::error( __( 'Invalid file type, only TXT and CSV allowed.', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'Invalid file type, only TXT and CSV allowed.', 'digital-license-manager' ) );
 			HttpHelper::redirect(
 				sprintf(
 					'admin.php?page=%s&action=import',
@@ -371,7 +371,7 @@ class Licenses {
 			$licenseKeys = file( $filePath, FILE_IGNORE_NEW_LINES );
 			unlink( $filePath );
 			if ( ! is_array( $licenseKeys ) ) {
-				NoticeFlasher::error( __( 'Invalid file content.', 'digital-license-manager' ) );
+				NoticeFlasher::error( esc_html__( 'Invalid file content.', 'digital-license-manager' ) );
 				HttpHelper::redirect(
 					sprintf(
 						'admin.php?page=%s&action=import',
@@ -409,7 +409,7 @@ class Licenses {
 		if ( count( $duplicateLicenseKeys ) > 0 ) {
 			NoticeFlasher::warning(
 				sprintf(
-					__( '%d license(s) skipped because they already exist.', 'digital-license-manager' ),
+					esc_html__( '%d license(s) skipped because they already exist.', 'digital-license-manager' ),
 					count( $duplicateLicenseKeys )
 				)
 			);
@@ -469,10 +469,10 @@ class Licenses {
 		}
 
 		$header = array(
-			'id'          => __( 'ID', 'digital-license-manager' ),
-			'order_id'    => __( 'Order ID', 'digital-license-manager' ),
-			'product_id'  => __( 'Product ID', 'digital-license-manager' ),
-			'license_key' => __( 'License key', 'digital-license-manager' )
+			'id'          => esc_html__( 'ID', 'digital-license-manager' ),
+			'order_id'    => esc_html__( 'Order ID', 'digital-license-manager' ),
+			'product_id'  => esc_html__( 'Product ID', 'digital-license-manager' ),
+			'license_key' => esc_html__( 'License key', 'digital-license-manager' )
 		);
 
 		ob_clean();
@@ -636,7 +636,7 @@ class Licenses {
 		check_admin_referer( 'dlm_export_licenses' );
 
 		if ( ! current_user_can( 'dlm_export_licenses' ) ) {
-			$errors[] = __( 'Permission denied. You don\'t have access to this resource.', 'digital-license-manager' );
+			$errors[] = esc_html__( 'Permission denied. You don\'t have access to this resource.', 'digital-license-manager' );
 		}
 
 		$list    = isset( $_POST['dlm_export_licenses'] ) && ! empty( $_POST['dlm_export_licenses'] ) ? explode( ',', $_POST['dlm_export_licenses'] ) : array();
@@ -650,7 +650,7 @@ class Licenses {
 		}
 
 		if ( empty( $list ) ) {
-			$errors[] = __( 'No licenses were selected.', 'digital-license-manager' );
+			$errors[] = esc_html__( 'No licenses were selected.', 'digital-license-manager' );
 		}
 
 		if ( ! empty( $errors ) ) {
@@ -669,51 +669,51 @@ class Licenses {
 		return array(
 			array(
 				'slug' => 'id',
-				'name' => __( 'ID', 'digital-license-manager' )
+				'name' => esc_html__( 'ID', 'digital-license-manager' )
 			),
 			array(
 				'slug' => 'order_id',
-				'name' => __( 'Order ID', 'digital-license-manager' )
+				'name' => esc_html__( 'Order ID', 'digital-license-manager' )
 			),
 			array(
 				'slug' => 'product_id',
-				'name' => __( 'Product ID', 'digital-license-manager' )
+				'name' => esc_html__( 'Product ID', 'digital-license-manager' )
 			),
 			array(
 				'slug' => 'user_id',
-				'name' => __( 'User ID', 'digital-license-manager' )
+				'name' => esc_html__( 'User ID', 'digital-license-manager' )
 			),
 			array(
 				'slug' => 'license_key',
-				'name' => __( 'License key', 'digital-license-manager' )
+				'name' => esc_html__( 'License key', 'digital-license-manager' )
 			),
 			array(
 				'slug' => 'expires_at',
-				'name' => __( 'Expires at', 'digital-license-manager' )
+				'name' => esc_html__( 'Expires at', 'digital-license-manager' )
 			),
 			array(
 				'slug' => 'status',
-				'name' => __( 'Status', 'digital-license-manager' )
+				'name' => esc_html__( 'Status', 'digital-license-manager' )
 			),
 			array(
 				'slug' => 'activations_limit',
-				'name' => __( 'Activation Limit', 'digital-license-manager' )
+				'name' => esc_html__( 'Activation Limit', 'digital-license-manager' )
 			),
 			array(
 				'slug' => 'created_at',
-				'name' => __( 'Created at', 'digital-license-manager' )
+				'name' => esc_html__( 'Created at', 'digital-license-manager' )
 			),
 			array(
 				'slug' => 'created_by',
-				'name' => __( 'Created by', 'digital-license-manager' )
+				'name' => esc_html__( 'Created by', 'digital-license-manager' )
 			),
 			array(
 				'slug' => 'updated_at',
-				'name' => __( 'Updated at', 'digital-license-manager' )
+				'name' => esc_html__( 'Updated at', 'digital-license-manager' )
 			),
 			array(
 				'slug' => 'updated_by',
-				'name' => __( 'Updated by', 'digital-license-manager' )
+				'name' => esc_html__( 'Updated by', 'digital-license-manager' )
 			)
 		);
 	}

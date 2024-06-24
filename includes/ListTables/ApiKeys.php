@@ -51,8 +51,8 @@ class ApiKeys extends AbstractListTable {
 	public function __construct() {
 		parent::__construct(
 			array(
-				'singular' => __( 'API Key', 'digital-license-manager' ),
-				'plural'   => __( 'API Keys', 'digital-license-manager' ),
+				'singular' => esc_html__( 'API Key', 'digital-license-manager' ),
+				'plural'   => esc_html__( 'API Keys', 'digital-license-manager' ),
 				'ajax'     => false
 			)
 		);
@@ -71,11 +71,11 @@ class ApiKeys extends AbstractListTable {
 	public function get_columns() {
 		return array(
 			'cb'            => '<input type="checkbox" />',
-			'title'         => __( 'Description', 'digital-license-manager' ),
-			'truncated_key' => __( 'Consumer key ending in', 'digital-license-manager' ),
-			'user'          => __( 'User', 'digital-license-manager' ),
-			'permissions'   => __( 'Permissions', 'digital-license-manager' ),
-			'last_access'   => __( 'Last access', 'digital-license-manager' ),
+			'title'         => esc_html__( 'Description', 'digital-license-manager' ),
+			'truncated_key' => esc_html__( 'Consumer key ending in', 'digital-license-manager' ),
+			'user'          => esc_html__( 'User', 'digital-license-manager' ),
+			'permissions'   => esc_html__( 'Permissions', 'digital-license-manager' ),
+			'last_access'   => esc_html__( 'Last access', 'digital-license-manager' ),
 		);
 	}
 
@@ -124,11 +124,11 @@ class ApiKeys extends AbstractListTable {
 
 		// Get actions.
 		$actions = array(
-			'id' => sprintf( __( 'ID: %d', 'digital-license-manager' ), $keyId ),
+			'id' => sprintf( esc_html__( 'ID: %d', 'digital-license-manager' ), $keyId ),
 		);
 
 		if ( $this->canEdit ) {
-			$actions['edit'] = '<a href="' . esc_url( $url ) . '">' . __( 'Edit', 'digital-license-manager' ) . '</a>';
+			$actions['edit'] = '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Edit', 'digital-license-manager' ) . '</a>';
 		}
 
 		if ( $this->canDelete ) {
@@ -244,7 +244,7 @@ class ApiKeys extends AbstractListTable {
 		$actions = array();
 
 		if ( $this->canDelete ) {
-			$actions['delete'] = __( 'Delete', 'digital-license-manager' );
+			$actions['delete'] = esc_html__( 'Delete', 'digital-license-manager' );
 		}
 
 		return $actions;
@@ -349,9 +349,9 @@ class ApiKeys extends AbstractListTable {
 		}
 
 		if ( $count = ApiKeysRepository::instance()->delete( $keys ) ) {
-			NoticeFlasher::success( sprintf( __( '%d API key(s) permanently deleted.', 'digital-license-manager' ), $count ) );
+			NoticeFlasher::success( sprintf( esc_html__( '%d API key(s) permanently deleted.', 'digital-license-manager' ), $count ) );
 		} else {
-			NoticeFlasher::error( __( 'There was a problem deleting the API key(s).', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'There was a problem deleting the API key(s).', 'digital-license-manager' ) );
 		}
 
 		HttpHelper::redirect( sprintf( 'admin.php?page=%s&tab=rest_api', $this->slug ) );

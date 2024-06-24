@@ -74,7 +74,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		);
 
 		if ( ! $license ) {
-			return new WP_Error( 'data_error', sprintf( __( "The license key '%s' could not be found", 'digital-license-manager' ), $id ), array( 'code' => 404 ) );
+			return new WP_Error( 'data_error', sprintf( esc_html__( "The license key '%s' could not be found", 'digital-license-manager' ), $id ), array( 'code' => 404 ) );
 		}
 
 		return $license;
@@ -92,7 +92,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		/** @var License $license */
 		$license = Licenses::instance()->find( $id );
 		if ( ! $license ) {
-			return new WP_Error( 'data_error', sprintf( __( "The license id '%s' could not be found", 'digital-license-manager' ), $id ), array( 'code' => 404 ) );
+			return new WP_Error( 'data_error', sprintf( esc_html__( "The license id '%s' could not be found", 'digital-license-manager' ), $id ), array( 'code' => 404 ) );
 		}
 
 		return $license;
@@ -112,7 +112,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			'hash' => $hash
 		] );
 		if ( ! $license ) {
-			return new WP_Error( 'data_error', sprintf( __( "The license id '%s' could not be found", 'digital-license-manager' ), $hash ), array( 'code' => 404 ) );
+			return new WP_Error( 'data_error', sprintf( esc_html__( "The license id '%s' could not be found", 'digital-license-manager' ), $hash ), array( 'code' => 404 ) );
 		}
 
 		return $license;
@@ -135,7 +135,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		$licenses = ! empty( $query ) ? Licenses::instance()->findAllBy( $query ) : Licenses::instance()->findAll();
 
 		if ( empty( $licenses ) ) {
-			return new WP_Error( 'data_error', __( "No licence keys found for your query.", 'digital-license-manager' ), array( 'code' => 404 ) );
+			return new WP_Error( 'data_error', esc_html__( "No licence keys found for your query.", 'digital-license-manager' ), array( 'code' => 404 ) );
 		}
 
 		return $licenses;
@@ -196,12 +196,12 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		}
 
 		if ( $this->isKeyDuplicate( $licenseKey ) ) {
-			return new WP_Error( 'data_error', sprintf( __( "The license key '%s' already exists", 'digital-license-manager' ), $licenseKey ), array( 'code' => 409 ) );
+			return new WP_Error( 'data_error', sprintf( esc_html__( "The license key '%s' already exists", 'digital-license-manager' ), $licenseKey ), array( 'code' => 409 ) );
 		}
 
 		if ( ! empty( $expiresAt ) ) {
 			if ( ! DateFormatter::validate( 'Y-m-d H:i:s', $expiresAt ) ) {
-				return new WP_Error( 'data_error', __( 'Invalid expires at date format', 'digital-license-manager' ), array( 'code' => 422 ) );
+				return new WP_Error( 'data_error', esc_html__( 'Invalid expires at date format', 'digital-license-manager' ), array( 'code' => 422 ) );
 			}
 		} else {
 			$expiresAt = null;
@@ -230,7 +230,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		$license = Licenses::instance()->insert( $queryData );
 
 		if ( ! $license ) {
-			return new WP_Error( 'server_error', sprintf( __( "The license key '%s' could not be added", 'digital-license-manager' ), $licenseKey ), array( 'code' => 500 ) );
+			return new WP_Error( 'server_error', sprintf( esc_html__( "The license key '%s' could not be added", 'digital-license-manager' ), $licenseKey ), array( 'code' => 500 ) );
 		}
 
 		// Update the stock
@@ -252,7 +252,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	public function createMultiple( $keys, $params ) {
 
 		if ( ! is_array( $keys ) || empty( $keys ) ) {
-			return new WP_Error( 'data_error', __( 'No keys provided.' ) );
+			return new WP_Error( 'data_error', esc_html__( 'No keys provided.' ) );
 		}
 
 		$keys      = array_map( 'sanitize_text_field', $keys );
@@ -272,12 +272,12 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 
 		// Validate status
 		if ( is_null( $status ) ) {
-			return new WP_Error( 'data_error', __( 'No valid status provided.' ) );
+			return new WP_Error( 'data_error', esc_html__( 'No valid status provided.' ) );
 		}
 
 		// Validate source
 		if ( is_null( $source ) ) {
-			return new WP_Error( 'data_error', __( 'No valid source provided.' ) );
+			return new WP_Error( 'data_error', esc_html__( 'No valid source provided.' ) );
 		}
 
 		// Filter for dups
@@ -374,7 +374,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		}
 
 		if ( ! $oldLicense ) {
-			return new WP_Error( 'data_error', sprintf( __( "The license key '%s' could not be found", 'digital-license-manager' ), $licenseKey ), array( 'code' => 404 ) );
+			return new WP_Error( 'data_error', sprintf( esc_html__( "The license key '%s' could not be found", 'digital-license-manager' ), $licenseKey ), array( 'code' => 404 ) );
 		}
 
 		if ( is_numeric( $licenseKey ) ) {
@@ -422,7 +422,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		if ( array_key_exists( 'license_key', $data ) && $data['license_key'] != $oldLicense->getDecryptedLicenseKey() ) {
 			// Check for possible duplicates
 			if ( $this->isKeyDuplicate( $data['license_key'], $oldLicense->getId() ) ) {
-				return new WP_Error( 'data_error', sprintf( __( "The license key '%s' already exists", 'digital-license-manager' ), $data['license_key'] ), array( 'code' => 409 ) );
+				return new WP_Error( 'data_error', sprintf( esc_html__( "The license key '%s' already exists", 'digital-license-manager' ), $data['license_key'] ), array( 'code' => 409 ) );
 			}
 
 			$updateData['license_key'] = CryptoHelper::encrypt( $data['license_key'] );
@@ -474,7 +474,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		);
 
 		if ( ! $license ) {
-			return new WP_Error( 'server_error', sprintf( __( "The license key '%s' could not be updated.", 'digital-license-manager' ), $licenseKey ), array( 'code' => 500 ) );
+			return new WP_Error( 'server_error', sprintf( esc_html__( "The license key '%s' could not be updated.", 'digital-license-manager' ), $licenseKey ), array( 'code' => 500 ) );
 		}
 
 		$newLicenseHash = StringHasher::license( $licenseKey );
@@ -487,7 +487,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		$newLicense = Licenses::instance()->findBy( array( 'hash' => $newLicenseHash ) );
 
 		if ( ! $newLicense ) {
-			return new WP_Error( 'server_error', __( 'The updated license key could not be found.', 'digital-license-manager' ), array( 'code' => 500 ) );
+			return new WP_Error( 'server_error', esc_html__( 'The updated license key could not be found.', 'digital-license-manager' ), array( 'code' => 500 ) );
 		}
 
 		// Update the stock
@@ -525,7 +525,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		);
 
 		if ( ! $license ) {
-			return new WP_Error( 'server_error', sprintf( __( "The license key '%s' could not be found.", 'digital-license-manager' ), $licenseKey ), array( 'code' => 500 ) );
+			return new WP_Error( 'server_error', sprintf( esc_html__( "The license key '%s' could not be found.", 'digital-license-manager' ), $licenseKey ), array( 'code' => 500 ) );
 		} else {
 			LicenseActivations::instance()->deleteBy( [ 'license_id' => $oldLicense->getId() ] );
 			LicenseMetaRepository::instance()->deleteBy( [ 'license_id' => $oldLicense->getId() ] );
@@ -555,7 +555,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			return new WP_Error(
 				'data_error',
 				sprintf(
-					__( "The license key '%s' could not be found", 'digital-license-manager' ),
+					esc_html__( "The license key '%s' could not be found", 'digital-license-manager' ),
 					$licenseKey
 				),
 				array( 'status' => 404 )
@@ -627,7 +627,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			$licenseActivation = LicenseActivations::instance()->insert( $activationParams );
 
 			if ( ! $licenseActivation ) {
-				return new WP_Error( 'server_error', __( 'Unable to activate key', 'digital-license-manager' ), array( 'status' => 500 ) );
+				return new WP_Error( 'server_error', esc_html__( 'Unable to activate key', 'digital-license-manager' ), array( 'status' => 500 ) );
 			}
 
 		} catch ( Exception $e ) {
@@ -865,7 +865,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 				'license_expired',
 				sprintf(
 				/* translators: %s: expiration date */
-					__( 'The license key expired at %s.', 'digital-license-manager' ),
+					esc_html__( 'The license key expired at %s.', 'digital-license-manager' ),
 					wp_date( DateFormatter::getExpirationFormat(), strtotime( $license->getExpiresAt() ) )
 				),
 				array( 'status' => 405 )
@@ -1065,7 +1065,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 
 		$order = is_numeric( $order ) ? wc_get_order( $order ) : $order;
 		if ( ! $order ) {
-			return new WP_Error( 'data_error', __( 'Invalid order provided.', 'digital-license-manager' ), array( 'code' => 422 ) );
+			return new WP_Error( 'data_error', esc_html__( 'Invalid order provided.', 'digital-license-manager' ), array( 'code' => 422 ) );
 		}
 
 		$orderId     = $order->get_id();
@@ -1073,13 +1073,13 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		$amount      = is_numeric( $amount ) ? intval( $amount ) : 0;
 
 		if ( ! $amount ) {
-			return new WP_Error( 'data_error', __( 'Amount is invalid.', 'digital-license-manager' ), array( 'code' => 422 ) );
+			return new WP_Error( 'data_error', esc_html__( 'Amount is invalid.', 'digital-license-manager' ), array( 'code' => 422 ) );
 		}
 
 		$licenses = $this->getLicensesFromStock( $product, $amount );
 
 		if ( ! is_array( $licenses ) || count( $licenses ) <= 0 ) {
-			return new WP_Error( 'data_error', sprintf( __( 'Required amout of %d licenses was not found in stock.', 'digital-license-manager' ), $amount ), array( 'code' => 422 ) );
+			return new WP_Error( 'data_error', sprintf( esc_html__( 'Required amout of %d licenses was not found in stock.', 'digital-license-manager' ), $amount ), array( 'code' => 422 ) );
 		}
 
 
@@ -1094,7 +1094,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 					$expiresAt = DateFormatter::addDaysInFuture( $validFor, 'now', 'Y-m-d H:i:s' );
 				} catch ( Exception $e ) {
 					if ( empty( $expiresAt ) ) {
-						return new WP_Error( 'data_error', __( 'Valid for is not set or invalid.', 'digital-license-manager' ), array( 'code' => 422 ) );
+						return new WP_Error( 'data_error', esc_html__( 'Valid for is not set or invalid.', 'digital-license-manager' ), array( 'code' => 422 ) );
 					}
 				}
 			}
@@ -1142,15 +1142,15 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		$userId           = null;
 
 		if ( ! is_array( $licenses ) || count( $licenses ) <= 0 ) {
-			return new WP_Error( 'data_error', __( 'License Keys are invalid.', 'digital-license-manager' ), array( 'code' => 422 ) );
+			return new WP_Error( 'data_error', esc_html__( 'License Keys are invalid.', 'digital-license-manager' ), array( 'code' => 422 ) );
 		}
 
 		if ( ! $cleanOrderId ) {
-			return new WP_Error( 'data_error', __( 'Order ID is invalid.', 'digital-license-manager' ), array( 'code' => 422 ) );
+			return new WP_Error( 'data_error', esc_html__( 'Order ID is invalid.', 'digital-license-manager' ), array( 'code' => 422 ) );
 		}
 
 		if ( ! $amount ) {
-			return new WP_Error( 'data_error', __( 'Amount is invalid.', 'digital-license-manager' ), array( 'code' => 422 ) );
+			return new WP_Error( 'data_error', esc_html__( 'Amount is invalid.', 'digital-license-manager' ), array( 'code' => 422 ) );
 		}
 
 		if ( function_exists( 'wc_get_order' ) ) {
@@ -1173,7 +1173,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 					$expiresAt    = $date->add( $dateInterval )->format( 'Y-m-d H:i:s' );
 				} catch ( Exception $e ) {
 					if ( empty( $expiresAt ) ) {
-						return new WP_Error( 'data_error', __( 'Valid for invalid.', 'digital-license-manager' ), array( 'code' => 422 ) );
+						return new WP_Error( 'data_error', esc_html__( 'Valid for invalid.', 'digital-license-manager' ), array( 'code' => 422 ) );
 					}
 				}
 			}
@@ -1202,7 +1202,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	public function validateActivationLimit( $license, $licenseKey = null ) {
 
 		if ( empty( $license ) || ! ( $license instanceof License ) ) {
-			return new WP_Error( 'license_not_found', __( 'Unknown license', 'digital-license-manager' ), array( 'status' => 404 ) );
+			return new WP_Error( 'license_not_found', esc_html__( 'Unknown license', 'digital-license-manager' ), array( 'status' => 404 ) );
 		}
 
 		$timesActivated   = $license->getActivationsCount( [ 'active' => 1 ] );

@@ -32,89 +32,89 @@ class Settings {
 
 		$settings['woocommerce'] = array(
 			'slug'              => 'woocommerce',
-			'name'              => __( 'WooCommerce', 'digital-license-manager' ),
+			'name'              => esc_html__( 'WooCommerce', 'digital-license-manager' ),
 			'url'               => add_query_arg( 'tab', 'woocommerce', $baseUrl ),
 			'priority'          => 15,
 			'sanitize_callback' => array( $this, 'sanitizeArray' ),
 			'sections'          => array(
 				'general' => array(
-					'name' => __('General'),
+					'name' => esc_html__('General'),
 					'page' => 'general',
 					'priority' => 5,
 					'fields' => array(
 						10 => array(
 							'id'       => 'auto_delivery',
-							'title'    => __( 'Automatic delivery', 'digital-license-manager' ),
+							'title'    => esc_html__( 'Automatic delivery', 'digital-license-manager' ),
 							'callback' => array( $this, 'fieldCheckbox' ),
 							'args'     => array(
-								'label'   => __( "Enable this option to delivery License keys once specific product is purchased.", 'digital-license-manager' ),
-								'explain' => __( "If enabled the customer will receive License keys once they purchase specific product, based on the product configuration.", 'digital-license-manager' ),
+								'label'   => esc_html__( "Enable this option to delivery License keys once specific product is purchased.", 'digital-license-manager' ),
+								'explain' => esc_html__( "If enabled the customer will receive License keys once they purchase specific product, based on the product configuration.", 'digital-license-manager' ),
 							)
 						),
 						15 => array(
 							'id'       => 'order_delivery_statuses',
-							'title'    => __( 'Order status delivery', 'digital-license-manager' ),
+							'title'    => esc_html__( 'Order status delivery', 'digital-license-manager' ),
 							'callback' => array( $this, 'fieldLicenseKeyDeliveryOptions' ),
 							'args'     => array(
-								'label'   => __( "Enable this option to safe guard the data on plugin removal/uninstallation.", 'digital-license-manager' ),
-								'explain' => __( "If enabled your data will NOT be removed once this plugin is uninstalled. This is usually prefered option in case you want to use the plugin again in future.", 'digital-license-manager' ),
+								'label'   => esc_html__( "Enable this option to safe guard the data on plugin removal/uninstallation.", 'digital-license-manager' ),
+								'explain' => esc_html__( "If enabled your data will NOT be removed once this plugin is uninstalled. This is usually prefered option in case you want to use the plugin again in future.", 'digital-license-manager' ),
 							)
 						),
 						20 => array(
 							'id'       => 'stock_management',
-							'title'    => __( 'Stock management', 'digital-license-manager' ),
+							'title'    => esc_html__( 'Stock management', 'digital-license-manager' ),
 							'callback' => array( $this, 'fieldManageStock' ),
 						),
 						30 => array(
 							'id'       => 'hide_license_keys',
-							'title'    => __( 'Obscure licenses', 'digital-license-manager' ),
+							'title'    => esc_html__( 'Obscure licenses', 'digital-license-manager' ),
 							'callback' => array( $this, 'fieldCheckbox' ),
 							'args'     => array(
-								'label'   => __( 'Hide license keys in the public facing pages like "Order Received".', 'digital-license-manager' ),
-								'explain' => __( "The license keys will be masked with stars on the public facing pages for security purposes", 'digital-license-manager' ),
+								'label'   => esc_html__( 'Hide license keys in the public facing pages like "Order Received".', 'digital-license-manager' ),
+								'explain' => esc_html__( "The license keys will be masked with stars on the public facing pages for security purposes", 'digital-license-manager' ),
 							)
 						),
 					)
 				),
 				'my_account' => array(
-					'name'     => __( 'My Account' ),
+					'name'     => esc_html__( 'My Account' ),
 					'page'     => 'my_account',
 					'priority' => 10,
 					'fields'   => array(
 						10 => array(
 							'id'       => 'myaccount_endpoint',
-							'title'    => __( 'Enable "Licenses"', 'digital-license-manager' ),
+							'title'    => esc_html__( 'Enable "Licenses"', 'digital-license-manager' ),
 							'callback' => array( $this, 'fieldCheckbox' ),
 							'args'     => array(
-								'label'   => __( "Display the 'Licenses' section inside WooCommerce's 'My Account'.", 'digital-license-manager' ),
-								'explain' => __( "You might need to save your permalinks after enabling this option.", 'digital-license-manager' ),
+								'label'   => esc_html__( "Display the 'Licenses' section inside WooCommerce's 'My Account'.", 'digital-license-manager' ),
+								'explain' => esc_html__( "You might need to save your permalinks after enabling this option.", 'digital-license-manager' ),
 							)
 						),
 						30 => array(
 							'id'       => 'enable_activations_table',
-							'title'    => __( 'Activation History', 'digital-license-manager' ),
+							'title'    => esc_html__( 'Activation History', 'digital-license-manager' ),
 							'callback' => array( $this, 'fieldCheckbox' ),
 							'args'     => array(
-								'label'   => __( "Enable historical records that shows previous activations in the license page in My Account dashboard.", 'digital-license-manager' ),
-								'explain' => __( "Use this option to display table that shows list of activations and labels.", 'digital-license-manager' ),
+								'label'   => esc_html__( "Enable historical records that shows previous activations in the license page in My Account dashboard.", 'digital-license-manager' ),
+								'explain' => esc_html__( "Use this option to display table that shows list of activations and labels.", 'digital-license-manager' ),
 							)
 						),
 						50 => array(
 							'id'       => 'enable_manual_activations',
-							'title'    => __( 'Allow Manual Activations', 'digital-license-manager' ),
+							'title'    => esc_html__( 'Allow Manual Activations', 'digital-license-manager' ),
 							'callback' => array( $this, 'fieldCheckbox' ),
 							'args'     => array(
-								'label'   => __( "Enable this to allow manual license activation. Users will be able to create activations from the admin without using the REST API.", 'digital-license-manager' ),
-								'explain' => __( "Normally activations should be done through the REST API from your apps, however this is more a psychological feature to give the users a feeling that they can activate the product.", 'digital-license-manager' ),
+								'label'   => esc_html__( "Enable this to allow manual license activation. Users will be able to create activations from the admin without using the REST API.", 'digital-license-manager' ),
+								'explain' => esc_html__( "Normally activations should be done through the REST API from your apps, however this is more a psychological feature to give the users a feeling that they can activate the product.", 'digital-license-manager' ),
 							)
 						),
 						70 => array(
 							'id'       => 'enable_certificates',
-							'title'    => __( 'Enable "PDF Certificates"', 'digital-license-manager' ),
+							'title'    => esc_html__( 'Enable "PDF Certificates"', 'digital-license-manager' ),
 							'callback' => array( $this, 'fieldCheckbox' ),
 							'args'     => array(
-								'label'   => __( "Enable License PDF certificates in the single license page in My Account dashboard.", 'digital-license-manager' ),
-								'explain' => __( "Use this option if you want to allow customers to download License certificate from the single license page.", 'digital-license-manager' ),
+								'label'   => esc_html__( "Enable License PDF certificates in the single license page in My Account dashboard.", 'digital-license-manager' ),
+								'explain' => esc_html__( "Use this option if you want to allow customers to download License certificate from the single license page.", 'digital-license-manager' ),
 							)
 						),
 					)
@@ -141,8 +141,8 @@ class Settings {
 
 		$html .= '<thead>';
 		$html .= '<tr>';
-		$html .= '<td><strong>' . __( 'Statuses', 'digital-license-manager' ) . '</strong></td>';
-		$html .= '<td><strong>' . __( 'Send', 'digital-license-manager' ) . '</strong></td>';
+		$html .= '<td><strong>' . esc_html__( 'Statuses', 'digital-license-manager' ) . '</strong></td>';
+		$html .= '<td><strong>' . esc_html__( 'Send', 'digital-license-manager' ) . '</strong></td>';
 		$html .= '</tr>';
 		$html .= '</thead>';
 		$html .= '<tbody>';
@@ -192,14 +192,14 @@ class Settings {
 			checked( true, $value, false )
 		);
 
-		$html .= '<span>' . __( 'Enable automatic stock management for WooCommerce products.', 'digital-license-manager' ) . '</span>';
+		$html .= '<span>' . esc_html__( 'Enable automatic stock management for WooCommerce products.', 'digital-license-manager' ) . '</span>';
 		$html .= '</label>';
 		$html .= sprintf(
 			'<p class="description">%s<br/>1. %s<br/>2. %s<br/>3. %s</p>',
-			__( 'To use this feature, you also need to enable the following settings at a product level:', 'digital-license-manager' ),
-			__( 'Inventory &rarr; Manage stock?', 'digital-license-manager' ),
-			__( 'License Manager &rarr; Sell Licenses', 'digital-license-manager' ),
-			__( 'License Manager &rarr; Licenses source &rarr; Provide licenses from stock', 'digital-license-manager' )
+			esc_html__( 'To use this feature, you also need to enable the following settings at a product level:', 'digital-license-manager' ),
+			esc_html__( 'Inventory &rarr; Manage stock?', 'digital-license-manager' ),
+			esc_html__( 'License Manager &rarr; Sell Licenses', 'digital-license-manager' ),
+			esc_html__( 'License Manager &rarr; Licenses source &rarr; Provide licenses from stock', 'digital-license-manager' )
 		);
 		$html .= '</fieldset>';
 
@@ -208,9 +208,9 @@ class Settings {
                 <button class="button button-secondary"
                         type="submit"
                         name="dlm_stock_synchronize"
-                        value="1">' . __( 'Synchronize', 'digital-license-manager' ) . '</button>
+                        value="1">' . esc_html__( 'Synchronize', 'digital-license-manager' ) . '</button>
                 <p class="description" style="margin-top: 1em;">
-                    ' . __( 'The "Synchronize" button can be used to manually synchronize the product stock.', 'digital-license-manager' ) . '
+                    ' . esc_html__( 'The "Synchronize" button can be used to manually synchronize the product stock.', 'digital-license-manager' ) . '
                 </p>
             </fieldset>
         ';
@@ -231,14 +231,14 @@ class Settings {
 				add_settings_error(
 					'dlm_settings_group_general',
 					'dlm_stock_update',
-					sprintf( __( 'Successfully updated the stock of %d WooCommerce products.', 'digital-license-manager' ), $productsSynchronized ),
+					sprintf( esc_html__( 'Successfully updated the stock of %d WooCommerce products.', 'digital-license-manager' ), $productsSynchronized ),
 					'success'
 				);
 			} else {
 				add_settings_error(
 					'dlm_settings_group_general',
 					'dlm_stock_update',
-					__( 'The stock of all WooCommerce products is already synchronized.', 'digital-license-manager' ),
+					esc_html__( 'The stock of all WooCommerce products is already synchronized.', 'digital-license-manager' ),
 					'success'
 				);
 			}

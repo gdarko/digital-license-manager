@@ -265,7 +265,7 @@ class LMFW extends AbstractToolMigrator {
 									LicenseActivations::instance()->insert( array(
 										'token'      => $licenseService->generateActivationToken( $license_key ),
 										'license_id' => $new_row->getId(),
-										'label'      => __( 'Untitled', 'digital-license-manager' ),
+										'label'      => esc_html__( 'Untitled', 'digital-license-manager' ),
 										'source'     => ActivationSource::MIGRATION,
 									) );
 								}
@@ -445,7 +445,7 @@ class LMFW extends AbstractToolMigrator {
 
 			}
 		} catch ( \Exception $e ) {
-			return ( new \WP_Error( 'step_error', sprintf( __( 'Error: %s', 'digital-license-manager' ), $e->getMessage() ) ) );
+			return ( new \WP_Error( 'step_error', sprintf( esc_html__( 'Error: %s', 'digital-license-manager' ), $e->getMessage() ) ) );
 		}
 
 		return true;
@@ -570,7 +570,7 @@ class LMFW extends AbstractToolMigrator {
 	public function checkAvailability() {
 
 		if ( ! function_exists( '\WC' ) ) {
-			return new \WP_Error( __( 'Please activate WooCommerce before starting with migration', 'digital-license-manager' ) );
+			return new \WP_Error( esc_html__( 'Please activate WooCommerce before starting with migration', 'digital-license-manager' ) );
 		}
 
 		global $wpdb;
@@ -582,7 +582,7 @@ class LMFW extends AbstractToolMigrator {
 		foreach ( $tables as $table ) {
 			$query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table ) );
 			if ( $wpdb->get_var( $query ) != $table ) {
-				return new \WP_Error( __( 'No data found from the plugin "License Manager for WooCommerce" to migrate.', 'digital-license-manager' ) );
+				return new \WP_Error( esc_html__( 'No data found from the plugin "License Manager for WooCommerce" to migrate.', 'digital-license-manager' ) );
 			}
 		}
 
@@ -592,7 +592,7 @@ class LMFW extends AbstractToolMigrator {
 		$key_defuse = $this->find3rdPartyDefuse();
 		$key_secret = $this->find3rdPartySecret();
 		if ( is_null( $key_defuse ) || is_null( $key_secret ) ) {
-			return new \WP_Error( __( 'Plugin data found, but no encryption secrets found. Unable to decrypt license keys.', 'digital-license-manager' ) );
+			return new \WP_Error( esc_html__( 'Plugin data found, but no encryption secrets found. Unable to decrypt license keys.', 'digital-license-manager' ) );
 		}
 
 		return true;

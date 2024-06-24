@@ -41,7 +41,7 @@ defined( 'ABSPATH' ) || exit;
 	<?php
 	$activations->prepare_items();
 	$activations->views();
-	$activations->search_box(__( 'Search activations', 'digital-license-manager' ), 'license_key');
+	$activations->search_box(esc_html__( 'Search activations', 'digital-license-manager' ), 'license_key');
 	$activations->display();
 	?>
 </form>

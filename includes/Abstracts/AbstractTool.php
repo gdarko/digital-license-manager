@@ -188,13 +188,13 @@ abstract class AbstractTool {
 		if ( ! isset( $steps[ $step ] ) ) {
 			$data['next_step'] = - 1;
 			$data['next_page'] = - 1;
-			$data['message']   = __( 'Operation not initialized properly.', 'digital-license-manager' );
+			$data['message']   = esc_html__( 'Operation not initialized properly.', 'digital-license-manager' );
 
 			return $data;
 		} else {
 
 			if ( ! isset( $steps[ $step ]['pages'] ) ) {
-				return new \WP_Error( '500', __( 'Unable to determine next step', 'digital-license-manager' ) );
+				return new \WP_Error( '500', esc_html__( 'Unable to determine next step', 'digital-license-manager' ) );
 			}
 
 			$next_page   = $page + 1;
@@ -204,24 +204,24 @@ abstract class AbstractTool {
 				$next_step         = isset( $steps[ $step + 1 ] ) ? $step + 1 : - 1;
 				$data['next_step'] = $next_step;
 				$data['next_page'] = isset( $steps[ $step + 1 ] ) ? 1 : - 1;
-				$data['message']   = sprintf( __( 'Processing "%s" - Page: %d/%d', 'digital-license-manager' ), $steps[ $step ]['name'], $page, $total_pages );
+				$data['message']   = sprintf( esc_html__( 'Processing "%s" - Page: %d/%d', 'digital-license-manager' ), $steps[ $step ]['name'], $page, $total_pages );
 			} else if ( $page < $total_pages ) {
 				$next_step         = $step;
 				$data['next_step'] = $next_step;
 				$data['next_page'] = $next_page;
-				$data['message']   = sprintf( __( 'Processing "%s" - Page: %d/%d', 'digital-license-manager' ), $steps[ $step ]['name'], $page, $total_pages );
+				$data['message']   = sprintf( esc_html__( 'Processing "%s" - Page: %d/%d', 'digital-license-manager' ), $steps[ $step ]['name'], $page, $total_pages );
 			} else if ( isset( $steps[ $step + 1 ] ) ) {
 				$next_page         = 1;
 				$next_step         = $step + 1;
 				$data['next_step'] = $next_step;
 				$data['next_page'] = $next_page;
-				$data['message']   = sprintf( __( 'Processing "%s" - Page: %d/%d', 'digital-license-manager' ), $steps[ $step ]['name'], $page, $total_pages );
+				$data['message']   = sprintf( esc_html__( 'Processing "%s" - Page: %d/%d', 'digital-license-manager' ), $steps[ $step ]['name'], $page, $total_pages );
 
 			} else {
 				$next_step         = - 1;
 				$data['next_step'] = - 1;
 				$data['next_page'] = - 1;
-				$data['message']   = __( 'Operation complete.', 'digital-license-manager' );
+				$data['message']   = esc_html__( 'Operation complete.', 'digital-license-manager' );
 			}
 
 

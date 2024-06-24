@@ -192,7 +192,7 @@ abstract class AbstractRestController extends WP_REST_Controller {
 		if( ! is_user_logged_in() ) {
 			return $this->responseError(
 				'permission_denied',
-				__( 'API Key could not be authenticated.', 'digital-license-manager' ),
+				esc_html__( 'API Key could not be authenticated.', 'digital-license-manager' ),
 				array(
 					'status' => 401
 				)
@@ -202,7 +202,7 @@ abstract class AbstractRestController extends WP_REST_Controller {
 		if ( ! $this->capabilityCheck( $capability ) ) {
 			return $this->responseError(
 				'permission_denied',
-				__( 'Sorry, you don\'t have access to this resource.', 'digital-license-manager' ),
+				esc_html__( 'Sorry, you don\'t have access to this resource.', 'digital-license-manager' ),
 				array(
 					'status' => is_user_logged_in() ? 403 : 401
 				)

@@ -37,7 +37,7 @@ $licenseKey = apply_filters( 'dlm_block_licenses_table_key', null );
     <form id="dlm-licenses-check">
 		<?php if ( isset( $emailRequired ) && $emailRequired && ! is_user_logged_in() ): ?>
             <div class="dlm-form-row">
-                <label for="email"><?php _e( 'Owner Email', 'digital-license-manager' ); ?></label>
+                <label for="email"><?php esc_html_e( 'Owner Email', 'digital-license-manager' ); ?></label>
                 <input type="text"
                        id="email"
                        name="email"
@@ -46,13 +46,13 @@ $licenseKey = apply_filters( 'dlm_block_licenses_table_key', null );
             <input type="hidden" name="echeck" id="echeck" value="1"/>
 		<?php endif; ?>
         <div class="dlm-form-row">
-            <label for="licenseKey"><?php _e( 'License Key', 'digital-license-manager' ); ?></label>
+            <label for="licenseKey"><?php esc_html_e( 'License Key', 'digital-license-manager' ); ?></label>
             <input type="text"
                    id="licenseKey"
                    name="licenseKey"
                    value="<?php echo esc_attr( $licenseKey ); ?>"
                    class="dlm-form-control"/>
         </div>
-        <button type="submit"><?php _e( 'Submit', 'digital-license-manager' ); ?></button>
+        <button type="submit"><?php esc_html_e( 'Submit', 'digital-license-manager' ); ?></button>
     </form>
 </div>

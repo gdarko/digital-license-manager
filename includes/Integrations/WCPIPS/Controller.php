@@ -91,7 +91,7 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 					continue;
 				}
 
-				echo '<p style="margin-bottom: 0; margin-top:5px; font-weight:bold; padding-left:5px; font-size:7pt;">' . __( 'Licenses:', 'digital-license-manager' ) . '</p>';
+				echo '<p style="margin-bottom: 0; margin-top:5px; font-weight:bold; padding-left:5px; font-size:7pt;">' . esc_html__( 'Licenses:', 'digital-license-manager' ) . '</p>';
 
 				$licenses = array_map( function ( $current ) {
 					return sprintf( '<span style="background-color: green; color: #fff; padding: 1px 8px; border-radius: 15px; font-weight:bold;">%s</span>', $current->getDecryptedLicenseKey() );

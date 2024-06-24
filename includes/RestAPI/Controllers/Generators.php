@@ -363,7 +363,7 @@ class Generators extends DLM_REST_Controller {
 		if ( ! $generatorId ) {
 			return $this->responseError(
 				'data_error',
-				__( 'The Generator ID is missing from the request.', 'digital-license-manager' ),
+				esc_html__( 'The Generator ID is missing from the request.', 'digital-license-manager' ),
 				array( 'status' => 404 )
 			);
 		}
@@ -371,7 +371,7 @@ class Generators extends DLM_REST_Controller {
 		if ( ! $body ) {
 			return $this->responseError(
 				'data_error',
-				__( 'No parameters were provided.', 'digital-license-manager' ),
+				esc_html__( 'No parameters were provided.', 'digital-license-manager' ),
 				array( 'status' => 404 )
 			);
 		}
@@ -393,7 +393,7 @@ class Generators extends DLM_REST_Controller {
 					if ( ! wc_get_order( $orderId ) ) {
 						return $this->responseError(
 							'data_error',
-							__( 'The order does not exist.', 'digital-license-manager' ),
+							esc_html__( 'The order does not exist.', 'digital-license-manager' ),
 							array( 'status' => 404 )
 						);
 					}
@@ -407,7 +407,7 @@ class Generators extends DLM_REST_Controller {
 					if ( ! wc_get_product( $productId ) ) {
 						return $this->responseError(
 							'data_error',
-							__( 'The product does not exist.', 'digital-license-manager' ),
+							esc_html__( 'The product does not exist.', 'digital-license-manager' ),
 							array( 'status' => 404 )
 						);
 					}
@@ -420,7 +420,7 @@ class Generators extends DLM_REST_Controller {
 				if ( ! get_user_by( 'ID', $userId ) ) {
 					return $this->responseError(
 						'data_error',
-						__( 'The user does not exist.', 'digital-license-manager' ),
+						esc_html__( 'The user does not exist.', 'digital-license-manager' ),
 						array( 'status' => 404 )
 					);
 				}
@@ -433,7 +433,7 @@ class Generators extends DLM_REST_Controller {
 		if ( ! $generator ) {
 			return $this->responseError(
 				'data_error',
-				sprintf( __( 'Generator with ID: %d could not be found.', 'digital-license-manager' ), $generatorId ),
+				sprintf( esc_html__( 'Generator with ID: %d could not be found.', 'digital-license-manager' ), $generatorId ),
 				array( 'status' => 404 )
 			);
 		}
@@ -447,7 +447,7 @@ class Generators extends DLM_REST_Controller {
 		if ( ! $amount || ! is_int( $amount ) ) {
 			return $this->responseError(
 				'data_error',
-				__( 'Invalid amount', 'digital-license-manager' ),
+				esc_html__( 'Invalid amount', 'digital-license-manager' ),
 				array( 'status' => 404 )
 			);
 		}

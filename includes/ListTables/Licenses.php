@@ -70,8 +70,8 @@ class Licenses extends AbstractListTable {
 
 		parent::__construct(
 			array(
-				'singular' => __( 'Licenses', 'digital-license-manager' ),
-				'plural'   => __( 'Licenses', 'digital-license-manager' ),
+				'singular' => esc_html__( 'Licenses', 'digital-license-manager' ),
+				'plural'   => esc_html__( 'Licenses', 'digital-license-manager' ),
 				'ajax'     => false
 			)
 		);
@@ -99,7 +99,7 @@ class Licenses extends AbstractListTable {
 			'<a href="%s" %s>%s <span class="count">(%d)</span></a>',
 			$allUrl,
 			$class,
-			__( 'All', 'digital-license-manager' ),
+			esc_html__( 'All', 'digital-license-manager' ),
 			LicensesRepository::instance()->count()
 		);
 
@@ -110,7 +110,7 @@ class Licenses extends AbstractListTable {
 			'<a href="%s" %s>%s <span class="count">(%d)</span></a>',
 			$soldUrl,
 			$class,
-			__( 'Sold', 'digital-license-manager' ),
+			esc_html__( 'Sold', 'digital-license-manager' ),
 			LicensesRepository::instance()->countBy( array( 'status' => LicenseStatus::SOLD ) )
 		);
 
@@ -121,7 +121,7 @@ class Licenses extends AbstractListTable {
 			'<a href="%s" %s>%s <span class="count">(%d)</span></a>',
 			$deliveredUrl,
 			$class,
-			__( 'Delivered', 'digital-license-manager' ),
+			esc_html__( 'Delivered', 'digital-license-manager' ),
 			LicensesRepository::instance()->countBy( array( 'status' => LicenseStatus::DELIVERED ) )
 		);
 
@@ -132,7 +132,7 @@ class Licenses extends AbstractListTable {
 			'<a href="%s" %s>%s <span class="count">(%d)</span></a>',
 			$activeUrl,
 			$class,
-			__( 'Active', 'digital-license-manager' ),
+			esc_html__( 'Active', 'digital-license-manager' ),
 			LicensesRepository::instance()->countBy( array( 'status' => LicenseStatus::ACTIVE ) )
 		);
 
@@ -143,7 +143,7 @@ class Licenses extends AbstractListTable {
 			'<a href="%s" %s>%s <span class="count">(%d)</span></a>',
 			$inactiveUrl,
 			$class,
-			__( 'Inactive', 'digital-license-manager' ),
+			esc_html__( 'Inactive', 'digital-license-manager' ),
 			LicensesRepository::instance()->countBy( array( 'status' => LicenseStatus::INACTIVE ) )
 		);
 
@@ -154,7 +154,7 @@ class Licenses extends AbstractListTable {
 			'<a href="%s" %s>%s <span class="count">(%d)</span></a>',
 			$disabledUrl,
 			$class,
-			__( 'Disabled', 'digital-license-manager' ),
+			esc_html__( 'Disabled', 'digital-license-manager' ),
 			LicensesRepository::instance()->countBy( array( 'status' => LicenseStatus::DISABLED ) )
 		);
 
@@ -172,7 +172,7 @@ class Licenses extends AbstractListTable {
 			$this->orderDropdown();
 			$this->productDropdown();
 			$this->userDropdown();
-			submit_button( __( 'Filter', 'digital-license-manager' ), '', 'filter-action', false );
+			submit_button( esc_html__( 'Filter', 'digital-license-manager' ), '', 'filter-action', false );
 			echo '</div>';
 		}
 	}
@@ -189,7 +189,7 @@ class Licenses extends AbstractListTable {
 		$selected = isset( $_REQUEST['order-id'] ) && ! empty( $_REQUEST['order-id'] ) ? wc_get_order( (int) $_REQUEST['order-id'] ) : '';
 		?>
         <label for="filter-by-order-id" class="screen-reader-text">
-            <span><?php _e( 'Filter by order', 'digital-license-manager' ); ?></span>
+            <span><?php esc_html_e( 'Filter by order', 'digital-license-manager' ); ?></span>
         </label>
 
         <select name="order-id" id="filter-by-order-id">
@@ -213,7 +213,7 @@ class Licenses extends AbstractListTable {
 		$selected = isset( $_REQUEST['product-id'] ) && ! empty( $_REQUEST['product-id'] ) ? wc_get_product( (int) $_REQUEST['product-id'] ) : '';
 		?>
         <label for="filter-by-product-id" class="screen-reader-text">
-            <span><?php _e( 'Filter by product', 'digital-license-manager' ); ?></span>
+            <span><?php esc_html_e( 'Filter by product', 'digital-license-manager' ); ?></span>
         </label>
 
         <select name="product-id" id="filter-by-product-id">
@@ -241,7 +241,7 @@ class Licenses extends AbstractListTable {
 		$selected = isset( $_REQUEST['user-id'] ) && ! empty( $_REQUEST['user-id'] ) ? get_user_by( (int) $_REQUEST['user-id'], 'id' ) : '';
 		?>
         <label for="filter-by-user-id" class="screen-reader-text">
-            <span><?php _e( 'Filter by user', 'digital-license-manager' ); ?></span>
+            <span><?php esc_html_e( 'Filter by user', 'digital-license-manager' ); ?></span>
         </label><select name="user-id" id="filter-by-user-id">
 			<?php if ( $selected ): ?>
                 <option selected value="<?php echo esc_attr( $selected->ID ); ?>">
@@ -313,7 +313,7 @@ class Licenses extends AbstractListTable {
 		}
 
 		// ID
-		$actions['id'] = sprintf( __( 'ID: %d', 'digital-license-manager' ), (int) $item->getId() );
+		$actions['id'] = sprintf( esc_html__( 'ID: %d', 'digital-license-manager' ), (int) $item->getId() );
 
 		// Edit
 		if ( $this->canEdit ) {
@@ -329,7 +329,7 @@ class Licenses extends AbstractListTable {
 						'dlm_edit_license_key'
 					)
 				),
-				__( 'Edit', 'digital-license-manager' )
+				esc_html__( 'Edit', 'digital-license-manager' )
 			);
 		}
 
@@ -338,12 +338,12 @@ class Licenses extends AbstractListTable {
 			$actions['show'] = sprintf(
 				'<a class="dlm-license-key-toggle dlm-license-key-show" data-id="%d">%s</a>',
 				$item->getId(),
-				__( 'Show', 'digital-license-manager' )
+				esc_html__( 'Show', 'digital-license-manager' )
 			);
 			$actions['hide'] = sprintf(
 				'<a class="dlm-license-key-toggle dlm-license-key-hide" data-id="%d">%s</a>',
 				$item->getId(),
-				__( 'Hide', 'digital-license-manager' )
+				esc_html__( 'Hide', 'digital-license-manager' )
 			);
 		}
 
@@ -360,7 +360,7 @@ class Licenses extends AbstractListTable {
 						wp_create_nonce( 'delete' )
 					)
 				),
-				__( 'Delete', 'digital-license-manager' )
+				esc_html__( 'Delete', 'digital-license-manager' )
 			);
 		}
 
@@ -426,7 +426,7 @@ class Licenses extends AbstractListTable {
 					if ( $parent = wc_get_product( $parentId ) ) {
 						$html .= sprintf(
 							'<br><small>%s <a href="%s" target="_blank">#%s - %s</a></small>',
-							__( 'Variation of', 'digital-license-manager' ),
+							esc_html__( 'Variation of', 'digital-license-manager' ),
 							get_edit_post_link( $parent->get_id() ),
 							$parent->get_id(),
 							$parent->get_name()
@@ -511,7 +511,7 @@ class Licenses extends AbstractListTable {
 			return sprintf(
 				'<div class="dlm-status-inline %s" title="%s"><small>%d</small> / <strong>%s</strong></div>',
 				'activation dlm-status-done',
-				__( 'Unlimited Activations', 'digital-license-manager' ),
+				esc_html__( 'Unlimited Activations', 'digital-license-manager' ),
 				$timesActivated,
 				'&infin;'
 			);
@@ -578,7 +578,7 @@ class Licenses extends AbstractListTable {
 
 		$never = '';
 		if ( empty( $item->getCreatedAt() ) ) {
-			$never = __( 'In stock, not sold yet', 'digital-license-manager' );
+			$never = esc_html__( 'In stock, not sold yet', 'digital-license-manager' );
 		}
 
 		$markup = '<p class="dlm-clear-spacing">' . DateFormatter::toHtml( $item->getExpiresAt(), [ 'expires' => true, 'never' => $never ] ) . '</p>';
@@ -639,18 +639,18 @@ class Licenses extends AbstractListTable {
 		$actions = array();
 		if ( $this->canEdit ) {
 			$actions = array_merge( $actions, array(
-				'disable'           => __( 'Mark as disabled', 'digital-license-manager' ),
-				'mark_as_sold'      => __( 'Mark as sold', 'digital-license-manager' ),
-				'mark_as_delivered' => __( 'Mark as delivered', 'digital-license-manager' ),
+				'disable'           => esc_html__( 'Mark as disabled', 'digital-license-manager' ),
+				'mark_as_sold'      => esc_html__( 'Mark as sold', 'digital-license-manager' ),
+				'mark_as_delivered' => esc_html__( 'Mark as delivered', 'digital-license-manager' ),
 			) );
 		}
 		if ( $this->canDelete ) {
-			$actions['delete'] = __( 'Delete', 'digital-license-manager' );
+			$actions['delete'] = esc_html__( 'Delete', 'digital-license-manager' );
 		}
 		if ( $this->canExport ) {
 			$actions = array_merge( $actions, array(
-				'export_csv' => __( 'Export (CSV)', 'digital-license-manager' ),
-				'export_pdf' => __( 'Export (PDF)', 'digital-license-manager' ),
+				'export_csv' => esc_html__( 'Export (CSV)', 'digital-license-manager' ),
+				'export_pdf' => esc_html__( 'Export (PDF)', 'digital-license-manager' ),
 			) );
 		}
 
@@ -796,14 +796,14 @@ class Licenses extends AbstractListTable {
 	public function get_columns() {
 		$columns = array(
 			'cb'          => '<input type="checkbox" />',
-			'license_key' => __( 'License key', 'digital-license-manager' ),
-			'order_id'    => __( 'Order', 'digital-license-manager' ),
-			'product_id'  => __( 'Product', 'digital-license-manager' ),
-			'user_id'     => __( 'Customer', 'digital-license-manager' ),
-			'activation'  => __( 'Activations', 'digital-license-manager' ),
-			'expires_at'  => __( 'Expires', 'digital-license-manager' ),
-			'status'      => __( 'Status', 'digital-license-manager' ),
-			'date'        => __( 'Date', 'digital-license-manager' ),
+			'license_key' => esc_html__( 'License key', 'digital-license-manager' ),
+			'order_id'    => esc_html__( 'Order', 'digital-license-manager' ),
+			'product_id'  => esc_html__( 'Product', 'digital-license-manager' ),
+			'user_id'     => esc_html__( 'Customer', 'digital-license-manager' ),
+			'activation'  => esc_html__( 'Activations', 'digital-license-manager' ),
+			'expires_at'  => esc_html__( 'Expires', 'digital-license-manager' ),
+			'status'      => esc_html__( 'Status', 'digital-license-manager' ),
+			'date'        => esc_html__( 'Date', 'digital-license-manager' ),
 		);
 
 		return apply_filters( 'dlm_table_licenses_column_name', $columns );

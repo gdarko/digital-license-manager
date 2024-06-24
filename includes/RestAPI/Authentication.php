@@ -137,7 +137,7 @@ class Authentication {
 			$this->setError(
 				$this->responseError(
 					'rest_no_ssl_error',
-					__( 'The connection is not secure, therefore the API cannot be used.', 'digital-license-manager' ),
+					esc_html__( 'The connection is not secure, therefore the API cannot be used.', 'digital-license-manager' ),
 					array( 'status' => 403 )
 				)
 			);
@@ -200,7 +200,7 @@ class Authentication {
 			$this->setError(
 				$this->responseError(
 					'authentication_error',
-					__( 'Consumer key or secret is missing.', 'digital-license-manager' ),
+					esc_html__( 'Consumer key or secret is missing.', 'digital-license-manager' ),
 					array( 'status' => 401 )
 				)
 			);
@@ -215,7 +215,7 @@ class Authentication {
 			$this->setError(
 				$this->responseError(
 					'authentication_error',
-					__( 'Consumer key is invalid.', 'digital-license-manager' ),
+					esc_html__( 'Consumer key is invalid.', 'digital-license-manager' ),
 					array( 'status' => 401 )
 				)
 			);
@@ -227,7 +227,7 @@ class Authentication {
 		if ( ! hash_equals( $this->consumer->getConsumerSecret(), $consumerSecret ) ) {
 			$this->setError(
 				$this->responseError( 'authentication_error',
-					__( 'Consumer secret is invalid.', 'digital-license-manager' ),
+					esc_html__( 'Consumer secret is invalid.', 'digital-license-manager' ),
 					array( 'status' => 401 )
 				)
 			);
@@ -263,7 +263,7 @@ class Authentication {
 				if ( 'read' !== $permissions && 'read_write' !== $permissions ) {
 					return $this->responseError(
 						'authentication_error',
-						__( 'The API key provided does not have read permissions.', 'digital-license-manager' ),
+						esc_html__( 'The API key provided does not have read permissions.', 'digital-license-manager' ),
 						array( 'status' => 401 )
 					);
 				}
@@ -275,7 +275,7 @@ class Authentication {
 				if ( 'write' !== $permissions && 'read_write' !== $permissions ) {
 					return $this->responseError(
 						'authentication_error',
-						__( 'The API key provided does not have write permissions.', 'digital-license-manager' ),
+						esc_html__( 'The API key provided does not have write permissions.', 'digital-license-manager' ),
 						array( 'status' => 401 )
 					);
 				}
@@ -286,7 +286,7 @@ class Authentication {
 			default:
 				return $this->responseError(
 					'authentication_error',
-					__( 'Unknown request method.', 'digital-license-manager' ),
+					esc_html__( 'Unknown request method.', 'digital-license-manager' ),
 					array( 'status' => 401 )
 				);
 		}
@@ -325,7 +325,7 @@ class Authentication {
 	 */
 	public function sendUnauthorizedHeaders( $response ) {
 		if ( is_wp_error( $this->getError() ) && 'basic_auth' === $this->authMethod ) {
-			$authMessage = __( 'Digital License Manager API. Use a consumer key in the username field and a consumer secret in the password field.', 'digital-license-manager' );
+			$authMessage = esc_html__( 'Digital License Manager API. Use a consumer key in the username field and a consumer secret in the password field.', 'digital-license-manager' );
 			$response->header( 'WWW-Authenticate', 'Basic realm="' . $authMessage . '"', true );
 		}
 

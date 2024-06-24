@@ -130,7 +130,7 @@ trait SettingsFieldsTrait {
             <img class="dlm-field-placeholder" data-src="<?php echo esc_attr( $placeholder ); ?>" src="<?php echo esc_attr( $current_src ); ?>" alt="File"/>
             <div class="dlm-field-submit">
 				<?php echo sprintf( '<input id="%s" type="hidden" name="%s[%s]" value="%s"/>', esc_attr( $key ), esc_attr( $key ), esc_attr( $field ), esc_attr( $media_id ) ); ?>
-                <button type="submit" class="dlm-field-upload-button button"><?php _e( 'Upload', 'digital-license-manager' ); ?></button>
+                <button type="submit" class="dlm-field-upload-button button"><?php esc_html_e( 'Upload', 'digital-license-manager' ); ?></button>
                 <button type="submit" class="dlm-field-remove-button button">&times;</button>
             </div>
         </div>

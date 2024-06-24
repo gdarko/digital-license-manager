@@ -37,11 +37,11 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 
 <div class="dlm-license-activations">
     <div class="dlm-header">
-        <h3 class="product-name"><?php _e( 'Activations', 'digital-license-manager' ); ?></h3>
+        <h3 class="product-name"><?php esc_html_e( 'Activations', 'digital-license-manager' ); ?></h3>
 		<?php if ( $manual_activations_enabled ): ?>
             <button id="dlm-myaccount-license--new-activation" class="woocommerce-button button dlm-button">
                 <span class="dlm-icon-plus"></span>
-				<?php echo apply_filters( 'dlm_myaccount_manual_activation_button', __( 'Activate', 'digital-license-manager' ) ); ?>
+				<?php echo apply_filters( 'dlm_myaccount_manual_activation_button', esc_html__( 'Activate', 'digital-license-manager' ) ); ?>
             </button>
 		<?php endif; ?>
     </div>
@@ -49,10 +49,10 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
     <table class="shop_table shop_table_responsive my_account_orders">
         <thead>
         <tr>
-            <th class="table-col table-col-label"><?php _e( 'Label', 'digital-license-manager' ); ?></th>
-            <th class="table-col table-col-status"><?php _e( 'Status', 'digital-license-manager' ); ?></th>
-            <th class="table-col table-col-source"><?php _e( 'Source', 'digital-license-manager' ); ?></th>
-            <th class="table-col table-col-date"><?php _e( 'Date', 'digital-license-manager' ); ?></th>
+            <th class="table-col table-col-label"><?php esc_html_e( 'Label', 'digital-license-manager' ); ?></th>
+            <th class="table-col table-col-status"><?php esc_html_e( 'Status', 'digital-license-manager' ); ?></th>
+            <th class="table-col table-col-source"><?php esc_html_e( 'Source', 'digital-license-manager' ); ?></th>
+            <th class="table-col table-col-date"><?php esc_html_e( 'Date', 'digital-license-manager' ); ?></th>
 			<?php if ( ! empty( $rowActions ) ): ?>
                 <th class="table-col table-col-actions"></th>
 			<?php endif; ?>
@@ -76,12 +76,12 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 						if ( $activation->getDeactivatedAt() ) {
 							echo LicenseStatus::statusToHtml( 'disabled', [
 								'style' => 'inline',
-								'text'  => __( 'Not Active', 'digital-license-manager' )
+								'text'  => esc_html__( 'Not Active', 'digital-license-manager' )
 							] );
 						} else {
 							echo LicenseStatus::statusToHtml( 'delivered', [
 								'style' => 'inline',
-								'text'  => __( 'Active', 'digital-license-manager' )
+								'text'  => esc_html__( 'Active', 'digital-license-manager' )
 							] );
 						}
 						?>
@@ -133,7 +133,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 
             <tr>
                 <td colspan="5">
-                    <p><?php _e( 'No activations found.', 'digital-license-manager' ); ?></p>
+                    <p><?php esc_html_e( 'No activations found.', 'digital-license-manager' ); ?></p>
                 </td>
             </tr>
 
@@ -148,14 +148,14 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
                 <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="dlm-manual-activation-add--title">
                     <header class="modal__header">
                         <h2 class="modal__title" id="dlm-manual-activation-add--title">
-							<?php _e( 'New Activation', 'digital-license-manager' ); ?>
+							<?php esc_html_e( 'New Activation', 'digital-license-manager' ); ?>
                         </h2>
                         <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
                     </header>
                     <form method="POST" action="<?php echo esc_url( \IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\MyAccount::getProcessingEndpointUrl() ); ?>" id="dlm-manual-activation-add--form">
                         <main class="modal__content" id="dlm-manual-activation-add--content">
                             <div class="dlm-form-row">
-                                <label for="label"><?php _e( 'Label' ); ?></label>
+                                <label for="label"><?php esc_html_e( 'Label' ); ?></label>
                                 <input type="text" id="label" name="label"/>
                             </div>
                         </main>
@@ -163,7 +163,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
                             <input type="hidden" name="dlm_action" value="manual_activation">
                             <input type="hidden" name="dlm_nonce" value="<?php echo wp_create_nonce( Activations::NONCE ); ?>">
                             <input type="hidden" name="license_id" value="<?php echo esc_attr($license->getId()); ?>">
-                            <button type="submit" class="button button-primary"><?php _e( 'Create', 'digital-license-manager' ); ?></button>
+                            <button type="submit" class="button button-primary"><?php esc_html_e( 'Create', 'digital-license-manager' ); ?></button>
                         </footer>
                     </form>
                 </div>

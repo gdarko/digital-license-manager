@@ -42,7 +42,7 @@ defined( 'ABSPATH' ) || exit;
 	<?php
 	$keys->prepare_items();
 	$keys->views();
-	$keys->search_box( __( 'Search key', 'digital-license-manager' ), 'key' );
+	$keys->search_box( esc_html__( 'Search key', 'digital-license-manager' ), 'key' );
 	$keys->display();
 	?>
 </form>

@@ -50,7 +50,7 @@ class Frontend {
 	public function handle_licenses_check() {
 
 		if ( ! self::check_referer() ) {
-			wp_send_json_error( [ 'message' => __( 'Permission denied.', 'digital-license-manager' ) ] );
+			wp_send_json_error( [ 'message' => esc_html__( 'Permission denied.', 'digital-license-manager' ) ] );
 			exit;
 		}
 
@@ -71,27 +71,27 @@ class Frontend {
 			$userId = $license->getUserId();
 			$user   = get_user_by( 'email', $email );
 			if ( false === $user ) {
-				wp_send_json_error( [ 'message' => __( 'Unfortunately this license does not belong you (1).', 'digital-license-manager' ) ] );
+				wp_send_json_error( [ 'message' => esc_html__( 'Unfortunately this license does not belong you (1).', 'digital-license-manager' ) ] );
 				exit;
 			}
 			if ( (int) $userId !== $user->ID ) {
-				wp_send_json_error( [ 'message' => __( 'Unfortunately this license does not belong you (2).', 'digital-license-manager' ) ] );
+				wp_send_json_error( [ 'message' => esc_html__( 'Unfortunately this license does not belong you (2).', 'digital-license-manager' ) ] );
 				exit;
 			}
 		}
 
 		$expires  = $license->getExpiresAt();
-		$expiresF = $expires ? wp_date( DateFormatter::getExpirationFormat(), strtotime( $expires ) ) : __( 'Permanent Activation', 'digital-license-manager' );
+		$expiresF = $expires ? wp_date( DateFormatter::getExpirationFormat(), strtotime( $expires ) ) : esc_html__( 'Permanent Activation', 'digital-license-manager' );
 		$status   = '';
 		if ( $license->isExpired() ) {
-			$status   = __( 'EXPIRED', 'digital-license-manager' );
+			$status   = esc_html__( 'EXPIRED', 'digital-license-manager' );
 			$response = [
 				'exp'    => $expires,
 				'expF'   => $expiresF,
 				'status' => $status
 			];
 		} else {
-			$status   = __( 'VALID', 'digital-license-manager' );
+			$status   = esc_html__( 'VALID', 'digital-license-manager' );
 			$response = [
 				'exp'    => $expires,
 				'expF'   => $expiresF,

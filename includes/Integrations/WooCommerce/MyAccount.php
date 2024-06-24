@@ -130,7 +130,7 @@ class MyAccount {
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
 			'_wpnonce' => wp_create_nonce( Activations::NONCE ),
 			'i18n' => [
-				'copiedToClipboard' => __('Key copied to clipboard.', 'digital-license-manager')
+				'copiedToClipboard' => esc_html__('Key copied to clipboard.', 'digital-license-manager')
 			]
 		] );
 	}
@@ -144,7 +144,7 @@ class MyAccount {
 		$in_the_loop = in_the_loop();
 
 		if ( isset( $wp_query->query_vars['digital-licenses'] ) && $in_the_loop ) {
-			return __( 'Licenses', 'digital-license-manager' );
+			return esc_html__( 'Licenses', 'digital-license-manager' );
 		}
 
 		return apply_filters( 'dlm_myaccount_endpoint_title', $title, $in_the_loop );
@@ -159,7 +159,7 @@ class MyAccount {
 	 */
 	public function accountMenuItems( $items ) {
 		$customItems = array(
-			'digital-licenses' => __( 'Licenses', 'digital-license-manager' )
+			'digital-licenses' => esc_html__( 'Licenses', 'digital-license-manager' )
 		);
 
 		$customItems = apply_filters( 'dlm_myaccount_menu_items', $customItems );
@@ -223,8 +223,8 @@ class MyAccount {
 			$license        = $licenseService->findById( $licenseID );
 
 			if ( is_wp_error( $license ) || $license->getUserId() !== $user->ID ) {
-				echo sprintf( '<h3>%s</h3>', __( 'Not found', 'digital-license-manager' ) );
-				echo sprintf( '<p>%s</p>', __( 'The license you are looking for is not found.', 'digital-license-manager' ) );
+				echo sprintf( '<h3>%s</h3>', esc_html__( 'Not found', 'digital-license-manager' ) );
+				echo sprintf( '<p>%s</p>', esc_html__( 'The license you are looking for is not found.', 'digital-license-manager' ) );
 
 				return;
 
@@ -258,8 +258,8 @@ class MyAccount {
 			$actions[5] = array(
 				'href'  => esc_url( Controller::getAccountLicenseUrl( $license->getId() ) ),
 				'class' => 'button',
-				'text'  => __( 'View', 'digital-license-manager' ),
-				'title' => __( 'View more details about this license.', 'digital-license-manager' ),
+				'text'  => esc_html__( 'View', 'digital-license-manager' ),
+				'title' => esc_html__( 'View more details about this license.', 'digital-license-manager' ),
 			);
 		}
 

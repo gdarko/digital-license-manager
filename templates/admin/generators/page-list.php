@@ -51,7 +51,7 @@ defined( 'ABSPATH' ) || exit;
 <form method="post">
 	<?php
 	$generators->prepare_items();
-	$generators->search_box( __( 'Search key', 'digital-license-manager' ), 'key' );
+	$generators->search_box( esc_html__( 'Search key', 'digital-license-manager' ), 'key' );
 	$generators->display();
 	?>
 </form>

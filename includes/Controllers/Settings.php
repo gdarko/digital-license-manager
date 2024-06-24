@@ -76,82 +76,82 @@ class Settings {
 		$baseUrl = self::getSettingsUrl();
 		$tabList = apply_filters( 'dlm_settings_fields', array(
 			'general'  => array(
-				'name'              => __( 'General', 'digital-license-manager' ),
+				'name'              => esc_html__( 'General', 'digital-license-manager' ),
 				'slug'              => 'general',
 				'url'               => add_query_arg( 'tab', 'general', $baseUrl ),
 				'priority'          => 10,
 				'sanitize_callback' => array( $this, 'sanitizeGeneral' ),
 				'sections'          => array(
 					'licenses' => array(
-						'name'     => __( 'Licenses', 'digital-license-manager' ),
+						'name'     => esc_html__( 'Licenses', 'digital-license-manager' ),
 						'page'     => 'licenses',
 						'priority' => 10,
 						'fields'   => array(
 							10 => array(
 								'id'       => 'hide_license_keys',
-								'title'    => __( 'Obscure licenses', 'digital-license-manager' ),
+								'title'    => esc_html__( 'Obscure licenses', 'digital-license-manager' ),
 								'callback' => array( $this, 'fieldCheckbox' ),
 								'args'     => array(
-									'label'   => __( 'Hide license keys in the admin dashboard.', 'digital-license-manager' ),
-									'explain' => __( "All license keys will be hidden and only displayed when the 'Show' action is clicked.", 'digital-license-manager' ),
+									'label'   => esc_html__( 'Hide license keys in the admin dashboard.', 'digital-license-manager' ),
+									'explain' => esc_html__( "All license keys will be hidden and only displayed when the 'Show' action is clicked.", 'digital-license-manager' ),
 								)
 							),
 							40 => array(
 								'id'       => 'allow_duplicates',
-								'title'    => __( 'Duplicate licenses', 'digital-license-manager' ),
+								'title'    => esc_html__( 'Duplicate licenses', 'digital-license-manager' ),
 								'callback' => array( $this, 'fieldCheckbox' ),
 								'args'     => array(
-									'label'   => __( 'Allow duplicate license keys inside the licenses database table.', 'digital-license-manager' ),
-									'explain' => __( 'If enabled the system will store new license keys in the database, even if the same key exist.', 'digital-license-manager' ),
+									'label'   => esc_html__( 'Allow duplicate license keys inside the licenses database table.', 'digital-license-manager' ),
+									'explain' => esc_html__( 'If enabled the system will store new license keys in the database, even if the same key exist.', 'digital-license-manager' ),
 								)
 							),
 							50 => $this->getExpirationFormatField(),
 						)
 					),
 					'branding' => array(
-						'name'     => __( 'Branding', 'digital-license-manager' ),
+						'name'     => esc_html__( 'Branding', 'digital-license-manager' ),
 						'page'     => 'branding',
 						'priority' => 10,
 						'fields'   => array(
 							10 => array(
 								'id'       => 'company_logo',
-								'title'    => __( 'Company Logo', 'digital-license-manager' ),
+								'title'    => esc_html__( 'Company Logo', 'digital-license-manager' ),
 								'callback' => array( $this, 'fieldImageUpload' ),
 								'args'     => array(
-									'label'   => __( 'Upload a company logo that will be displayed in the certification PDF.', 'digital-license-manager' ),
-									'explain' => __( "If no logo provided, it will attempt to use the website logo that is set in 'Customize' section.", 'digital-license-manager' ),
+									'label'   => esc_html__( 'Upload a company logo that will be displayed in the certification PDF.', 'digital-license-manager' ),
+									'explain' => esc_html__( "If no logo provided, it will attempt to use the website logo that is set in 'Customize' section.", 'digital-license-manager' ),
 								)
 							)
 						)
 					),
 					'rest_api' => array(
-						'name'     => __( 'REST API', 'digital-license-manager' ),
+						'name'     => esc_html__( 'REST API', 'digital-license-manager' ),
 						'page'     => 'rest_api',
 						'priority' => 20,
 						'fields'   => array(
 							10 => array(
 								'id'       => 'disable_api_ssl',
-								'title'    => __( 'API & SSL', 'digital-license-manager' ),
+								'title'    => esc_html__( 'API & SSL', 'digital-license-manager' ),
 								'callback' => array( $this, 'fieldCheckbox' ),
 								'args'     => array(
-									'label'   => __( "Enable the plugin API routes over insecure HTTP connections.", 'digital-license-manager' ),
-									'explain' => __( "This should only be activated for development purposes.", 'digital-license-manager' ),
+									'label'   => esc_html__( "Enable the plugin API routes over insecure HTTP connections.", 'digital-license-manager' ),
+									'explain' => esc_html__( "This should only be activated for development purposes.", 'digital-license-manager' ),
 								)
 							)
 						)
 					),
 					'other'    => array(
-						'name'     => __( 'Other', 'digital-license-manager' ),
+						'name'     => esc_html__( 'Other', 'digital-license-manager' ),
 						'page'     => 'other',
 						'priority' => 30,
 						'fields'   => array(
 							10 => array(
 								'id'       => 'safeguard_data',
-								'title'    => __( 'Data safety', 'digital-license-manager' ),
+								'title'    => esc_html__( 'Data safety', 'digital-license-manager' ),
 								'callback' => array( $this, 'fieldCheckbox' ),
 								'args'     => array(
-									'label'   => __( "Enable this option to safe guard the data on plugin removal/uninstallation.", 'digital-license-manager' ),
-									'explain' => __( "If enabled your data will NOT be removed once this plugin is uninstalled. This is usually prefered option in case you want to use the plugin again in future.", 'digital-license-manager' ),
+									'label'   => esc_html__( "Enable this option to safe guard the data on plugin removal/uninstallation.", 'digital-license-manager' ),
+									'explain' => esc_html__( "If enabled your data will NOT be removed once this plugin is uninstalled. This is usually prefered option in case you want to use the plugin again in future.", 'digital-license-manager' ),
 								)
 							),
 						),
@@ -160,20 +160,20 @@ class Settings {
 			),
 			'rest_api' => array(
 				'slug'     => 'rest_api',
-				'name'     => __( 'Rest API', 'digital-license-manager' ),
+				'name'     => esc_html__( 'Rest API', 'digital-license-manager' ),
 				'url'      => add_query_arg( 'tab', 'rest_api', $baseUrl ),
 				'priority' => 20,
 				'callback' => array( $this, 'renderRestApi' ),
 			),
 			'tools'    => array(
-				'name'     => __( 'Tools', 'digital-license-manager' ),
+				'name'     => esc_html__( 'Tools', 'digital-license-manager' ),
 				'slug'     => 'tools',
 				'url'      => add_query_arg( 'tab', 'tools', $baseUrl ),
 				'priority' => 30,
 				'callback' => array( $this, 'renderToolsTab' )
 			),
 			'help'     => array(
-				'name'     => __( 'Help', 'digital-license-manager' ),
+				'name'     => esc_html__( 'Help', 'digital-license-manager' ),
 				'slug'     => 'help',
 				'url'      => add_query_arg( 'tab', 'help', $baseUrl ),
 				'priority' => 40,
@@ -205,7 +205,7 @@ class Settings {
 
 		return array(
 			'id'       => 'expiration_format',
-			'title'    => __( 'License expiration format', 'digital-license-manager' ),
+			'title'    => esc_html__( 'License expiration format', 'digital-license-manager' ),
 			'callback' => array( $this, 'fieldText' ),
 			'args'     => array(
 				'explain'   => sprintf(
@@ -283,9 +283,9 @@ class Settings {
 				}
 
 				$permissions = array(
-					'read'       => __( 'Read', 'digital-license-manager' ),
-					'write'      => __( 'Write', 'digital-license-manager' ),
-					'read_write' => __( 'Read/Write', 'digital-license-manager' ),
+					'read'       => esc_html__( 'Read', 'digital-license-manager' ),
+					'write'      => esc_html__( 'Write', 'digital-license-manager' ),
+					'read_write' => esc_html__( 'Read/Write', 'digital-license-manager' ),
 				);
 				break;
 			case 'list':
@@ -560,7 +560,7 @@ class Settings {
 	public function handleToolProcess() {
 
 		if ( ! check_ajax_referer( 'dlm-tools', '_wpnonce', false ) || ! current_user_can( 'dlm_manage_settings' ) ) {
-			wp_send_json_error( [ 'message' => __( 'Permission denied.' ) ] );
+			wp_send_json_error( [ 'message' => esc_html__( 'Permission denied.' ) ] );
 			exit;
 		} else {
 
@@ -569,7 +569,7 @@ class Settings {
 			$tool_slug = isset( $_POST['tool'] ) ? sanitize_text_field( $_POST['tool'] ) : null;
 			$tool_id   = isset( $_POST['id'] ) ? sanitize_text_field( $_POST['id'] ) : null;
 			if ( is_null( $tool_slug ) || ! isset( $this->tools[ $tool_slug ] ) ) {
-				wp_send_json_error( [ 'message' => __( 'Unknown tool selected.' ) ] );
+				wp_send_json_error( [ 'message' => esc_html__( 'Unknown tool selected.' ) ] );
 				exit;
 			}
 
@@ -624,7 +624,7 @@ class Settings {
 	 */
 	public function handleToolStatus() {
 		if ( ! check_ajax_referer( 'dlm-tools', '_wpnonce', false ) || ! current_user_can( 'dlm_manage_settings' ) ) {
-			wp_send_json_error( [ 'message' => __( 'Permission denied.' ) ] );
+			wp_send_json_error( [ 'message' => esc_html__( 'Permission denied.' ) ] );
 			exit;
 		} else {
 
@@ -634,7 +634,7 @@ class Settings {
 			$value = $tool->getStatus();
 
 			wp_send_json_success( [
-				'status' => $value && ! empty( $value['completed_at'] ) ? sprintf( __( 'Migration completed on: %s.', 'digital-license-manager' ), DateFormatter::convert( $value['completed_at'], 'Y-m-d H:i:s' ) ) : '',
+				'status' => $value && ! empty( $value['completed_at'] ) ? sprintf( esc_html__( 'Migration completed on: %s.', 'digital-license-manager' ), DateFormatter::convert( $value['completed_at'], 'Y-m-d H:i:s' ) ) : '',
 			] );
 
 			exit;
@@ -647,7 +647,7 @@ class Settings {
 	 */
 	public function handleToolUndo() {
 		if ( ! check_ajax_referer( 'dlm-tools', '_wpnonce', false ) || ! current_user_can( 'dlm_manage_settings' ) ) {
-			wp_send_json_error( [ 'message' => __( 'Permission denied.' ) ] );
+			wp_send_json_error( [ 'message' => esc_html__( 'Permission denied.' ) ] );
 			exit;
 		} else {
 			$this->loadTools();
@@ -659,7 +659,7 @@ class Settings {
 				delete_option( 'nc_info_dlm_lmfwc' );
 				wp_send_json_success();
 			} else {
-				wp_send_json_error( [ 'message' => __( 'Operation Error.' ) ] );
+				wp_send_json_error( [ 'message' => esc_html__( 'Operation Error.' ) ] );
 			}
 			exit;
 		}

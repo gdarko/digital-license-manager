@@ -50,7 +50,7 @@ class GeneratorsService implements ServiceInterface {
 		$generator = Generators::instance()->find( (int) $id );
 
 		if ( ! $generator ) {
-			return new WP_Error( 'data_error', __( 'The generator could not be found.', 'digital-license-manager' ), array( 'code' => 404 ) );
+			return new WP_Error( 'data_error', esc_html__( 'The generator could not be found.', 'digital-license-manager' ), array( 'code' => 404 ) );
 		}
 
 		return $generator;
@@ -79,7 +79,7 @@ class GeneratorsService implements ServiceInterface {
 		$generators = empty( $query ) ? Generators::instance()->findAll() : Generators::instance()->findAllBy( $query );
 
 		if ( ! $generators ) {
-			return new WP_Error( 'data_error', __( 'No generators found for your query', 'digital-license-manager' ), array( 'code' => 404 ) );
+			return new WP_Error( 'data_error', esc_html__( 'No generators found for your query', 'digital-license-manager' ), array( 'code' => 404 ) );
 		}
 
 		return $generators;
@@ -97,27 +97,27 @@ class GeneratorsService implements ServiceInterface {
 
 		// Validate request.
 		if ( empty( $data['name'] ) || ! is_string( $data['name'] ) ) {
-			return new WP_Error( 'data_error', __( 'Generator name is missing.', 'digital-license-manager' ), array( 'code' => '422' ) );
+			return new WP_Error( 'data_error', esc_html__( 'Generator name is missing.', 'digital-license-manager' ), array( 'code' => '422' ) );
 		}
 
 		if ( empty( $data['charset'] ) || ! is_string( $data['charset'] ) ) {
-			return new WP_Error( 'data_error', __( 'The charset is invalid.', 'digital-license-manager' ), array( 'code' => '422' ) );
+			return new WP_Error( 'data_error', esc_html__( 'The charset is invalid.', 'digital-license-manager' ), array( 'code' => '422' ) );
 		}
 
 		if ( empty( $data['chunks'] ) || ! is_numeric( $data['chunks'] ) ) {
-			return new WP_Error( 'data_error', __( 'Only integer values allowed for chunks.', 'digital-license-manager' ), array( 'code' => '422' ) );
+			return new WP_Error( 'data_error', esc_html__( 'Only integer values allowed for chunks.', 'digital-license-manager' ), array( 'code' => '422' ) );
 		}
 
 		if ( $data['chunks'] < 0 || $data['chunks'] > 100 ) {
-			return new WP_Error( 'data_error', __( 'Chunks should be between 1 and 99', 'digital-license-manager' ), array( 'code' => '422' ) );
+			return new WP_Error( 'data_error', esc_html__( 'Chunks should be between 1 and 99', 'digital-license-manager' ), array( 'code' => '422' ) );
 		}
 
 		if ( empty( $data['chunk_length'] ) || ! is_numeric( $data['chunk_length'] ) ) {
-			return new WP_Error( 'data_error', __( 'Only integer values allowed for chunk length.', 'digital-license-manager' ), array( 'code' => '422' ) );
+			return new WP_Error( 'data_error', esc_html__( 'Only integer values allowed for chunk length.', 'digital-license-manager' ), array( 'code' => '422' ) );
 		}
 
 		if ( $data['chunk_length'] < 2 || $data['chunk_length'] > 100 ) {
-			return new WP_Error( 'data_error', __( 'Chunk length should be between 2 and 99', 'digital-license-manager' ), array( 'code' => '422' ) );
+			return new WP_Error( 'data_error', esc_html__( 'Chunk length should be between 2 and 99', 'digital-license-manager' ), array( 'code' => '422' ) );
 		}
 
 		$expiresIn = null;
@@ -125,7 +125,7 @@ class GeneratorsService implements ServiceInterface {
 			if ( is_numeric( $data['expires_in'] ) && $data['expires_in'] > 1 ) {
 				$expiresIn = absint( $data['expires_in'] );
 			} else {
-				return new WP_Error( 'data_error', __( 'Expires in should be numeric and positive value larger than 1', 'digital-license-manager' ), array( 'code' => '422' ) );
+				return new WP_Error( 'data_error', esc_html__( 'Expires in should be numeric and positive value larger than 1', 'digital-license-manager' ), array( 'code' => '422' ) );
 			}
 		}
 
@@ -134,7 +134,7 @@ class GeneratorsService implements ServiceInterface {
 			if ( is_numeric( $data['activations_limit'] ) && $data['activations_limit'] > 0 ) {
 				$maxActivations = absint( $data['activations_limit'] );
 			} else {
-				return new WP_Error( 'data_error', __( 'Time activated max should be numeric and positive value larger than 0', 'digital-license-manager' ), array( 'code' => '422' ) );
+				return new WP_Error( 'data_error', esc_html__( 'Time activated max should be numeric and positive value larger than 0', 'digital-license-manager' ), array( 'code' => '422' ) );
 			}
 		}
 
@@ -154,7 +154,7 @@ class GeneratorsService implements ServiceInterface {
 		);
 
 		if ( ! $generator ) {
-			return new WP_Error( 'server_error', __( 'The generator could not be created.', 'digital-license-manager' ), array( 'code' => 500 ) );
+			return new WP_Error( 'server_error', esc_html__( 'The generator could not be created.', 'digital-license-manager' ), array( 'code' => 500 ) );
 		}
 
 
@@ -184,7 +184,7 @@ class GeneratorsService implements ServiceInterface {
 			if ( ! empty( $data['name'] ) ) {
 				$updateData['name'] = sanitize_text_field( $data['name'] );
 			} else {
-				return new WP_Error( 'data_error', __( 'Name can not be empty.', 'digital-license-manager' ), array( 'code' => '422' ) );
+				return new WP_Error( 'data_error', esc_html__( 'Name can not be empty.', 'digital-license-manager' ), array( 'code' => '422' ) );
 			}
 		}
 
@@ -192,7 +192,7 @@ class GeneratorsService implements ServiceInterface {
 			if ( ! empty( $data['charset'] ) ) {
 				$updateData['charset'] = sanitize_text_field( $data['charset'] );
 			} else {
-				return new WP_Error( 'data_error', __( 'Charset can not be empty.', 'digital-license-manager' ), array( 'code' => '422' ) );
+				return new WP_Error( 'data_error', esc_html__( 'Charset can not be empty.', 'digital-license-manager' ), array( 'code' => '422' ) );
 			}
 		}
 
@@ -200,7 +200,7 @@ class GeneratorsService implements ServiceInterface {
 			if ( is_numeric( $data['chunks'] ) && $data['chunks'] > 0 && $data['chunks'] < 100 ) {
 				$updateData['chunks'] = (int) $data['chunks'];
 			} else {
-				return new WP_Error( 'data_error', __( 'Only integer values between 1 and 99 are allowed for chunks.', 'digital-license-manager' ), array( 'code' => '422' ) );
+				return new WP_Error( 'data_error', esc_html__( 'Only integer values between 1 and 99 are allowed for chunks.', 'digital-license-manager' ), array( 'code' => '422' ) );
 			}
 		}
 
@@ -208,7 +208,7 @@ class GeneratorsService implements ServiceInterface {
 			if ( is_numeric( $data['chunk_length'] ) && $data['chunk_length'] > 0 && $data['chunk_length'] < 10 ) {
 				$updateData['chunk_length'] = (int) $data['chunk_length'];
 			} else {
-				return new WP_Error( 'data_error', __( 'Only integer values between 1 and 99 are allowed for chunk_length.', 'digital-license-manager' ), array( 'code' => '422' ) );
+				return new WP_Error( 'data_error', esc_html__( 'Only integer values between 1 and 99 are allowed for chunk_length.', 'digital-license-manager' ), array( 'code' => '422' ) );
 			}
 		}
 
@@ -217,7 +217,7 @@ class GeneratorsService implements ServiceInterface {
 				if ( is_numeric( $data['activations_limit'] ) && $data['activations_limit'] > 0 ) {
 					$updateData['activations_limit'] = (int) $data['activations_limit'];
 				} else {
-					return new WP_Error( 'data_error', __( 'Activations Limit should positive integer value larger than 0', 'digital-license-manager' ), array( 'code' => '422' ) );
+					return new WP_Error( 'data_error', esc_html__( 'Activations Limit should positive integer value larger than 0', 'digital-license-manager' ), array( 'code' => '422' ) );
 				}
 			} else {
 				$updateData['activations_limit'] = NULL;
@@ -229,7 +229,7 @@ class GeneratorsService implements ServiceInterface {
 				if ( is_numeric( $data['expires_in'] ) && $data['expires_in'] > 1 ) {
 					$updateData['expires_in'] = (int) $data['expires_in'];
 				} else {
-					return new WP_Error( 'data_error', __( 'Expires In shoudld be positive integer value larger than 1 that represents number of days', 'digital-license-manager' ), array( 'code' => '422' ) );
+					return new WP_Error( 'data_error', esc_html__( 'Expires In shoudld be positive integer value larger than 1 that represents number of days', 'digital-license-manager' ), array( 'code' => '422' ) );
 				}
 			} else {
 				$updateData['expires_in'] = NULL;
@@ -241,7 +241,7 @@ class GeneratorsService implements ServiceInterface {
 				if ( 1 === strlen( $data['separator'] ) ) {
 					$updateData['separator'] = $data['separator'];
 				} else {
-					return new WP_Error( 'data_error', __( 'Separator should be only one character', 'digital-license-manager' ), array( 'code' => '422' ) );
+					return new WP_Error( 'data_error', esc_html__( 'Separator should be only one character', 'digital-license-manager' ), array( 'code' => '422' ) );
 				}
 			} else {
 				$updateData['separator'] = NULL;
@@ -268,7 +268,7 @@ class GeneratorsService implements ServiceInterface {
 		$generator = Generators::instance()->update( $id, $updateData );
 
 		if ( ! $generator ) {
-			return new WP_Error( 'server_error', __( 'The generator could not be created.', 'digital-license-manager' ), array( 'code' => 500 ) );
+			return new WP_Error( 'server_error', esc_html__( 'The generator could not be created.', 'digital-license-manager' ), array( 'code' => 500 ) );
 		}
 
 		return $generator;
@@ -291,7 +291,7 @@ class GeneratorsService implements ServiceInterface {
 		$generator = Generators::instance()->delete( $id );
 
 		if ( ! $generator ) {
-			return new WP_Error( 'server_error', __( 'The generator(s) could not be deleted.', 'digital-license-manager' ), array( 'code' => 500 ) );
+			return new WP_Error( 'server_error', esc_html__( 'The generator(s) could not be deleted.', 'digital-license-manager' ), array( 'code' => 500 ) );
 		}
 
 		return true;

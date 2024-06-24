@@ -151,7 +151,7 @@ $time_format = get_option( 'time_format' );
 						if ( isset( $route['deprecated'] ) && true === $route['deprecated'] ) {
 							$html .= sprintf(
 								'<code class="text-info"><strong>%s</strong></code>',
-								strtoupper( __( 'Deprecated', 'digital-license-manager' ) )
+								strtoupper( esc_html__( 'Deprecated', 'digital-license-manager' ) )
 							);
 						}
 						$html .= '</label>';
@@ -160,7 +160,7 @@ $time_format = get_option( 'time_format' );
 
 					$html .= sprintf(
 						'<p class="description" style="margin-top: 1em;"><strong>%s</strong> %s</p>',
-						__( 'Required.', 'digital-license-manager' ),
+						esc_html__( 'Required.', 'digital-license-manager' ),
 						__( 'Select the endpoints that this key has access to.<br/> The complete <strong>API documentation</strong> can be found <a href="https://docs.codeverve.com/digital-license-manager/rest-api/authentication/" target="_blank" rel="noopener">here</a>.', 'digital-license-manager' )
 					);
 					$html .= '</fieldset>';
@@ -200,9 +200,9 @@ $time_format = get_option( 'time_format' );
             </tbody>
         </table>
 
-		<?php if ( 0 === (int) $keyId ): ?><?php submit_button( __( 'Generate API key', 'digital-license-manager' ), 'primary', 'update_api_key' ); ?><?php else: ?>
+		<?php if ( 0 === (int) $keyId ): ?><?php submit_button( esc_html__( 'Generate API key', 'digital-license-manager' ), 'primary', 'update_api_key' ); ?><?php else: ?>
             <p class="submit">
-				<?php submit_button( __( 'Save changes', 'digital-license-manager' ), 'primary', 'update_api_key', false ); ?>
+				<?php submit_button( esc_html__( 'Save changes', 'digital-license-manager' ), 'primary', 'update_api_key', false ); ?>
                 <a class="dlm-confirm-dialog" style="color: #a00; text-decoration: none; margin-left: 10px;"
                    href="<?php echo esc_url(
 					   wp_nonce_url(

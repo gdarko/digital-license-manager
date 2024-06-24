@@ -68,7 +68,7 @@ class Generators {
 		check_admin_referer( 'dlm_create_generators' );
 
 		if ( ! current_user_can( 'dlm_create_generators' ) ) {
-			NoticeFlasher::error( __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
 			HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s', PageSlug::GENERATORS ) ) );
 		}
 
@@ -78,11 +78,11 @@ class Generators {
 				NoticeFlasher::error( $generator->get_error_message() );
 				$redirectUrl = sprintf( 'admin.php?page=%s&action=add', PageSlug::GENERATORS );
 			} else {
-				NoticeFlasher::error( __( 'There was a problem creating the generator.', 'digital-license-manager' ) );
+				NoticeFlasher::error( esc_html__( 'There was a problem creating the generator.', 'digital-license-manager' ) );
 				$redirectUrl = sprintf( 'admin.php?page=%s', PageSlug::GENERATORS );
 			}
 		} else {
-			NoticeFlasher::success( __( 'The generator was created successfully.', 'digital-license-manager' ) );
+			NoticeFlasher::success( esc_html__( 'The generator was created successfully.', 'digital-license-manager' ) );
 			$redirectUrl = sprintf( 'admin.php?page=%s', PageSlug::GENERATORS );
 		}
 		if ( $redirectUrl ) {
@@ -99,7 +99,7 @@ class Generators {
 		check_admin_referer( 'dlm_edit_generators' );
 
 		if ( ! current_user_can( 'dlm_edit_generators' ) ) {
-			NoticeFlasher::error( __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
 			HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s', PageSlug::GENERATORS ) ) );
 		}
 
@@ -110,10 +110,10 @@ class Generators {
 			if ( 'data_error' === $generator->get_error_code() ) {
 				NoticeFlasher::error( $generator->get_error_message() );
 			} else {
-				NoticeFlasher::error( __( 'Unable to update generator.', 'digital-license-manager' ) );
+				NoticeFlasher::error( esc_html__( 'Unable to update generator.', 'digital-license-manager' ) );
 			}
 		} else {
-			NoticeFlasher::success( __( 'The generator has been updated successfully.', 'digital-license-manager' ) );
+			NoticeFlasher::success( esc_html__( 'The generator has been updated successfully.', 'digital-license-manager' ) );
 		}
 
 		HttpHelper::redirect( sprintf( 'admin.php?page=%s&action=edit&id=%d', PageSlug::GENERATORS, $id ) );
@@ -129,7 +129,7 @@ class Generators {
 		check_admin_referer( 'dlm_generate_license_keys' );
 
 		if ( ! current_user_can( 'dlm_create_generators' ) ) {
-			NoticeFlasher::error( __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
 			HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s', PageSlug::GENERATORS ) ) );
 		}
 
@@ -144,7 +144,7 @@ class Generators {
 		$generator = $this->service->find( $generatorId );
 
 		if ( is_wp_error( $generator ) ) {
-			NoticeFlasher::error( __( 'The selected generator does not exist.', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'The selected generator does not exist.', 'digital-license-manager' ) );
 			HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s&action=edit&id=%d', PageSlug::GENERATORS, $generatorId ) ) );
 		}
 
@@ -157,12 +157,12 @@ class Generators {
 		}
 
 		if ( $orderId && ! apply_filters( 'dlm_validate_order_id', true, $orderId ) ) {
-			NoticeFlasher::error( __( 'The selected order does not exist.', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'The selected order does not exist.', 'digital-license-manager' ) );
 			HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s&action=generate', PageSlug::GENERATORS ) ) );
 		}
 
 		if ( $productId && ! apply_filters( 'dlm_validate_product_id', true, $productId ) ) {
-			NoticeFlasher::error( __( 'The selected product does not exist.', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'The selected product does not exist.', 'digital-license-manager' ) );
 			HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s&action=generate', PageSlug::GENERATORS ) ) );
 		}
 
@@ -188,7 +188,7 @@ class Generators {
 			if ( is_wp_error( $result ) ) {
 				NoticeFlasher::error( $result->get_error_message() );
 			} else {
-				NoticeFlasher::success( sprintf( __( 'Successfully generated %d license(s).', 'digital-license-manager' ), count($result['licenses']) ) );
+				NoticeFlasher::success( sprintf( esc_html__( 'Successfully generated %d license(s).', 'digital-license-manager' ), count($result['licenses']) ) );
 			}
 		} else {
 			NoticeFlasher::error( $licenses->get_error_message() );

@@ -214,7 +214,7 @@ class Boot {
 			'dlm_http'
 		], $this->version );
 		wp_register_style( 'dlm_select', DLM_ASSETS_URL . 'css/shared/select.css', [ 'dlm_tomselect' ], $this->version );
-		wp_localize_script( 'dlm_select', 'dlm_select_i18n', [ 'loading' => __( 'Loading more results...', 'digital-license-manager' ) ] );
+		wp_localize_script( 'dlm_select', 'dlm_select_i18n', [ 'loading' => esc_html__( 'Loading more results...', 'digital-license-manager' ) ] );
 
 		/**
 		 * Library: Fontello icons
@@ -304,8 +304,8 @@ class Boot {
 					'dropdownSearch' => wp_create_nonce( 'dlm_dropdown_search' )
 				),
 				'i18n'              => array(
-					'confirm_dialog'         => __( 'Are you sure? This action can not be reverted.', 'digital-license-manager' ),
-					'placeholderSearchUsers' => __( 'Search by user login, name or email', 'digital-license-manager' ),
+					'confirm_dialog'         => esc_html__( 'Are you sure? This action can not be reverted.', 'digital-license-manager' ),
+					'placeholderSearchUsers' => esc_html__( 'Search by user login, name or email', 'digital-license-manager' ),
 				)
 			)
 		);
@@ -333,14 +333,14 @@ class Boot {
 				'dlm_licenses_page',
 				'dlm_licenses_i18n',
 				array(
-					'placeholderSearchOrders'    => __( 'Search by order ID or email', 'digital-license-manager' ),
-					'placeholderSearchProducts'  => __( 'Search by product ID or name', 'digital-license-manager' ),
-					'placeholderSearchUsers'     => __( 'Search by user login, name or email', 'digital-license-manager' ),
-					'placeholderFilterByOrder'   => __( 'Filter by order', 'digital-license-manager' ),
-					'placeholderFilterByProduct' => __( 'Filter by product', 'digital-license-manager' ),
-					'placeholderFilterByUser'    => __( 'Filter by user', 'digital-license-manager' ),
+					'placeholderSearchOrders'    => esc_html__( 'Search by order ID or email', 'digital-license-manager' ),
+					'placeholderSearchProducts'  => esc_html__( 'Search by product ID or name', 'digital-license-manager' ),
+					'placeholderSearchUsers'     => esc_html__( 'Search by user login, name or email', 'digital-license-manager' ),
+					'placeholderFilterByOrder'   => esc_html__( 'Filter by order', 'digital-license-manager' ),
+					'placeholderFilterByProduct' => esc_html__( 'Filter by product', 'digital-license-manager' ),
+					'placeholderFilterByUser'    => esc_html__( 'Filter by user', 'digital-license-manager' ),
 					'dateTimeFormat'             => sprintf( '%s at %s', $dateFormat, $timeFormat ),
-					'copiedToClipboard'          => __( 'Copied to clipboard', 'digital-license-manager' )
+					'copiedToClipboard'          => esc_html__( 'Copied to clipboard', 'digital-license-manager' )
 				)
 			);
 			wp_localize_script(
@@ -363,8 +363,8 @@ class Boot {
 				'dlm_generators_page',
 				'dlm_generators_i18n',
 				array(
-					'placeholderSearchOrders'   => __( 'Search by order ID or customer email', 'digital-license-manager' ),
-					'placeholderSearchProducts' => __( 'Search by product ID or product name', 'digital-license-manager' )
+					'placeholderSearchOrders'   => esc_html__( 'Search by order ID or customer email', 'digital-license-manager' ),
+					'placeholderSearchProducts' => esc_html__( 'Search by product ID or product name', 'digital-license-manager' )
 				)
 			);
 			wp_localize_script(
@@ -384,8 +384,8 @@ class Boot {
 				'dlm_activations_page',
 				'dlm_activations_i18n',
 				array(
-					'placeholderSearchLicenses' => __( 'Search by license ID', 'digital-license-manager' ),
-					'placeholderSearchSources'  => __( 'Search by source', 'digital-license-manager' ),
+					'placeholderSearchLicenses' => esc_html__( 'Search by license ID', 'digital-license-manager' ),
+					'placeholderSearchSources'  => esc_html__( 'Search by source', 'digital-license-manager' ),
 				)
 			);
 			wp_localize_script(
@@ -414,10 +414,10 @@ class Boot {
 					'nonce'    => wp_create_nonce( 'dlm-tools' ),
 					'i18n'     => [
 						'loading'      => '<img alt="Loading..." src="' . DLM_PLUGIN_URL . '/assets/img/loader.gif" width="20" height="20"/>',
-						'undo'         => __( 'Undo', 'digital-license-manager' ),
-						'undo_confirm' => __( 'Are you sure you want to undo this migration? This will remove any imported licenses using this Database Migration tool. This action is useful only if you want to re-run the migration process, but in most cases is unecessary. And, if your database is huge, you may need to re-run this multiple times until it is done.', 'digital-license-manager' ),
-						'finished'     => __( 'Process finished', 'digital-license-manager' ),
-						'confirmation' => __( 'WARNING - Please take backups before running this tool. It can cause a damage to your database if not used properly.', 'digital-license-manager' )
+						'undo'         => esc_html__( 'Undo', 'digital-license-manager' ),
+						'undo_confirm' => esc_html__( 'Are you sure you want to undo this migration? This will remove any imported licenses using this Database Migration tool. This action is useful only if you want to re-run the migration process, but in most cases is unecessary. And, if your database is huge, you may need to re-run this multiple times until it is done.', 'digital-license-manager' ),
+						'finished'     => esc_html__( 'Process finished', 'digital-license-manager' ),
+						'confirmation' => esc_html__( 'WARNING - Please take backups before running this tool. It can cause a damage to your database if not used properly.', 'digital-license-manager' )
 					]
 				) );
 			}
@@ -455,12 +455,12 @@ class Boot {
 				'github' => sprintf(
 					'<a href="%s" target="_blank">%s</a>',
 					DLM_GITHUB_URL,
-					__( 'GitHub', 'digital-license-manager' )
+					esc_html__( 'GitHub', 'digital-license-manager' )
 				),
 				'docs'   => sprintf(
 					'<a href="%s" target="_blank">%s</a>',
 					DLM_DOCUMENTATION_URL,
-					__( 'Documentation', 'digital-license-manager' )
+					esc_html__( 'Documentation', 'digital-license-manager' )
 				),
 			);
 
@@ -469,7 +469,7 @@ class Boot {
 
 		$coreBasename = str_replace( '-pro', '', DLM_PLUGIN_BASENAME );
 		if ( $file === $coreBasename ) {
-			$links[] = '<a style="font-weight:bold;color:#3eb03e;" target="_blank" href="' . DLM_PURCHASE_URL . '"><strong>' . __( 'Get PRO Version', 'digital-license-manager' ) . '</strong></a>';
+			$links[] = '<a style="font-weight:bold;color:#3eb03e;" target="_blank" href="' . esc_url( DLM_PURCHASE_URL ) . '"><strong>' . esc_html__( 'Get PRO Version', 'digital-license-manager' ) . '</strong></a>';
 		}
 
 		return $links;
@@ -484,7 +484,7 @@ class Boot {
 	 */
 	public function pluginActionLinks( $links ) {
 		$links = array_merge( [
-			'<a href="' . esc_url( SettingsController::getSettingsUrl() ) . '">' . __( 'Settings', 'digital-license-manager' ) . '</a>'
+			'<a href="' . esc_url( SettingsController::getSettingsUrl() ) . '">' . esc_html__( 'Settings', 'digital-license-manager' ) . '</a>'
 		], $links );
 
 		return $links;

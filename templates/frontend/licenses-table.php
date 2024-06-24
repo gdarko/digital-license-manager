@@ -36,12 +36,12 @@ $show_actions = apply_filters( 'dlm_block_license_table_actions', false, $record
 <table>
     <thead>
     <tr>
-        <th><?php _e( 'License', 'digital-license-manager' ); ?></th>
+        <th><?php esc_html_e( 'License', 'digital-license-manager' ); ?></th>
 		<?php do_action( 'dlm_block_license_table_after_license_column_head' ); ?>
-        <th><?php _e( 'Status', 'digital-license-manager' ); ?></th>
-        <th><?php _e( 'Expires At', 'digital-license-manager' ); ?></th>
+        <th><?php esc_html_e( 'Status', 'digital-license-manager' ); ?></th>
+        <th><?php esc_html_e( 'Expires At', 'digital-license-manager' ); ?></th>
 		<?php if ( $show_actions ): ?>
-            <th><?php _e( 'Actions', 'digital-license-manager' ); ?></th>
+            <th><?php esc_html_e( 'Actions', 'digital-license-manager' ); ?></th>
 		<?php endif; ?>
     </tr>
     </thead>
@@ -53,7 +53,7 @@ $show_actions = apply_filters( 'dlm_block_license_table_actions', false, $record
 				try {
 					echo apply_filters( 'dlm_license_key_markup', $record->getDecryptedLicenseKey(), $record );
 				} catch ( \Exception $e ) {
-					echo __( 'Unknown', 'digital-license-manager' );
+					echo esc_html__( 'Unknown', 'digital-license-manager' );
 				}
 				?>
             </td>

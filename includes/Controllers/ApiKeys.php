@@ -77,23 +77,23 @@ class ApiKeys {
 		$error = '';
 
 		if ( ! current_user_can( 'dlm_edit_api_keys' ) ) {
-			$error = __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' );
+			$error = esc_html__( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' );
 		}
 
 		if ( empty( $_POST['description'] ) ) {
-			$error = __( 'Description is missing.', 'digital-license-manager' );
+			$error = esc_html__( 'Description is missing.', 'digital-license-manager' );
 		}
 
 		if ( empty( $_POST['user'] ) || $_POST['user'] == - 1 ) {
-			$error = __( 'User is missing.', 'digital-license-manager' );
+			$error = esc_html__( 'User is missing.', 'digital-license-manager' );
 		}
 
 		if ( empty( $_POST['permissions'] ) ) {
-			$error = __( 'Permissions are missing.', 'digital-license-manager' );
+			$error = esc_html__( 'Permissions are missing.', 'digital-license-manager' );
 		}
 
 		if ( empty( $_POST['endpoints'] ) ) {
-			$error = __( 'Endpoints are missing..', 'digital-license-manager' );
+			$error = esc_html__( 'Endpoints are missing..', 'digital-license-manager' );
 		}
 
 		$description = sanitize_text_field( wp_unslash( $_POST['description'] ) );
@@ -108,7 +108,7 @@ class ApiKeys {
 		// Check if current user can edit other users
 		if ( $userId && ! current_user_can( 'edit_user', $userId ) ) {
 			if ( get_current_user_id() !== $userId ) {
-				$error = __( 'You do not have permission to assign API keys to the selected user.', 'digital-license-manager' );
+				$error = esc_html__( 'You do not have permission to assign API keys to the selected user.', 'digital-license-manager' );
 			}
 		}
 
@@ -128,9 +128,9 @@ class ApiKeys {
 		);
 
 		if ( $apiKey ) {
-			NoticeFlasher::success( __( 'API key updated successfully.', 'digital-license-manager' ) );
+			NoticeFlasher::success( esc_html__( 'API key updated successfully.', 'digital-license-manager' ) );
 		} else {
-			NoticeFlasher::error( __( 'There was a problem updating the API key.', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'There was a problem updating the API key.', 'digital-license-manager' ) );
 		}
 
 		HttpHelper::redirect( sprintf( 'admin.php?page=%s&tab=rest_api&edit_key=%s', PageSlug::SETTINGS, $id ) );
@@ -146,23 +146,23 @@ class ApiKeys {
 		$error = '';
 
 		if ( ! current_user_can( 'dlm_create_api_keys' ) ) {
-			$error = __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' );
+			$error = esc_html__( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' );
 		}
 
 		if ( empty( $_POST['description'] ) ) {
-			$error = __( 'Description is missing.', 'digital-license-manager' );
+			$error = esc_html__( 'Description is missing.', 'digital-license-manager' );
 		}
 
 		if ( empty( $_POST['user'] ) || $_POST['user'] == - 1 ) {
-			$error = __( 'User is missing.', 'digital-license-manager' );
+			$error = esc_html__( 'User is missing.', 'digital-license-manager' );
 		}
 
 		if ( empty( $_POST['permissions'] ) ) {
-			$error = __( 'Permissions are missing.', 'digital-license-manager' );
+			$error = esc_html__( 'Permissions are missing.', 'digital-license-manager' );
 		}
 
 		if ( empty( $_POST['endpoints'] ) ) {
-			$error = __( 'Endpoints are missing..', 'digital-license-manager' );
+			$error = esc_html__( 'Endpoints are missing..', 'digital-license-manager' );
 		}
 
 		$description = sanitize_text_field( wp_unslash( $_POST['description'] ) );
@@ -177,7 +177,7 @@ class ApiKeys {
 		// Check if current user can edit other users
 		if ( $userId && ! current_user_can( 'edit_user', $userId ) ) {
 			if ( get_current_user_id() !== $userId ) {
-				$error = __( 'You do not have permission to assign API keys to the selected user.', 'digital-license-manager' );
+				$error = esc_html__( 'You do not have permission to assign API keys to the selected user.', 'digital-license-manager' );
 			}
 		}
 
@@ -203,11 +203,11 @@ class ApiKeys {
 		);
 
 		if ( $apiKey ) {
-			NoticeFlasher::success( __( 'API key generated successfully. Make sure to copy your new keys now as the secret key will be hidden once you leave this page.', 'digital-license-manager' ) );
+			NoticeFlasher::success( esc_html__( 'API key generated successfully. Make sure to copy your new keys now as the secret key will be hidden once you leave this page.', 'digital-license-manager' ) );
 			set_transient( 'dlm_consumer_key', $consumerKey, 60 );
 			set_transient( 'dlm_api_key', $apiKey, 60 );
 		} else {
-			NoticeFlasher::error( __( 'There was a problem generating the API key.', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'There was a problem generating the API key.', 'digital-license-manager' ) );
 		}
 
 		HttpHelper::redirect( sprintf( 'admin.php?page=%s&tab=rest_api&show_key=1', PageSlug::SETTINGS ) );

@@ -46,7 +46,7 @@ class StandardGenerator extends AbstractGenerator {
 		$maxPossibleKeys  = pow( $uniqueCharacters, $this->generator->getChunks() * $this->generator->getChunkLength() );
 
 		if ( $amount > $maxPossibleKeys ) {
-			return new WP_Error( 'data_error', __( 'It\'s not possible to generate that many keys with the given parameters, there are not enough combinations. Please review your inputs.', 'digital-license-manager' ), array( 'code' => 422 ) );
+			return new WP_Error( 'data_error', esc_html__( 'It\'s not possible to generate that many keys with the given parameters, there are not enough combinations. Please review your inputs.', 'digital-license-manager' ), array( 'code' => 422 ) );
 		}
 
 		// Generate the license strings

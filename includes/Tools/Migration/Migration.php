@@ -49,7 +49,7 @@ class Migration extends AbstractTool {
 		parent::__construct( $id );
 
 		$this->slug        = 'migration';
-		$this->description = __( 'Migration tool that makes it possible to easily move from other plugins', 'digital-license-manager' );
+		$this->description = esc_html__( 'Migration tool that makes it possible to easily move from other plugins', 'digital-license-manager' );
 
 		$this->plugins = [
 			new LMFW(),

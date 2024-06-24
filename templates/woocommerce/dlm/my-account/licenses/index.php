@@ -42,17 +42,17 @@ defined( 'ABSPATH' ) || exit; ?>
                     <span><?php echo( $licenseData['name'] ); ?></span>
                 </a>
 			<?php else: ?>
-                <span><?php echo __( 'Product', 'digital-license-manager' ) . ' #' . $productId; ?></span>
+                <span><?php esc_html_e( 'Product', 'digital-license-manager' ) . ' #' . $productId; ?></span>
 			<?php endif; ?>
         </h3>
 
         <table class="shop_table shop_table_responsive my_account_orders">
             <thead>
             <tr>
-                <th class="license-key"><?php _e( 'License key', 'digital-license-manager' ); ?></th>
-                <th class="activation"><?php _e( 'Activations', 'digital-license-manager' ); ?></th>
-                <th class="valid-until"><?php _e( 'Expires', 'digital-license-manager' ); ?></th>
-                <th class="status"><?php _e( 'Status', 'digital-license-manager' ); ?></th>
+                <th class="license-key"><?php esc_html_e( 'License key', 'digital-license-manager' ); ?></th>
+                <th class="activation"><?php esc_html_e( 'Activations', 'digital-license-manager' ); ?></th>
+                <th class="valid-until"><?php esc_html_e( 'Expires', 'digital-license-manager' ); ?></th>
+                <th class="status"><?php esc_html_e( 'Status', 'digital-license-manager' ); ?></th>
                 <th class="actions"></th>
             </tr>
             </thead>
@@ -77,7 +77,7 @@ defined( 'ABSPATH' ) || exit; ?>
 					$actions[10] = array(
 						'href'  => esc_url( $order->get_view_order_url() ),
 						'class' => 'button',
-						'text'  => __( 'Order', 'digital-license-manager' ),
+						'text'  => esc_html__( 'Order', 'digital-license-manager' ),
 					);
 				}
 
@@ -127,7 +127,7 @@ defined( 'ABSPATH' ) || exit; ?>
 <?php else: ?>
 
     <div class="woocommerce-Message woocommerce-Message--info woocommerce-info">
-		<?php _e( 'No licenses available yet', 'digital-license-manager' ); ?>
+		<?php esc_html_e( 'No licenses available yet', 'digital-license-manager' ); ?>
     </div>
 
 <?php endif; ?>

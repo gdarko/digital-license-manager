@@ -62,13 +62,13 @@ abstract class ActivationSource {
 	public static function format( $src ) {
 		$src = (int) $src;
 		if ( $src === self::WEB ) {
-			$str = __( 'Web', 'digital-license-manager' );
+			$str = esc_html__( 'Web', 'digital-license-manager' );
 		} else if ( $src === self::API ) {
-			$str = __( 'API', 'digital-license-manager' );
+			$str = esc_html__( 'API', 'digital-license-manager' );
 		} else if ( $src === self::MIGRATION ) {
-			$str = __( 'Migration', 'digital-license-manager' );
+			$str = esc_html__( 'Migration', 'digital-license-manager' );
 		} else {
-			$str = __( 'Other', 'digital-license-manager' );
+			$str = esc_html__( 'Other', 'digital-license-manager' );
 		}
 
 		return $str;

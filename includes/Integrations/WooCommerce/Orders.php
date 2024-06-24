@@ -256,7 +256,7 @@ class Orders {
 			 */
 			$assignedLicenses = [];
 			if ( $neededAmount <= $availableStock ) {
-				$order->add_order_note( sprintf( __( 'Delivering licenses from stock. (Current stock: %d | Required: %d).', 'digital-license-manager' ), $availableStock, $neededAmount ) );
+				$order->add_order_note( sprintf( esc_html__( 'Delivering licenses from stock. (Current stock: %d | Required: %d).', 'digital-license-manager' ), $availableStock, $neededAmount ) );
 				$assignedLicenses = $licenseService->assignLicensesFromStock(
 					$product,
 					$order,
@@ -265,13 +265,13 @@ class Orders {
 				);
 
 				if ( is_wp_error( $assignedLicenses ) ) {
-					$log_msg = sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $assignedLicenses->get_error_message() );
+					$log_msg = sprintf( esc_html__( 'License delivery failed: %s.', 'digital-license-manager' ), $assignedLicenses->get_error_message() );
 				} else {
-					$log_msg = sprintf( __( 'Delivered in total %d licenses from stock.', 'digital-license-manager' ), count( $assignedLicenses ) );
+					$log_msg = sprintf( esc_html__( 'Delivered in total %d licenses from stock.', 'digital-license-manager' ), count( $assignedLicenses ) );
 				}
 
 			} else {
-				$log_msg = sprintf( __( 'License delivery failed: Could not find enough licenses in stock (Current stock: %d | Required %d).' ), $availableStock, $neededAmount );
+				$log_msg = sprintf( esc_html__( 'License delivery failed: Could not find enough licenses in stock (Current stock: %d | Required %d).' ), $availableStock, $neededAmount );
 			}
 
 			$order->add_order_note( $log_msg );
@@ -290,7 +290,7 @@ class Orders {
 			 */
 			$generator = Generators::instance()->find( $generatorId );
 			if ( ! $generator ) {
-				$order->add_order_note( sprintf( __( 'License delivery failed: No generator assigned for product #%d.', 'digital-license-manager' ), $product->get_id() ) );
+				$order->add_order_note( sprintf( esc_html__( 'License delivery failed: No generator assigned for product #%d.', 'digital-license-manager' ), $product->get_id() ) );
 				DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): License delivery failed. No generator assigned to product.', $order->get_id(), $product->get_id() ) );
 
 				return false;
@@ -322,15 +322,15 @@ class Orders {
 				if ( ! is_wp_error( $result ) ) {
 					$total = count($result['licenses']);
 					if( $total === 1 ) {
-						$log_msg = sprintf( __( 'Delivered %d licenses with generator #%d.', 'digital-license-manager' ), $total, $generatorId );
+						$log_msg = sprintf( esc_html__( 'Delivered %d licenses with generator #%d.', 'digital-license-manager' ), $total, $generatorId );
 					} else {
-						$log_msg = sprintf( __( 'Delivered %d of %d licenses with generator #%d.', 'digital-license-manager' ), $total, $neededAmount, $generatorId );
+						$log_msg = sprintf( esc_html__( 'Delivered %d of %d licenses with generator #%d.', 'digital-license-manager' ), $total, $neededAmount, $generatorId );
 					}
 				} else {
-					$log_msg = sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $result->get_error_message() );
+					$log_msg = sprintf( esc_html__( 'License delivery failed: %s.', 'digital-license-manager' ), $result->get_error_message() );
 				}
 			} else {
-				$log_msg = sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $generatedLicenses->get_error_message() );
+				$log_msg = sprintf( esc_html__( 'License delivery failed: %s.', 'digital-license-manager' ), $generatedLicenses->get_error_message() );
 			}
 
 			$order->add_order_note( $log_msg );
@@ -417,8 +417,8 @@ class Orders {
 		echo wc_get_template_html(
 			'dlm/my-account/orders/licenses.php',
 			array(
-				'heading'     => apply_filters( 'dlm_licenses_table_heading', __( 'Your digital license(s)', 'digital-license-manager' ) ),
-				'valid_until' => apply_filters( 'dlm_licenses_table_valid_until', __( 'Valid until', 'digital-license-manager' ) ),
+				'heading'     => apply_filters( 'dlm_licenses_table_heading', esc_html__( 'Your digital license(s)', 'digital-license-manager' ) ),
+				'valid_until' => apply_filters( 'dlm_licenses_table_valid_until', esc_html__( 'Valid until', 'digital-license-manager' ) ),
 				'data'        => $customerLicenseKeys['data'],
 				'date_format' => DateFormatter::getExpirationFormat(),
 				'args'        => apply_filters( 'dlm_template_args_myaccount_licenses', array() )
@@ -440,7 +440,7 @@ class Orders {
 	public function addSendLicenseKeysAction( $actions, $order ) {
 
 		if ( Licenses::instance()->countBy( array( 'order_id' => $order->get_id() ) ) ) {
-			$actions['dlm_send_licenses'] = __( 'Resend license(s) to customer', 'digital-license-manager' );
+			$actions['dlm_send_licenses'] = esc_html__( 'Resend license(s) to customer', 'digital-license-manager' );
 		}
 
 		return $actions;
@@ -503,10 +503,10 @@ class Orders {
 				'main_html'  => sprintf(
 					'<a class="button dlm-license-keys-toggle-all" data-order-id="%d" data-toggle-text="%s" data-toggle-current="hide"><img class="dlm-spinner" style="display:none;" alt="%s" src="%s"><span>%s</span></a>',
 					$order_item->get_order_id(),
-					__( 'Hide license(s)', 'digital-license-manager' ),
-					__( 'Please wait...', 'digital-license-manager' ),
+					esc_html__( 'Hide license(s)', 'digital-license-manager' ),
+					esc_html__( 'Please wait...', 'digital-license-manager' ),
 					LicensesListTable::SPINNER_URL,
-					__( 'Show license(s)', 'digital-license-manager' )
+					esc_html__( 'Show license(s)', 'digital-license-manager' )
 				),
 				'after_html' => '',
 				'priority'   => 20,
@@ -701,7 +701,7 @@ class Orders {
 		$actions   = apply_filters( 'dlm_woocommerce_order_item_actions', [], $order_item, $licenses, $hide_keys );
 
 		// Generate licenses.
-		$html = sprintf( '<p>%s:</p>', __( 'The following licenses have been generated for this order item', 'digital-license-manager' ) );
+		$html = sprintf( '<p>%s:</p>', esc_html__( 'The following licenses have been generated for this order item', 'digital-license-manager' ) );
 		$html .= '<ul class="dlm-license-list">';
 		foreach ( $licenses as $license ) {
 			if ( ! $hide_keys ) {

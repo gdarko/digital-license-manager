@@ -203,7 +203,7 @@ class CryptoHelper {
 		try {
 			return self::instance()->encryptValue( $value );
 		} catch ( \Exception $e ) {
-			return ( new WP_Error( 'server_error', sprintf( __( 'Unable to encrypt value: %s', 'digital-license-manager' ), $e->getMessage() ), array( 'code' => 500 ) ) );
+			return ( new WP_Error( 'server_error', sprintf( esc_html__( 'Unable to encrypt value: %s', 'digital-license-manager' ), $e->getMessage() ), array( 'code' => 500 ) ) );
 		}
 	}
 
@@ -218,7 +218,7 @@ class CryptoHelper {
 		try {
 			return self::instance()->decryptCipher( $cipher );
 		} catch ( \Exception $e ) {
-			return ( new WP_Error( 'server_error', sprintf( __( 'Unable to decrypt value: %s', 'digital-license-manager' ), $e->getMessage() ), array( 'code' => 500 ) ) );
+			return ( new WP_Error( 'server_error', sprintf( esc_html__( 'Unable to decrypt value: %s', 'digital-license-manager' ), $e->getMessage() ), array( 'code' => 500 ) ) );
 		}
 	}
 

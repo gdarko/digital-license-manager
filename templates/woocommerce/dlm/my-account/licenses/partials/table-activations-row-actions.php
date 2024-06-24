@@ -54,7 +54,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation;
 			<?php else: ?>
                 <button type="submit"
 					<?php if ( isset( $rowAction['confirm'] ) && $rowAction['confirm'] ): ?>
-                        onclick="return confirm('<?php _e( 'Are you sure you want to do this? This action can not be revered.', 'digital-license-manager' ); ?>')"
+                        onclick="return confirm('<?php esc_html_e( 'Are you sure you want to do this? This action can not be revered.', 'digital-license-manager' ); ?>')"
 					<?php endif; ?>
                         name="<?php echo esc_attr( $rowAction['id'] ); ?>"
                         title="<?php echo isset( $params['title'] ) ? esc_attr( $params['title'] ) : ''; ?>"

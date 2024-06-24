@@ -50,8 +50,8 @@ class Generators extends AbstractListTable {
 
 		parent::__construct(
 			array(
-				'singular' => __( 'Generator', 'digital-license-manager' ),
-				'plural'   => __( 'Generators', 'digital-license-manager' ),
+				'singular' => esc_html__( 'Generator', 'digital-license-manager' ),
+				'plural'   => esc_html__( 'Generators', 'digital-license-manager' ),
 				'ajax'     => false
 			)
 		);
@@ -130,12 +130,12 @@ class Generators extends AbstractListTable {
 		if ( count( $products ) > 0 ) {
 			$title .= sprintf(
 				'<span class="dlm-badge info" title="%s">%d</span>',
-				__( 'Number of products assigned to this generator. This generator can not be deleted as long as products are assigned.', 'digital-license-manager' ),
+				esc_html__( 'Number of products assigned to this generator. This generator can not be deleted as long as products are assigned.', 'digital-license-manager' ),
 				count( $products )
 			);
 		}
 
-		$actions['id'] = sprintf( __( 'ID: %d', 'digital-license-manager' ), (int) $item->getId() );
+		$actions['id'] = sprintf( esc_html__( 'ID: %d', 'digital-license-manager' ), (int) $item->getId() );
 
 		if ( ! $products && $this->canDelete ) {
 			$actions['delete'] = sprintf(
@@ -144,7 +144,7 @@ class Generators extends AbstractListTable {
 				'delete',
 				absint( $item->getId() ),
 				wp_create_nonce( 'delete' ),
-				__( 'Delete', 'digital-license-manager' )
+				esc_html__( 'Delete', 'digital-license-manager' )
 			);
 		}
 
@@ -155,7 +155,7 @@ class Generators extends AbstractListTable {
 				'edit',
 				absint( $item->getId() ),
 				wp_create_nonce( 'edit' ),
-				__( 'Edit', 'digital-license-manager' )
+				esc_html__( 'Edit', 'digital-license-manager' )
 			);
 		}
 
@@ -245,9 +245,9 @@ class Generators extends AbstractListTable {
 			return $expiresIn;
 		}
 
-		$expiresIn .= sprintf( '%d %s', $item->getExpiresIn(), __( 'day(s)', 'digital-license-manager' ) );
+		$expiresIn .= sprintf( '%d %s', $item->getExpiresIn(), esc_html__( 'day(s)', 'digital-license-manager' ) );
 		$expiresIn .= '<br>';
-		$expiresIn .= sprintf( '<small>%s</small>', __( 'After purchase', 'digital-license-manager' ) );
+		$expiresIn .= sprintf( '<small>%s</small>', esc_html__( 'After purchase', 'digital-license-manager' ) );
 
 		return $expiresIn;
 	}
@@ -270,15 +270,15 @@ class Generators extends AbstractListTable {
 	public function get_columns() {
 		return array(
 			'cb'                => '<input type="checkbox" />',
-			'name'              => __( 'Name', 'digital-license-manager' ),
-			'charset'           => __( 'Character map', 'digital-license-manager' ),
-			'chunks'            => __( 'Number of chunks', 'digital-license-manager' ),
-			'chunk_length'      => __( 'Chunk length', 'digital-license-manager' ),
-			'activations_limit' => __( 'Maximum activation count', 'digital-license-manager' ),
-			'separator'         => __( 'Separator', 'digital-license-manager' ),
-			'prefix'            => __( 'Prefix', 'digital-license-manager' ),
-			'suffix'            => __( 'Suffix', 'digital-license-manager' ),
-			'expires_in'        => __( 'Expires in', 'digital-license-manager' )
+			'name'              => esc_html__( 'Name', 'digital-license-manager' ),
+			'charset'           => esc_html__( 'Character map', 'digital-license-manager' ),
+			'chunks'            => esc_html__( 'Number of chunks', 'digital-license-manager' ),
+			'chunk_length'      => esc_html__( 'Chunk length', 'digital-license-manager' ),
+			'activations_limit' => esc_html__( 'Maximum activation count', 'digital-license-manager' ),
+			'separator'         => esc_html__( 'Separator', 'digital-license-manager' ),
+			'prefix'            => esc_html__( 'Prefix', 'digital-license-manager' ),
+			'suffix'            => esc_html__( 'Suffix', 'digital-license-manager' ),
+			'expires_in'        => esc_html__( 'Expires in', 'digital-license-manager' )
 		);
 	}
 
@@ -307,7 +307,7 @@ class Generators extends AbstractListTable {
 		$actions = array();
 
 		if ( $this->canDelete ) {
-			$actions['delete'] = __( 'Delete', 'digital-license-manager' );
+			$actions['delete'] = esc_html__( 'Delete', 'digital-license-manager' );
 		}
 
 		return $actions;
@@ -383,10 +383,10 @@ class Generators extends AbstractListTable {
 		$result = GeneratorsRepository::instance()->delete( $generatorsToDelete );
 
 		if ( $result ) {
-			NoticeFlasher::success( sprintf( __( '%d generator(s) permanently deleted.', 'digital-license-manager' ), $result ) );
+			NoticeFlasher::success( sprintf( esc_html__( '%d generator(s) permanently deleted.', 'digital-license-manager' ), $result ) );
 			HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s', $this->slug ) ) );
 		} else {
-			NoticeFlasher::error( __( 'There was a problem deleting the generators.', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'There was a problem deleting the generators.', 'digital-license-manager' ) );
 			HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s', $this->slug ) ) );
 		}
 	}

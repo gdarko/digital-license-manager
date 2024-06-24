@@ -23,7 +23,7 @@
 
 
 <tr class="woocommerce-table__line-item valid_until">
-	<th scope="row"><?php _e( 'Certificate', 'digital-license-manager' ); ?></th>
+	<th scope="row"><?php esc_html_e( 'Certificate', 'digital-license-manager' ); ?></th>
 	<td class="dlm-inline-child dlm-license-certificate">
         <form id="dlm-license-certificate-download" action="<?php echo esc_url( \IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\MyAccount::getProcessingEndpointUrl() ); ?>" method="POST" class="dlm-list-inline-mb-0">
 			<input type="hidden" name="dlm_action" value="license_certificate_download">
@@ -32,7 +32,7 @@
 			<ul class="dlm-list-inline dlm-list-inline-mb-0">
 				<li>
 					<button type="submit" class="woocommerce-button button dlm-button" name="license_certificate_download" value="1">
-						<span class="dlm-icon-file-pdf"></span> <?php _e( 'Download', 'digital-license-manager' ); ?>
+						<span class="dlm-icon-file-pdf"></span> <?php esc_html_e( 'Download', 'digital-license-manager' ); ?>
 					</button>
 				</li>
 			</ul>

@@ -84,8 +84,8 @@ class Menus {
 		$pages = array(
 			10 => array(
 				'parent'         => PageSlug::LICENSES,
-				'page_title'     => __( 'License Manager', 'digital-license-manager' ),
-				'menu_title'     => __( 'Licenses', 'digital-license-manager' ),
+				'page_title'     => esc_html__( 'License Manager', 'digital-license-manager' ),
+				'menu_title'     => esc_html__( 'Licenses', 'digital-license-manager' ),
 				'capability'     => 'dlm_read_licenses',
 				'menu_slug'      => PageSlug::LICENSES,
 				'function'       => array( $this, 'licensesPage' ),
@@ -93,8 +93,8 @@ class Menus {
 			),
 			20 => array(
 				'parent'         => PageSlug::LICENSES,
-				'page_title'     => __( 'License Manager - Generators', 'digital-license-manager' ),
-				'menu_title'     => __( 'Generators', 'digital-license-manager' ),
+				'page_title'     => esc_html__( 'License Manager - Generators', 'digital-license-manager' ),
+				'menu_title'     => esc_html__( 'Generators', 'digital-license-manager' ),
 				'capability'     => 'dlm_read_generators',
 				'menu_slug'      => PageSlug::GENERATORS,
 				'function'       => array( $this, 'generatorsPage' ),
@@ -102,8 +102,8 @@ class Menus {
 			),
 			30 => array(
 				'parent'         => PageSlug::LICENSES,
-				'page_title'     => __( 'License Manager - Activations', 'digital-license-manager' ),
-				'menu_title'     => __( 'Activations', 'digital-license-manager' ),
+				'page_title'     => esc_html__( 'License Manager - Activations', 'digital-license-manager' ),
+				'menu_title'     => esc_html__( 'Activations', 'digital-license-manager' ),
 				'capability'     => 'dlm_read_activations',
 				'menu_slug'      => PageSlug::ACTIVATIONS,
 				'function'       => array( $this, 'activationsPage' ),
@@ -111,8 +111,8 @@ class Menus {
 			),
 			40 => array(
 				'parent'     => PageSlug::LICENSES,
-				'page_title' => __( 'License Manager - Settings', 'digital-license-manager' ),
-				'menu_title' => __( 'Settings', 'digital-license-manager' ),
+				'page_title' => esc_html__( 'License Manager - Settings', 'digital-license-manager' ),
+				'menu_title' => esc_html__( 'Settings', 'digital-license-manager' ),
 				'capability' => 'dlm_manage_settings',
 				'menu_slug'  => PageSlug::SETTINGS,
 				'function'   => array( $this, 'settingsPage' ),
@@ -148,8 +148,8 @@ class Menus {
 
 		// Licenses List Page
 		add_menu_page(
-			__( 'License Manager', 'digital-license-manager' ),
-			__( 'License Manager', 'digital-license-manager' ),
+			esc_html__( 'License Manager', 'digital-license-manager' ),
+			esc_html__( 'License Manager', 'digital-license-manager' ),
 			'dlm_read_licenses',
 			PageSlug::LICENSES,
 			array( $this, 'licensesPage' ),
@@ -194,7 +194,7 @@ class Menus {
 
 		$option = 'per_page';
 		$args   = array(
-			'label'   => __( 'Licenses per page', 'digital-license-manager' ),
+			'label'   => esc_html__( 'Licenses per page', 'digital-license-manager' ),
 			'default' => 10,
 			'option'  => 'dlm_licenses_per_page'
 		);
@@ -211,7 +211,7 @@ class Menus {
 
 		$option = 'per_page';
 		$args   = array(
-			'label'   => __( 'Activations per page', 'digital-license-manager' ),
+			'label'   => esc_html__( 'Activations per page', 'digital-license-manager' ),
 			'default' => 10,
 			'option'  => 'dlm_activations_per_page'
 		);
@@ -227,7 +227,7 @@ class Menus {
 	public function generatorsPageScreenOptions() {
 		$option = 'per_page';
 		$args   = array(
-			'label'   => __( 'Generators per page', 'digital-license-manager' ),
+			'label'   => esc_html__( 'Generators per page', 'digital-license-manager' ),
 			'default' => 10,
 			'option'  => 'generators_per_page'
 		);
@@ -275,7 +275,7 @@ class Menus {
 			}
 
 			if ( ! $license ) {
-				wp_die( __( 'Invalid license key ID', 'digital-license-manager' ) );
+				wp_die( esc_html__( 'Invalid license key ID', 'digital-license-manager' ) );
 			}
 
 			$licenseKey = $license->getDecryptedLicenseKey();
@@ -397,12 +397,12 @@ class Menus {
 		 */
 		if ( isset( $currentScreen->id ) && in_array( $currentScreen->id, $this->getPluginPageIDs() ) ) {
 			$footerText = sprintf(
-				__( 'If you like %1$s please leave us a %2$s rating. A massive thanks in advance!', 'digital-license-manager' ),
+				esc_html__( 'If you like %1$s please leave us a %2$s rating. A massive thanks in advance!', 'digital-license-manager' ),
 				sprintf( '<strong>%s</strong>', esc_html__( 'Digital License Manager', 'digital-license-manager' ) ),
 				'<a href="https://wordpress.org/support/plugin/digital-license-manager/reviews/?rate=5#new-post" target="_blank" class="wc-rating-link" data-rated="' . esc_attr__( 'Thanks :)', 'digital-license-manager' ) . '">&#9733;&#9733;&#9733;&#9733;&#9733;</a>'
 			);
 			if(!defined('DLM_PRO_VERSION')) {
-			    $footerText .= '<br/>Need more functionality? Check <a style="font-weight:bold;color:#3eb03e;" target="_blank" href="'.DLM_PURCHASE_URL.'"><strong>'.__('Digital License Manager PRO', 'wp-vimeo-videos').'</strong></a>';
+			    $footerText .= '<br/>Need more functionality? Check <a style="font-weight:bold;color:#3eb03e;" target="_blank" href="'.esc_url(DLM_PURCHASE_URL).'"><strong>'.esc_html__('Digital License Manager PRO', 'wp-vimeo-videos').'</strong></a>';
             }
 		}
 

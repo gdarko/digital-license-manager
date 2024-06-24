@@ -72,8 +72,8 @@ class Activations {
 		if ( (int) Settings::get( 'enable_manual_activations', Settings::SECTION_WOOCOMMERCE ) ) {
 			$list[50] = array(
 				'id'       => 'license_activation_delete',
-				'text'     => __( 'Delete', 'digital-license-manager' ),
-				'title'    => __( 'Enables licenses deactivation to disable specific license activations.', 'digital-license-manager' ),
+				'text'     => esc_html__( 'Delete', 'digital-license-manager' ),
+				'title'    => esc_html__( 'Enables licenses deactivation to disable specific license activations.', 'digital-license-manager' ),
 				'class'    => 'button',
 				'confirm'  => true,
 				'href'     => null,
@@ -112,9 +112,9 @@ class Activations {
 				$this->addNotice( 'error', $result->get_error_message() );
 			} else {
 				if ( $result ) {
-					$this->addNotice( 'success', __( 'License activation deleted successfully.', 'digital-license-manager' ) );
+					$this->addNotice( 'success', esc_html__( 'License activation deleted successfully.', 'digital-license-manager' ) );
 				} else {
-					$this->addNotice( 'error', __( 'Unable to delete license activation.', 'digital-license-manager' ) );
+					$this->addNotice( 'error', esc_html__( 'Unable to delete license activation.', 'digital-license-manager' ) );
 				}
 			}
 
@@ -149,10 +149,10 @@ class Activations {
 			if ( is_wp_error( $result ) ) {
 				$this->addNotice( 'error', $result->get_error_message() );
 			} else {
-				$this->addNotice( 'success', __( 'License activated successfully!', 'digital-license-manager' ) );
+				$this->addNotice( 'success', esc_html__( 'License activated successfully!', 'digital-license-manager' ) );
 			}
 		} else {
-			$this->addNotice( 'error', __( 'Permission denied. User does not have access to activate this license.', 'digital-license-manager' ) );
+			$this->addNotice( 'error', esc_html__( 'Permission denied. User does not have access to activate this license.', 'digital-license-manager' ) );
 		}
 
 		HttpHelper::redirect( wc_get_account_endpoint_url( sprintf( 'digital-licenses/%s', $license->getId() ) ) );

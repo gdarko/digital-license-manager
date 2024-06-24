@@ -104,7 +104,7 @@ class Products {
 	 */
 	public function productTab( $tabs ) {
 		$tabs[ self::ADMIN_TAB_NAME ] = array(
-			'label'    => __( 'License Manager', 'digital-license-manager' ),
+			'label'    => esc_html__( 'License Manager', 'digital-license-manager' ),
 			'target'   => self::ADMIN_TAB_TARGET,
 			'class' => apply_filters( 'dlm_woocommerce_product_edit_show_if', array( 'show_if_simple', 'show_if_subscription' ), $tabs, self::ADMIN_TAB_NAME ),
 			'priority' => 21
@@ -125,7 +125,7 @@ class Products {
 
 		echo '<div id="' . self::ADMIN_TAB_TARGET . '" class="panel woocommerce_options_panel">';
 		if ( $is_add ) {
-			echo '<p>' . __( 'Those options are only available on the <strong>Edit</strong> screen. Please pick product type and then create the product in order to access those options.', 'digital-license-manager' ) . '</p>';
+			echo '<p>' . esc_html__( 'Those options are only available on the <strong>Edit</strong> screen. Please pick product type and then create the product in order to access those options.', 'digital-license-manager' ) . '</p>';
 		} else {
 			$product = wc_get_product( $post->ID );
 			$fields  = array();
@@ -193,7 +193,7 @@ class Products {
 
 			// Warn the user if they don't have generator selected.
 			if ( ! $assignedGenerator ) {
-				$error = new WP_Error( 2, __( '<strong>Error:</strong> Please select valid License generator in "License Manager" options.', 'digital-license-manager' ) );
+				$error = new WP_Error( 2, esc_html__( '<strong>Error:</strong> Please select valid License generator in "License Manager" options.', 'digital-license-manager' ) );
 				set_transient( 'dlm_error', $error, 60 );
 			}
 		} else {
@@ -222,7 +222,7 @@ class Products {
 
 		echo sprintf(
 			'<p class="form-row form-row-full dlm-form-row-section"><strong>%s</strong></p>',
-			__( 'Digital License Manager', 'digital-license-manager' )
+			esc_html__( 'Digital License Manager', 'digital-license-manager' )
 		);
 
 		echo '<input type="hidden" name="dlm_edit_flag" value="true" />';
@@ -279,7 +279,7 @@ class Products {
 
 			// Warn the user if they don't have generator selected.
 			if ( ! $assignedGenerator ) {
-				$error = new WP_Error( 2, sprintf( __( '<strong>Error:</strong> Please select valid License generator in variation #%d Digital License Manager options.', 'digital-license-manager' ), $i ) );
+				$error = new WP_Error( 2, sprintf( esc_html__( '<strong>Error:</strong> Please select valid License generator in variation #%d Digital License Manager options.', 'digital-license-manager' ), $i ) );
 				set_transient( 'dlm_error', $error, 60 );
 			}
 		} else {
@@ -386,7 +386,7 @@ class Products {
 	 * @return array
 	 */
 	private function getGeneratorOptions() {
-		$options    = array( '' => __( 'Please select a generator', 'digital-license-manager' ) );
+		$options    = array( '' => esc_html__( 'Please select a generator', 'digital-license-manager' ) );
 		$generators = Generators::instance()->findAll();
 		if ( $generators ) {
 			foreach ( $generators as $generator ) {
@@ -496,8 +496,8 @@ class Products {
 						'cbvalue'       => 1,
 						'desc_tip'      => true,
 						'options'       => array(
-							'stock'      => sprintf( __( 'Provide licenses from stock (%d available)', 'digital-license-manager' ), $licenseService->getLicensesStockCount( $product->get_id() ) ),
-							'generators' => __( 'Provide licenses by using generator', 'digital-license-manager' ),
+							'stock'      => sprintf( esc_html__( 'Provide licenses from stock (%d available)', 'digital-license-manager' ), $licenseService->getLicensesStockCount( $product->get_id() ) ),
+							'generators' => esc_html__( 'Provide licenses by using generator', 'digital-license-manager' ),
 						),
 						'wrapper_class' => $isVariableProduct ? 'form-row form-row-first dlm-field-conditional-src' : 'dlm-field-conditional-src',
 					)
@@ -506,7 +506,7 @@ class Products {
 					'type'   => 'select',
 					'params' => array(
 						'id'                => 'dlm_licensed_product_assigned_generator',
-						'label'             => __( 'Licenses generator', 'digital-license-manager' ),
+						'label'             => esc_html__( 'Licenses generator', 'digital-license-manager' ),
 						'description'       => esc_html__( 'Select the Generator that will be used to generate and deliver keys for this product. Required only if source is set to "Provide licenses by using generator".', 'digital-license-manager' ),
 						'desc_tip'          => true,
 						'options'           => $this->getGeneratorOptions(),
@@ -522,12 +522,12 @@ class Products {
 					'type'   => 'select',
 					'params' => array(
 						'id'            => 'dlm_licensed_product_activations_behavior',
-						'label'         => __( 'Max Activations Behavior', 'digital-license-manager' ),
+						'label'         => esc_html__( 'Max Activations Behavior', 'digital-license-manager' ),
 						'description'   => esc_html__( 'Select the behavior of the max activations for the new licenses whether it to be based on quantity or the generator default value".', 'digital-license-manager' ),
 						'desc_tip'      => true,
 						'options'       => [
-							'standard' => __( 'Standard - Based on the Generator\'s "Max Activations"' ),
-							'quantity' => __( 'Product Quantity - Always deliver single license and set activations limit based on product quantity' ),
+							'standard' => esc_html__( 'Standard - Based on the Generator\'s "Max Activations"' ),
+							'quantity' => esc_html__( 'Product Quantity - Always deliver single license and set activations limit based on product quantity' ),
 						],
 						'value'         => $this->getMeta( $product->get_id(), 'dlm_licensed_product_activations_behavior', 'standard' ),
 						'wrapper_class' => $isVariableProduct ? 'form-row form-row-last dlm-field-conditional-target' : 'dlm-field-conditional-target',

@@ -110,12 +110,12 @@ abstract class AbstractListTable extends \WP_List_Table {
 		$nonceValue = isset( $_REQUEST['_wpnonce'] ) ? $_REQUEST['_wpnonce'] : '';
 
 		if ( empty( $nonceValue ) ) {
-			NoticeFlasher::error( __( 'Permission denied.', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'Permission denied.', 'digital-license-manager' ) );
 			exit;
 		}
 
 		if ( ! wp_verify_nonce( $nonceValue, $nonce ) && ! wp_verify_nonce( $nonceValue, 'bulk-' . $this->_args['plural'] ) ) {
-			NoticeFlasher::error( __( 'The nonce is invalid or has expired.', 'digital-license-manager' ) );
+			NoticeFlasher::error( esc_html__( 'The nonce is invalid or has expired.', 'digital-license-manager' ) );
 			HttpHelper::redirect(
 				admin_url( sprintf( 'admin.php?page=%s', $this->slug ) )
 			);
@@ -128,7 +128,7 @@ abstract class AbstractListTable extends \WP_List_Table {
 	protected function validateSelection() {
 
 		if ( ! isset( $_REQUEST['id'] ) ) {
-			$message = sprintf( __( 'No %s were selected.', 'digital-license-manager' ), $this->_args['plural'] );
+			$message = sprintf( esc_html__( 'No %s were selected.', 'digital-license-manager' ), $this->_args['plural'] );
 			NoticeFlasher::warning( $message );
 
 			HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s', $this->slug ) ) );
@@ -139,7 +139,7 @@ abstract class AbstractListTable extends \WP_List_Table {
 	 * Output in case no items exist.
 	 */
 	public function no_items() {
-		echo sprintf( __( 'No %s found.', 'digital-license-manager' ), $this->_args['plural'] );
+		echo sprintf( esc_html__( 'No %s found.', 'digital-license-manager' ), $this->_args['plural'] );
 	}
 
 	/**

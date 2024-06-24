@@ -81,9 +81,9 @@ class ApiKeysService implements ServiceInterface {
 	 */
 	public function get_permissions() {
 		return apply_filters( 'dlm_rest_api_permissions', array(
-			'read'       => __( 'Read', 'digital-license-manager' ),
-			'write'      => __( 'Write', 'digital-license-manager' ),
-			'read_write' => __( 'Read & Write', 'digital-license-manager' ),
+			'read'       => esc_html__( 'Read', 'digital-license-manager' ),
+			'write'      => esc_html__( 'Write', 'digital-license-manager' ),
+			'read_write' => esc_html__( 'Read & Write', 'digital-license-manager' ),
 		) );
 	}
 }
