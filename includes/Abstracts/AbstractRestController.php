@@ -108,6 +108,9 @@ abstract class AbstractRestController extends WP_REST_Controller {
 	 * @return WP_Error
 	 */
 	public static function _responseError( $code, $message, $data = array() ) {
+
+		do_action('dlm_rest_response_error', $code, $message, $data);
+
 		$prefix = apply_filters( 'dlm_rest_code_prefix', '' );
 		$code   = str_replace( sprintf( '%s', $prefix ), '', $code );
 
