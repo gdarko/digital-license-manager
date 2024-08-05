@@ -100,9 +100,11 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
 
 </table>
 
-<p>
-    <a href="<?php echo esc_url( $order->get_view_order_url() ); ?>" class="woocommerce-button button dlm-button"><?php _e( 'View Order', 'digital-license-manager' ); ?></a>
-</p>
+<?php if ( ! empty( $order ) ): ?>
+    <p>
+        <a href="<?php echo esc_url( $order->get_view_order_url() ); ?>" class="woocommerce-button button dlm-button"><?php _e( 'View Order', 'digital-license-manager' ); ?></a>
+    </p>
+<?php endif; ?>
 
 
 <?php do_action( 'dlm_myaccount_licenses_single_page_end', $license, $order, $product, $date_format, $license_key ); ?>
