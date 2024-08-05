@@ -62,7 +62,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 		<?php if ( count( $activations ) > 0 ): ?>
 			<?php foreach ( $activations as $activation ): ?>
                 <tr>
-                    <td>
+                    <td data-title="<?php _e( 'Label', 'digital-license-manager' ); ?>">
 						<?php
 						$label = $activation->getLabel();
 						if ( empty( $label ) ) {
@@ -71,7 +71,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 						echo esc_html( $label );
 						?>
                     </td>
-                    <td>
+                    <td data-title="<?php _e( 'Status', 'digital-license-manager' ); ?>">
 						<?php
 						if ( $activation->getDeactivatedAt() ) {
 							echo LicenseStatus::statusToHtml( 'disabled', [
@@ -86,12 +86,12 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 						}
 						?>
                     </td>
-                    <td>
+                    <td data-title="<?php _e( 'Source', 'digital-license-manager' ); ?>">
 						<?php
 						echo ActivationSource::format( $activation->getSource() );
 						?>
                     </td>
-                    <td>
+                    <td data-title="<?php _e( 'Date', 'digital-license-manager' ); ?>">
 						<?php
 
 						if ( $activation->getCreatedAt() ) {
@@ -107,7 +107,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 						?>
                     </td>
 					<?php if ( ! empty( $rowActions ) ): ?>
-                        <td>
+                        <td data-title="<?php _e( 'Actions', 'digital-license-manager' ); ?>">
 							<?php
 							echo wc_get_template_html(
 								'dlm/my-account/licenses/partials/table-activations-row-actions.php',

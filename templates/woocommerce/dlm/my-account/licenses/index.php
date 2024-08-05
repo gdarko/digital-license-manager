@@ -87,25 +87,25 @@ defined( 'ABSPATH' ) || exit; ?>
 
 				?>
                 <tr>
-                    <td>
+                    <td data-title="<?php _e( 'License key', 'digital-license-manager' ); ?>">
                     <?php
                         echo wc_get_template_html( 'dlm/my-account/licenses/partials/license-key.php', array(
                             'license'     => $license,
                         ), '', Controller::getTemplatePath() )
                     ?>
                     </td>
-                    <td>
+                    <td data-title="<?php _e( 'Activations', 'digital-license-manager' ); ?>">
                         <span><?php esc_html_e( $timesActivated ); ?></span>
                         <span>/</span>
                         <span><?php echo esc_attr( $activationsLimit ); ?></span>
                     </td>
-                    <td>
+                    <td data-title="<?php _e( 'Expires', 'digital-license-manager' ); ?>">
 						<?php echo DateFormatter::toHtml( $license->getExpiresAt(), [ 'expires' => true ] ); ?>
                     </td>
                     <td>
 						<?php echo $license->isExpired() ? LicenseStatus::toHtmlExpired( $license, [ 'style' => 'inline' ] ) : LicenseStatus::toHtml( $license, [ 'style' => 'inline' ] ); ?>
                     </td>
-                    <td class="license-key-actions">
+                    <td data-title="<?php _e( 'Actions', 'digital-license-manager' ); ?>" class="license-key-actions">
 						<?php
 						foreach ( $actions as $key => $action ) {
 							$href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
