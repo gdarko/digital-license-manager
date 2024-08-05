@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce
 Requires at least: 4.7
 Requires PHP: 7.0
 Tested up to: 6.6
-Stable tag: 1.6.5
+Stable tag: 1.6.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -206,6 +206,13 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 23. License check form displayed by using block or shortcode
 
 == Changelog ==
+
+= 1.6.6 =
+
+*Release date - 05 Aug 2024*
+
+* Allow license key "copy to clipobard" on order-received confirmation page
+* Fix issue on MyAccount license single page when License order is not set
 
 = 1.6.5 =
 
