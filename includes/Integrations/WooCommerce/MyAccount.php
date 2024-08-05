@@ -121,7 +121,7 @@ class MyAccount {
 	 * @return void
 	 */
 	public function enqueueScripts( $version ) {
-		if ( ! is_account_page() ) {
+		if ( ! is_account_page() && ! is_order_received_page() ) {
 			return;
 		}
 		wp_enqueue_script( 'dlm_myaccount' );
