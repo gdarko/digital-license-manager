@@ -71,7 +71,12 @@
 }
 
 .dlm-status-inline {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+}
+
+.dlm-status-inline > .dashicons {
+    margin-right: 2px;
 }
 
 .dlm-status-sold {
