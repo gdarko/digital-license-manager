@@ -55,6 +55,14 @@ class HttpHelper {
 			$addr = getenv( 'REMOTE_ADDR' );
 		}
 
+		/**
+		 * When the site is behind CloudFlare it returns comma separated IP addresses,
+		 * In this case, we only need the first ip address to be returned.
+		 */
+		if ( ! is_null( $addr ) && strpos( $addr, ',', ) !== false ) {
+			$addr = trim( current( preg_split( '/,/', sanitize_text_field( wp_unslash( $addr ) ) ) ) );
+		}
+
 		return $addr;
 
 	}
