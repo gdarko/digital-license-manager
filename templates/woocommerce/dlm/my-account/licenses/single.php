@@ -81,7 +81,7 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
         <th scope="row"><?php _e( 'Status', 'digital-license-manager' ); ?></th>
         <td class="dlm-inline-child dlm-license-status">
 			<?php
-			echo LicenseStatus::toHtml( $license, ['style' => 'inline'] );
+			echo $license->isExpired() ? LicenseStatus::toHtmlExpired( $license, [ 'style' => 'inline' ] ) : LicenseStatus::toHtml( $license, [ 'style' => 'inline' ] );
 			?>
         </td>
     </tr>
