@@ -49,7 +49,7 @@ foreach ( $data as $productId => $row ): ?>
 		/** @var License $license */
 		$is_order_received  = is_order_received_page();
 		$is_obscure_enabled = (int) Settings::get( 'hide_license_keys', Settings::SECTION_WOOCOMMERCE );
-		$should_obfuscate = $is_order_received && $is_obscure_enabled;
+		$should_obfuscate   = $is_order_received && $is_obscure_enabled;
 
 		foreach ( $row['keys'] as $license ):
 
@@ -64,22 +64,30 @@ foreach ( $data as $productId => $row ): ?>
 			?>
             <tr>
                 <td colspan="<?php echo ( $license && $license->getExpiresAt() ) ? '' : '2'; ?>">
-                    <?php
-                    if (  apply_filters( 'dlm_myaccount_licenses_should_obfuscate', $should_obfuscate, $license ) ) {
-	                    echo StringFormatter::obfuscateString( $licenseKey );
-                    } else {
-	                    echo wc_get_template_html( 'dlm/my-account/licenses/partials/license-key.php', array(
-		                    'license' => $license,
-	                    ), '', Controller::getTemplatePath() );
-                    }
-                    ?>
+					<?php
+					if ( apply_filters( 'dlm_myaccount_licenses_should_obfuscate', $should_obfuscate, $license ) ) {
+						echo esc_html( StringFormatter::obfuscateString( $licenseKey ) );
+					} else {
+						echo wc_get_template_html( 'dlm/my-account/licenses/partials/license-key.php', array(
+							'license' => $license,
+						), '', Controller::getTemplatePath() );
+					}
+					?>
                 </td>
 				<?php if ( $license->getExpiresAt() ): ?>
 					<?php
 					$date = wp_date( $date_format, strtotime( $license->getExpiresAt() ) );
 					?>
                     <td>
-                        <?php printf( '%s <strong>%s</strong>', $valid_until, $date ); ?>
+	                    <?php echo wp_kses(
+		                    sprintf(
+			                    '%s <strong>%s</strong> %s',
+			                    $valid_until,
+			                    $date,
+			                    $license->isExpired() ? '(' . esc_html__( 'Expired', 'digital-license-manager' ) . ')' : ''
+		                    ),
+		                    \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags(),
+	                    ); ?>
                     </td>
 				<?php endif; ?>
                 <td class="license-key-actions">
@@ -88,7 +96,7 @@ foreach ( $data as $productId => $row ): ?>
 						$href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
 						$cssClass = isset( $action['class'] ) ? esc_attr( $action['class'] ) : '';
 						$text     = isset( $action['text'] ) ? esc_html( $action['text'] ) : '';
-						echo sprintf( '<a href="%s" class="%s">%s</a>', $href, $cssClass, $text );
+						echo wp_kses( sprintf( '<a href="%s" class="%s">%s</a>', esc_url( $href ), $cssClass, $text ), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() );
 					}
 					?>
                 </td>
