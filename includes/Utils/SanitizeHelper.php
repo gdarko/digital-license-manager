@@ -114,7 +114,8 @@ class SanitizeHelper {
 			'ul'         => array( 'class' => true ),
 			'ol'         => array( 'class' => true ),
 			'li'         => array(),
-			'span'       => array( 'class' => true ),
+			'span'       => array( 'class' => true, 'title' => true ),
+			'div'        => array( 'class' => true, 'style' => true )
 		) );
 	}
 

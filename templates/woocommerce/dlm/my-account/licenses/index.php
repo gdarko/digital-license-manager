@@ -39,20 +39,20 @@ defined( 'ABSPATH' ) || exit; ?>
         <h3 class="product-name">
 			<?php if ( $product ): ?>
                 <a href="<?php echo esc_url( get_post_permalink( $productId ) ); ?>">
-                    <span><?php echo( $licenseData['name'] ); ?></span>
+                    <span><?php echo wp_kses( $licenseData['name'], \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?></span>
                 </a>
 			<?php else: ?>
-                <span><?php echo __( 'Product', 'digital-license-manager' ) . ' #' . $productId; ?></span>
+                <span><?php echo esc_html__( 'Product', 'digital-license-manager' ) . ' #' . $productId; ?></span>
 			<?php endif; ?>
         </h3>
 
         <table class="shop_table shop_table_responsive my_account_orders">
             <thead>
             <tr>
-                <th class="license-key"><?php _e( 'License key', 'digital-license-manager' ); ?></th>
-                <th class="activation"><?php _e( 'Activations', 'digital-license-manager' ); ?></th>
-                <th class="valid-until"><?php _e( 'Expires', 'digital-license-manager' ); ?></th>
-                <th class="status"><?php _e( 'Status', 'digital-license-manager' ); ?></th>
+                <th class="license-key"><?php esc_html_e( 'License key', 'digital-license-manager' ); ?></th>
+                <th class="activation"><?php esc_html_e( 'Activations', 'digital-license-manager' ); ?></th>
+                <th class="valid-until"><?php esc_html_e( 'Expires', 'digital-license-manager' ); ?></th>
+                <th class="status"><?php esc_html_e( 'Status', 'digital-license-manager' ); ?></th>
                 <th class="actions"></th>
             </tr>
             </thead>
@@ -77,7 +77,7 @@ defined( 'ABSPATH' ) || exit; ?>
 					$actions[10] = array(
 						'href'  => esc_url( $order->get_view_order_url() ),
 						'class' => 'button',
-						'text'  => __( 'Order', 'digital-license-manager' ),
+						'text'  => esc_html__( 'Order', 'digital-license-manager' ),
 					);
 				}
 
@@ -87,32 +87,32 @@ defined( 'ABSPATH' ) || exit; ?>
 
 				?>
                 <tr>
-                    <td data-title="<?php _e( 'License key', 'digital-license-manager' ); ?>">
+                    <td data-title="<?php esc_html_e( 'License key', 'digital-license-manager' ); ?>">
                     <?php
                         echo wc_get_template_html( 'dlm/my-account/licenses/partials/license-key.php', array(
                             'license'     => $license,
                         ), '', Controller::getTemplatePath() )
                     ?>
                     </td>
-                    <td data-title="<?php _e( 'Activations', 'digital-license-manager' ); ?>">
-                        <span><?php esc_html_e( $timesActivated ); ?></span>
+                    <td data-title="<?php esc_html_e( 'Activations', 'digital-license-manager' ); ?>">
+                        <span><?php echo esc_html( $timesActivated ); ?></span>
                         <span>/</span>
                         <span><?php echo esc_attr( $activationsLimit ); ?></span>
                     </td>
-                    <td data-title="<?php _e( 'Expires', 'digital-license-manager' ); ?>">
+                    <td data-title="<?php esc_html_e( 'Expires', 'digital-license-manager' ); ?>">
 						<?php echo DateFormatter::toHtml( $license->getExpiresAt(), [ 'expires' => true ] ); ?>
                     </td>
                     <td>
 						<?php echo $license->isExpired() ? LicenseStatus::toHtmlExpired( $license, [ 'style' => 'inline' ] ) : LicenseStatus::toHtml( $license, [ 'style' => 'inline' ] ); ?>
                     </td>
-                    <td data-title="<?php _e( 'Actions', 'digital-license-manager' ); ?>" class="license-key-actions">
+                    <td data-title="<?php esc_html_e( 'Actions', 'digital-license-manager' ); ?>" class="license-key-actions">
 						<?php
 						foreach ( $actions as $key => $action ) {
 							$href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
 							$cssClass = isset( $action['class'] ) ? esc_attr( $action['class'] ) : '';
 							$text     = isset( $action['text'] ) ? esc_html( $action['text'] ) : '';
 							$title    = isset( $action['title'] ) ? 'title="' . esc_attr( $action['title'] ) . '"' : '';
-							echo sprintf( '<a href="%s" %s class="%s">%s</a>', $href, $title, $cssClass, $text );
+							echo wp_kses( sprintf( '<a href="%s" %s class="%s">%s</a>', $href, $title, $cssClass, $text ), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() );
 						}
 						?>
                     </td>
@@ -127,7 +127,7 @@ defined( 'ABSPATH' ) || exit; ?>
 <?php else: ?>
 
     <div class="woocommerce-Message woocommerce-Message--info woocommerce-info">
-		<?php _e( 'No licenses available yet', 'digital-license-manager' ); ?>
+		<?php esc_html_e( 'No licenses available yet', 'digital-license-manager' ); ?>
     </div>
 
 <?php endif; ?>

@@ -34,6 +34,6 @@
 ?>
 
 <div class="dlm-block-licenses-check--results dlm-block-licenses-check--results-<?php echo $colorClass; ?>">
-    <p><?php echo sprintf( __( 'The license is %s. Expiry date: %s', 'digital-license-manager' ), '<strong>'.$status.'</strong>', '<strong>'.$expiresF.'</strong>' ); ?></p>
+    <p><?php echo wp_kses( sprintf( __( 'The license is %s. Expiry date: %s', 'digital-license-manager' ), '<strong>'.$status.'</strong>', '<strong>'.$expiresF.'</strong>' ), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?></p>
     <span class="dlm-block-licenses-check--results-close" onclick="this.parentNode.remove();">&times;</span>
 </div>

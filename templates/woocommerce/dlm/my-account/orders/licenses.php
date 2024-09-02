@@ -31,7 +31,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 
 defined( 'ABSPATH' ) || exit; ?>
 
-<h2><?php esc_html_e( $heading ); ?></h2>
+<h2><?php echo wp_kses( $heading, \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?></h2>
 
 <?php do_action( 'dlm_myaccount_licenses_after_heading' ); ?>
 

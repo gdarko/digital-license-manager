@@ -41,24 +41,24 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
 
 <?php do_action( 'dlm_myaccount_single_page_start', $license, $order, $product, $date_format, $license_key ); ?>
 
-<h2><?php _e( 'License Details', 'digital-license-manager' ); ?></h2>
+<h2><?php esc_html_e( 'License Details', 'digital-license-manager' ); ?></h2>
 
 <table class="woocommerce-table woocommerce-table--order-details shop_table order_details">
     <tbody>
     <tr>
-        <th scope="row"><?php _e( 'Product', 'digital-license-manager' ); ?></th>
+        <th scope="row"><?php esc_html_e( 'Product', 'digital-license-manager' ); ?></th>
         <td>
 			<?php if ( $product ): ?>
                 <a target="_blank" href="<?php echo esc_url( get_post_permalink( $product->get_id() ) ); ?>">
                     <span><?php echo esc_attr( $product->get_name() ); ?></span>
                 </a>
 			<?php else: ?>
-                <span><?php echo sprintf( __( 'License #%s', 'digital-license-manager' ), $license->getId() ); ?></span>
+                <span><?php echo esc_html( sprintf( __( 'License #%s', 'digital-license-manager' ), $license->getId() ) ); ?></span>
 			<?php endif; ?>
         </td>
     </tr>
     <tr class="woocommerce-table__line-item license_keys">
-        <th scope="row"><?php _e( 'License key', 'digital-license-manager' ); ?></th>
+        <th scope="row"><?php esc_html_e( 'License key', 'digital-license-manager' ); ?></th>
         <td>
 	        <?php
             echo wc_get_template_html( 'dlm/my-account/licenses/partials/license-key.php', array(
@@ -68,28 +68,31 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
         </td>
     </tr>
     <tr class="woocommerce-table__line-item activations_limit">
-        <th scope="row"><?php _e( 'Activations', 'digital-license-manager' ); ?></th>
+        <th scope="row"><?php esc_html_e( 'Activations', 'digital-license-manager' ); ?></th>
         <td>
             <p>
-                <span><?php esc_html_e( $timesActivated ); ?></span>
+                <span><?php echo esc_html( $timesActivated ); ?></span>
                 <span>/</span>
                 <span><?php echo esc_attr($activationsLimit); ?></span>
             </p>
         </td>
     </tr>
     <tr class="woocommerce-table__line-item license_status">
-        <th scope="row"><?php _e( 'Status', 'digital-license-manager' ); ?></th>
+        <th scope="row"><?php esc_html_e( 'Status', 'digital-license-manager' ); ?></th>
         <td class="dlm-inline-child dlm-license-status">
 			<?php
-			echo $license->isExpired() ? LicenseStatus::toHtmlExpired( $license, [ 'style' => 'inline' ] ) : LicenseStatus::toHtml( $license, [ 'style' => 'inline' ] );
+			echo wp_kses(
+				$license->isExpired() ? LicenseStatus::toHtmlExpired( $license, [ 'style' => 'inline' ] ) : LicenseStatus::toHtml( $license, [ 'style' => 'inline' ] ),
+                \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags()
+            );
 			?>
         </td>
     </tr>
     <tr class="woocommerce-table__line-item valid_until">
-        <th scope="row"><?php _e( 'Expires', 'digital-license-manager' ); ?></th>
+        <th scope="row"><?php esc_html_e( 'Expires', 'digital-license-manager' ); ?></th>
         <td class="dlm-inline-child dlm-license-status">
 			<?php
-			echo DateFormatter::toHtml( $license->getExpiresAt(), ['expires' => true] );
+			echo wp_kses( DateFormatter::toHtml( $license->getExpiresAt(), ['expires' => true] ), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() );
 			?>
         </td>
     </tr>
@@ -102,7 +105,7 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
 
 <?php if ( ! empty( $order ) ): ?>
     <p>
-        <a href="<?php echo esc_url( $order->get_view_order_url() ); ?>" class="woocommerce-button button dlm-button"><?php _e( 'View Order', 'digital-license-manager' ); ?></a>
+        <a href="<?php echo esc_url( $order->get_view_order_url() ); ?>" class="woocommerce-button button dlm-button"><?php esc_html_e( 'View Order', 'digital-license-manager' ); ?></a>
     </p>
 <?php endif; ?>
 

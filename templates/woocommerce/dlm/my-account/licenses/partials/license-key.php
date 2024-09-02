@@ -32,6 +32,6 @@ $markup = apply_filters( 'dlm_myaccount_license_key_markup', null, $license );
     <?php if ( ! empty( $markup ) ): ?>
         <?php echo wp_kses( $markup, \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?>
     <?php else: ?>
-        <span class="dlm-myaccount-license-key-action dlm-myaccount-license-key-copy" title="<?php _e( 'Copy to clipboard', 'digital-license-manager' ); ?>"><?php echo esc_html( $license->getDecryptedLicenseKey() ); ?></span>
+        <span class="dlm-myaccount-license-key-action dlm-myaccount-license-key-copy" title="<?php esc_html_e( 'Copy to clipboard', 'digital-license-manager' ); ?>"><?php echo esc_html( $license->getDecryptedLicenseKey() ); ?></span>
     <?php endif; ?>
 </div>
