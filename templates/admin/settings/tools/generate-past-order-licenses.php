@@ -29,31 +29,31 @@ defined( 'ABSPATH' ) || exit;
 /* @var \IdeoLogix\DigitalLicenseManager\Abstracts\AbstractToolMigrator[] $plugins */
 ?>
 
-<h3><?php _e( 'Past Orders License Generator', 'digital-license-manager' ); ?></h3>
-<p><?php _e( 'This tool generates licenses for all past orders that doesn\'t have license assigned. Useful if you already have established shop and want to assign licenses to your existing orders.', 'digital-license-manager' ); ?></p>
+<h3><?php esc_html_e( 'Past Orders License Generator', 'digital-license-manager' ); ?></h3>
+<p><?php esc_html_e( 'This tool generates licenses for all past orders that doesn\'t have license assigned. Useful if you already have established shop and want to assign licenses to your existing orders.', 'digital-license-manager' ); ?></p>
 <form class="dlm-tool-form" method="POST" action="">
     <div class="dlm-tool-form-row">
-        <label for="generator"><?php _e( 'Generator', 'digital-license-manager' ); ?> <span class="required">*</span></label>
+        <label for="generator"><?php esc_html_e( 'Generator', 'digital-license-manager' ); ?> <span class="required">*</span></label>
         <select id="generator" name="generator" required>
         </select>
     </div>
     <div class="dlm-tool-form-row">
         <label>
             <input type="checkbox" name="use_product_licensing_configuration" value="1">
-            <small><?php _e( 'Use product settings where possible, e.g some products have their own licensing configuration settings.', 'digital-license-manager' ); ?></small>
+            <small><?php esc_html_e( 'Use product settings where possible, e.g some products have their own licensing configuration settings.', 'digital-license-manager' ); ?></small>
         </label>
     </div>
     <div class="dlm-tool-form-row dlm-tool-form-row-progress" style="display: none;">
         <div class="dlm-tool-progress-bar">
             <p class="dlm-tool-progress-bar-inner">&nbsp;</p>
         </div>
-        <div class="dlm-tool-progress-info"><?php _e( 'Initializing...', 'digital-license-manager' ); ?></div>
+        <div class="dlm-tool-progress-info"><?php esc_html_e( 'Initializing...', 'digital-license-manager' ); ?></div>
     </div>
     <div class="dlm-tool-form-row">
         <input type="hidden" name="id" value="<?php echo esc_attr( $tool->getId() ); ?>"/>
         <input type="hidden" name="identifier" value=""/>
         <input type="hidden" name="tool" value="<?php echo esc_attr( $tool->getSlug() ); ?>">
-        <button type="submit" class="button button-small button-primary"><?php _e( 'Process', 'digital-license-manager' ); ?></button>
+        <button type="submit" class="button button-small button-primary"><?php esc_html_e( 'Process', 'digital-license-manager' ); ?></button>
     </div>
 </form>
 

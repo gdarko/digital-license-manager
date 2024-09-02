@@ -36,19 +36,19 @@ defined( 'ABSPATH' ) || exit;
 			if ( current_user_can( 'dlm_create_licenses' ) ) {
 				include_once( 'licenses/page-add.php' );
 			} else {
-				wp_die( __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
+				wp_die( esc_html__( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
 			}
 		} elseif ( $action === 'import' ) {
 			if ( current_user_can( 'dlm_create_licenses' ) ) {
 				include_once( 'licenses/page-import.php' );
 			} else {
-				wp_die( __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
+				wp_die( esc_html__( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
 			}
 		} elseif ( $action === 'edit' ) {
 			if ( current_user_can( 'dlm_edit_licenses' ) ) {
 				include_once( 'licenses/page-edit.php' );
 			} else {
-				wp_die( __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
+				wp_die( esc_html__( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
 			}
 		}
 		?>

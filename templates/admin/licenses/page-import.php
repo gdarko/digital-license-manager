@@ -47,13 +47,13 @@ defined('ABSPATH') || exit;
                     <td>
                         <label style="display: block; margin-bottom: 1em;">
                             <input type="radio" id="bulk__type_file" class="bulk__type regular-text" name="source" value="file" checked="checked">
-                            <span><?php _e('File upload', 'digital-license-manager'); ?></span>
+                            <span><?php esc_html_e('File upload', 'digital-license-manager'); ?></span>
                         </label>
                         <label style="display: block;">
                             <input type="radio" id="bulk__type_clipboard" class="bulk__type regular-text" name="source" value="clipboard">
-                            <span><?php _e('Clipboard', 'digital-license-manager'); ?></span>
+                            <span><?php esc_html_e('Clipboard', 'digital-license-manager'); ?></span>
                         </label>
-                        <p class="description" style="margin-top: 1em;"><?php _e('You can either upload a file containing the license keys, or copy-paste them into a text field.', 'digital-license-manager'); ?></p>
+                        <p class="description" style="margin-top: 1em;"><?php esc_html_e('You can either upload a file containing the license keys, or copy-paste them into a text field.', 'digital-license-manager'); ?></p>
                     </td>
                 </tr>
 
@@ -101,7 +101,7 @@ defined('ABSPATH') || exit;
                         <input name="valid_for" id="bulk__valid_for" class="regular-text" type="text">
                         <p class="description" id="tagline-description">
                             <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
-                            <span><?php _e('Applies only for licenses purchased from stock. Total expiration time added after the license is purcahsed.', 'digital-license-manager');?></span>
+                            <span><?php esc_html_e('Applies only for licenses purchased from stock. Total expiration time added after the license is purcahsed.', 'digital-license-manager');?></span>
                         </p>
                     </td>
                 </tr>

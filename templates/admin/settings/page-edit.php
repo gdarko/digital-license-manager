@@ -151,7 +151,7 @@ $time_format = get_option( 'time_format' );
 						if ( isset( $route['deprecated'] ) && true === $route['deprecated'] ) {
 							$html .= sprintf(
 								'<code class="text-info"><strong>%s</strong></code>',
-								strtoupper( __( 'Deprecated', 'digital-license-manager' ) )
+								strtoupper( esc_html__( 'Deprecated', 'digital-license-manager' ) )
 							);
 						}
 						$html .= '</label>';

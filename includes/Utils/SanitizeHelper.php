@@ -109,13 +109,14 @@ class SanitizeHelper {
 			'q'          => array( 'cite' => true, ),
 			's'          => array(),
 			'strike'     => array(),
-			'strong'     => array(),
+			'strong'     => array( 'class' => true ),
 			'p'          => array( 'class' => true ),
 			'ul'         => array( 'class' => true ),
 			'ol'         => array( 'class' => true ),
 			'li'         => array(),
 			'span'       => array( 'class' => true, 'title' => true ),
-			'div'        => array( 'class' => true, 'style' => true )
+			'div'        => array( 'class' => true, 'style' => true ),
+			'kbd'        => array()
 		) );
 	}
 

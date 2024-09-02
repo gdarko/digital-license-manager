@@ -212,7 +212,7 @@ if ( empty( $expiresAt ) || '0000-00-00 00:00:00' === $expiresAt ) {
                         <input name="valid_for" id="valid_for" class="regular-text" type="text" value="<?php echo esc_html($license->getValidFor()); ?>">
                         <p class="description" id="tagline-description">
                             <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
-                            <span><?php _e('Applies only for licenses purchased from stock. Total expiration time added after the license is purcahsed.', 'digital-license-manager');?></span>
+                            <span><?php esc_html_e('Applies only for licenses purchased from stock. Total expiration time added after the license is purcahsed.', 'digital-license-manager');?></span>
                         </p>
                     </td>
                 </tr>

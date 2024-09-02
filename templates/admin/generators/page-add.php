@@ -64,7 +64,7 @@ defined('ABSPATH') || exit;
                         <input name="charset" id="charset" class="regular-text" type="text">
                         <p class="description" id="tagline-description">
                             <strong><?php esc_html_e('Required.', 'digital-license-manager');?></strong>
-                            <span><?php _e('i.e. for "12-AB-34-CD" the character map is <kbd>ABCD1234</kbd>.', 'digital-license-manager');?></span>
+                            <span><?php echo wp_kses( __('i.e. for "12-AB-34-CD" the character map is <kbd>ABCD1234</kbd>.', 'digital-license-manager'), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?></span>
                         </p>
                     </td>
                 </tr>
@@ -79,7 +79,7 @@ defined('ABSPATH') || exit;
                         <input name="chunks" id="chunks" class="regular-text" type="text">
                         <p class="description" id="tagline-description">
                             <strong><?php esc_html_e('Required.', 'digital-license-manager');?></strong>
-                            <span><?php _e('i.e. for "12-AB-34-CD" the number of chunks is <kbd>4</kbd>.', 'digital-license-manager');?></span>
+                            <span><?php echo wp_kses( __('i.e. for "12-AB-34-CD" the number of chunks is <kbd>4</kbd>.', 'digital-license-manager'), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?></span>
                         </p>
                     </td>
                 </tr>
@@ -94,7 +94,7 @@ defined('ABSPATH') || exit;
                         <input name="chunk_length" id="chunk_length" class="regular-text" type="text">
                         <p class="description" id="tagline-description">
                             <strong><?php esc_html_e('Required.', 'digital-license-manager');?></strong>
-                            <span><?php _e('i.e. for "12-AB-34-CD" the chunk length is <kbd>2</kbd>.', 'digital-license-manager');?></span>
+                            <span><?php echo wp_kses( __('i.e. for "12-AB-34-CD" the chunk length is <kbd>2</kbd>.', 'digital-license-manager'), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?></span>
                         </p>
                     </td>
                 </tr>
@@ -106,7 +106,7 @@ defined('ABSPATH') || exit;
                         <input name="separator" id="separator" class="regular-text" type="text">
                         <p class="description" id="tagline-description">
                             <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
-                            <span><?php _e('i.e. for "12-AB-34-CD" the separator is <kbd>-</kbd>.', 'digital-license-manager');?></span>
+                            <span><?php echo wp_kses( __('i.e. for "12-AB-34-CD" the separator is <kbd>-</kbd>.', 'digital-license-manager'), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?></span>
                         </p>
                     </td>
                 </tr>
@@ -118,7 +118,7 @@ defined('ABSPATH') || exit;
                         <input name="prefix" id="prefix" class="regular-text" type="text">
                         <p class="description" id="tagline-description">
                             <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
-                            <span><?php _e('Adds a word at the start (separator <strong>not</strong> included), i.e. <kbd><strong>PRE-</strong>12-AB-34-CD</kbd>.', 'digital-license-manager');?></span>
+                            <span><?php echo wp_kses( __('Adds a word at the start (separator <strong>not</strong> included), i.e. <kbd><strong>PRE-</strong>12-AB-34-CD</kbd>.', 'digital-license-manager'), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?></span>
                         </p>
                     </td>
                 </tr>
@@ -130,7 +130,7 @@ defined('ABSPATH') || exit;
                         <input name="suffix" id="suffix" class="regular-text" type="text">
                         <p class="description" id="tagline-description">
                             <strong><?php esc_html_e('Optional.', 'digital-license-manager');?></strong>
-                            <span><?php _e('Adds a word at the end (separator <strong>not</strong> included), i.e. <kbd>12-AB-34-CD<strong>-SUF</strong></kbd>.', 'digital-license-manager');?></span>
+                            <span><?php echo wp_kses( __('Adds a word at the end (separator <strong>not</strong> included), i.e. <kbd>12-AB-34-CD<strong>-SUF</strong></kbd>.', 'digital-license-manager'), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?></span>
                         </p>
                     </td>
                 </tr>

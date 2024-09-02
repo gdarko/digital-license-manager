@@ -122,7 +122,7 @@ defined( 'ABSPATH' ) || exit;
                 </tbody>
             </table>
 
-			<?php submit_button( __( 'Generate', 'digital-license-manager' ) ); ?>
+			<?php submit_button( esc_html__( 'Generate', 'digital-license-manager' ) ); ?>
 
         </form>
     </div>
