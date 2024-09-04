@@ -97,7 +97,7 @@ class StandardGenerator extends AbstractGenerator {
 		for ( $i = 0; $i < $chunks; $i ++ ) {
 			// add n random characters from $charset to chunk, where n = $chunkLength
 			for ( $j = 0; $j < $chunkLength; $j ++ ) {
-				$licenseString .= $charset[ rand( 0, $charsetLength - 1 ) ];
+				$licenseString .= $charset[ wp_rand( 0, $charsetLength - 1 ) ];
 			}
 			// do not add the separator on the last iteration
 			if ( $i < $chunks - 1 ) {

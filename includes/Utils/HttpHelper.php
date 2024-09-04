@@ -71,7 +71,7 @@ class HttpHelper {
 	 * Return the client user agent
 	 */
 	public static function userAgent() {
-		return isset( $_SERVER["HTTP_USER_AGENT"] ) ? $_SERVER["HTTP_USER_AGENT"] : null;
+		return isset( $_SERVER["HTTP_USER_AGENT"] ) ? sanitize_text_field( wp_unslash( $_SERVER["HTTP_USER_AGENT"] ) ) : null;
 	}
 
 	/**

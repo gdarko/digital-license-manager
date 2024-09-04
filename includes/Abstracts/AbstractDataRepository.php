@@ -481,7 +481,7 @@ class AbstractDataRepository implements DataRepositoryInterface {
 
 		if ( $this->timestamps ) {
 			$timestampKey          = $type === 'create' ? 'created_at' : 'updated_at';
-			$data[ $timestampKey ] = date( 'Y-m-d H:i:s' );
+			$data[ $timestampKey ] = gmdate( 'Y-m-d H:i:s' );
 		}
 
 		return $data;

@@ -133,10 +133,10 @@ class Generators {
 			HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s', PageSlug::GENERATORS ) ) );
 		}
 
-		$generatorId = (int) $_POST['generator_id'];
-		$amount      = (int) $_POST['amount'];
-		$status      = (int) $_POST['status'];
-		$validFor    = (int) $_POST['valid_for'];
+		$generatorId = isset( $_POST['generator_id'] ) ? (int) $_POST['generator_id'] : 0;
+		$amount      = isset( $_POST['amount'] ) ? (int) $_POST['amount'] : '';
+		$status      = isset( $_POST['status'] ) ? (int) $_POST['status'] : '';
+		$validFor    = isset( $_POST['valid_for'] ) ? (int) $_POST['valid_for'] : '';
 		$orderId     = null;
 		$productId   = null;
 

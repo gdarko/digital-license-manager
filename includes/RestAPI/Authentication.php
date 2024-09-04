@@ -89,7 +89,7 @@ class Authentication {
 	 */
 	protected function isRequestToRestApi() {
 
-		$requestUri = ! empty( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
+		$requestUri = ! empty( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 
 		if ( empty( $requestUri ) ) {
 			return false;

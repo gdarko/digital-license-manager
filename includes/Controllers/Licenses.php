@@ -369,7 +369,7 @@ class Licenses {
 		 */
 		if ( 'txt' === $ext ) {
 			$licenseKeys = file( $filePath, FILE_IGNORE_NEW_LINES );
-			unlink( $filePath );
+			wp_delete_file( $filePath );
 			if ( ! is_array( $licenseKeys ) ) {
 				NoticeFlasher::error( __( 'Invalid file content.', 'digital-license-manager' ) );
 				HttpHelper::redirect(
@@ -391,9 +391,9 @@ class Licenses {
 
 				fclose( $handle );
 			}
-			unlink( $filePath );
+			wp_delete_file( $filePath );
 		} else {
-			unlink( $filePath );
+			wp_delete_file( $filePath );
 		}
 
 		/**
@@ -539,7 +539,7 @@ class Licenses {
 			$pdf->Ln();
 		}
 
-		$pdf->Output( date( 'YmdHis' ) . '_license_keys_export.pdf', 'D' );
+		$pdf->Output( gmdate( 'YmdHis' ) . '_license_keys_export.pdf', 'D' );
 	}
 
 	/**
@@ -594,7 +594,7 @@ class Licenses {
 		}
 
 		$licenseKeys = apply_filters( 'dlm_export_license_csv', $licenseKeys );
-		$filename    = date( 'YmdHis' ) . '_license_keys_export.csv';
+		$filename    = gmdate( 'YmdHis' ) . '_license_keys_export.csv';
 
 		// Disable caching
 		status_header( 200 );

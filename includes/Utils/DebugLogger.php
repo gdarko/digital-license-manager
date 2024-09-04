@@ -95,7 +95,7 @@ class DebugLogger {
 		} else if ( ! is_string( $message ) ) {
 			return false;
 		}
-		$logTime = date( 'Y-m-d H:i:s' );
+		$logTime = gmdate( 'Y-m-d H:i:s' );
 		$logType = strtoupper( $type );
 		if ( ! $scalar ) {
 			$message = sprintf( "[%s] - %s - %s", $logTime, $logType, "DUMP:" . PHP_EOL . $message );

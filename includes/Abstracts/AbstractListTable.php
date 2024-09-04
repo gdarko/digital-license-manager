@@ -107,7 +107,7 @@ abstract class AbstractListTable extends \WP_List_Table {
 	 */
 	protected function validateNonce( $nonce ) {
 
-		$nonceValue = isset( $_REQUEST['_wpnonce'] ) ? $_REQUEST['_wpnonce'] : '';
+		$nonceValue = isset( $_REQUEST['_wpnonce'] ) ? sanitize_key( $_REQUEST['_wpnonce'] ) : '';
 
 		if ( empty( $nonceValue ) ) {
 			NoticeFlasher::error( __( 'Permission denied.', 'digital-license-manager' ) );

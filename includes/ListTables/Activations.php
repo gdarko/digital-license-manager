@@ -341,7 +341,7 @@ class Activations extends AbstractListTable {
 		if ( $item->getCreatedAt() ) {
 			$offsetSeconds = floatval( $this->gmtOffset ) * 60 * 60;
 			$timestamp     = strtotime( $item->getCreatedAt() ) + $offsetSeconds;
-			$result        = date( 'Y-m-d H:i:s', $timestamp );
+			$result        = gmdate( 'Y-m-d H:i:s', $timestamp );
 			$date          = new DateTime( $result );
 
 			$html .= sprintf(
@@ -452,7 +452,7 @@ class Activations extends AbstractListTable {
 		$count = 0;
 
 		foreach ( $recordIds as $recordId ) {
-			$new_value = 'enable' === $status ? null : date( 'Y-m-d H:i:s' );
+			$new_value = 'enable' === $status ? null : gmdate( 'Y-m-d H:i:s' );
 			LicenseActivations::instance()->update( $recordId, array( 'deactivated_at' => $new_value ) );
 			$count ++;
 		}

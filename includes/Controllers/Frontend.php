@@ -149,13 +149,13 @@ class Frontend {
 		switch ( $statusFilter ) {
 			case 'valid':
 				$query = [
-					'expires_at' => [ 'key' => 'expires_at', 'operator' => '>', 'value' => date( 'Y-m-d H:i:s', time() ) ],
+					'expires_at' => [ 'key' => 'expires_at', 'operator' => '>', 'value' => gmdate( 'Y-m-d H:i:s', time() ) ],
 					'user_id'    => [ 'key' => 'user_id', 'operator' => '=', 'value' => $currentUserId ]
 				];
 				break;
 			case 'expired':
 				$query = [
-					'expires_at' => [ 'key' => 'expires_at', 'operator' => '<', 'value' => date( 'Y-m-d H:i:s', time() ) ],
+					'expires_at' => [ 'key' => 'expires_at', 'operator' => '<', 'value' => gmdate( 'Y-m-d H:i:s', time() ) ],
 					'user_id'    => [ 'key' => 'user_id', 'operator' => '=', 'value' => $currentUserId ]
 				];
 				break;

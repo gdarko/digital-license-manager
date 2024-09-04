@@ -552,7 +552,7 @@ class Licenses extends AbstractListTable {
 		if ( ! empty( $item->getCreatedAt() ) ) {
 			$offsetSeconds = floatval( $this->gmtOffset ) * 60 * 60;
 			$timestamp     = strtotime( $item->getCreatedAt() ) + $offsetSeconds;
-			$result        = date( 'Y-m-d H:i:s', $timestamp );
+			$result        = gmdate( 'Y-m-d H:i:s', $timestamp );
 			$date          = new DateTime( $result );
 
 			$html .= sprintf(

@@ -63,7 +63,7 @@
 <p><?php esc_html_e( 'This plugin is early fork of the "License Manager for WooCommerce", initially we used it on the site codeverve.com, however because of lack of support and missing features we decided to create our own version and later released in public.', 'digital-license-manager' ); ?></p>
 <p><?php esc_html_e( 'Nowadays, the forked code has been almost completely rewritten to enable us to support the plugin, remove "code smell" and add new features.', 'digital-license-manager' ); ?></p>
 <p><?php esc_html_e( 'Some notable changes: Better license activation tracking and download tracking (for upcoming Reporting features), flexible permissions per rest api credentials (not global), Improved UI, API, Business logic.', 'digital-license-manager' ); ?></p>
-<p><?php echo esc_html( sprintf( __( '&copy; %s CodeVerve.com / Darko Gjorgjijoski', 'digital-license-manager' ), date( 'Y' ) ) ); ?></p>
+<p><?php echo esc_html( sprintf( __( '&copy; %s CodeVerve.com / Darko Gjorgjijoski', 'digital-license-manager' ), gmdate( 'Y' ) ) ); ?></p>
 
 
 

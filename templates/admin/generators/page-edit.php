@@ -55,8 +55,8 @@ defined('ABSPATH') || exit;
 
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <input type="hidden" name="action" value="dlm_edit_generators">
-            <input type="hidden" name="id" value="<?php echo esc_html(absint($_GET['id']));?>">
-		    <?php wp_nonce_field('dlm_edit_generators'); ?>
+            <input type="hidden" name="id" value="<?php echo isset( $_GET['id'] ) ? esc_html( absint( $_GET['id'] ) ) : ''; ?>">
+            <?php wp_nonce_field('dlm_edit_generators'); ?>
 
             <table class="form-table">
                 <tbody>
