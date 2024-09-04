@@ -517,7 +517,7 @@ class Licenses {
 
 		foreach ( $licenseKeys as $row ) {
 			foreach ( $row as $columnName => $col ) {
-				$pdf->SetFont( 'DejaVuSans', '', 8 );
+				$pdf->SetFont( 'Helvetica', '', 8 );
 				$width = 40;
 
 				if ( $columnName == 'id' ) {
