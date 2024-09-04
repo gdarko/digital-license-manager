@@ -47,7 +47,7 @@ class DLM_Orders_TestCase extends WP_UnitTestCase {
 		$this->assertInstanceOf( WC_Product_Simple::class, $product );
 		$this->assertEquals(  'generators', $product->get_meta( 'dlm_licensed_product_licenses_source' ) );
 
-		$unique_id = mt_rand( 100000, 200000 );
+		$unique_id = wp_rand( 100000, 200000 );
 		$user_id   = wp_insert_user( [
 			'user_login' => 'tester_' . $unique_id,
 			'user_email' => 'tester_' . $unique_id . '@woo.test',

@@ -36,7 +36,7 @@ class DLM_Helper_Generator {
 	public static function create( $args = [] ) {
 
 		$params = wp_parse_args( $args, [
-			'name'              => sprintf( 'Test Generator %d', mt_rand( 0, 100 ) ),
+			'name'              => sprintf( 'Test Generator %d', wp_rand( 0, 100 ) ),
 			'charset'           => 'ABCDEFGHUIJKLOP1234567890',
 			'chunks'            => 4,
 			'chunk_length'      => 4,

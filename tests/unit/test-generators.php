@@ -31,7 +31,7 @@ class DLM_Generators_TestCase extends WP_UnitTestCase {
 				'separator'    => '-',
 				'prefix'       => 'company_',
 				'expires_in'   => 120,
-				'created_at'   => date( 'Y-m-d H:i:s', time() - mt_rand( 2630000, 2630000 * 3 ) ),
+				'created_at'   => date( 'Y-m-d H:i:s', time() - wp_rand( 2630000, 2630000 * 3 ) ),
 			],
 		];
 	}

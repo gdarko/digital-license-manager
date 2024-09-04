@@ -23,7 +23,7 @@ class DLM_LicenseMeta_TestCase extends WP_UnitTestCase {
 				'license_key' => 'XXXX-XXXX-XXXX-1111',
 				'status'      => \IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus::DELIVERED,
 				'source'      => \IdeoLogix\DigitalLicenseManager\Enums\LicenseSource::IMPORT,
-				'created_at'  => date( 'Y-m-d H:i:s', time() - mt_rand( 2630000, 2630000 * 3 ) ),
+				'created_at'  => date( 'Y-m-d H:i:s', time() - wp_rand( 2630000, 2630000 * 3 ) ),
 				'meta' => [
 					[
 						'license_id'     => '',
@@ -42,7 +42,7 @@ class DLM_LicenseMeta_TestCase extends WP_UnitTestCase {
 				'license_key' => 'XXXX-XXXX-XXXX-XXX1',
 				'status'      => \IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus::DELIVERED,
 				'source'      => \IdeoLogix\DigitalLicenseManager\Enums\LicenseSource::API,
-				'created_at'  => date( 'Y-m-d H:i:s', time() - mt_rand( 2630000, 2630000 * 3 ) ),
+				'created_at'  => date( 'Y-m-d H:i:s', time() - wp_rand( 2630000, 2630000 * 3 ) ),
 				'meta' => [
 					[
 						'license_id'     => '',

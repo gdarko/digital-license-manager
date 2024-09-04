@@ -44,7 +44,7 @@ class DLM_Helper_Licensed_Products {
 		];
 
 		$product = DLM_WC_Helper_Product::create_simple_product( true, [
-			'name'    => sprintf( 'Software #%d', mt_rand( 1, 1000 ) ),
+			'name'    => sprintf( 'Software #%d', wp_rand( 1, 1000 ) ),
 			'weight'  => '',
 			'virtual' => true,
 		] );
