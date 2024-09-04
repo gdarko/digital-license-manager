@@ -86,27 +86,15 @@ class Licenses {
 			HttpHelper::redirect( $backUrl );
 		}
 
-		$orderId     = null;
-		$productId   = null;
-		$userId      = null;
+		$orderId     = array_key_exists( 'order_id', $_POST ) && (int) $_POST['order_id'] > 0 ? (int) $_POST['order_id'] : null;
+		$productId   = array_key_exists( 'product_id', $_POST ) && (int) $_POST['product_id'] > 0 ? (int) $_POST['product_id'] : null;
+		$userId      = array_key_exists( 'user_id', $_POST ) && (int) $_POST['user_id'] > 0 ? (int) $_POST['user_id'] : null;
 		$status      = LicenseStatus::ACTIVE;
-		$source      = isset( $_POST['source'] ) ? sanitize_text_field( $_POST['source'] ) : 0;
+		$source      = isset( $_POST['source'] ) ? sanitize_text_field( wp_unslash( $_POST['source'] ) ) : '';
 		$licenseKeys = array();
 
-		if ( array_key_exists( 'order_id', $_POST ) && $_POST['order_id'] ) {
-			$orderId = intval( $_POST['order_id'] );
-		}
-
-		if ( array_key_exists( 'product_id', $_POST ) && $_POST['product_id'] ) {
-			$productId = intval( $_POST['product_id'] );
-		}
-
-		if ( array_key_exists( 'user_id', $_POST ) && $_POST['user_id'] ) {
-			$userId = intval( $_POST['user_id'] );
-		}
-
-		if ( array_key_exists( 'status', $_POST ) && $_POST['status'] && in_array( $_POST['status'], LicenseStatus::$status ) ) {
-			$status = intval( $_POST['status'] );
+		if ( array_key_exists( 'status', $_POST ) && (int) $_POST['status'] && in_array( (int) $_POST['status'], LicenseStatus::$status ) ) {
+			$status = (int) $_POST['status'];
 		}
 
 		if ( $source === 'file' ) {
@@ -150,7 +138,7 @@ class Licenses {
 		$message  = '';
 		$callback = '';
 
-		$result['added'] = count($result['licenses']);
+		$result['added'] = count( $result['licenses'] );
 
 		if ( $result['failed'] == 0 && $result['added'] == 0 ) {
 			$callback = 'error';
@@ -197,7 +185,7 @@ class Licenses {
 			NoticeFlasher::error( __( 'Permission denied. You don\'t have access to perform this action.', 'digital-license-manager' ) );
 			HttpHelper::redirect( sprintf( 'admin.php?page=%s', PageSlug::LICENSES ) );
 		} else {
-			$licenseKey  = isset( $_POST['license_key'] ) ? sanitize_text_field( $_POST['license_key'] ) : '';
+			$licenseKey  = isset( $_POST['license_key'] ) ? sanitize_text_field( wp_unslash( $_POST['license_key'] ) ) : '';
 			$licenseData = ArrayUtil::only( $_POST, array(
 				'license_key',
 				'status',
@@ -276,12 +264,12 @@ class Licenses {
 			wp_die();
 		}
 
-		if ( $_SERVER['REQUEST_METHOD'] !== 'POST' ) {
+		if ( 'POST' !== HttpHelper::requestMethod() ) {
 			wp_die( __( 'Invalid request.', 'digital-license-manager' ) );
 		}
 
 		/** @var License $license */
-		$license = LicensesRepository::instance()->findBy( array( 'id' => intval( $_POST['id'] ) ) );
+		$license = LicensesRepository::instance()->findBy( array( 'id' => isset( $_POST['id'] ) ? intval( $_POST['id'] ) : 0 ) );
 
 		$decrypted = $license->getDecryptedLicenseKey();
 		if ( is_wp_error( $decrypted ) ) {
@@ -305,13 +293,14 @@ class Licenses {
 			wp_die();
 		}
 
-		if ( $_SERVER['REQUEST_METHOD'] != 'POST' ) {
+		if ( 'POST' != HttpHelper::requestMethod() ) {
 			wp_die( __( 'Invalid request.', 'digital-license-manager' ) );
 		}
 
-		$licenseKeysIds = array();
+		$licenseKeysIds     = array();
+		$licenseKeyIdsInput = ! empty( $_POST['ids'] ) ? array_map( 'absint', json_decode( wp_unslash( $_POST['ids'] ), true ) ) : [];
 
-		foreach ( json_decode( $_POST['ids'] ) as $licenseKeyId ) {
+		foreach ( $licenseKeyIdsInput as $licenseKeyId ) {
 			$licenseKeyId = intval( $licenseKeyId );
 			/** @var License $license */
 			$license = LicensesRepository::instance()->find( $licenseKeyId );
@@ -334,10 +323,22 @@ class Licenses {
 	 * @return array|false|null
 	 */
 	public function parseImportFile() {
+
+		if ( empty( $_FILES['file'] ) ) {
+			NoticeFlasher::error( __( 'File not uploaded. Upload TXT and CSV to proceed.', 'digital-license-manager' ) );
+			HttpHelper::redirect(
+				sprintf(
+					'admin.php?page=%s&action=import',
+					PageSlug::LICENSES
+				)
+			);
+			exit();
+		}
+
 		$tmp_file             = 'import.tmp';
 		$duplicateLicenseKeys = array();
 		$licenseKeys          = null;
-		$ext                  = pathinfo( $_FILES['file']['name'], PATHINFO_EXTENSION );
+		$ext                  = pathinfo( sanitize_text_field( $_FILES['file']['name'] ), PATHINFO_EXTENSION );
 		$mimes                = array( 'application/vnd.ms-excel', 'text/plain', 'text/csv', 'text/tsv' );
 		$fileName             = $_FILES['file']['tmp_name'];
 		$uploads              = wp_upload_dir( null, false );
@@ -431,7 +432,8 @@ class Licenses {
 	 * @return array|false|string[]
 	 */
 	public function parseImportClipboard() {
-		$data = preg_split( '/[\r\n]+/', $_POST['clipboard'] );
+
+		$data = ! empty( $_POST['clipboard'] ) ? preg_split( '/[\r\n]+/', wp_unslash( $_POST['clipboard'] ) ) : [];
 		if ( ! empty( $data ) ) {
 			$data = array_map( 'sanitize_text_field', $data );
 		}
@@ -639,15 +641,8 @@ class Licenses {
 			$errors[] = __( 'Permission denied. You don\'t have access to this resource.', 'digital-license-manager' );
 		}
 
-		$list    = isset( $_POST['dlm_export_licenses'] ) && ! empty( $_POST['dlm_export_licenses'] ) ? explode( ',', $_POST['dlm_export_licenses'] ) : array();
-		$columns = isset( $_POST['dlm_export_columns'] ) && ! empty( $_POST['dlm_export_columns'] ) ? $_POST['dlm_export_columns'] : array();
-
-		if ( ! empty( $list ) ) {
-			$list = array_map( 'intval', $list );
-		}
-		if ( ! empty( $columns ) ) {
-			$columns = array_map( 'sanitize_text_field', $_POST['dlm_export_columns'] );
-		}
+		$list    = ! empty( $_POST['dlm_export_licenses'] ) ? array_map( 'intval', explode( ',', $_POST['dlm_export_licenses'] ) ) : array();
+		$columns = ! empty( $_POST['dlm_export_columns'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['dlm_export_columns'] ) ) : array();
 
 		if ( empty( $list ) ) {
 			$errors[] = __( 'No licenses were selected.', 'digital-license-manager' );

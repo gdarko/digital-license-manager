@@ -148,12 +148,12 @@ class Generators {
 			HttpHelper::redirect( admin_url( sprintf( 'admin.php?page=%s&action=edit&id=%d', PageSlug::GENERATORS, $generatorId ) ) );
 		}
 
-		if ( array_key_exists( 'order_id', $_POST ) && $_POST['order_id'] ) {
-			$orderId = absint( $_POST['order_id'] );
+		if ( array_key_exists( 'order_id', $_POST ) && (int) $_POST['order_id'] ) {
+			$orderId = (int) $_POST['order_id'];
 		}
 
-		if ( array_key_exists( 'product_id', $_POST ) && $_POST['product_id'] ) {
-			$productId = absint( $_POST['product_id'] );
+		if ( array_key_exists( 'product_id', $_POST ) && (int) $_POST['product_id'] ) {
+			$productId = (int) $_POST['product_id'];
 		}
 
 		if ( $orderId && ! apply_filters( 'dlm_validate_order_id', true, $orderId ) ) {

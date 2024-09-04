@@ -29,6 +29,7 @@ namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 use IdeoLogix\DigitalLicenseManager\Database\Models\ApiKey;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\ApiKeys;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
 use WP_Error;
@@ -66,8 +67,7 @@ abstract class AbstractRestController extends WP_REST_Controller {
 	 * @return WP_REST_Response
 	 */
 	protected function response( $success, $data, $code = 200, $route = '' ) {
-		$req_method = isset( $_SERVER['REQUEST_METHOD'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : '';
-		return new WP_REST_Response( array( 'success' => $success, 'data' => apply_filters( 'dlm_rest_api_pre_response', $data, $req_method, $route ) ), $code );
+		return new WP_REST_Response( array( 'success' => $success, 'data' => apply_filters( 'dlm_rest_api_pre_response', $data, HttpHelper::requestMethod(), $route ) ), $code );
 	}
 
 	/**

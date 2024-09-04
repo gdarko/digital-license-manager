@@ -58,7 +58,7 @@ class Certificates {
 
 		$licenseService = new LicensesService();
 
-		$licenseKey = isset( $_POST['license'] ) ? sanitize_text_field( $_POST['license'] ) : null;
+		$licenseKey = isset( $_POST['license'] ) ? sanitize_text_field( wp_unslash(  $_POST['license'] ) ) : null;
 		$license    = $licenseService->find( $licenseKey );
 
 		$this->generateCertificatePDF( $license );

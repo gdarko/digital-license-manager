@@ -55,7 +55,7 @@ class ApiKeys {
 	 * @return void
 	 */
 	public function handle() {
-		$action = sanitize_text_field( wp_unslash( $_POST['dlm_action'] ) );
+		$action = isset( $_POST['dlm_action'] ) ? sanitize_text_field( wp_unslash( $_POST['dlm_action'] ) ) : '';
 
 		switch ( $action ) {
 			case 'edit':
@@ -102,7 +102,7 @@ class ApiKeys {
 
 		// Set the correct permissions from the form
 		if ( in_array( $_POST['permissions'], array( 'read', 'write', 'read_write' ) ) ) {
-			$permissions = sanitize_text_field( $_POST['permissions'] );
+			$permissions = sanitize_text_field( wp_unslash( $_POST['permissions'] ) );
 		}
 
 		// Check if current user can edit other users
@@ -121,7 +121,7 @@ class ApiKeys {
 			$id,
 			array(
 				'user_id'     => $userId,
-				'endpoints'   => JsonFormatter::encode( $_POST['endpoints'] ),
+				'endpoints'   => JsonFormatter::encode( array_map( 'sanitize_text_field', wp_unslash( $_POST['endpoints'] ) ) ),
 				'description' => $description,
 				'permissions' => $permissions
 			)
@@ -171,7 +171,7 @@ class ApiKeys {
 
 		// Set the correct permissions from the form
 		if ( in_array( $_POST['permissions'], array( 'read', 'write', 'read_write' ) ) ) {
-			$permissions = sanitize_text_field( $_POST['permissions'] );
+			$permissions = sanitize_text_field( wp_unslash( $_POST['permissions'] ) );
 		}
 
 		// Check if current user can edit other users
@@ -195,7 +195,7 @@ class ApiKeys {
 				'user_id'         => $userId,
 				'description'     => $description,
 				'permissions'     => $permissions,
-				'endpoints'       => JsonFormatter::encode( $_POST['endpoints'] ),
+				'endpoints'       => JsonFormatter::encode( array_map( 'sanitize_text_field', wp_unslash( $_POST['endpoints'] ) ) ),
 				'consumer_key'    => StringHasher::make( $consumerKey ),
 				'consumer_secret' => $consumerSecret,
 				'truncated_key'   => substr( $consumerKey, - 7 ),

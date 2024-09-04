@@ -760,7 +760,7 @@ class Licenses extends AbstractListTable {
 
 		// Applies the view filter
 		if ( $this->isViewFilterActive() ) {
-			$where['status'] = (int) $_GET['status'];
+			$where['status'] = isset( $_GET['status'] ) ? (int) $_GET['status'] : 0;
 		}
 
 		// Applies the search box filter
@@ -914,12 +914,12 @@ class Licenses extends AbstractListTable {
 
 		if ( $type === 'PDF' ) {
 			$this->validateNonce( 'export_pdf' );
-			do_action( 'dlm_export_license_keys_pdf', array_map( 'intval', (array) $_REQUEST['id'] ) );
+			do_action( 'dlm_export_license_keys_pdf', isset( $_REQUEST['id'] ) ? array_map( 'intval', (array) $_REQUEST['id'] ) : [] );
 		}
 
 		if ( $type === 'CSV' ) {
 			$this->validateNonce( 'export_csv' );
-			do_action( 'dlm_export_license_keys_csv', array_map( 'intval', (array) $_REQUEST['id'] ) );
+			do_action( 'dlm_export_license_keys_csv', isset( $_REQUEST['id'] ) ? array_map( 'intval', (array) $_REQUEST['id'] ) : [] );
 		}
 	}
 

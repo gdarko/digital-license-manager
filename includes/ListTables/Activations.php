@@ -119,9 +119,9 @@ class Activations extends AbstractListTable {
 
 		// Applies the view filter
 		if ( ! empty( $status ) || $this->isViewFilterActive() ) {
-			if ( empty( $status ) ) {
-				$status = sanitize_text_field( $_GET['status'] );
-			}
+
+			$status = empty( $status ) && ! empty( $_GET['status'] ) ? sanitize_text_field( wp_unslash( $_GET['status'] ) ) : '';
+
 			if ( 'inactive' === $status ) {
 				$where['deactivated_at'] = [
 					'operator' => "IS",

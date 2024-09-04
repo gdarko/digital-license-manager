@@ -30,6 +30,7 @@ use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
 use IdeoLogix\DigitalLicenseManager\Settings;
+use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -87,17 +88,17 @@ class MyAccount {
 			return;
 		}
 
-		if ( ! isset( $_SERVER['REQUEST_METHOD'] ) || $_SERVER['REQUEST_METHOD'] !== 'POST' ) {
+		if ( 'POST' != HttpHelper::requestMethod() ) {
 			return;
 		}
 
-		$action              = isset( $_POST['dlm_action'] ) ? sanitize_text_field( $_POST['dlm_action'] ) : '';
+		$action              = isset( $_POST['dlm_action'] ) ? sanitize_text_field( wp_unslash( $_POST['dlm_action'] ) ) : '';
 		$whitelisted_actions = apply_filters( 'dlm_myaccount_whitelisted_actions', array() );
 		if ( empty( $whitelisted_actions ) || ! in_array( $action, $whitelisted_actions ) ) {
 			return;
 		}
 
-		$nonce = isset( $_POST['dlm_nonce'] ) ? sanitize_text_field( $_POST['dlm_nonce'] ) : '';
+		$nonce = isset( $_POST['dlm_nonce'] ) ? sanitize_key( $_POST['dlm_nonce'] ) : '';
 		if ( ! wp_verify_nonce( $nonce, 'dlm_account' ) ) {
 			wp_die( 'Link has expired. Please try again later.', 'digital-license-manager' );
 		}

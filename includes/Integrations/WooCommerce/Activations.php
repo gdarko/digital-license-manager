@@ -92,7 +92,7 @@ class Activations {
 
 		if ( isset( $_POST['license_activation_delete'] ) && (int) $_POST['license_activation_delete'] ) {
 
-			$token   = isset( $_POST['activation'] ) && ! empty( $_POST['activation'] ) ? sanitize_text_field( $_POST['activation'] ) : null;
+			$token   = isset( $_POST['activation'] ) && ! empty( $_POST['activation'] ) ? sanitize_text_field( wp_unslash( $_POST['activation'] ) ) : null;
 			$service = new LicensesService();
 
 			$result = false;
@@ -101,11 +101,11 @@ class Activations {
 			}
 
 			if ( isset( $_POST['license'] ) ) {
-				$licenseKey = isset( $_POST['license'] ) ? sanitize_text_field( $_POST['license'] ) : null;
+				$licenseKey = isset( $_POST['license'] ) ? sanitize_text_field( wp_unslash( $_POST['license'] ) ) : null;
 				$license    = $service->find( $licenseKey );
 				$licenseId  = is_wp_error( $license ) ? '' : $license->getId();
 			} else {
-				$licenseId = isset( $_POST['license_id'] ) ? sanitize_text_field( $_POST['license_id'] ) : null;
+				$licenseId = isset( $_POST['license_id'] ) ? intval( $_POST['license_id'] ) : null;
 			}
 
 			if ( is_wp_error( $result ) ) {
@@ -132,13 +132,13 @@ class Activations {
 
 		$service      = new LicensesService();
 		if ( isset( $_POST['license'] ) ) {
-			$licenseKey = isset( $_POST['license'] ) ? sanitize_text_field( $_POST['license'] ) : null;
+			$licenseKey = isset( $_POST['license'] ) ? sanitize_text_field( wp_unslash( $_POST['license'] ) ) : null;
 			$license    = $service->find( $licenseKey );
 		} else {
-			$licenseId = isset( $_POST['license_id'] ) ? sanitize_text_field( $_POST['license_id'] ) : null;
+			$licenseId = isset( $_POST['license_id'] ) ? intval( $_POST['license_id'] ) : null;
 			$license   = $service->findById( $licenseId );
 		}
-		$licenseLabel = isset( $_POST['label'] ) ? sanitize_text_field( $_POST['label'] ) : null;
+		$licenseLabel = isset( $_POST['label'] ) ? sanitize_text_field( wp_unslash( $_POST['label'] ) ) : null;
 
 		if ( is_wp_error( $license ) ) {
 			$this->addNotice( 'error', $license->get_error_message() );

@@ -17,16 +17,16 @@ class DLM_Licenses_TestCase extends WP_UnitTestCase {
 				'license_key' => 'XXXX-XXXX-XXXX-XXX1',
 				'status'      => \IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus::ACTIVE,
 				'source'      => \IdeoLogix\DigitalLicenseManager\Enums\LicenseSource::API,
-				'created_at'  => date( 'Y-m-d H:i:s', time() - wp_rand( 2630000, 2630000 * 3 ) ),
+				'created_at'  => gmdate( 'Y-m-d H:i:s', time() - wp_rand( 2630000, 2630000 * 3 ) ),
 			],
 			[
 				'valid_for'         => 120,
 				'license_key'       => 'XXXX-XXXX-XXXX-XX11',
-				'expires_at'        => date( 'Y-m-d H:i:s', time() + wp_rand( 2630000, 2630000 * 2 ) ),
+				'expires_at'        => gmdate( 'Y-m-d H:i:s', time() + wp_rand( 2630000, 2630000 * 2 ) ),
 				'status'            => \IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus::ACTIVE,
 				'source'            => \IdeoLogix\DigitalLicenseManager\Enums\LicenseSource::API,
 				'activations_limit' => wp_rand( 1, 3 ),
-				'created_at'        => date( 'Y-m-d H:i:s', time() - wp_rand( 2630000, 2630000 * 3 ) ),
+				'created_at'        => gmdate( 'Y-m-d H:i:s', time() - wp_rand( 2630000, 2630000 * 3 ) ),
 			],
 			[
 				'valid_for'         => 90,
@@ -34,16 +34,16 @@ class DLM_Licenses_TestCase extends WP_UnitTestCase {
 				'status'            => \IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus::ACTIVE,
 				'source'            => \IdeoLogix\DigitalLicenseManager\Enums\LicenseSource::API,
 				'activations_limit' => 5,
-				'created_at'        => date( 'Y-m-d H:i:s', time() - wp_rand( 2630000, 2630000 * 3 ) ),
-				'expires_at'        => date( 'Y-m-d H:i:s', time() - 16000 ),
+				'created_at'        => gmdate( 'Y-m-d H:i:s', time() - wp_rand( 2630000, 2630000 * 3 ) ),
+				'expires_at'        => gmdate( 'Y-m-d H:i:s', time() - 16000 ),
 			],
 			[
 				'license_key'       => 'XXXX-XXXX-XXXX-1111',
-				'expires_at'        => date( 'Y-m-d H:i:s', time() + wp_rand( 2630000, 2630000 * 2 ) ),
+				'expires_at'        => gmdate( 'Y-m-d H:i:s', time() + wp_rand( 2630000, 2630000 * 2 ) ),
 				'status'            => \IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus::DELIVERED,
 				'source'            => \IdeoLogix\DigitalLicenseManager\Enums\LicenseSource::IMPORT,
 				'activations_limit' => 1,
-				'created_at'        => date( 'Y-m-d H:i:s', time() - wp_rand( 2630000, 2630000 * 3 ) ),
+				'created_at'        => gmdate( 'Y-m-d H:i:s', time() - wp_rand( 2630000, 2630000 * 3 ) ),
 				'activations'       => [
 					[
 						'token'          => $this->tokens[0],
@@ -52,8 +52,8 @@ class DLM_Licenses_TestCase extends WP_UnitTestCase {
 						'source'         => \IdeoLogix\DigitalLicenseManager\Enums\ActivationSource::WEB,
 						'ip_address'     => '10.10.10.1',
 						'user_agent'     => 'Chrome user agent',
-						'created_at'     => date( 'Y-m-d H:i:s', time() - 150 ),
-						'deactivated_at' => date( 'Y-m-d H:i:s', time() )
+						'created_at'     => gmdate( 'Y-m-d H:i:s', time() - 150 ),
+						'deactivated_at' => gmdate( 'Y-m-d H:i:s', time() )
 					],
 					[
 						'token'      => $this->tokens[1],
@@ -62,7 +62,7 @@ class DLM_Licenses_TestCase extends WP_UnitTestCase {
 						'source'     => \IdeoLogix\DigitalLicenseManager\Enums\ActivationSource::WEB,
 						'ip_address' => '10.10.10.2',
 						'user_agent' => 'Mozila user agent',
-						'created_at' => date( 'Y-m-d H:i:s', time() - 110 ),
+						'created_at' => gmdate( 'Y-m-d H:i:s', time() - 110 ),
 					],
 				]
 			]

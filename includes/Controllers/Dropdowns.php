@@ -71,7 +71,7 @@ class Dropdowns {
 			wp_die();
 		}
 
-		$type    = (string) sanitize_text_field( wp_unslash( $_REQUEST['type'] ) );
+		$type    = isset( $_REQUEST['type'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['type'] ) ) : '';
 		$page    = 1;
 		$limit   = 6;
 		$results = array();

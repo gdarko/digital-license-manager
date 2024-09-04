@@ -353,7 +353,7 @@ class Settings {
 	 */
 	public function render() {
 
-		$currentTab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'general';
+		$currentTab = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'general';
 
 		if ( $currentTab == 'rest_api' ) {
 			// Add screen option.
@@ -566,8 +566,8 @@ class Settings {
 
 			$this->loadTools();
 
-			$tool_slug = isset( $_POST['tool'] ) ? sanitize_text_field( $_POST['tool'] ) : null;
-			$tool_id   = isset( $_POST['id'] ) ? sanitize_text_field( $_POST['id'] ) : null;
+			$tool_slug = isset( $_POST['tool'] ) ? sanitize_text_field( wp_unslash( $_POST['tool'] ) ) : null;
+			$tool_id   = isset( $_POST['id'] ) ? sanitize_text_field( wp_unslash( $_POST['id'] ) ) : null;
 			if ( is_null( $tool_slug ) || ! isset( $this->tools[ $tool_slug ] ) ) {
 				wp_send_json_error( [ 'message' => __( 'Unknown tool selected.' ) ] );
 				exit;

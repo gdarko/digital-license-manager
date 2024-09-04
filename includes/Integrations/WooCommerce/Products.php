@@ -178,11 +178,11 @@ class Products {
 		$product->update_meta_data( 'dlm_licensed_product_delivered_quantity', $deliveredQuantity ? $deliveredQuantity : 1 );
 
 		// Update the licenses source, according to field.
-		$licensesSource = ! empty( $_POST['dlm_licensed_product_licenses_source'] ) ? sanitize_text_field( $_POST['dlm_licensed_product_licenses_source'] ) : 'stock';
+		$licensesSource = ! empty( $_POST['dlm_licensed_product_licenses_source'] ) ? sanitize_text_field( wp_unslash( $_POST['dlm_licensed_product_licenses_source'] ) ) : 'stock';
 		$product->update_meta_data( 'dlm_licensed_product_licenses_source', $licensesSource );
 
 		// Update the max activations behavor, according to field
-		$maxActivationsBehavior = ! empty( $_POST['dlm_licensed_product_activations_behavior'] ) ? sanitize_text_field( $_POST['dlm_licensed_product_activations_behavior'] ) : 'standard';
+		$maxActivationsBehavior = ! empty( $_POST['dlm_licensed_product_activations_behavior'] ) ? sanitize_text_field( wp_unslash( $_POST['dlm_licensed_product_activations_behavior'] ) ) : 'standard';
 		$product->update_meta_data( 'dlm_licensed_product_activations_behavior', $maxActivationsBehavior );
 
 
@@ -269,7 +269,7 @@ class Products {
 		$variation->update_meta_data( 'dlm_licensed_product_delivered_quantity', $deliveredQuantity ? $deliveredQuantity : 1 );
 
 		// Update the licenses source, according to field.
-		$licensesSource = ! empty( $_POST['dlm_licensed_product_licenses_source'][ $i ] ) ? sanitize_text_field( $_POST['dlm_licensed_product_licenses_source'][ $i ] ) : 'stock';
+		$licensesSource = ! empty( $_POST['dlm_licensed_product_licenses_source'][ $i ] ) ? sanitize_text_field( wp_unslash( $_POST['dlm_licensed_product_licenses_source'][ $i ] ) ) : 'stock';
 		$variation->update_meta_data( 'dlm_licensed_product_licenses_source', $licensesSource );
 
 		// Update the assigned generator id, according to select field.

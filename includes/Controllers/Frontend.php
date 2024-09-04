@@ -54,8 +54,8 @@ class Frontend {
 			exit;
 		}
 
-		$licenseKey = isset( $_POST['licenseKey'] ) ? sanitize_text_field( $_POST['licenseKey'] ) : '';
-		$email      = isset( $_POST['email'] ) ? sanitize_text_field( $_POST['email'] ) : '';
+		$licenseKey = isset( $_POST['licenseKey'] ) ? sanitize_text_field( wp_unslash( $_POST['licenseKey'] ) ) : '';
+		$email      = isset( $_POST['email'] ) ? sanitize_text_field( wp_unslash(  $_POST['email'] ) ) : '';
 		$emailCheck = isset( $_POST['echeck'] ) ? (int) $_POST['echeck'] : 0;
 
 		$service = new LicensesService();

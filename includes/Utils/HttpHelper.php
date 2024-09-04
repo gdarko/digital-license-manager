@@ -59,7 +59,7 @@ class HttpHelper {
 		 * When the site is behind CloudFlare it returns comma separated IP addresses,
 		 * In this case, we only need the first ip address to be returned.
 		 */
-		if ( ! is_null( $addr ) && strpos( $addr, ',', ) !== false ) {
+		if ( ! is_null( $addr ) && strpos( $addr, ',' ) !== false ) {
 			$addr = trim( current( preg_split( '/,/', sanitize_text_field( wp_unslash( $addr ) ) ) ) );
 		}
 
@@ -69,9 +69,26 @@ class HttpHelper {
 
 	/**
 	 * Return the client user agent
+	 * @return string|null
 	 */
 	public static function userAgent() {
 		return isset( $_SERVER["HTTP_USER_AGENT"] ) ? sanitize_text_field( wp_unslash( $_SERVER["HTTP_USER_AGENT"] ) ) : null;
+	}
+
+	/**
+	 * Return's the request method
+	 * @return string|null
+	 */
+	public static function requestMethod() {
+		return isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) ) : null;
+	}
+
+	/**
+	 * Returns the request uri
+	 * @return string|null
+	 */
+	public static function requestUri() {
+		return isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : null;
 	}
 
 	/**

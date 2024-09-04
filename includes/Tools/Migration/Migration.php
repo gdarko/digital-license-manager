@@ -169,7 +169,7 @@ class Migration extends AbstractTool {
 	 * @return string
 	 */
 	public function getIdentifier() {
-		return isset( $_REQUEST['identifier'] ) ? sanitize_text_field( $_REQUEST['identifier'] ) : '';
+		return isset( $_REQUEST['identifier'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['identifier'] ) ) : '';
 	}
 
 	/**

@@ -424,7 +424,7 @@ class Menus {
 			return $action;
 		}
 
-		return sanitize_text_field( $_GET['action'] );
+		return sanitize_text_field( wp_unslash( $_GET['action'] ) );
 	}
 
 }

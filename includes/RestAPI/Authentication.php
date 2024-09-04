@@ -30,6 +30,7 @@ namespace IdeoLogix\DigitalLicenseManager\RestAPI;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractRestController;
 use IdeoLogix\DigitalLicenseManager\Database\Models\ApiKey;
 use IdeoLogix\DigitalLicenseManager\Settings;
+use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
 use stdClass;
 use WP_Error;
 use WP_REST_Request;
@@ -89,7 +90,7 @@ class Authentication {
 	 */
 	protected function isRequestToRestApi() {
 
-		$requestUri = ! empty( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+		$requestUri = HttpHelper::requestUri();
 
 		if ( empty( $requestUri ) ) {
 			return false;
