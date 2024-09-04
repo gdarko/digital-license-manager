@@ -49,7 +49,7 @@ class Stock {
 			'handleCustomQueryVars'
 		), 10, 2 );
 
-		add_action( 'dlm_license_deleted', [ $this, 'onLicenseDeleted' ], 10, 1 );
+		add_action( 'dlm_object_deleted', [ $this, 'onLicenseDeleted' ], 10, 1 );
 		add_action( 'dlm_licenses_created', [ $this, 'onLicensesCreated' ], 10, 1 );
 	}
 
@@ -240,6 +240,11 @@ class Stock {
 	 * @return void
 	 */
 	public function onLicenseDeleted( $license ) {
+
+		if ( ! $license instanceof License ) {
+			return;
+		}
+
 		$productId     = (int) $license->getProductId();
 		$licneseStatus = (int) $license->getStatus();
 

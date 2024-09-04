@@ -36,6 +36,7 @@ use IdeoLogix\DigitalLicenseManager\Controllers\Menus as MenuController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Settings as SettingsController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Notices as NoticeController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Frontend as FrontendController;
+use IdeoLogix\DigitalLicenseManager\Database\Integrity;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller as WooCommerceController;
 use IdeoLogix\DigitalLicenseManager\Integrations\WCPIPS\Controller as WCPIPSController;
 use IdeoLogix\DigitalLicenseManager\RestAPI\Setup as RestController;
@@ -538,6 +539,8 @@ class Boot {
 		add_action( 'wp_enqueue_scripts', array( $this, 'publicEnqueueScripts' ), 11 );
 		add_filter( 'plugin_row_meta', array( $this, 'pluginRowMeta' ), 10, 2 );
 		add_filter( 'plugin_action_links_' . DLM_PLUGIN_BASENAME, array( $this, 'pluginActionLinks' ), 10, 1 );
+
+		Integrity::instance();
 	}
 
 	/**

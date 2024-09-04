@@ -54,7 +54,7 @@ class Setup {
 	/**
 	 * The minimum PHP version
 	 */
-	const MIN_PHP_VERSION = '5.6.0';
+	const MIN_PHP_VERSION = '7.0.0';
 
 	/**
 	 * Executed when plugin is installed.

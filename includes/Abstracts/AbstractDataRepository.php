@@ -92,7 +92,10 @@ class AbstractDataRepository implements DataRepositoryInterface {
 		if ( empty( $insert_id ) ) {
 			return null;
 		} else {
-			return $this->find( $insert_id );
+			$created = $this->find( $insert_id );
+			do_action( 'dlm_object_created', $created, $this->dataTable, $this->dataModel );
+
+			return $created;
 		}
 	}
 
@@ -246,8 +249,9 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 */
 	public function update( $id, $data ) {
 
-		$existing = $this->find( $id );
-		$changes  = 0;
+		$existing   = $this->find( $id );
+		$old_object = clone $existing;
+		$changes    = 0;
 
 		if ( ! $existing ) {
 			return false;
@@ -270,7 +274,9 @@ class AbstractDataRepository implements DataRepositoryInterface {
 		}
 
 		if ( $updated ) {
-			return $this->find( $id );
+			$new_object = $this->find( $id );
+			do_action( 'dlm_object_updated', $new_object, $old_object, $this->dataTable, $this->dataModel );
+			return $new_object;
 		}
 
 		return $updated;
@@ -287,7 +293,17 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	 * @throws \Exception
 	 */
 	public function updateBy( $where, $data ) {
-		$updated = $this->updateWhere( $where, $data );
+
+		$old_objects = $this->findAllBy( $where, $this->primaryKey, 'ASC' );
+		$updated     = $this->updateWhere( $where, $data );
+
+		if ( $updated ) {
+			$total_rows  = count( $old_objects );
+			$new_objects = $this->findAllBy( $where, $this->primaryKey, 'ASC' );
+			for ( $i = 0; $i < $total_rows; $i ++ ) {
+				do_action( 'dlm_object_updated', $new_objects[ $i ], $old_objects[ $i ], $this->dataTable, $this->dataModel );
+			}
+		}
 
 		return $updated === 0 ? 1 : $updated; // if zero rows are affected, count it as updated.
 	}
@@ -306,10 +322,31 @@ class AbstractDataRepository implements DataRepositoryInterface {
 		}
 
 		try {
-			$builder = $this->buildQuery( [] );
-			$where   = $this->buildWhere( $where );
+			$builder  = $this->buildQuery( [] );
+			$where    = $this->buildWhere( $where );
+			$records  = $this->get( $where );
+			$affected = $builder->where( $where )->delete();
 
-			return $builder->where( $where )->delete();
+			$deleted = [];
+			if ( $affected < count( $records ) ) {
+				$primr_key = $this->primaryKey;
+				$leftovers = array_map( function ( $item ) use ($primr_key) {
+					return $item->get( $primr_key );
+				}, $this->get( $where ) );
+				foreach ( $records as $record ) {
+					if ( ! in_array( $record->get( $this->primaryKey ), $leftovers ) ) { // If the object is deleted, then it wont be present in the leftovers array.
+						$deleted [] = $record;
+					}
+				}
+			} else {
+				$deleted = $records;
+			}
+
+			foreach ( $deleted as $deleted_object ) {
+				do_action( 'dlm_object_deleted', $deleted_object, $this->dataTable, $this->dataModel );
+			}
+
+			return $affected;
 
 		} catch ( \Exception $e ) {
 			return false;

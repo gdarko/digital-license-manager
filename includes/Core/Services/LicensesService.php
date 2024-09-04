@@ -529,7 +529,6 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		} else {
 			LicenseActivations::instance()->deleteBy( [ 'license_id' => $oldLicense->getId() ] );
 			LicenseMetaRepository::instance()->deleteBy( [ 'license_id' => $oldLicense->getId() ] );
-			do_action( 'dlm_license_deleted', $oldLicense );
 		}
 
 		return true;
