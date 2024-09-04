@@ -262,20 +262,21 @@ class Menus {
 		if ( $action === 'edit' ) {
 
 			/** @var License $license */
-			$license   = Licenses::instance()->find( absint( $_GET['id'] ) );
-			$expiresAt = null;
+			$license_id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
+			$license    = Licenses::instance()->find( $license_id );
+			$expiresAt  = null;
+
+			if ( ! $license ) {
+				wp_die( __( 'Invalid license key ID', 'digital-license-manager' ) );
+			}
 
 			if ( $license->getExpiresAt() ) {
 				try {
-					$expiresAtDateTime = \DateTime::createFromFormat('Y-m-d H:i:s', $license->getExpiresAt(), new \DateTimeZone('UTC'));
+					$expiresAtDateTime = \DateTime::createFromFormat( 'Y-m-d H:i:s', $license->getExpiresAt(), new \DateTimeZone( 'UTC' ) );
 					$expiresAt         = $expiresAtDateTime->format( 'Y-m-d H:i:s' );
 				} catch ( \Exception $e ) {
 					$expiresAt = null;
 				}
-			}
-
-			if ( ! $license ) {
-				wp_die( __( 'Invalid license key ID', 'digital-license-manager' ) );
 			}
 
 			$licenseKey = $license->getDecryptedLicenseKey();

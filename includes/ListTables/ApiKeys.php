@@ -343,10 +343,7 @@ class ApiKeys extends AbstractListTable {
 	 */
 	protected function handleDelete() {
 
-		$keys = isset( $_REQUEST['id'] ) ? (array) $_REQUEST['id'] : array();
-		if ( ! empty( $keys ) ) {
-			$keys = array_map( 'intval', $keys );
-		}
+		$keys = isset( $_REQUEST['id'] ) ? array_map( 'intval', (array) $_REQUEST['id'] ) : array();
 
 		if ( $count = ApiKeysRepository::instance()->delete( $keys ) ) {
 			NoticeFlasher::success( sprintf( __( '%d API key(s) permanently deleted.', 'digital-license-manager' ), $count ) );

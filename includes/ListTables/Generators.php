@@ -79,8 +79,8 @@ class Generators extends AbstractListTable {
 
 		$offset = ( (int) $pageNumber - 1 ) * (int) $perPage;
 
-		$order_by = ! empty( $_REQUEST['orderby'] ) ? sanitize_text_field( $_REQUEST['orderby'] ) : 'created_at';
-		$order    = ! empty( $_REQUEST['order'] ) ? sanitize_text_field( $_REQUEST['order'] ) : 'desc';
+		$order_by = ! empty( $_REQUEST['orderby'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['orderby'] ) ) : 'created_at';
+		$order    = ! empty( $_REQUEST['order'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['order'] ) ) : 'desc';
 
 
 		return GeneratorsRepository::instance()->get( $where, $order_by, $order, $offset, $perPage );
@@ -366,10 +366,7 @@ class Generators extends AbstractListTable {
 	 */
 	private function handleDelete() {
 
-		$selectedGenerators = isset( $_REQUEST['id'] ) ? (array) $_REQUEST['id'] : array();
-		if ( ! empty( $selectedGenerators ) ) {
-			$selectedGenerators = array_map( 'intval', $selectedGenerators );
-		}
+		$selectedGenerators = isset( $_REQUEST['id'] ) ? array_map( 'intval', (array) $_REQUEST['id'] ) : array();
 		$generatorsToDelete = array();
 		foreach ( $selectedGenerators as $generatorId ) {
 

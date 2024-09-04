@@ -82,7 +82,7 @@ class JsonFormatter {
 		if ( is_scalar( $data ) ) {
 			return $data;
 		} else {
-			return json_encode( $data );
+			return wp_json_encode( $data );
 		}
 	}
 

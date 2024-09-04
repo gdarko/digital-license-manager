@@ -90,7 +90,7 @@ class Licenses extends AbstractListTable {
 	 */
 	protected function get_views() {
 		$statusLinks = array();
-		$current     = ! empty( $_REQUEST['status'] ) ? $_REQUEST['status'] : 'all';
+		$current     = ! empty( $_REQUEST['status'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['status'] ) ) : 'all';
 
 		// All link
 		$class              = $current == 'all' ? ' class="current"' : '';
@@ -764,8 +764,9 @@ class Licenses extends AbstractListTable {
 		}
 
 		// Applies the search box filter
-		if ( array_key_exists( 's', $_REQUEST ) && $_REQUEST['s'] ) {
-			$where['hash'] = StringHasher::license( sanitize_text_field( $_REQUEST['s'] ) );
+        $search_query = isset( $_REQUEST['s'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ) : '';
+		if ( $search_query ) {
+			$where['hash'] = StringHasher::license( $search_query );
 		}
 
 		if ( isset( $_REQUEST['order-id'] ) && is_numeric( $_REQUEST['order-id'] ) ) {
@@ -784,8 +785,8 @@ class Licenses extends AbstractListTable {
 
 		return [
 			'where'   => $where,
-			'orderby' => empty( $_REQUEST['orderby'] ) ? 'created_at' : sanitize_text_field( $_REQUEST['orderby'] ),
-			'order'   => empty( $_REQUEST['order'] ) ? 'DESC' : sanitize_text_field( $_REQUEST['order'] ),
+			'orderby' => empty( $_REQUEST['orderby'] ) ? 'created_at' : sanitize_text_field( wp_unslash( $_REQUEST['orderby'] ) ),
+			'order'   => empty( $_REQUEST['order'] ) ? 'DESC' : sanitize_text_field( wp_unslash( $_REQUEST['order'] ) ),
 		];
 
 	}
@@ -913,12 +914,12 @@ class Licenses extends AbstractListTable {
 
 		if ( $type === 'PDF' ) {
 			$this->validateNonce( 'export_pdf' );
-			do_action( 'dlm_export_license_keys_pdf', (array) $_REQUEST['id'] );
+			do_action( 'dlm_export_license_keys_pdf', array_map( 'intval', (array) $_REQUEST['id'] ) );
 		}
 
 		if ( $type === 'CSV' ) {
 			$this->validateNonce( 'export_csv' );
-			do_action( 'dlm_export_license_keys_csv', (array) $_REQUEST['id'] );
+			do_action( 'dlm_export_license_keys_csv', array_map( 'intval', (array) $_REQUEST['id'] ) );
 		}
 	}
 

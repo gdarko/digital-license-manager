@@ -152,8 +152,8 @@ class Activations extends AbstractListTable {
 
 		return [
 			'where'   => $where,
-			'orderby' => empty( $_REQUEST['orderby'] ) ? 'created_at' : sanitize_text_field( $_REQUEST['orderby'] ),
-			'order'   => empty( $_REQUEST['order'] ) ? 'DESC' : sanitize_text_field( $_REQUEST['order'] ),
+			'orderby' => empty( $_REQUEST['orderby'] ) ? 'created_at' : sanitize_text_field( wp_unslash( $_REQUEST['orderby'] ) ),
+			'order'   => empty( $_REQUEST['order'] ) ? 'DESC' : sanitize_text_field( wp_unslash( $_REQUEST['order'] ) ),
 		];
 	}
 
@@ -445,10 +445,7 @@ class Activations extends AbstractListTable {
 		$this->validateNonce( $nonce );
 		$this->validateSelection();
 
-		$recordIds = isset( $_REQUEST['id'] ) ? (array) $_REQUEST['id'] : array();
-		if ( ! empty( $recordIds ) ) {
-			$recordIds = array_map( 'intval', $recordIds );
-		}
+		$recordIds = isset( $_REQUEST['id'] ) ? array_map( 'intval', (array) $_REQUEST['id'] ) : array();
 		$count = 0;
 
 		foreach ( $recordIds as $recordId ) {
@@ -484,7 +481,7 @@ class Activations extends AbstractListTable {
 	 */
 	protected function get_views() {
 		$statusLinks = array();
-		$current     = ! empty( $_REQUEST['status'] ) ? $_REQUEST['status'] : 'all';
+		$current     = ! empty( $_REQUEST['status'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['status'] ) ) : 'all';
 
 		$total_active   = $this->getRecordsCount( 'active' );
 		$total_inactive = $this->getRecordsCount( 'inactive' );
@@ -534,10 +531,7 @@ class Activations extends AbstractListTable {
 		$this->validateNonce( 'delete' );
 		$this->validateSelection();
 
-		$recordIds = isset( $_REQUEST['id'] ) ? (array) $_REQUEST['id'] : array();
-		if ( ! empty( $recordIds ) ) {
-			$recordIds = array_map( 'intval', $recordIds );
-		}
+		$recordIds = isset( $_REQUEST['id'] ) ? array_map( 'intval', (array) $_REQUEST['id'] ) : array();
 		$count = 0;
 
 		foreach ( $recordIds as $recordId ) {

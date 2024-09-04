@@ -241,7 +241,7 @@ class GeneratePastOrderLicenses extends AbstractTool {
 
 				if ( $page === $results->max_num_pages ) {
 
-					error_log( 'Last item processed. Data deleted: ' . json_encode( $this->getData() ) );
+					error_log( 'Last item processed. Data deleted: ' . wp_json_encode( $this->getData() ) );
 					$this->deleteData();
 				}
 
