@@ -336,22 +336,7 @@ class Activations extends AbstractListTable {
 	 * @throws Exception
 	 */
 	public function column_created_at( $item ) {
-		$html = '';
-
-		if ( $item->getCreatedAt() ) {
-			$offsetSeconds = floatval( $this->gmtOffset ) * 60 * 60;
-			$timestamp     = strtotime( $item->getCreatedAt() ) + $offsetSeconds;
-			$result        = gmdate( 'Y-m-d H:i:s', $timestamp );
-			$date          = new DateTime( $result );
-
-			$html .= sprintf(
-				'<span><strong>%s, %s</strong></span>',
-				$date->format( $this->dateFormat ),
-				$date->format( $this->timeFormat )
-			);
-		}
-
-		return $html;
+		return $this->format_timestamp( $item->getCreatedAt() );
 	}
 
 

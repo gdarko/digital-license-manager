@@ -165,4 +165,31 @@ abstract class AbstractListTable extends \WP_List_Table {
 		<?php
 	}
 
+	/**
+	 * Format timestamp
+	 *
+	 * @param $timestamp
+	 *
+	 * @return string
+	 * @throws \Exception
+	 */
+	protected function format_timestamp( $timestamp ) {
+
+		$html = '';
+		if ( ! empty( $timestamp ) ) {
+			$offsetSeconds = floatval( $this->gmtOffset ) * 60 * 60;
+			$timestamp     = strtotime( $timestamp ) + $offsetSeconds;
+			$result        = gmdate( 'Y-m-d H:i:s', $timestamp );
+			$date          = new \DateTime( $result );
+
+			$html .= sprintf(
+				'<span>%s, %s</span>',
+				$date->format( $this->dateFormat ),
+				$date->format( $this->timeFormat )
+			);
+		}
+
+		return $html;
+	}
+
 }
