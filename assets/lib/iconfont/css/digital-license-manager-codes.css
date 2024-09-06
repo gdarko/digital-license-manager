@@ -5,6 +5,8 @@
 .dlm-icon-eye:before { content: '\e803'; } /* '' */
 .dlm-icon-plus:before { content: '\e804'; } /* '' */
 .dlm-icon-minus:before { content: '\e805'; } /* '' */
+.dlm-icon-link:before { content: '\e806'; } /* '' */
+.dlm-icon-link-ext:before { content: '\f08e'; } /* '' */
 .dlm-icon-certificate:before { content: '\f0a3'; } /* '' */
 .dlm-icon-file-pdf:before { content: '\f1c1'; } /* '' */
 .dlm-icon-id-card:before { content: '\f2c2'; } /* '' */

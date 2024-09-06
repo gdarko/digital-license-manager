@@ -290,7 +290,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             for (var i = 0; i < elements.length; i++) {
                 var licenseKey = elements[i].querySelector('.dlm-placeholder');
                 if (licenseKey) {
-                    licenseKey.innerHTML = '';
+                    licenseKey.innerHTML = '&nbsp;';
                     licenseKey.classList.add('empty');
                 }
             }
@@ -319,6 +319,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
         var el = this;
 
         if (!el) {
+            return;
+        }
+
+        if(el.classList.contains('empty')) {
             return;
         }
         var str = el.innerHTML;

@@ -33,6 +33,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\ListTables\Licenses as LicensesListTable;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
@@ -704,12 +705,13 @@ class Orders {
 		$html = sprintf( '<p>%s:</p>', __( 'The following licenses have been generated for this order item', 'digital-license-manager' ) );
 		$html .= '<ul class="dlm-license-list">';
 		foreach ( $licenses as $license ) {
+			$url = admin_url(sprintf( 'admin.php?page=%s&action=edit&id=%d', PageSlug::LICENSES, $license->getId() ));
 			if ( ! $hide_keys ) {
 				$decrypted = $license->getDecryptedLicenseKey();
 				$decrypted = is_wp_error( $decrypted ) ? 'ERROR' : $decrypted;
-				$html      .= sprintf( '<li> <code class="dlm-placeholder">%s</code></li>', $decrypted );
+				$html      .= sprintf( '<li> <code class="dlm-placeholder">%s</code>&nbsp;<a class="dlm-placeholder-link" href="%s"><span class="dlm-icon-link-ext"></span></a></li>', $decrypted, $url );
 			} else {
-				$html .= sprintf( '<li><code class="dlm-placeholder empty" data-id="%d"></code></li>', $license->getId() );
+				$html .= sprintf( '<li><code class="dlm-placeholder empty" data-id="%d">&nbsp;</code>&nbsp;<a target="_blank" href="%s"><span class="dlm-icon-link-ext"></span></a></li></li>', $license->getId(), $url );
 			}
 		}
 		$html .= '</ul>';
