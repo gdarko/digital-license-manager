@@ -272,6 +272,10 @@ class Products {
 		$licensesSource = ! empty( $_POST['dlm_licensed_product_licenses_source'][ $i ] ) ? sanitize_text_field( wp_unslash( $_POST['dlm_licensed_product_licenses_source'][ $i ] ) ) : 'stock';
 		$variation->update_meta_data( 'dlm_licensed_product_licenses_source', $licensesSource );
 
+        // Update the max activations behavor, according to field
+        $maxActivationsBehavior = ! empty($_POST['dlm_licensed_product_activations_behavior'][ $i ] ) ? sanitize_text_field( wp_unslash( $_POST['dlm_licensed_product_activations_behavior'][ $i ] ) ) : 'standard';
+        $variation->update_meta_data( 'dlm_licensed_product_activations_behavior', $maxActivationsBehavior );
+
 		// Update the assigned generator id, according to select field.
 		if ( 'generators' === $licensesSource ) {
 			$assignedGenerator = ! empty( $_POST['dlm_licensed_product_assigned_generator'][ $i ] ) ? (int) $_POST['dlm_licensed_product_assigned_generator'][ $i ] : 0;
