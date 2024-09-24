@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce
 Requires at least: 4.7
 Requires PHP: 7.0
 Tested up to: 6.6
-Stable tag: 1.6.6
+Stable tag: 1.7.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -98,6 +98,7 @@ The complete documentation can be found on the link below:
 The following client libraries and integrations are available:
 
 * <a href="https://github.com/ideologix/dlm-php" target="_blank">PHP Library</a>
+* <a href="https://github.com/ideologix/dlm-cpp" target="_blank">C++ Client (Libcurl)</a> / <a href="https://github.com/ideologix/dlm-cpp-example" target="_blank">C++ Example</a>
 * <a href="https://github.com/ideologix/DLM-NET" target="_blank">C# Library</a>
 * <a href="https://github.com/ideologix/dlm-python" target="_blank">Python Library</a>
 * <a href="https://github.com/ideologix/dlm-plugin-pro" target="_blank">Premium WordPress Updater (Requires PRO)</a>
@@ -206,6 +207,20 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 23. License check form displayed by using block or shortcode
 
 == Changelog ==
+
+= 1.7.0 =
+*Release date - 24 Sep 2024*
+
+* Improved Expired license display in WC > My Account
+* Improved general code quality
+* Fix status display on the single license page in WC > My Account
+* Fix PDF export and missing font DejaVuSans
+* Fix Issues when using CloudFlare and HttpHelper::clinetIp()
+* Fix license status not centered in WC > My Account
+* Add low level database actions dlm_object_{created/updated/deleted}
+* Add database integrity maintenance (delete activations and other related data on license delete)
+* Confirm compatibility with WC 9.3+
+* Resync the .pot template
 
 = 1.6.6 =
 
