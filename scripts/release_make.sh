@@ -1,4 +1,15 @@
 #! /bin/bash
+
+# Requirement checking
+for cmd in zip unzip svn git
+do
+  if ! command -v "$cmd" 2>&1 >/dev/null
+  then
+      echo "Error: <$cmd> could not be found"
+      exit 1
+  fi
+done
+
 # A modification of Dean Clatworthy's deploy script at: https://github.com/deanc/wordpress-plugin-git-svn
 # The difference is that this script lives in the plugin's git repo & doesn't require an existing SVN repo.
 
