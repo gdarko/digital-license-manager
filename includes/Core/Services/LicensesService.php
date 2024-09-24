@@ -74,7 +74,13 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 		);
 
 		if ( ! $license ) {
-			return new WP_Error( 'data_error', sprintf( __( "The license key '%s' could not be found", 'digital-license-manager' ), $id ), array( 'code' => 404 ) );
+			if ( strpos( $id, 'hashed-' ) !== false ) {
+				$error = __( "The license key could not be found", 'digital-license-manager' );
+			} else {
+				$error = sprintf( __( "The license key '%s' could not be found", 'digital-license-manager' ), $id );
+			}
+
+			return new WP_Error( 'data_error', $error, array( 'code' => 404 ) );
 		}
 
 		return $license;
