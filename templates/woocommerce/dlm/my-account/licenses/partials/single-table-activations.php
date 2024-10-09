@@ -35,7 +35,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 
 ?>
 
-<div class="dlm-license-activations">
+<div class="dlm-myaccount-license-activations dlm-license-activations">
     <div class="dlm-header">
         <h3 class="dlm-myaccount-page-subtitle product-name"><?php esc_html_e( 'Activations', 'digital-license-manager' ); ?></h3>
 		<?php if ( $manual_activations_enabled ): ?>

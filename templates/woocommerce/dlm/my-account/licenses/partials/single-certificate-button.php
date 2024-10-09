@@ -28,13 +28,9 @@
 			<input type="hidden" name="dlm_action" value="license_certificate_download">
 			<input type="hidden" name="dlm_nonce" value="<?php echo wp_create_nonce('dlm_account'); ?>">
 			<input type="hidden" name="license" value="<?php echo esc_attr($license_key); ?>">
-			<ul class="dlm-list-inline dlm-list-inline-mb-0">
-				<li>
-					<button type="submit" class="woocommerce-button button dlm-button" name="license_certificate_download" value="1">
-						<span class="dlm-icon-file-pdf"></span> <?php esc_html_e( 'Download', 'digital-license-manager' ); ?>
-					</button>
-				</li>
-			</ul>
+            <button type="submit" class="woocommerce-button button dlm-button" name="license_certificate_download" value="1">
+                <span class="dlm-icon-file-pdf"></span> <?php esc_html_e( 'Download', 'digital-license-manager' ); ?>
+            </button>
 		</form>
 	</td>
 </tr>

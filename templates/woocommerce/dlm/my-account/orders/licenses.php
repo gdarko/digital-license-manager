@@ -31,78 +31,84 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 
 defined( 'ABSPATH' ) || exit; ?>
 
-<h2 class="dlm-myaccount-page-title dlm-myaccount-page-title--licenses"><?php echo wp_kses( $heading, \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?></h2>
 
-<?php do_action( 'dlm_myaccount_licenses_after_heading' ); ?>
+<div class="dlm-myaccount-element dlm-myaccount-element--order-licenses">
 
-<?php
+    <h2 class="dlm-myaccount-page-title dlm-myaccount-page-title--licenses"><?php echo wp_kses( $heading, \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?></h2>
 
-foreach ( $data as $productId => $row ): ?>
-    <table class="dlm-myaccount-table dlm-myaccount-table--order-licenses shop_table">
-        <thead>
-        <tr>
-            <th colspan="3"><?php echo esc_html( $row['name'] ); ?></th>
-        </tr>
-        </thead>
-        <tbody>
-		<?php
-		/** @var License $license */
-		$is_order_received  = is_order_received_page();
-		$is_obscure_enabled = (int) Settings::get( 'hide_license_keys', Settings::SECTION_WOOCOMMERCE );
-		$should_obfuscate   = $is_order_received && $is_obscure_enabled;
+    <?php do_action( 'dlm_myaccount_licenses_after_heading' ); ?>
 
-		foreach ( $row['keys'] as $license ):
-
-			$licenseKey = $license->getDecryptedLicenseKey();
-			if ( is_wp_error( $licenseKey ) ) {
-				$licenseKey = '';
-			}
-			$actions = apply_filters( 'dlm_myaccount_licenses_keys_row_actions', array(), $license, $licenseKey, $data );
-			if ( is_array( $actions ) ) {
-				ksort( $actions );
-			}
-			?>
+    <?php
+	foreach ( $data as $productId => $row ): ?>
+        <table class="dlm-myaccount-table dlm-myaccount-table--order-licenses shop_table">
+            <thead>
             <tr>
-                <td colspan="<?php echo ( $license && $license->getExpiresAt() ) ? '' : '2'; ?>">
-					<?php
-					if ( apply_filters( 'dlm_myaccount_licenses_should_obfuscate', $should_obfuscate, $license ) ) {
-						echo esc_html( StringFormatter::obfuscateString( $licenseKey ) );
-					} else {
-						echo wc_get_template_html( 'dlm/my-account/licenses/partials/license-key.php', array(
-							'license' => $license,
-						), '', Controller::getTemplatePath() );
-					}
-					?>
-                </td>
-				<?php if ( $license->getExpiresAt() ): ?>
-					<?php
-					$date = wp_date( $date_format, strtotime( $license->getExpiresAt() ) );
-					?>
-                    <td>
-	                    <?php echo wp_kses(
-		                    sprintf(
-			                    '%s <strong>%s</strong> %s',
-			                    $valid_until,
-			                    $date,
-			                    $license->isExpired() ? '(' . esc_html__( 'Expired', 'digital-license-manager' ) . ')' : ''
-		                    ),
-		                    \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags(),
-	                    ); ?>
-                    </td>
-				<?php endif; ?>
-                <td class="license-key-actions">
-					<?php
-					foreach ( $actions as $key => $action ) {
-						$href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
-						$cssClass = isset( $action['class'] ) ? esc_attr( $action['class'] ) : '';
-						$text     = isset( $action['text'] ) ? esc_html( $action['text'] ) : '';
-						echo wp_kses( sprintf( '<a href="%s" class="%s">%s</a>', esc_url( $href ), $cssClass, $text ), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() );
-					}
-					?>
-                </td>
+                <th colspan="3"><?php echo esc_html( $row['name'] ); ?></th>
             </tr>
-		<?php endforeach; ?>
-        </tbody>
-    </table>
-<?php endforeach; ?>
+            </thead>
+            <tbody>
+			<?php
+			/** @var License $license */
+			$is_order_received  = is_order_received_page();
+			$is_obscure_enabled = (int) Settings::get( 'hide_license_keys', Settings::SECTION_WOOCOMMERCE );
+			$should_obfuscate   = $is_order_received && $is_obscure_enabled;
+
+			foreach ( $row['keys'] as $license ):
+
+				$licenseKey = $license->getDecryptedLicenseKey();
+				if ( is_wp_error( $licenseKey ) ) {
+					$licenseKey = '';
+				}
+				$actions = apply_filters( 'dlm_myaccount_licenses_keys_row_actions', array(), $license, $licenseKey, $data );
+				if ( is_array( $actions ) ) {
+					ksort( $actions );
+				}
+				?>
+                <tr>
+                    <td colspan="<?php echo ( $license && $license->getExpiresAt() ) ? '' : '2'; ?>">
+						<?php
+						if ( apply_filters( 'dlm_myaccount_licenses_should_obfuscate', $should_obfuscate, $license ) ) {
+							echo esc_html( StringFormatter::obfuscateString( $licenseKey ) );
+						} else {
+							echo wc_get_template_html( 'dlm/my-account/licenses/partials/license-key.php', array(
+								'license' => $license,
+							), '', Controller::getTemplatePath() );
+						}
+						?>
+                    </td>
+					<?php if ( $license->getExpiresAt() ): ?>
+						<?php
+						$date = wp_date( $date_format, strtotime( $license->getExpiresAt() ) );
+						?>
+                        <td>
+							<?php echo wp_kses(
+								sprintf(
+									'%s <strong>%s</strong> %s',
+									$valid_until,
+									$date,
+									$license->isExpired() ? '(' . esc_html__( 'Expired', 'digital-license-manager' ) . ')' : ''
+								),
+								\IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags(),
+							); ?>
+                        </td>
+					<?php endif; ?>
+                    <td class="license-key-actions">
+						<?php
+						foreach ( $actions as $key => $action ) {
+							$href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
+							$cssClass = isset( $action['class'] ) ? esc_attr( $action['class'] ) : '';
+							$text     = isset( $action['text'] ) ? esc_html( $action['text'] ) : '';
+							echo wp_kses( sprintf( '<a href="%s" class="%s">%s</a>', esc_url( $href ), $cssClass, $text ), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() );
+						}
+						?>
+                    </td>
+                </tr>
+			<?php endforeach; ?>
+            </tbody>
+        </table>
+
+	<?php endforeach; ?>
+
+</div>
+
 
