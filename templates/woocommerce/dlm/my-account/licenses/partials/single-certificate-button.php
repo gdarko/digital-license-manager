@@ -21,7 +21,7 @@
  */
 ?>
 
-<tr class="woocommerce-table__line-item valid_until">
+<tr class="dlm-myaccount-table-row dlm-myaccount-table-row--certificate woocommerce-table__line-item certificate">
 	<th scope="row"><?php esc_html_e( 'Certificate', 'digital-license-manager' ); ?></th>
 	<td class="dlm-inline-child dlm-license-certificate">
         <form id="dlm-license-certificate-download" action="<?php echo esc_url( \IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\MyAccount::getProcessingEndpointUrl() ); ?>" method="POST" class="dlm-list-inline-mb-0">

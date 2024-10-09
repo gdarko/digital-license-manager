@@ -31,103 +31,112 @@ defined( 'ABSPATH' ) || exit; ?>
 
 <?php if ( ! empty( $licenses ) ): ?>
 
+    <div class="dlm-myaccount-product-licenses">
 
-	<?php foreach ( $licenses as $productId => $licenseData ): ?>
+	    <?php foreach ( $licenses as $productId => $licenseData ): ?>
 
-		<?php $product = wc_get_product( $productId ); ?>
+		    <?php $product = wc_get_product( $productId ); ?>
 
-        <h3 class="product-name">
-			<?php if ( $product ): ?>
-                <a href="<?php echo esc_url( get_post_permalink( $productId ) ); ?>">
-                    <span><?php echo wp_kses( $licenseData['name'], \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?></span>
-                </a>
-			<?php else: ?>
-                <span><?php echo esc_html__( 'Product', 'digital-license-manager' ) . ' #' . $productId; ?></span>
-			<?php endif; ?>
-        </h3>
+            <div class="dlm-myaccount-product-licenses--row">
 
-        <table class="shop_table shop_table_responsive my_account_orders">
-            <thead>
-            <tr>
-                <th class="license-key"><?php esc_html_e( 'License key', 'digital-license-manager' ); ?></th>
-                <th class="activation"><?php esc_html_e( 'Activations', 'digital-license-manager' ); ?></th>
-                <th class="valid-until"><?php esc_html_e( 'Expires', 'digital-license-manager' ); ?></th>
-                <th class="status"><?php esc_html_e( 'Status', 'digital-license-manager' ); ?></th>
-                <th class="actions"></th>
-            </tr>
-            </thead>
+                <h3 class="dlm-myaccount-page-subtitle product-name">
+				    <?php if ( $product ): ?>
+                        <a href="<?php echo esc_url( get_post_permalink( $productId ) ); ?>">
+                            <span><?php echo wp_kses( $licenseData['name'], \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?></span>
+                        </a>
+				    <?php else: ?>
+                        <span><?php echo esc_html__( 'Product', 'digital-license-manager' ) . ' #' . $productId; ?></span>
+				    <?php endif; ?>
+                </h3>
 
-            <tbody>
+                <table class="dlm-myaccount-table shop_table_responsive my_account_orders">
+                    <thead>
+                    <tr>
+                        <th class="license-key"><?php esc_html_e( 'License key', 'digital-license-manager' ); ?></th>
+                        <th class="activation"><?php esc_html_e( 'Activations', 'digital-license-manager' ); ?></th>
+                        <th class="valid-until"><?php esc_html_e( 'Expires', 'digital-license-manager' ); ?></th>
+                        <th class="status"><?php esc_html_e( 'Status', 'digital-license-manager' ); ?></th>
+                        <th class="actions"></th>
+                    </tr>
+                    </thead>
 
-			<?php
-			/** @var License $license */
-			foreach ( $licenseData['licenses'] as $license ):
+                    <tbody>
 
-				$timesActivated = $license->getTimesActivated() ? $license->getTimesActivated() : '0';
-				$activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLimit() : '&infin;';
-				$order = wc_get_order( $license->getOrderId() );
-				$decrypted = $license->getDecryptedLicenseKey();
-				if ( is_wp_error( $decrypted ) ) {
-					$decrypted = '';
-					continue;
-				}
+				    <?php
+				    /** @var License $license */
+				    foreach ( $licenseData['licenses'] as $license ):
 
-				$actions = array();
-				if ( ! empty( $order ) ) {
-					$actions[10] = array(
-						'href'  => esc_url( $order->get_view_order_url() ),
-						'class' => 'button',
-						'text'  => esc_html__( 'Order', 'digital-license-manager' ),
-					);
-				}
+					    $timesActivated = $license->getTimesActivated() ? $license->getTimesActivated() : '0';
+					    $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLimit() : '&infin;';
+					    $order = wc_get_order( $license->getOrderId() );
+					    $decrypted = $license->getDecryptedLicenseKey();
+					    if ( is_wp_error( $decrypted ) ) {
+						    $decrypted = '';
+						    continue;
+					    }
 
-				$actions = apply_filters( 'dlm_myaccount_licenses_row_actions', $actions, $license, $decrypted, $order );
+					    $actions = array();
+					    if ( ! empty( $order ) ) {
+						    $actions[10] = array(
+							    'href'  => esc_url( $order->get_view_order_url() ),
+							    'class' => 'button',
+							    'text'  => esc_html__( 'Order', 'digital-license-manager' ),
+						    );
+					    }
 
-				ksort( $actions );
+					    $actions = apply_filters( 'dlm_myaccount_licenses_row_actions', $actions, $license, $decrypted, $order );
 
-				?>
-                <tr>
-                    <td data-title="<?php esc_html_e( 'License key', 'digital-license-manager' ); ?>">
-                    <?php
-                        echo wc_get_template_html( 'dlm/my-account/licenses/partials/license-key.php', array(
-                            'license'     => $license,
-                        ), '', Controller::getTemplatePath() )
-                    ?>
-                    </td>
-                    <td data-title="<?php esc_html_e( 'Activations', 'digital-license-manager' ); ?>">
-                        <span><?php echo esc_html( $timesActivated ); ?></span>
-                        <span>/</span>
-                        <span><?php echo esc_attr( $activationsLimit ); ?></span>
-                    </td>
-                    <td data-title="<?php esc_html_e( 'Expires', 'digital-license-manager' ); ?>">
-						<?php echo DateFormatter::toHtml( $license->getExpiresAt(), [ 'expires' => true ] ); ?>
-                    </td>
-                    <td>
-						<?php echo $license->isExpired() ? LicenseStatus::toHtmlExpired( $license, [ 'style' => 'inline' ] ) : LicenseStatus::toHtml( $license, [ 'style' => 'inline' ] ); ?>
-                    </td>
-                    <td data-title="<?php esc_html_e( 'Actions', 'digital-license-manager' ); ?>" class="license-key-actions">
-						<?php
-						foreach ( $actions as $key => $action ) {
-							$href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
-							$cssClass = isset( $action['class'] ) ? esc_attr( $action['class'] ) : '';
-							$text     = isset( $action['text'] ) ? esc_html( $action['text'] ) : '';
-							$title    = isset( $action['title'] ) ? 'title="' . esc_attr( $action['title'] ) . '"' : '';
-							echo wp_kses( sprintf( '<a href="%s" %s class="%s">%s</a>', $href, $title, $cssClass, $text ), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() );
-						}
-						?>
-                    </td>
-                </tr>
-			<?php endforeach; ?>
+					    ksort( $actions );
 
-            </tbody>
-        </table>
+					    ?>
+                        <tr>
+                            <td data-title="<?php esc_html_e( 'License key', 'digital-license-manager' ); ?>">
+							    <?php
+							    echo wc_get_template_html( 'dlm/my-account/licenses/partials/license-key.php', array(
+								    'license'     => $license,
+							    ), '', Controller::getTemplatePath() )
+							    ?>
+                            </td>
+                            <td data-title="<?php esc_html_e( 'Activations', 'digital-license-manager' ); ?>">
+                                <span><?php echo esc_html( $timesActivated ); ?></span>
+                                <span>/</span>
+                                <span><?php echo esc_attr( $activationsLimit ); ?></span>
+                            </td>
+                            <td data-title="<?php esc_html_e( 'Expires', 'digital-license-manager' ); ?>">
+							    <?php echo DateFormatter::toHtml( $license->getExpiresAt(), [ 'expires' => true ] ); ?>
+                            </td>
+                            <td>
+							    <?php echo $license->isExpired() ? LicenseStatus::toHtmlExpired( $license, [ 'style' => 'inline' ] ) : LicenseStatus::toHtml( $license, [ 'style' => 'inline' ] ); ?>
+                            </td>
+                            <td data-title="<?php esc_html_e( 'Actions', 'digital-license-manager' ); ?>" class="license-key-actions">
+							    <?php
+							    foreach ( $actions as $key => $action ) {
+								    $href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
+								    $cssClass = isset( $action['class'] ) ? esc_attr( $action['class'] ) : '';
+								    $text     = isset( $action['text'] ) ? esc_html( $action['text'] ) : '';
+								    $title    = isset( $action['title'] ) ? 'title="' . esc_attr( $action['title'] ) . '"' : '';
+								    echo wp_kses( sprintf( '<a href="%s" %s class="%s">%s</a>', $href, $title, $cssClass, $text ), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() );
+							    }
+							    ?>
+                            </td>
+                        </tr>
+				    <?php endforeach; ?>
 
-	<?php endforeach; ?>
+                    </tbody>
+                </table>
+
+            </div>
+
+	    <?php endforeach; ?>
+
+    </div>
 
 <?php else: ?>
 
-    <div class="woocommerce-Message woocommerce-Message--info woocommerce-info">
-		<?php esc_html_e( 'No licenses available yet', 'digital-license-manager' ); ?>
+    <div class="dlm-myaccount-no-items">
+        <div class="woocommerce-Message woocommerce-Message--info woocommerce-info">
+		    <?php esc_html_e( 'No licenses available yet', 'digital-license-manager' ); ?>
+        </div>
     </div>
 
 <?php endif; ?>

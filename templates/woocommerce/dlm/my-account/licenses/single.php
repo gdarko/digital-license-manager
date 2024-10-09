@@ -41,11 +41,11 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
 
 <?php do_action( 'dlm_myaccount_single_page_start', $license, $order, $product, $date_format, $license_key ); ?>
 
-<h2><?php esc_html_e( 'License Details', 'digital-license-manager' ); ?></h2>
+<h2 class="dlm-myaccount-page-title dlm-myaccount-page-title--license-details"><?php esc_html_e( 'License Details', 'digital-license-manager' ); ?></h2>
 
-<table class="woocommerce-table woocommerce-table--order-details shop_table order_details">
+<table class="dlm-myaccount-table dlm-myaccount-table--license-details woocommerce-table woocommerce-table--order-details shop_table order_details">
     <tbody>
-    <tr>
+    <tr class="dlm-myaccount-table-row dlm-myaccount-table-row--product">
         <th scope="row"><?php esc_html_e( 'Product', 'digital-license-manager' ); ?></th>
         <td>
 			<?php if ( $product ): ?>
@@ -57,7 +57,7 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
 			<?php endif; ?>
         </td>
     </tr>
-    <tr class="woocommerce-table__line-item license_keys">
+    <tr class="dlm-myaccount-table-row dlm-myaccount-table-row--license-key woocommerce-table__line-item license_keys">
         <th scope="row"><?php esc_html_e( 'License key', 'digital-license-manager' ); ?></th>
         <td>
 	        <?php
@@ -67,7 +67,7 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
             ?>
         </td>
     </tr>
-    <tr class="woocommerce-table__line-item activations_limit">
+    <tr class="dlm-myaccount-table-row dlm-myaccount-table-row--activations woocommerce-table__line-item activations_limit">
         <th scope="row"><?php esc_html_e( 'Activations', 'digital-license-manager' ); ?></th>
         <td>
             <p>
@@ -77,7 +77,7 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
             </p>
         </td>
     </tr>
-    <tr class="woocommerce-table__line-item license_status">
+    <tr class="dlm-myaccount-table-row dlm-myaccount-table-row--status woocommerce-table__line-item license_status">
         <th scope="row"><?php esc_html_e( 'Status', 'digital-license-manager' ); ?></th>
         <td class="dlm-inline-child dlm-license-status">
 			<?php
@@ -88,7 +88,7 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
 			?>
         </td>
     </tr>
-    <tr class="woocommerce-table__line-item valid_until">
+    <tr class="dlm-myaccount-table-row dlm-myaccount-table-row--valid-until woocommerce-table__line-item valid_until">
         <th scope="row"><?php esc_html_e( 'Expires', 'digital-license-manager' ); ?></th>
         <td class="dlm-inline-child dlm-license-status">
 			<?php
@@ -104,9 +104,11 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
 </table>
 
 <?php if ( ! empty( $order ) ): ?>
-    <p>
-        <a href="<?php echo esc_url( $order->get_view_order_url() ); ?>" class="woocommerce-button button dlm-button"><?php esc_html_e( 'View Order', 'digital-license-manager' ); ?></a>
-    </p>
+    <div class="dlm-license-details--view-order">
+        <p>
+            <a href="<?php echo esc_url( $order->get_view_order_url() ); ?>" class="woocommerce-button button dlm-button"><?php esc_html_e( 'View Order', 'digital-license-manager' ); ?></a>
+        </p>
+    </div>
 <?php endif; ?>
 
 

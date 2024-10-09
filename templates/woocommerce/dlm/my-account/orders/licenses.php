@@ -31,14 +31,14 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 
 defined( 'ABSPATH' ) || exit; ?>
 
-<h2><?php echo wp_kses( $heading, \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?></h2>
+<h2 class="dlm-myaccount-page-title dlm-myaccount-page-title--licenses"><?php echo wp_kses( $heading, \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() ); ?></h2>
 
 <?php do_action( 'dlm_myaccount_licenses_after_heading' ); ?>
 
 <?php
 
 foreach ( $data as $productId => $row ): ?>
-    <table class="shop_table">
+    <table class="dlm-myaccount-table dlm-myaccount-table--order-licenses shop_table">
         <thead>
         <tr>
             <th colspan="3"><?php echo esc_html( $row['name'] ); ?></th>

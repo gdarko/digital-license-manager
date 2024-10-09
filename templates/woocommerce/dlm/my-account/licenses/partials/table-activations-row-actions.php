@@ -29,7 +29,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation;
 
 ?>
 
-<form action="<?php echo esc_url( \IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\MyAccount::getProcessingEndpointUrl() ); ?>" method="POST">
+<form class="dlm-myaccount-row-actions" action="<?php echo esc_url( \IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\MyAccount::getProcessingEndpointUrl() ); ?>" method="POST">
     <input type="hidden" name="dlm_action" value="activation_row_actions">
     <input type="hidden" name="dlm_nonce" value="<?php echo wp_create_nonce( 'dlm_account' ); ?>">
     <input type="hidden" name="license_id" value="<?php echo esc_attr( $license->getId() ); ?>">

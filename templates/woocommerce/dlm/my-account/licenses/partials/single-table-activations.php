@@ -37,7 +37,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 
 <div class="dlm-license-activations">
     <div class="dlm-header">
-        <h3 class="product-name"><?php esc_html_e( 'Activations', 'digital-license-manager' ); ?></h3>
+        <h3 class="dlm-myaccount-page-subtitle product-name"><?php esc_html_e( 'Activations', 'digital-license-manager' ); ?></h3>
 		<?php if ( $manual_activations_enabled ): ?>
             <button id="dlm-myaccount-license--new-activation" class="woocommerce-button button dlm-button">
                 <span class="dlm-icon-plus"></span>
@@ -46,7 +46,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 		<?php endif; ?>
     </div>
 
-    <table class="shop_table shop_table_responsive my_account_orders">
+    <table class="dlm-myaccount-table dlm-myaccount-table--license-activations shop_table shop_table_responsive my_account_orders">
         <thead>
         <tr>
             <th class="table-col table-col-label"><?php esc_html_e( 'Label', 'digital-license-manager' ); ?></th>
@@ -62,7 +62,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 		<?php if ( count( $activations ) > 0 ): ?>
 			<?php foreach ( $activations as $activation ): ?>
                 <tr>
-                    <td data-title="<?php esc_html_e( 'Label', 'digital-license-manager' ); ?>">
+                    <td class="table-col table-col-label" data-title="<?php esc_html_e( 'Label', 'digital-license-manager' ); ?>">
 						<?php
 						$label = $activation->getLabel();
 						if ( empty( $label ) ) {
@@ -71,7 +71,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 						echo esc_html( $label );
 						?>
                     </td>
-                    <td data-title="<?php esc_html_e( 'Status', 'digital-license-manager' ); ?>">
+                    <td class="table-col table-col-status" data-title="<?php esc_html_e( 'Status', 'digital-license-manager' ); ?>">
 						<?php
 						if ( $activation->getDeactivatedAt() ) {
 							echo wp_kses(
@@ -92,12 +92,12 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 						}
 						?>
                     </td>
-                    <td data-title="<?php esc_html_e( 'Source', 'digital-license-manager' ); ?>">
+                    <td class="table-col table-col-source" data-title="<?php esc_html_e( 'Source', 'digital-license-manager' ); ?>">
 						<?php
 						echo esc_html( ActivationSource::format( $activation->getSource() ) );
 						?>
                     </td>
-                    <td data-title="<?php esc_html_e( 'Date', 'digital-license-manager' ); ?>">
+                    <td class="table-col table-col-date" data-title="<?php esc_html_e( 'Date', 'digital-license-manager' ); ?>">
 						<?php
 
 						if ( $activation->getCreatedAt() ) {
@@ -113,7 +113,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 						?>
                     </td>
 					<?php if ( ! empty( $rowActions ) ): ?>
-                        <td data-title="<?php esc_html_e( 'Actions', 'digital-license-manager' ); ?>">
+                        <td class="table-col table-col-date" data-title="<?php esc_html_e( 'Actions', 'digital-license-manager' ); ?>">
 							<?php
 							echo wc_get_template_html(
 								'dlm/my-account/licenses/partials/table-activations-row-actions.php',
@@ -138,7 +138,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 		<?php else: ?>
 
             <tr>
-                <td colspan="5">
+                <td class="table-col table-col-404" colspan="5">
                     <p><?php esc_html_e( 'No activations found.', 'digital-license-manager' ); ?></p>
                 </td>
             </tr>
