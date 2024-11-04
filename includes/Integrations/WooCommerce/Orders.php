@@ -42,6 +42,7 @@ use IdeoLogix\DigitalLicenseManager\Utils\DebugLogger;
 use IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper;
 use WC_Order;
 use WC_Order_Item_Product;
+use WC_Order_Refund;
 use WC_Product;
 
 defined( 'ABSPATH' ) || exit;
@@ -62,6 +63,7 @@ class Orders {
 		add_action( 'woocommerce_order_details_after_order_table', array( $this, 'showBoughtLicenses' ), 10, 1 );
 		add_filter( 'woocommerce_order_actions', array( $this, 'addSendLicenseKeysAction' ), 10, 2 );
 		add_action( 'woocommerce_after_order_itemmeta', array( $this, 'showOrderedLicenses' ), 10, 3 );
+		add_action( 'woocommerce_order_refunded', array( $this, 'handleOrderRefunds' ), 10, 2 );
 		add_filter( 'dlm_woocommerce_order_item_actions', array( $this, 'orderItemActions' ), 10, 4 );
 		add_action( 'dlm_licenses_created', array( $this, 'markOrderAsComplete' ), 10, 2 );
 		add_filter( 'dlm_validate_order_id', array( $this, 'validateOrderId' ), 10, 2 );
@@ -117,6 +119,7 @@ class Orders {
 		 */
 		if ( apply_filters( 'dlm_skip_licenses_generation_for_order', false, $orderId ) ) {
 			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses: Skipped for %d', $orderId ) );
+
 			return;
 		}
 
@@ -128,6 +131,7 @@ class Orders {
 		$order = is_numeric( $orderId ) ? wc_get_order( $orderId ) : $orderId;
 		if ( ! $order ) {
 			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses: Order %d not found.', $orderId ) );
+
 			return;
 		}
 
@@ -136,7 +140,7 @@ class Orders {
 		 *
 		 * @var WC_Order_Item_Product [] $items
 		 */
-		$items     = $order->get_items( 'line_item' );
+		$items = $order->get_items( 'line_item' );
 		foreach ( $items as $number => $orderItem ) {
 
 			$product = $orderItem->get_product();
@@ -228,7 +232,7 @@ class Orders {
 		 * Override activations limit in case on quantity behavior
 		 */
 		$activationsLimit = null;
-		if('quantity' === $maxActivationsBehavior) {
+		if ( 'quantity' === $maxActivationsBehavior ) {
 			$activationsLimit = $quantity;
 			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): Activations Limit SET to %d based on quantity', $order->get_id(), $product->get_id(), $activationsLimit ) );
 		}
@@ -236,7 +240,7 @@ class Orders {
 		/**
 		 * Set the needed delivery amount
 		 */
-		if('standard' === $maxActivationsBehavior) {
+		if ( 'standard' === $maxActivationsBehavior ) {
 			$neededAmount = ( absint( $quantity ) * $deliveredQuantity );
 		} else {
 			$neededAmount = $deliveredQuantity;
@@ -276,7 +280,7 @@ class Orders {
 			}
 
 			$order->add_order_note( $log_msg );
-			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): %s', $order->get_id(), $product->get_id(), $log_msg ));
+			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): %s', $order->get_id(), $product->get_id(), $log_msg ) );
 
 			do_action( 'dlm_stock_delivery_assigned_licenses', $assignedLicenses, $neededAmount, $availableStock, $order, $product );
 
@@ -321,8 +325,8 @@ class Orders {
 					'activations_limit' => $activationsLimit
 				] );
 				if ( ! is_wp_error( $result ) ) {
-					$total = count($result['licenses']);
-					if( $total === 1 ) {
+					$total = count( $result['licenses'] );
+					if ( $total === 1 ) {
 						$log_msg = sprintf( __( 'Delivered %d licenses with generator #%d.', 'digital-license-manager' ), $total, $generatorId );
 					} else {
 						$log_msg = sprintf( __( 'Delivered %d of %d licenses with generator #%d.', 'digital-license-manager' ), $total, $neededAmount, $generatorId );
@@ -409,7 +413,7 @@ class Orders {
 			'data'  => null
 		);
 
-		$customerLicenseKeys = Orders::getLicenses( $args );
+		$customerLicenseKeys = self::getLicenses( $args );
 
 		if ( ! $customerLicenseKeys['data'] ) {
 			return;
@@ -430,14 +434,14 @@ class Orders {
 
 	}
 
-    /**
-     * Adds a new order action used to resend the sold license keys.
-     *
-     * @param  array  $actions
-     * @param \WC_Order $order
-     *
-     * @return array
-     */
+	/**
+	 * Adds a new order action used to resend the sold license keys.
+	 *
+	 * @param array $actions
+	 * @param \WC_Order $order
+	 *
+	 * @return array
+	 */
 	public function addSendLicenseKeysAction( $actions, $order ) {
 
 		if ( Licenses::instance()->countBy( array( 'order_id' => $order->get_id() ) ) ) {
@@ -489,11 +493,59 @@ class Orders {
 	}
 
 	/**
+	 * Handle order refunds
+	 *
+	 * @param int $order_id
+	 * @param int $refund_id
+	 *
+	 * @copyright Darko G and IDEOLOGIX MEDIA DOOEL, Digital License Manager
+	 *
+	 * @return void
+	 */
+	public function handleOrderRefunds( $order_id, $refund_id ) {
+
+		$order     = wc_get_order( $order_id );
+		$refunded  = $order->get_total_refunded();
+		$remaining = $order->get_total() - $order->get_total_refunded();
+		$refund    = new WC_Order_Refund( $refund_id );
+
+		if ( $refunded > 0 && ( $remaining <= 0 || apply_filters( 'dlm_allow_partially_refunded_orders_handling', false, $order, $refund ) ) ) {
+
+			$licenses = apply_filters( 'dlm_order_refund_get_order_licenses', null, $order_id );
+			if ( null === $licenses ) {
+				$result   = self::getLicenses( [ 'order' => $order ] );
+				$licenses = [];
+				foreach ( $result['data'] as $entry ) {
+					if ( empty( $entry['keys'] ) ) {
+						continue;
+					}
+					$licenses = array_merge( $licenses, $entry['keys'] );
+				}
+			}
+
+			$licenseService = new LicensesService();
+
+			foreach ( $licenses as $license ) {
+				$outcome = $licenseService->update( $license->getId(), [
+					'status' => LicenseStatus::DISABLED
+				] );
+
+				if ( ! is_wp_error( $outcome ) ) {
+					DebugLogger::info( sprintf( 'WC -> Order Refund: Refund processed. License #%d is now disabled.', $license->getId() ) );
+				} else {
+					DebugLogger::info( sprintf( 'WC -> Order Refund: Refund processed. Unable to disable license #%d. (Error: %s)', $license->getId(), $outcome->get_error_message() ) );
+				}
+			}
+		}
+	}
+
+	/**
 	 * Add order item actions
 	 *
 	 * @param array $actions
 	 * @param \WC_Order_Item_Product $order_item
 	 * @param $licenses
+	 * @param $hide_keys
 	 *
 	 * @return array
 	 */
@@ -537,12 +589,13 @@ class Orders {
 	 *
 	 * @return int|null
 	 */
-	public function locateOrderUserId($userId, $orderId) {
+	public function locateOrderUserId( $userId, $orderId ) {
 		if ( function_exists( 'wc_get_order' ) ) {
 			if ( $order = wc_get_order( $orderId ) ) {
 				$userId = $order->get_user_id();
 			}
 		}
+
 		return $userId;
 	}
 
@@ -597,11 +650,11 @@ class Orders {
 	 *
 	 * @param array $args
 	 *
-	 * @return array
+	 * @return array{ data: array{ name: string, keys: License[]|[] } | [] }
 	 */
 	public static function getLicenses( $args ) {
 		/** @var WC_Order $order */
-		$order = $args['order'];
+		$order = is_numeric( $args['order'] ) ? wc_get_order( $args['order'] ) : $args['order'];
 		$data  = array();
 
 		/** @var WC_Order_Item_Product $item */
@@ -618,8 +671,10 @@ class Orders {
 				continue;
 			}
 
-			$data[ $productId ]['name'] = $product->get_name();
-			$data[ $productId ]['keys'] = $licenses;
+			$data[ $productId ] = [
+				'name' => $product->get_name(),
+				'keys' => $licenses
+			];
 		}
 
 		$args['data'] = $data;
@@ -633,9 +688,9 @@ class Orders {
 	 *
 	 * @param \WC_Order_Item_Product $item
 	 *
+	 * @return \WC_Product
 	 * @since 1.5.1
 	 *
-	 * @return \WC_Product
 	 */
 	public static function getProductByLineItem( $item ) {
 
@@ -656,9 +711,9 @@ class Orders {
 	 * @param WC_Order $order
 	 * @param WC_Product $product
 	 *
+	 * @return License[]
 	 * @since 1.5.1
 	 *
-	 * @return License[]
 	 */
 	public static function getLicensesByLineItemData( $item, $order, $product ) {
 
@@ -705,7 +760,7 @@ class Orders {
 		$html = sprintf( '<p>%s:</p>', __( 'The following licenses have been generated for this order item', 'digital-license-manager' ) );
 		$html .= '<ul class="dlm-license-list">';
 		foreach ( $licenses as $license ) {
-			$url = admin_url(sprintf( 'admin.php?page=%s&action=edit&id=%d', PageSlug::LICENSES, $license->getId() ));
+			$url = admin_url( sprintf( 'admin.php?page=%s&action=edit&id=%d', PageSlug::LICENSES, $license->getId() ) );
 			if ( ! $hide_keys ) {
 				$decrypted = $license->getDecryptedLicenseKey();
 				$decrypted = is_wp_error( $decrypted ) ? 'ERROR' : $decrypted;
