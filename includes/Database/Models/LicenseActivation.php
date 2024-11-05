@@ -78,7 +78,7 @@ class LicenseActivation extends AbstractDataModel {
 
 	/**
 	 * The id of the license
-	 * @return int
+	 * @return License
 	 */
 	public function getLicense() {
 		static $model;
