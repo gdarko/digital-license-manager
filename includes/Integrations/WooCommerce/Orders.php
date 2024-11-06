@@ -170,21 +170,21 @@ class Orders {
 			/**
 			 * Generate the order licenses
 			 */
-			self::createOrderLicenses( $order, $product, $orderItem->get_quantity() );
+			self::createOrderLicenses( $order, $product, $orderItem );
 		}
 	}
 
 	/**
 	 * Create licenses
 	 *
-	 * @param $order
-	 * @param $product
-	 * @param $quantity
+	 * @param \WC_Order|int $order
+	 * @param \WC_Product|int $product
+	 * @param \WC_Order_Item $orderItem
 	 *
 	 * @return bool
 	 * @throws \Exception
 	 */
-	public static function createOrderLicenses( $order, $product, $quantity ) {
+	public static function createOrderLicenses( $order, $product, $orderItem ) {
 
 		/**
 		 * Perfform basic data santiization
@@ -233,7 +233,7 @@ class Orders {
 		 */
 		$activationsLimit = null;
 		if ( 'quantity' === $maxActivationsBehavior ) {
-			$activationsLimit = $quantity;
+			$activationsLimit = $orderItem;
 			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): Activations Limit SET to %d based on quantity', $order->get_id(), $product->get_id(), $activationsLimit ) );
 		}
 
@@ -241,13 +241,14 @@ class Orders {
 		 * Set the needed delivery amount
 		 */
 		if ( 'standard' === $maxActivationsBehavior ) {
-			$neededAmount = ( absint( $quantity ) * $deliveredQuantity );
+			$neededAmount = ( absint( $orderItem->get_quantity() ) * $deliveredQuantity );
 		} else {
 			$neededAmount = $deliveredQuantity;
 		}
 		DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): Needed amount SET to %d based on max activations behavior "%s"', $order->get_id(), $product->get_id(), $neededAmount, $maxActivationsBehavior ) );
 
 		$licenseService = new LicensesService();
+		$licenses = [];
 
 		if ( $useStock ) {  // Sell Licenses through available stock.
 
@@ -259,20 +260,19 @@ class Orders {
 			/**
 			 * If there are enough keys, grab some and mark as "SOLD", otherwise add order notice.
 			 */
-			$assignedLicenses = [];
 			if ( $neededAmount <= $availableStock ) {
 				$order->add_order_note( sprintf( __( 'Delivering licenses from stock. (Current stock: %d | Required: %d).', 'digital-license-manager' ), $availableStock, $neededAmount ) );
-				$assignedLicenses = $licenseService->assignLicensesFromStock(
+				$licenses = $licenseService->assignLicensesFromStock(
 					$product,
 					$order,
 					$neededAmount,
 					$activationsLimit
 				);
 
-				if ( is_wp_error( $assignedLicenses ) ) {
-					$log_msg = sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $assignedLicenses->get_error_message() );
+				if ( is_wp_error( $licenses ) ) {
+					$log_msg = sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $licenses->get_error_message() );
 				} else {
-					$log_msg = sprintf( __( 'Delivered in total %d licenses from stock.', 'digital-license-manager' ), count( $assignedLicenses ) );
+					$log_msg = sprintf( __( 'Delivered in total %d licenses from stock.', 'digital-license-manager' ), count( $licenses ) );
 				}
 
 			} else {
@@ -282,7 +282,7 @@ class Orders {
 			$order->add_order_note( $log_msg );
 			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): %s', $order->get_id(), $product->get_id(), $log_msg ) );
 
-			do_action( 'dlm_stock_delivery_assigned_licenses', $assignedLicenses, $neededAmount, $availableStock, $order, $product );
+			do_action( 'dlm_stock_delivery_assigned_licenses', $licenses, $neededAmount, $availableStock, $order, $product );
 
 		} else if ( $useGenerator ) { // Sell Licenses through the active generator
 
@@ -313,9 +313,9 @@ class Orders {
 			 * Run the generator and create the licenses, if everything ok, save them.
 			 */
 			$generatorsService = new GeneratorsService();
-			$generatedLicenses = $generatorsService->generateLicenses( $neededAmount, $generator, [], $order, $product );
-			if ( ! is_wp_error( $generatedLicenses ) ) {
-				$result = $licenseService->createMultiple( $generatedLicenses, [
+			$_licenses = $generatorsService->generateLicenses( $neededAmount, $generator, [], $order, $product );
+			if ( ! is_wp_error( $_licenses ) ) {
+				$result = $licenseService->createMultiple( $_licenses, [
 					'order_id'          => $order->get_id(),
 					'product_id'        => $product->get_id(),
 					'user_id'           => $order->get_user_id(),
@@ -325,7 +325,8 @@ class Orders {
 					'activations_limit' => $activationsLimit
 				] );
 				if ( ! is_wp_error( $result ) ) {
-					$total = count( $result['licenses'] );
+					$licenses = $result['licenses'];
+					$total    = count( $result['licenses'] );
 					if ( $total === 1 ) {
 						$log_msg = sprintf( __( 'Delivered %d licenses with generator #%d.', 'digital-license-manager' ), $total, $generatorId );
 					} else {
@@ -335,12 +336,25 @@ class Orders {
 					$log_msg = sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $result->get_error_message() );
 				}
 			} else {
-				$log_msg = sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $generatedLicenses->get_error_message() );
+				$log_msg = sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $_licenses->get_error_message() );
 			}
 
 			$order->add_order_note( $log_msg );
 			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): %s', $order->get_id(), $product->get_id(), $log_msg ) );
 
+		}
+
+		/**
+		 * Store the generated licenses.
+		 * @since 1.7.1
+		 */
+		if ( ! is_wp_error( $licenses ) ) {
+			$licenseIds = array_map( function ( $license ) {
+				return $license->getId();
+			}, $licenses );
+
+			$orderItem->update_meta_data( '_dlm_license_ids', $licenseIds );
+			$orderItem->save();
 		}
 
 		/**
@@ -362,13 +376,13 @@ class Orders {
 
 
 		/**
-		 * Set activations limit on the ordered licenses based on the max activations behavior.
+		 * Set activations limit on the ordered licenses based on the max activastions behavior.
 		 * @var License[] $orderedLicenses
 		 */
 		$orderedLicenses = Licenses::instance()->findAllBy( array( 'order_id' => $order->get_id() ) );
 		if ( 'quantity' === $maxActivationsBehavior ) {
 			foreach ( $orderedLicenses as $license ) {
-				Licenses::instance()->update( $license->getId(), [ 'activations_limit' => $quantity ] );
+				Licenses::instance()->update( $license->getId(), [ 'activations_limit' => $orderItem->get_quantity() ] );
 				$orderedLicenses = Licenses::instance()->findAllBy( array( 'order_id' => $order->get_id() ) ); // Reload.
 			}
 		}
