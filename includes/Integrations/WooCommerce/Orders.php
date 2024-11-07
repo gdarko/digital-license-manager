@@ -34,6 +34,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Services\OrdersService;
 use IdeoLogix\DigitalLicenseManager\ListTables\Licenses as LicensesListTable;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
@@ -63,7 +64,7 @@ class Orders {
 		add_action( 'woocommerce_order_details_after_order_table', array( $this, 'showBoughtLicenses' ), 10, 1 );
 		add_filter( 'woocommerce_order_actions', array( $this, 'addSendLicenseKeysAction' ), 10, 2 );
 		add_action( 'woocommerce_after_order_itemmeta', array( $this, 'showOrderedLicenses' ), 10, 3 );
-		add_action( 'woocommerce_order_refunded', array( $this, 'handleOrderRefunds' ), 10, 2 );
+		add_action( 'woocommerce_refund_created', array( $this, 'handleOrderRefunds' ), 10, 2 );
 		add_filter( 'dlm_woocommerce_order_item_actions', array( $this, 'orderItemActions' ), 10, 4 );
 		add_action( 'dlm_licenses_created', array( $this, 'markOrderAsComplete' ), 10, 2 );
 		add_filter( 'dlm_validate_order_id', array( $this, 'validateOrderId' ), 10, 2 );
@@ -248,7 +249,7 @@ class Orders {
 		DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): Needed amount SET to %d based on max activations behavior "%s"', $order->get_id(), $product->get_id(), $neededAmount, $maxActivationsBehavior ) );
 
 		$licenseService = new LicensesService();
-		$licenses = [];
+		$licenses       = [];
 
 		if ( $useStock ) {  // Sell Licenses through available stock.
 
@@ -313,7 +314,7 @@ class Orders {
 			 * Run the generator and create the licenses, if everything ok, save them.
 			 */
 			$generatorsService = new GeneratorsService();
-			$_licenses = $generatorsService->generateLicenses( $neededAmount, $generator, [], $order, $product );
+			$_licenses         = $generatorsService->generateLicenses( $neededAmount, $generator, [], $order, $product );
 			if ( ! is_wp_error( $_licenses ) ) {
 				$result = $licenseService->createMultiple( $_licenses, [
 					'order_id'          => $order->get_id(),
@@ -349,12 +350,8 @@ class Orders {
 		 * @since 1.7.1
 		 */
 		if ( ! is_wp_error( $licenses ) ) {
-			$licenseIds = array_map( function ( $license ) {
-				return $license->getId();
-			}, $licenses );
-
-			$orderItem->update_meta_data( '_dlm_license_ids', $licenseIds );
-			$orderItem->save();
+			$orderService = new OrdersService();
+			$orderService->updateOrderItemLicenses( $orderItem, $licenses );
 		}
 
 		/**
@@ -474,7 +471,6 @@ class Orders {
 	 */
 	public function showOrderedLicenses( $itemId, $item, $product ) {
 
-
 		// Not a WC_Order_Item_Product object? Nothing to do...
 		if ( ! ( $item instanceof WC_Order_Item_Product ) ) {
 			return;
@@ -485,18 +481,8 @@ class Orders {
 			return;
 		}
 
-		$query = apply_filters(
-			'dlm_admin_get_order_licenses_query',
-			array(
-				'order_id'   => $item->get_order_id(),
-				'product_id' => $product->get_id()
-			),
-			$item,
-			$product
-		);
-
-		/** @var License[] $licenses */
-		$licenses = Licenses::instance()->findAllBy( $query );
+		$orderService = new OrdersService();
+		$licenses     = $orderService->getOrderItemLicensesRaw( $item );
 
 		// No license keys? Nothing to do...
 		if ( ! $licenses ) {
@@ -509,46 +495,58 @@ class Orders {
 	/**
 	 * Handle order refunds
 	 *
-	 * @param int $order_id
-	 * @param int $refund_id
-	 *
-	 * @copyright Darko G and IDEOLOGIX MEDIA DOOEL, Digital License Manager
+	 * @param array $refund_id
+	 * @param array $args
 	 *
 	 * @return void
+	 * @copyright Darko G and IDEOLOGIX MEDIA DOOEL, Digital License Manager
+	 *
 	 */
-	public function handleOrderRefunds( $order_id, $refund_id ) {
+	public function handleOrderRefunds( $refund_id, $args ) {
 
-		$order     = wc_get_order( $order_id );
-		$refunded  = $order->get_total_refunded();
-		$remaining = $order->get_total() - $order->get_total_refunded();
-		$refund    = new WC_Order_Refund( $refund_id );
+		$refund         = new WC_Order_Refund( $refund_id );
+		$order          = wc_get_order( $refund->get_parent_id() );
+		$orderService   = new OrdersService();
+		$licenseService = new LicensesService();
 
-		if ( $refunded > 0 && ( $remaining <= 0 || apply_filters( 'dlm_allow_partially_refunded_orders_handling', false, $order, $refund ) ) ) {
+		foreach ( $refund->get_items() as $_refund_item ) {
 
-			$licenses = apply_filters( 'dlm_order_refund_get_order_licenses', null, $order_id );
-			if ( null === $licenses ) {
-				$result   = self::getLicenses( [ 'order' => $order ] );
-				$licenses = [];
-				foreach ( $result['data'] as $entry ) {
-					if ( empty( $entry['keys'] ) ) {
-						continue;
-					}
-					$licenses = array_merge( $licenses, $entry['keys'] );
-				}
+			$refundItem = new WC_Order_Item_Product( $_refund_item );
+			$refundedItemId = (int) $refundItem->get_meta( '_refunded_item_id' );
+			$refundedItem    = new WC_Order_Item_Product( $refundedItemId );
+			if ( $refundedItem->get_id() <= 0 ) {
+				DebugLogger::info( sprintf( 'WC -> Order Item (#%d) Refund: Unable to load refunded item.', $refundedItemId ) );
+				continue;
 			}
 
-			$licenseService = new LicensesService();
+			$totalRefunded    = ( (int) $refundItem->get_total() ) * - 1;
+			$quantityRefunded = ( (int) $refundItem->get_quantity() ) * - 1;
 
-			foreach ( $licenses as $license ) {
-				$outcome = $licenseService->update( $license->getId(), [
-					'status' => LicenseStatus::DISABLED
-				] );
+			if ( $totalRefunded > 0 ) {
 
-				if ( ! is_wp_error( $outcome ) ) {
-					DebugLogger::info( sprintf( 'WC -> Order Refund: Refund processed. License #%d is now disabled.', $license->getId() ) );
-				} else {
-					DebugLogger::info( sprintf( 'WC -> Order Refund: Refund processed. Unable to disable license #%d. (Error: %s)', $license->getId(), $outcome->get_error_message() ) );
+				$licenses = $orderService->getOrderItemLicensesRaw( $refundedItem );
+				$refCount = min( $quantityRefunded, count( $licenses ) );
+
+				DebugLogger::info( sprintf( 'WC -> Order Item (#%d) Refund: Total licenses %d', $refundedItem->get_id(), $refCount ) );
+
+				for ( $x = $refCount - 1; $x >= 0; $x -- ) {
+
+					$licenseId = $licenses[ $x ]->getId();
+
+					$outcome = $licenseService->update( $licenses[ $x ]->getId(), [
+						'status' => LicenseStatus::DISABLED
+					] );
+
+					if ( ! is_wp_error( $outcome ) ) {
+						$order->add_order_note( sprintf( esc_html__('Disabled License #%d following Refund #%d.', 'digital-license-manager'), $licenseId, $refund->get_id() ) );
+						DebugLogger::info( sprintf( 'WC -> Order Item (#%d) Refund: Processed. License #%d is now disabled.', $refundedItem->get_id(), $licenses[ $x ]->getId() ) );
+					} else {
+						DebugLogger::info( sprintf( 'WC -> Order Item (#%d) Refund: Processed. Unable to disable license #%d. (Error: %s)', $refundedItem->get_id(), $licenses[ $x ]->getId(), $outcome->get_error_message() ) );
+					}
 				}
+
+			} else {
+				DebugLogger::info( sprintf( 'WC -> Order Item (#%d) Refund: Nothing to refund.', $refundedItemId ) );
 			}
 		}
 	}
@@ -674,18 +672,15 @@ class Orders {
 		/** @var WC_Order_Item_Product $item */
 		foreach ( $order->get_items() as $item ) {
 
-			$product   = self::getProductByLineItem( $item );
-			$productId = $product->get_id();
-			$orderId   = self::getLicenseOrderId( $item->get_order_id(), $product->get_id() );
-			$order     = wc_get_order( $orderId );
-
-			$licenses = self::getLicensesByLineItemData( $item, $order, $product );
+			$product      = $item->get_product();
+			$orderService = new OrdersService();
+			$licenses     = $orderService->getOrderItemLicensesRaw( $item );
 
 			if ( empty( $licenses ) ) {
 				continue;
 			}
 
-			$data[ $productId ] = [
+			$data[ $product->get_id() ] = [
 				'name' => $product->get_name(),
 				'keys' => $licenses
 			];
@@ -694,67 +689,6 @@ class Orders {
 		$args['data'] = $data;
 
 		return $args;
-	}
-
-
-	/**
-	 * Return the product id by line item
-	 *
-	 * @param \WC_Order_Item_Product $item
-	 *
-	 * @return \WC_Product
-	 * @since 1.5.1
-	 *
-	 */
-	public static function getProductByLineItem( $item ) {
-
-		$product   = wc_get_product( $item->get_product_id() );
-		$productId = $item->get_product_id();
-		if ( $product->is_type( 'variable' ) ) {
-			$productId = $item->get_variation_id();
-		}
-
-		$productId = apply_filters( 'dlm_order_licensed_product', $productId, $item, $item->get_order() );
-
-		return wc_get_product( $productId );
-	}
-
-	/**
-	 * Return's list of licenses by line item.
-	 *
-	 * @param WC_Order $order
-	 * @param WC_Product $product
-	 *
-	 * @return License[]
-	 * @since 1.5.1
-	 *
-	 */
-	public static function getLicensesByLineItemData( $item, $order, $product ) {
-
-		$query = apply_filters(
-			'dlm_admin_get_order_licenses_query',
-			array(
-				'order_id'   => $order->get_id(),
-				'product_id' => $product->get_id(),
-			),
-			$item,
-			$product
-		);
-
-		return Licenses::instance()->findAllBy( $query );
-	}
-
-	/**
-	 * Retrieves ordered license keys.
-	 *
-	 * @param array $args
-	 *
-	 * @return array
-	 * @deprecated 1.3.0
-	 *
-	 */
-	public static function getLicenseKeys( $args ) {
-		return self::getLicenses( $args );
 	}
 
 	/**
@@ -818,5 +752,69 @@ class Orders {
 	 */
 	public static function getLicenseOrderId( $orderId, $productId ) {
 		return apply_filters( 'dlm_get_customer_licenses_order_id', $orderId, $productId );
+	}
+
+	/**
+	 * Return the product id by line item
+	 *
+	 * @param \WC_Order_Item_Product $item
+	 *
+	 * @return \WC_Product
+	 * @since 1.5.1
+	 *
+	 * @depreacted 1.7.1 - Use WC_Order_Item_Product::get_product() instead
+	 *
+	 */
+	public static function getProductByLineItem( $item ) {
+
+		_deprecated_function( __METHOD__, '1.7.1', 'WC_Order_Item_Product::get_product()' );
+
+		$product   = wc_get_product( $item->get_product_id() );
+		$productId = $item->get_product_id();
+		if ( $product->is_type( 'variable' ) ) {
+			$productId = $item->get_variation_id();
+		}
+
+		$productId = apply_filters( 'dlm_order_licensed_product', $productId, $item, $item->get_order() );
+
+		return wc_get_product( $productId );
+	}
+
+	/**
+	 * Return's list of licenses by line item.
+	 *
+	 * @param WC_Order $order
+	 * @param WC_Product $product
+	 *
+	 * @return License[]
+	 * @since 1.5.1
+	 *
+	 * @depreacted 1.7.1 - Use OrdersService class instead
+	 *
+	 */
+	public static function getLicensesByLineItemData( $item, $order = null, $product = null ) {
+
+		_deprecated_function( __METHOD__, '1.7.1', 'OrdersService::getOrderItemLicensesRaw()' );
+
+		$orderService = new OrdersService();
+
+		return $orderService->getOrderItemLicensesRaw( $item );
+	}
+
+	/**
+	 * Retrieves ordered license keys.
+	 *
+	 * @param array $args
+	 *
+	 * @return array
+	 *
+	 * @deprecated 1.3.0
+	 *
+	 */
+	public static function getLicenseKeys( $args ) {
+
+		_deprecated_function( __METHOD__, '1.7.1', 'Orders::getLicenses()' );
+
+		return self::getLicenses( $args );
 	}
 }
