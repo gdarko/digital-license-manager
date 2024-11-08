@@ -524,7 +524,13 @@ class Orders {
 
 			if ( $totalRefunded > 0 ) {
 
-				$licenses = $orderService->getOrderItemLicensesRaw( $refundedItem );
+				$licenses = apply_filters( 'dlm_order_refund_licenses_pre_filter', null, $refund, $order, $refundedItem, $refundItem );
+				if ( is_null( $licenses ) ) {
+					$licenses = $orderService->getOrderItemLicensesRaw( $refundedItem );
+				}
+
+				$licenses = apply_filters( 'dlm_order_refund_licenses', $licenses, $refund, $order, $refundedItem, $refundItem );
+
 				$refCount = min( $quantityRefunded, count( $licenses ) );
 
 				DebugLogger::info( sprintf( 'WC -> Order Item (#%d) Refund: Total licenses %d', $refundedItem->get_id(), $refCount ) );
