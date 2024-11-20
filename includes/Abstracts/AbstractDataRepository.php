@@ -250,12 +250,13 @@ class AbstractDataRepository implements DataRepositoryInterface {
 	public function update( $id, $data ) {
 
 		$existing   = $this->find( $id );
-		$old_object = clone $existing;
-		$changes    = 0;
 
 		if ( ! $existing ) {
 			return false;
 		}
+
+		$old_object = clone $existing;
+		$changes    = 0;
 
 		foreach ( $data as $key => $value ) {
 			if ( $existing->attributes[ $key ] != $value ) {
