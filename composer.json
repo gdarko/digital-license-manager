@@ -14,7 +14,7 @@
     "ext-json": "*",
     "defuse/php-encryption": "^2.2",
     "ignitekit/wp-notices": "^1.0",
-    "ignitekit/wp-query-builder": "^1.1",
+    "ignitekit/wp-query-builder": "dev-master",
     "ignitekit/wp-deactivate-feedback-client": "^1.0",
     "spipu/html2pdf": "^5.2",
     "tecnickcom/tcpdf": "^6.4"
