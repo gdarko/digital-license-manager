@@ -65,6 +65,7 @@ class Orders {
 		add_filter( 'woocommerce_order_actions', array( $this, 'addSendLicenseKeysAction' ), 10, 2 );
 		add_action( 'woocommerce_after_order_itemmeta', array( $this, 'showOrderedLicenses' ), 10, 3 );
 		add_action( 'woocommerce_refund_created', array( $this, 'handleOrderRefunds' ), 10, 2 );
+		add_filter( 'woocommerce_hidden_order_itemmeta', [ $this, 'hiddenOrderItemmeta' ] );
 		add_filter( 'dlm_woocommerce_order_item_actions', array( $this, 'orderItemActions' ), 10, 4 );
 		add_action( 'dlm_licenses_created', array( $this, 'markOrderAsComplete' ), 10, 2 );
 		add_filter( 'dlm_validate_order_id', array( $this, 'validateOrderId' ), 10, 2 );
@@ -530,7 +531,6 @@ class Orders {
 				}
 
 				$licenses = apply_filters( 'dlm_order_refund_licenses', $licenses, $refund, $order, $refundedItem, $refundItem );
-
 				$refCount = min( $quantityRefunded, count( $licenses ) );
 
 				DebugLogger::info( sprintf( 'WC -> Order Item (#%d) Refund: Total licenses %d', $refundedItem->get_id(), $refCount ) );
@@ -555,6 +555,17 @@ class Orders {
 				DebugLogger::info( sprintf( 'WC -> Order Item (#%d) Refund: Nothing to refund.', $refundedItemId ) );
 			}
 		}
+	}
+
+	/**
+	 * Hide order meta from the UI
+	 * @param $arr
+	 *
+	 * @return mixed
+	 */
+	public function hiddenOrderItemmeta( $arr ) {
+		$arr[] = '_dlm_license_id';
+		return $arr;
 	}
 
 	/**
