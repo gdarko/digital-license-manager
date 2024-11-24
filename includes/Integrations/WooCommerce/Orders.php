@@ -544,6 +544,7 @@ class Orders {
 					] );
 
 					if ( ! is_wp_error( $outcome ) ) {
+						do_action( 'dlm_order_item_refund_processed', $licenses, $refund, $order, $refundedItem, $refundItem, LicenseStatus::DISABLED );
 						$order->add_order_note( sprintf( esc_html__('Disabled License #%d following Refund #%d.', 'digital-license-manager'), $licenseId, $refund->get_id() ) );
 						DebugLogger::info( sprintf( 'WC -> Order Item (#%d) Refund: Processed. License #%d is now disabled.', $refundedItem->get_id(), $licenses[ $x ]->getId() ) );
 					} else {
