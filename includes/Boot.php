@@ -36,6 +36,7 @@ use IdeoLogix\DigitalLicenseManager\Controllers\Menus as MenuController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Settings as SettingsController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Notices as NoticeController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Frontend as FrontendController;
+use IdeoLogix\DigitalLicenseManager\Controllers\Commands as CommandsController;
 use IdeoLogix\DigitalLicenseManager\Database\Integrity;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller as WooCommerceController;
 use IdeoLogix\DigitalLicenseManager\Integrations\WCPIPS\Controller as WCPIPSController;
@@ -116,6 +117,12 @@ class Boot {
 	 * @var FrontendController
 	 */
 	public $frontend;
+
+	/**
+	 * The commands controller
+	 * @var CommandsController
+	 */
+	public $commands;
 
 	/**
 	 * Initializes the class
@@ -551,28 +558,12 @@ class Boot {
 	public function onWpInit() {
 		Setup::migrate();
 
-		new MenuController();
-
 		CryptoHelper::instance();
 		NoticeFlasher::instance();
 		NoticeManager::instance();
 
-		$this->admin      = new AdminController();
-		$this->dropdowns  = new DropdownsController();
-		$this->licenses   = new LicenseController();
-		$this->generators = new GeneratorController();
-		$this->api_keys   = new ApiKeyController();
-		$this->notices    = new NoticeController();
-
 		$this->initIntegrations();
-
-		$this->rest = new RestController();
-
-		if ( apply_filters( 'dlm_compatibility_layer_for_lmfwc', false ) ) {
-			new \IdeoLogix\DigitalLicenseManager\RestAPI\Compat\LMFWC\Setup();
-		}
-
-		$this->frontend = new FrontendController();
+		$this->initControllers();
 
 		do_action( 'dlm_init', $this );
 	}
@@ -587,6 +578,31 @@ class Boot {
 			flush_rewrite_rules( false );
 			delete_option( 'dlm_needs_permalinks_flush' );
 		}
+	}
+
+	/**
+	 * Init the controllers
+	 * @return void
+	 */
+	public function initControllers() {
+
+		new MenuController();
+
+		$this->commands   = new CommandsController();
+		$this->admin      = new AdminController();
+		$this->dropdowns  = new DropdownsController();
+		$this->licenses   = new LicenseController();
+		$this->generators = new GeneratorController();
+		$this->api_keys   = new ApiKeyController();
+		$this->notices    = new NoticeController();
+
+		$this->rest = new RestController();
+
+		if ( apply_filters( 'dlm_compatibility_layer_for_lmfwc', false ) ) {
+			new \IdeoLogix\DigitalLicenseManager\RestAPI\Compat\LMFWC\Setup();
+		}
+
+		$this->frontend = new FrontendController();
 	}
 
 	/**

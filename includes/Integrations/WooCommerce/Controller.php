@@ -26,8 +26,10 @@
 
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
+use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractCommand;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractIntegrationController;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\IntegrationControllerInterface;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Commands\AddOrderItemLicenses;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Tools\GeneratePastOrderLicenses\GeneratePastOrderLicenses;
 use IdeoLogix\DigitalLicenseManager\Settings as SettingsData;
 
@@ -90,6 +92,7 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 		add_filter( 'dlm_dropdown_search_query_default_status', array( $this, 'dropdownSearchQDefaultStatus' ), 10, 2 );
 		add_filter( 'dlm_dropdown_search_post_type', array( $this, 'dropdownSearchPostTypeResults' ), 10, 5 );
 		add_filter( 'dlm_tools', array( $this, 'registerTools' ), 10, 1 );
+		add_filter( 'dlm_commands', array( $this, 'registerCommands' ), 10, 1 );
 	}
 
 	/**
@@ -260,6 +263,18 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 		}
 
 		return $tools;
+	}
+
+	/**
+	 * Register the commands
+	 *
+	 * @param AbstractCommand[] $commands
+	 *
+	 * @return AbstractCommand[]
+	 */
+	public function registerCommands($commands) {
+		$commands[] = new AddOrderItemLicenses();
+		return $commands;
 	}
 
 	/**
