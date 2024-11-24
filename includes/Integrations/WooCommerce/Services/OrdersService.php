@@ -97,7 +97,7 @@ class OrdersService {
 	 *
 	 * @return void
 	 */
-	public function updateOrderItemLicenses( $orderItem, $licenses, $unique = false ) {
+	public function resyncOrderItemLicenses( $orderItem, $licenses, $unique = false ) {
 
 		if ( empty( $licenses ) ) {
 			return;

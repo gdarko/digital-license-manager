@@ -29,7 +29,7 @@ namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractCommand;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractIntegrationController;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\IntegrationControllerInterface;
-use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Commands\AddOrderItemLicenses;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Tools\AddOrderItemLicenses\AddOrderItemLicenses;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Tools\GeneratePastOrderLicenses\GeneratePastOrderLicenses;
 use IdeoLogix\DigitalLicenseManager\Settings as SettingsData;
 
@@ -260,6 +260,10 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 
 		if ( ! isset( $tools['generate_past_order_licenses'] ) ) {
 			$tools['generate_past_order_licenses'] = GeneratePastOrderLicenses::class;
+		}
+
+		if ( ! isset( $tools['add_order_item_licenses'] ) ) {
+			$tools['add_order_item_licenses'] = AddOrderItemLicenses::class;
 		}
 
 		return $tools;

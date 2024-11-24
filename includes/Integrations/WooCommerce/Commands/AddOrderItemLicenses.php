@@ -70,7 +70,7 @@ class AddOrderItemLicenses extends AbstractCommand {
 				foreach ( $items as $item ) {
 					/* @var \WC_Order_Item_Product $item */
 					$licenses = $orderService->getOrderItemLicensesRaw( $item );
-					$orderService->updateOrderItemLicenses( $item, $licenses, 1 );
+					$orderService->resyncOrderItemLicenses( $item, $licenses, 1 );
 				}
 				$progressBar->tick();
 			}

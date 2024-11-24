@@ -352,7 +352,7 @@ class Orders {
 		 */
 		if ( ! is_wp_error( $licenses ) ) {
 			$orderService = new OrdersService();
-			$orderService->updateOrderItemLicenses( $orderItem, $licenses );
+			$orderService->resyncOrderItemLicenses( $orderItem, $licenses );
 		}
 
 		/**
