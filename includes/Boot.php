@@ -32,7 +32,6 @@ use IdeoLogix\DigitalLicenseManager\Controllers\ApiKeys as ApiKeyController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Dropdowns as DropdownsController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Generators as GeneratorController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Licenses as LicenseController;
-use IdeoLogix\DigitalLicenseManager\Controllers\Menus as MenuController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Settings as SettingsController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Notices as NoticeController;
 use IdeoLogix\DigitalLicenseManager\Controllers\Frontend as FrontendController;
@@ -585,8 +584,6 @@ class Boot {
 	 * @return void
 	 */
 	public function initControllers() {
-
-		new MenuController();
 
 		$this->commands   = new CommandsController();
 		$this->admin      = new AdminController();
