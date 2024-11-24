@@ -86,8 +86,9 @@ class CryptoHelper {
 	protected function init() {
 
 		$uploads = wp_upload_dir( null, false );
+		$mainDir = apply_filters( 'dlm_files_dir', trailingslashit( $uploads['basedir'] ) . 'dlm-files' );
 
-		$this->uploads_dir = $uploads['basedir'] . '/dlm-files/';
+		$this->uploads_dir = trailingslashit( $mainDir );
 		$this->setDefuse();
 		$this->setSecret();
 

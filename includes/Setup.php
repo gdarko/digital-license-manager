@@ -189,12 +189,12 @@ class Setup {
 		 * When the cryptographic secrets are loaded into these constants,
 		 * no crypto credential files should be created.
 		 *
-		 * @see https://github.com/gdarko/digital-license-manager/wiki/security
+		 * @see https://docs.codeverve.com/digital-license-manager/handbook/get-started/security/
 		 */
 		$cryptoConst = defined( 'DLM_PLUGIN_SECRET' ) && defined( 'DLM_PLUGIN_DEFUSE' );
 
 		$uploads      = wp_upload_dir( null, false );
-		$mainDir      = trailingslashit( $uploads['basedir'] ) . 'dlm-files';
+		$mainDir      = apply_filters( 'dlm_files_dir', trailingslashit( $uploads['basedir'] ) . 'dlm-files' );
 		$fileHtaccess = $mainDir . '/.htaccess';
 		$fileDefuse   = $mainDir . '/defuse.txt';
 		$fileSecret   = $mainDir . '/secret.txt';
