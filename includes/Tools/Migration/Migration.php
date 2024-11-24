@@ -206,6 +206,7 @@ class Migration extends AbstractTool {
 	 * @return void
 	 */
 	public function markAsComplete() {
+		parent::markAsComplete();
 		$this->setStatus([
 			'completed_at' => gmdate( 'Y-m-d H:i:s' )
 		]);

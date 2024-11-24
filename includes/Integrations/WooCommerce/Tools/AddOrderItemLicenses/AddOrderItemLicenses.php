@@ -21,6 +21,12 @@ class AddOrderItemLicenses extends AbstractTool {
 	protected $description = 'Add Order Item Licenses for past orders';
 
 	/**
+	 * Is one time only tool
+	 * @var bool
+	 */
+	protected $is_one_time = true;
+
+	/**
 	 * Returns the view
 	 * @return string
 	 */
@@ -52,10 +58,14 @@ class AddOrderItemLicenses extends AbstractTool {
 		$list = $this->getData( 'steps' );
 
 		if ( ! is_array( $list ) || empty( $list ) ) {
-			$list = $this->setData( 'steps', [
+			$list = $this->setTemporaryData( 'steps', [
 				1 => array(
 					'name'  => 'Process Orders',
 					'pages' => $this->getPagesCount()
+				),
+				2 => array(
+					'name'  => 'Clean up',
+					'pages' => 1
 				),
 			] );
 		}
@@ -112,6 +122,11 @@ class AddOrderItemLicenses extends AbstractTool {
 					}
 				}
 
+
+				return true;
+			case 2:
+				$this->deleteTemporaryData();
+				$this->markAsComplete();
 
 				return true;
 

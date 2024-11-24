@@ -32,7 +32,12 @@ defined( 'ABSPATH' ) || exit;
 foreach ( $tools as $tool_id ) {
 	/* @var AbstractTool $tool_id */
 	$tool = new $tool_id( time() );
-	echo '<div class="dlm-tool-row">';
-	echo $tool->getView();
-	echo '</div>';
+	if ( $tool->isOneTime() && $tool->isComplete() ) {
+		return;
+	}
+	?>
+    <div class="dlm-tool-row">
+		<?php echo $tool->getView(); ?>
+    </div>
+	<?php
 }

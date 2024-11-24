@@ -47,6 +47,12 @@ abstract class AbstractTool {
 	protected $description;
 
 	/**
+	 * Is the tool one-time tool only?
+	 * @var bool
+	 */
+	protected $is_one_time;
+
+	/**
 	 * Constructor
 	 */
 	public function __construct( $id ) {
@@ -54,53 +60,132 @@ abstract class AbstractTool {
 	}
 
 	/**
-	 * Set tool data
+	 * Set temporary tool data
+	 *
 	 * @param $key
 	 * @param $value
 	 *
 	 * @return array
 	 */
-	public function setData( $key, $value ) {
-		$data = $this->getData();
+	public function setTemporaryData( $key, $value ) {
+		$data = $this->getTemporaryData();
 		if ( ! is_array( $data ) ) {
 			$data = array();
 		}
 		$data[ $key ] = $value;
-		set_transient( $this->getDataKey(), $data, apply_filters( 'dlm_tool_data_expiration', 48 * HOUR_IN_SECONDS, $this ) );
+		set_transient( $this->getTemporaryDataKey(), $data, apply_filters( 'dlm_tool_data_expiration', 48 * HOUR_IN_SECONDS, $this ) );
+
 		return $value;
 	}
 
 	/**
-	 * Get tool data
+	 * Get temporary tool data
+	 *
+	 * @param $key
+	 * @param $default
+	 *
+	 * @return mixed|null
+	 */
+	public function getTemporaryData( $key = null, $default = null ) {
+		$data = get_transient( $this->getTemporaryDataKey() );
+
+		if ( is_null( $key ) ) {
+			return $data;
+		}
+
+		return is_array( $data ) && isset( $data[ $key ] ) ? $data[ $key ] : $default;
+	}
+
+	/**
+	 * Delete temporary tool data
+	 * @return void
+	 */
+	public function deleteTemporaryData() {
+		delete_transient( $this->getTemporaryDataKey() );
+	}
+
+	/**
+	 * Get the temporary data key
+	 * @return string
+	 */
+	public function getTemporaryDataKey() {
+		return 'dlm_tool_' . md5( $this->id );
+	}
+
+	/**
+	 * Set persisted tool data
+	 *
+	 * @param $key
+	 * @param $value
+	 *
+	 * @return void
+	 */
+	public function setData( $key, $value ) {
+		$tools = get_option( 'dlm_tools', array() );
+		if ( ! is_array( $tools ) ) {
+			$tools = [];
+		}
+		if ( empty( $tools[ $this->getDataKey() ] ) ) {
+			$tools[ $this->getDataKey() ] = [];
+		}
+		$tools[ $this->getDataKey() ][ $key ] = $value;
+		update_option( 'dlm_tools', $tools );
+	}
+
+	/**
+	 * Get persisted tool data
+	 *
 	 * @param $key
 	 * @param $default
 	 *
 	 * @return mixed|null
 	 */
 	public function getData( $key = null, $default = null ) {
-		$data = get_transient( $this->getDataKey() );
-
-		if ( is_null( $key ) ) {
-			return $data;
+		$tools = get_option( 'dlm_tools', array() );
+		if ( ! is_array( $tools ) ) {
+			$tools = [];
+		}
+		if ( empty( $tools[ $this->getDataKey() ] ) ) {
+			$tools[ $this->getDataKey() ] = [];
 		}
 
-		return is_array( $data ) && isset( $data[ $key ] ) ? $key : $default;
+		if ( is_null( $key ) ) {
+			return $tools[ $this->getDataKey() ];
+		}
+
+		return is_array( $tools[ $this->getDataKey() ] ) && isset( $tools[ $this->getDataKey() ][ $key ] ) ? $tools[ $this->getDataKey() ][ $key ] : $default;
 	}
 
 	/**
-	 * Delete tool data
+	 * Delete persisted tool data
 	 * @return void
 	 */
-	public function deleteData() {
-		delete_transient( $this->getDataKey() );
+	public function deleteData( $key = null ) {
+
+		$tools = get_option( 'dlm_tools', array() );
+
+		if ( is_null( $key ) ) {
+			if ( ! empty( $tools[ $this->getDataKey() ] ) ) {
+				unset( $tools[ $this->getDataKey() ] );
+			}
+		} else {
+			if ( isset( $tools[ $this->getDataKey() ][ $key ] ) ) {
+				unset( $tools[ $this->getDataKey() ][ $key ] );
+			}
+		}
+		if ( empty( $tools ) ) {
+			delete_option( 'dlm_tools' );
+		} else {
+			update_option( 'dlm_tools', $tools );
+		}
 	}
 
 	/**
-	 * Get the data key
+	 * Get persisted tool data key
 	 * @return string
 	 */
 	public function getDataKey() {
-		return 'dlm_tool_' . md5( $this->id );
+		return $this->slug;
 	}
 
 	/**
@@ -149,7 +234,25 @@ abstract class AbstractTool {
 	 * @return void
 	 */
 	public function markAsComplete() {
+		$this->setData( 'completed_at', time() );
+	}
 
+	/**
+	 * Mark as not-complete (Not all tools needs this)
+	 * @return void
+	 */
+	public function markAsNotComplete() {
+		$this->deleteData( 'completed_at' );
+	}
+
+	/**
+	 * Has this tool completed previously?
+	 * @return bool
+	 */
+	public function isComplete() {
+		$completed_at = $this->getData( 'completed_at', null );
+
+		return ! empty( $completed_at );
 	}
 
 	/**
@@ -264,5 +367,13 @@ abstract class AbstractTool {
 	 */
 	public function getDescription() {
 		return $this->description;
+	}
+
+	/**
+	 * Check if the tool is one-time only
+	 * @return bool
+	 */
+	public function isOneTime() {
+		return apply_filters( 'dlm_tools_is_one_time', $this->is_one_time, $this );
 	}
 }

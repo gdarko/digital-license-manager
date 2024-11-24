@@ -76,10 +76,10 @@ class GeneratePastOrderLicenses extends AbstractTool {
 	 */
 	public function getSteps() {
 
-		$list = $this->getData( 'steps' );
+		$list = $this->getTemporaryData( 'steps' );
 
 		if ( ! is_array( $list ) || empty( $list ) ) {
-			$list = $this->setData( 'steps', [
+			$list = $this->setTemporaryData( 'steps', [
 				1 => array(
 					'name'  => 'Generate Licenses',
 					'pages' => $this->getPagesCount()
@@ -228,7 +228,7 @@ class GeneratePastOrderLicenses extends AbstractTool {
 
 				$results = wc_get_orders( $query );
 				if ( empty( $results->orders ) ) {
-					$this->deleteData();
+					$this->deleteTemporaryData();
 
 					return new \WP_Error( 'not_found', sprintf( __( 'No orders found for step "%s", page "%s"' ), $step, $page ) );
 				}
@@ -241,8 +241,9 @@ class GeneratePastOrderLicenses extends AbstractTool {
 
 				if ( $page === $results->max_num_pages ) {
 
-					error_log( 'Last item processed. Data deleted: ' . wp_json_encode( $this->getData() ) );
-					$this->deleteData();
+					error_log( 'Last item processed. Data deleted: ' . wp_json_encode( $this->getTemporaryData() ) );
+					$this->deleteTemporaryData();
+					$this->markAsComplete();
 				}
 
 
