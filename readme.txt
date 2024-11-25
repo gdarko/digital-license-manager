@@ -3,8 +3,8 @@ Contributors: darkog, codeverve
 Tags: license key, license manager, software license, serial key, woocommerce
 Requires at least: 4.7
 Requires PHP: 7.0
-Tested up to: 6.6
-Stable tag: 1.7.0
+Tested up to: 6.7
+Stable tag: 1.7.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -207,6 +207,24 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 23. License check form displayed by using block or shortcode
 
 == Changelog ==
+
+= 1.7.1 =
+*Release date - 26 Nov 2024*
+
+* Add proper CSS classes to WooCommerce views to make restyling easier
+* Add refund handling when refunding Order's line items that contain License.
+* Add refund handling behavior configuration in WooCommerce Settings
+* Add _dlm_license_id to order item metadata so developers can easily identify the license id tied to particular order item during purchase
+* Add dlm_files_dir filter for changing the default files directory
+* New Tool: Add Order Item Licenses for setting _dlm_license_id for historical order items.
+* New WP-CLI command `wp dlm:add_order_item_licenses` for setting _dlm_license_id for historical order items.
+* Upgraded ignitekit/wp-query-builder to v1.2
+* General codebase improvements
+* Re-sync the .pot template
+* Test with WordPress 6.7+
+* Confirm compatibility with WooCommerce 9.4+
+
+**Note**: It's recommended to run either the tool or WP-CLI command "Add Order Item Licenses" to add the newly introduced **_dlm_license_id** meta data to WooCommerce order items.
 
 = 1.7.0 =
 *Release date - 24 Sep 2024*
