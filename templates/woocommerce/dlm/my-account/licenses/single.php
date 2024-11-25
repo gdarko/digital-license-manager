@@ -39,9 +39,10 @@ $activationsLimit = $license->getActivationsLimit() ? $license->getActivationsLi
 
 ?>
 
-<?php do_action( 'dlm_myaccount_single_page_start', $license, $order, $product, $date_format, $license_key ); ?>
-
-<h2 class="dlm-myaccount-page-title dlm-myaccount-page-title--license-details"><?php esc_html_e( 'License Details', 'digital-license-manager' ); ?></h2>
+<?php
+do_action( 'dlm_myaccount_single_page_start', $license, $order, $product, $date_format, $license_key ); // DEPRECATED as of 1.7.1.
+do_action( 'dlm_myaccount_licenses_single_page_start', $license, $order, $product, $date_format, $license_key );
+?>
 
 <table class="dlm-myaccount-table dlm-myaccount-table--license-details woocommerce-table woocommerce-table--order-details shop_table order_details">
     <tbody>

@@ -29,6 +29,8 @@ use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 
 defined( 'ABSPATH' ) || exit; ?>
 
+<?php do_action( 'dlm_myaccount_licenses_index_page_start', $licenses ); ?>
+
 <?php if ( ! empty( $licenses ) ): ?>
 
     <div class="dlm-myaccount-product-licenses">
@@ -140,3 +142,5 @@ defined( 'ABSPATH' ) || exit; ?>
     </div>
 
 <?php endif; ?>
+
+<?php do_action( 'dlm_myaccount_licenses_index_page_end', $licenses ); ?>
