@@ -71,7 +71,7 @@ class Settings {
 							'callback' => array( $this, 'fieldCheckbox' ),
 							'args'     => array(
 								'label'   => __( 'Hide license keys in the public facing pages like "Order Received".', 'digital-license-manager' ),
-								'explain' => __( "The license keys will be masked with stars on the public facing pages for security purposes", 'digital-license-manager' ),
+								'explain' => __( "The license keys will be masked with stars on the public facing pages for security purposes.", 'digital-license-manager' ),
 							)
 						),
 						40 => array(
@@ -80,7 +80,7 @@ class Settings {
 							'callback' => array( $this, 'fieldSelect' ),
 							'args'     => array(
 								'label'   => __( 'Set the plugin behavior when a refund for line item that contains license is issued', 'digital-license-manager' ),
-								'explain' => __( "Select what happens to the License once the line item that generated the License is refunded", 'digital-license-manager' ),
+								'explain' => __( "Select what happens to the License once the line item that generated the License is refunded.", 'digital-license-manager' ),
 								'options' => [
 									'skip'    => __( 'Do Nothing', 'digital-license-manager' ),
 									'disable' => __( 'Disable Licnese', 'digital-license-manager' ),
