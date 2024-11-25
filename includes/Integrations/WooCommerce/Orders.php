@@ -505,6 +505,12 @@ class Orders {
 	 */
 	public function handleOrderRefunds( $refund_id, $args ) {
 
+		$behavior = Settings::get( 'refund_behavior', Settings::SECTION_WOOCOMMERCE, 'disable' );
+		if ( 'skip' === $behavior ) {
+			DebugLogger::info( 'WC -> Refund: Handling not enabled! Skipping.' );
+			return;
+		}
+
 		$refund         = new WC_Order_Refund( $refund_id );
 		$order          = wc_get_order( $refund->get_parent_id() );
 		$orderService   = new OrdersService();
@@ -530,6 +536,7 @@ class Orders {
 					$licenses = $orderService->getOrderItemLicensesRaw( $refundedItem );
 				}
 
+				/* @var $licenses License[] */
 				$licenses = apply_filters( 'dlm_order_refund_licenses', $licenses, $refund, $order, $refundedItem, $refundItem );
 				$refCount = min( $quantityRefunded, count( $licenses ) );
 
@@ -539,15 +546,32 @@ class Orders {
 
 					$licenseId = $licenses[ $x ]->getId();
 
-					$outcome = $licenseService->update( $licenses[ $x ]->getId(), [
-						'status' => LicenseStatus::DISABLED
-					] );
-
-					if ( ! is_wp_error( $outcome ) ) {
-						do_action( 'dlm_order_item_refund_processed', $licenses, $refund, $order, $refundedItem, $refundItem, LicenseStatus::DISABLED );
-						$order->add_order_note( sprintf( esc_html__('Disabled License #%d following Refund #%d.', 'digital-license-manager'), $licenseId, $refund->get_id() ) );
-						DebugLogger::info( sprintf( 'WC -> Order Item (#%d) Refund: Processed. License #%d is now disabled.', $refundedItem->get_id(), $licenses[ $x ]->getId() ) );
+					if ( $behavior == 'disable' ) {
+						$outcome = $licenseService->update( $licenses[ $x ]->getDecryptedLicenseKey(), [
+							'status' => LicenseStatus::DISABLED
+						] );
+					} elseif ( $behavior == 'delete' ) {
+						$outcome = $licenseService->delete( $licenses[ $x ]->getDecryptedLicenseKey() );
+						if ( ! is_wp_error( $outcome ) ) {
+							$refundedItem->delete_meta_data_value( '_dlm_license_id', $licenses[ $x ]->getId() );
+							$refundedItem->save();
+						}
 					} else {
+						$outcome = null;
+					}
+
+					if ( ! is_null( $outcome ) && ! is_wp_error( $outcome ) ) {
+						do_action( 'dlm_order_item_refund_processed', $licenses, $refund, $order, $refundedItem, $refundItem, LicenseStatus::DISABLED );
+						if ( 'disable' === $behavior ) {
+							$note = esc_html__( 'Disabled License #%d following Refund #%d.', 'digital-license-manager' );
+						} else {
+							$note = esc_html__( 'Deleted License #%d following Refund #%d.', 'digital-license-manager' );
+						}
+						$order->add_order_note( sprintf( $note, $licenseId, $refund->get_id() ) );
+						DebugLogger::info( sprintf( 'WC -> Order Item (#%d) Refund: Processed. License #%d is now %s.', $refundedItem->get_id(), $licenses[ $x ]->getId(), $behavior === 'disable' ? 'disabled' : 'deleted' ) );
+					} else if ( is_null( $outcome ) ) {
+						DebugLogger::info( sprintf( 'WC -> Order Item (#%d) Refund behavior not clearly defined. Skipping.', $refundedItem->get_id() ) );
+					} else if ( is_wp_error( $outcome ) ) {
 						DebugLogger::info( sprintf( 'WC -> Order Item (#%d) Refund: Processed. Unable to disable license #%d. (Error: %s)', $refundedItem->get_id(), $licenses[ $x ]->getId(), $outcome->get_error_message() ) );
 					}
 				}

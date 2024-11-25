@@ -38,7 +38,7 @@ class Settings {
 			'sanitize_callback' => array( $this, 'sanitizeArray' ),
 			'sections'          => array(
 				'general' => array(
-					'name' => __('General'),
+					'name' => __('General', 'digital-license-manager'),
 					'page' => 'general',
 					'priority' => 5,
 					'fields' => array(
@@ -74,10 +74,24 @@ class Settings {
 								'explain' => __( "The license keys will be masked with stars on the public facing pages for security purposes", 'digital-license-manager' ),
 							)
 						),
+						40 => array(
+							'id'       => 'refund_behavior',
+							'title'    => __( 'Refund behavior', 'digital-license-manager' ),
+							'callback' => array( $this, 'fieldSelect' ),
+							'args'     => array(
+								'label'   => __( 'Set the plugin behavior when a refund for line item that contains license is issued', 'digital-license-manager' ),
+								'explain' => __( "Select what happens to the License once the line item that generated the License is refunded", 'digital-license-manager' ),
+								'options' => [
+									'skip'    => __( 'Do Nothing', 'digital-license-manager' ),
+									'disable' => __( 'Disable Licnese', 'digital-license-manager' ),
+									'delete'  => __( 'Delete License', 'digital-license-manager' ),
+								]
+							)
+						),
 					)
 				),
 				'my_account' => array(
-					'name'     => __( 'My Account' ),
+					'name'     => __( 'My Account', 'digital-license-manager' ),
 					'page'     => 'my_account',
 					'priority' => 10,
 					'fields'   => array(

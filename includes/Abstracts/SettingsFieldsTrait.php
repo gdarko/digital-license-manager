@@ -84,6 +84,35 @@ trait SettingsFieldsTrait {
 	}
 
 	/**
+	 * Render the default select option
+	 *
+	 * @param $args
+	 */
+    public function fieldSelect( $args ) {
+	    $key     = isset( $args['key'] ) ? $args['key'] : ''; // database key.
+	    $field   = isset( $args['field'] ) ? $args['field'] : ''; // field name/id.
+	    $value   = isset( $args['value'] ) ? $args['value'] : ''; // field name/id.
+	    $explain = isset( $args['explain'] ) ? $args['explain'] : '';
+	    $options = isset( $args['options'] ) ? $args['options'] : array();
+
+	    $html = '<fieldset>';
+	    $html .= sprintf(
+		    '<select id="%s" name="%s[%s]">',
+		    esc_attr( $key ),
+		    esc_attr( $key ),
+		    esc_attr( $field ),
+	    );
+	    foreach ( $options as $val => $label ) {
+		    $html .= sprintf( '<option value="%s" %s>%s</option>', $val, selected( $val,$value, false ), esc_html( $label ) );
+	    }
+	    $html .= '</select>';
+	    $html .= sprintf( '<p class="description">%s</p>', wp_kses( $explain, SanitizeHelper::ksesAllowedHtmlTags() ) );
+	    $html .= '</fieldset>';
+
+	    echo $html;
+    }
+
+	/**
 	 * Render the image upload field
 	 * @return void
 	 */

@@ -508,7 +508,7 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 	/**
 	 * Deletes specific entry from the database
 	 *
-	 * @param int|int[] $id
+	 * @param mixed $id
 	 *
 	 * @return bool|WP_Error
 	 */

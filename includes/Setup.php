@@ -323,6 +323,7 @@ class Setup {
 				),
 				'stock_management'          => 1,
 				'hide_license_keys'         => 0,
+				'refund_behavior'           => 'disable',
 				'myaccount_endpoint'        => 1,
 				'enable_activations_table'  => 1,
 				'enable_manual_activations' => 1,

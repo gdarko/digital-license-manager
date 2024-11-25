@@ -42,21 +42,24 @@ class Settings {
 	 *
 	 * @param string $field
 	 * @param string $section
+	 * @param mixed $default
 	 *
 	 * Code inspired by "License Manager for WooCommerce" plugin
+	 *
+	 * @return bool|mixed
 	 * @copyright  2019-2022 Drazen Bebic
 	 * @copyright  2022-2023 WPExperts.io
 	 * @copyright  2020-2024 Darko Gjorgjijoski
 	 *
-	 * @return bool|mixed
 	 */
-	public static function get( $field, $section = self::SECTION_GENERAL ) {
+	public static function get( $field, $section = self::SECTION_GENERAL, $default = false ) {
 		$settings = get_option( $section, array() );
-		$value    = false;
 
 		if ( ! $settings ) {
 			$settings = array();
 		}
+
+		$value = $default;
 
 		if ( array_key_exists( $field, $settings ) ) {
 			$value = $settings[ $field ];
