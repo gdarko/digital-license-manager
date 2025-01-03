@@ -208,7 +208,7 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 
 == Changelog ==
 
-= 1.7.1 =
+= 1.7.2 =
 *Release date - 03 Jan 2025*
 
 * Fix fatal error when running CLI
