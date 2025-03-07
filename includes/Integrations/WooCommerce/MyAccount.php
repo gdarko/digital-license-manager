@@ -29,6 +29,7 @@ namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
+use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
 
@@ -418,12 +419,14 @@ class MyAccount {
 			return array();
 		}
 
+		/**
+		 * Filter the licenses queried in the MyAccount.
+		 */
+		$query = apply_filters( 'dlm_myaccount_licenses_query', array() );
+
+
 		/** @var License[] $licenses */
-		$licenses = Licenses::instance()->findAllBy(
-			array(
-				'user_id' => get_current_user_id()
-			)
-		);
+		$licenses = Licenses::instance()->findAllBy( array_merge( $query, array( 'user_id' => get_current_user_id() ) ) );
 
 		$result = array();
 
