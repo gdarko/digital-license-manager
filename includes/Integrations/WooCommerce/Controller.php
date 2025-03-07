@@ -29,8 +29,11 @@ namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractCommand;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractIntegrationController;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\IntegrationControllerInterface;
-use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Tools\AddOrderItemLicenses\AddOrderItemLicenses;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Commands\AddOrderItemLicenses as AddOrderItemLicensesCommand;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Tools\AddOrderItemLicenses\AddOrderItemLicenses as AddOrderItemLicensesTool;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Tools\GeneratePastOrderLicenses\GeneratePastOrderLicenses;
+
+
 use IdeoLogix\DigitalLicenseManager\Settings as SettingsData;
 
 defined( 'ABSPATH' ) || exit;
@@ -263,7 +266,7 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 		}
 
 		if ( ! isset( $tools['add_order_item_licenses'] ) ) {
-			$tools['add_order_item_licenses'] = AddOrderItemLicenses::class;
+			$tools['add_order_item_licenses'] = AddOrderItemLicensesTool::class;
 		}
 
 		return $tools;
@@ -277,7 +280,7 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
 	 * @return AbstractCommand[]
 	 */
 	public function registerCommands($commands) {
-		$commands[] = new AddOrderItemLicenses();
+		$commands[] = new AddOrderItemLicensesCommand();
 		return $commands;
 	}
 
