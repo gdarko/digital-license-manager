@@ -29,7 +29,7 @@ namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractCommand;
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractIntegrationController;
 use IdeoLogix\DigitalLicenseManager\Abstracts\Interfaces\IntegrationControllerInterface;
-use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Commands\AddOrderItemLicenses;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Tools\AddOrderItemLicenses\AddOrderItemLicenses;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Tools\GeneratePastOrderLicenses\GeneratePastOrderLicenses;
 use IdeoLogix\DigitalLicenseManager\Settings as SettingsData;
 
