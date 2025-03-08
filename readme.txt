@@ -73,7 +73,7 @@ List of features:
 * WordPress Premium Theme & Plugin Updater ([Read more](https://docs.codeverve.com/digital-license-manager/wordpress-theme-plugin-updates/))
 * Software Analytics (Coming soon)
 
-[[GET PRO VERSION]](https://docs.codeverve.com/digital-license-manager/).
+[[GET PRO VERSION]](https://codeverve.com/product/digital-license-manager-pro/) 🔥
 
 For a full list of features, please check [Documentation](https://docs.codeverve.com/digital-license-manager/).
 
