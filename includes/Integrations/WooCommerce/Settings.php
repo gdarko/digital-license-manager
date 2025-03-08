@@ -133,7 +133,7 @@ class Settings {
 						),
 					)
 				),
-				'order_confiramtion' => array(
+				'order_confirmation' => array(
 					'name' => 'Order Confirmation',
 					'page' => 'order_confiramtion',
 					'priority' => 15,
