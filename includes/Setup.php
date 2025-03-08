@@ -328,6 +328,7 @@ class Setup {
 				'enable_activations_table'  => 1,
 				'enable_manual_activations' => 1,
 				'enable_certificates'       => 1,
+				'enable_software'           => 1,
 			)
 		);
 

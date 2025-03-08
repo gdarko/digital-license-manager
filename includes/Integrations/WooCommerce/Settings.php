@@ -132,6 +132,14 @@ class Settings {
 							)
 						),
 					)
+				),
+				'order_confiramtion' => array(
+					'name' => 'Order Confirmation',
+					'page' => 'order_confiramtion',
+					'priority' => 15,
+					'fields' => array(
+
+					)
 				)
 			),
 		);

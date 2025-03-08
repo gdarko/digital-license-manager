@@ -187,6 +187,13 @@ class Settings {
 		foreach ( $tabList as $i => $tab ) {
 			if ( isset( $tab['sections'] ) && is_array( $tab['sections'] ) && count( $tab['sections'] ) > 1 ) {
 				$sections = $tab['sections'];
+				$filtered = [];
+				foreach($sections as $key => $section) {
+					if(!empty($section['fields'])) {
+						$filtered[$key] = $section;
+					}
+				}
+				$sections = $filtered;
 				uasort( $sections, array( $this, 'prioritySort' ) );
 				$tabList[ $i ]['sections'] = $sections;
 			}
