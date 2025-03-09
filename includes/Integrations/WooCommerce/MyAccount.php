@@ -85,23 +85,30 @@ class MyAccount {
 	 */
 	public function handleAccountActions() {
 
-		if ( ! is_user_logged_in() ) {
-			return;
-		}
-
 		$action = isset( $_REQUEST['dlm_action'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['dlm_action'] ) ) : '';
 
 		$whitelisted_actions = apply_filters( 'dlm_myaccount_whitelisted_actions', array() );
+
+		$action_method = isset( $whitelisted_actions[ $action ]['method'] ) ? $whitelisted_actions[ $action ]['method'] : 'POST';
+
 		if ( empty( $whitelisted_actions ) || ! array_key_exists( $action, $whitelisted_actions ) ) {
 			return;
 		}
 
-		$action_method = isset($whitelisted_actions[$action]['method']) ? $whitelisted_actions[$action]['method'] : 'POST';
 		if ( $action_method != HttpHelper::requestMethod() ) {
 			return;
 		}
 
-		$check_nonce = isset($whitelisted_actions[$action]['nonce']) &&  $whitelisted_actions[$action]['nonce'];
+		if ( ! is_user_logged_in() ) {
+			$login_url = wc_get_page_permalink( 'myaccount' );
+			if ( 'GET' == strtoupper( $action_method ) ) {
+				global $wp;
+				$login_url = add_query_arg( [ 'redirect_to' => home_url( add_query_arg( array(), $wp->request ) ) ], $login_url );
+			}
+			wp_redirect( $login_url );
+		}
+
+		$check_nonce = isset( $whitelisted_actions[ $action ]['nonce'] ) && $whitelisted_actions[ $action ]['nonce'];
 		if ( $check_nonce ) {
 			$nonce = isset( $_REQUEST['dlm_nonce'] ) ? sanitize_key( $_REQUEST['dlm_nonce'] ) : '';
 			if ( ! wp_verify_nonce( $nonce, 'dlm_account' ) ) {
