@@ -102,7 +102,6 @@ class MyAccount {
 		if ( ! is_user_logged_in() ) {
 			$login_url = wc_get_page_permalink( 'myaccount' );
 			if ( 'GET' == strtoupper( $action_method ) ) {
-				global $wp;
 				$redirect_to = add_query_arg( $_GET, self::getProcessingEndpointUrl() );
 				$login_url   = add_query_arg( [ 'redirect_to' => urlencode( $redirect_to ) ], $login_url );
 			}
