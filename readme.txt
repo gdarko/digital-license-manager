@@ -12,7 +12,7 @@ Efficiently sell and manage software license keys / codes on your WooCommerce we
 
 == Description ==
 
-**Digital License Manager** is licensing plugin that allows you to efficiently sell and manage license keys that also supports bulk import, export, stock synchronization, separate activations table and much more.
+The **[Digital License Manager](https://codeverve.com/product/digital-license-manager-pro/)** is licensing plugin that allows you to efficiently sell and manage license keys that also supports bulk import, export, stock synchronization, separate activations table and much more.
 
 The plugin is actively maintained, secure, well documented and very extendable.
 
