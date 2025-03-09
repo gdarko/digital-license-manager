@@ -108,3 +108,8 @@
     display:block;
     width: 100%;
 }
+
+.dlm-myaccount-license-key-actions {
+    display: flex;
+    gap: 5px;
+}

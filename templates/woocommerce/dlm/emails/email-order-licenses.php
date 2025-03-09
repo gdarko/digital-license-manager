@@ -70,7 +70,7 @@ defined( 'ABSPATH' ) || exit;
                             </code>
                         </td>
 					<?php endif; ?>
-                    <td class="license-key-actions">
+                    <td class="dlm-email-license-key-actions license-key-actions">
                         <?php
                         foreach ( $actions as $key => $action ) {
                             $href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
