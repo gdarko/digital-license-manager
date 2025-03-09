@@ -54,7 +54,7 @@ class MyAccount {
 		add_filter( 'woocommerce_account_menu_items', array( $this, 'accountMenuItems' ), 10, 1 );
 		add_action( 'woocommerce_account_digital-licenses_endpoint', array( $this, 'digitalLicenses' ) );
 		add_filter( 'dlm_myaccount_licenses_row_actions', array( $this, 'licensesRowActions' ), 10, 3 );
-		add_filter( 'dlm_myaccount_licenses_keys_row_actions', array( $this, 'licensesRowActions' ), 10, 3 );
+		add_filter( 'dlm_myaccount_order_licenses_row_actions', array( $this, 'licensesRowActions' ), 10, 3 );
 		add_action( 'dlm_myaccount_licenses_single_page_content', array( $this, 'addSingleLicenseContent' ), 10, 1 );
 		add_action( 'dlm_myaccount_licenses_single_page_end', array( $this, 'addSingleLicenseActivationsTable' ), 10, 5 );
 		add_action( 'dlm_register_scripts', array( $this, 'registerScripts' ), 10, 1 );

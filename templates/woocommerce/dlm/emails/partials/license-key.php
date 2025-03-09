@@ -24,7 +24,8 @@ defined( 'ABSPATH' ) || exit;
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 
-$markup = apply_filters( 'dlm_emails_license_key_markup', null, $license );
+$mode = isset($mode) ? $mode : 'standard'; // or email.
+$markup = apply_filters( 'dlm_emails_license_key_markup', null, $license, $mode );
 
 ?>
 

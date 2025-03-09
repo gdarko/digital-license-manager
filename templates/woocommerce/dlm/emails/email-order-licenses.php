@@ -33,7 +33,7 @@ defined( 'ABSPATH' ) || exit;
         <table class="td" cellspacing="0" style="width: 100%; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;" border="1">
             <thead>
             <tr>
-                <th class="td" scope="col" style="text-align: left;" colspan="2">
+                <th class="td" scope="col" style="text-align: left;" colspan="3">
                     <span><?php echo esc_html( $row['name'] ); ?></span>
                 </th>
             </tr>
@@ -41,9 +41,19 @@ defined( 'ABSPATH' ) || exit;
 			<tbody>
 			<?php
 			/** @var License $license */
-			foreach ( $row['keys'] as $license ): ?>
+			foreach ( $row['keys'] as $license ):
+
+				$licenseKey = $license->getDecryptedLicenseKey();
+				if ( is_wp_error( $licenseKey ) ) {
+					$licenseKey = '';
+				}
+				$actions = apply_filters( 'dlm_email_order_licenses_row_actions', array(), $license, $licenseKey, $data );
+				if ( is_array( $actions ) ) {
+					ksort( $actions );
+				}
+                ?>
                 <tr>
-                    <td class="td" style="text-align: left; vertical-align: middle; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;" colspan="<?php echo ( $license->getExpiresAt() ) ? '1' : '2'; ?>">
+                    <td class="td" style="text-align: left; vertical-align: middle; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;" colspan="<?php echo ( $license && $license->getExpiresAt() ) ? '' : '2'; ?>">
 	                    <?php
 	                    echo wc_get_template_html( 'dlm/emails/partials/license-key.php', array(
 		                    'mode' => 'email',
@@ -55,11 +65,21 @@ defined( 'ABSPATH' ) || exit;
 						$date = wp_date( DateFormatter::getExpirationFormat(), strtotime( $license->getExpiresAt() ) );
 						?>
                         <td class="td" style="text-align: left; vertical-align: middle; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;">
-                            <code><?php
-								printf( '%s <strong>%s</strong>', $valid_until, $date );
-								?></code>
+                            <code>
+                                <?php printf( '%s <strong>%s</strong>', $valid_until, $date ); ?>
+                            </code>
                         </td>
 					<?php endif; ?>
+                    <td class="license-key-actions">
+                        <?php
+                        foreach ( $actions as $key => $action ) {
+                            $href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
+                            $cssClass = isset( $action['class'] ) ? esc_attr( $action['class'] ) : '';
+                            $text     = isset( $action['text'] ) ? esc_html( $action['text'] ) : '';
+                            echo wp_kses( sprintf( '<a href="%s" class="%s">%s</a>', esc_url( $href ), $cssClass, $text ), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() );
+                        }
+                        ?>
+                    </td>
                 </tr>
 			<?php endforeach; ?>
             </tbody>

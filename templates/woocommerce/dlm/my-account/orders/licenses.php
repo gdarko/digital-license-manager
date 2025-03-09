@@ -59,7 +59,8 @@ defined( 'ABSPATH' ) || exit; ?>
 				if ( is_wp_error( $licenseKey ) ) {
 					$licenseKey = '';
 				}
-				$actions = apply_filters( 'dlm_myaccount_licenses_keys_row_actions', array(), $license, $licenseKey, $data );
+				$actions = apply_filters( 'dlm_myaccount_order_licenses_row_actions', array(), $license, $licenseKey, $data );
+				$actions = apply_filters_deprecated( 'dlm_myaccount_licenses_keys_row_actions', array( $actions, $license, $licenseKey, $data ), '1.7.4', 'dlm_myaccount_order_licenses_row_actions' );
 				if ( is_array( $actions ) ) {
 					ksort( $actions );
 				}
