@@ -1,6 +1,8 @@
 {
   "name": "gdarko/digital-license-manager",
-  "license": "GPLv2",
+  "description": "A WordPress plugin for managing and selling digital licenses",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-only",
   "autoload": {
     "psr-4": {
       "IdeoLogix\\DigitalLicenseManager\\": "includes/"
