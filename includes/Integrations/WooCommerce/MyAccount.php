@@ -89,7 +89,7 @@ class MyAccount {
 			return;
 		}
 
-		$action = isset( $_POST['dlm_action'] ) ? sanitize_text_field( wp_unslash( $_POST['dlm_action'] ) ) : '';
+		$action = isset( $_REQUEST['dlm_action'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['dlm_action'] ) ) : '';
 
 		$whitelisted_actions = apply_filters( 'dlm_myaccount_whitelisted_actions', array() );
 		if ( empty( $whitelisted_actions ) || ! array_key_exists( $action, $whitelisted_actions ) ) {
@@ -103,7 +103,7 @@ class MyAccount {
 
 		$check_nonce = isset($whitelisted_actions[$action]['nonce']) &&  $whitelisted_actions[$action]['nonce'];
 		if ( $check_nonce ) {
-			$nonce = isset( $_POST['dlm_nonce'] ) ? sanitize_key( $_POST['dlm_nonce'] ) : '';
+			$nonce = isset( $_REQUEST['dlm_nonce'] ) ? sanitize_key( $_REQUEST['dlm_nonce'] ) : '';
 			if ( ! wp_verify_nonce( $nonce, 'dlm_account' ) ) {
 				wp_die( 'Link has expired. Please try again later.', 'digital-license-manager' );
 			}
