@@ -51,9 +51,18 @@ defined( 'ABSPATH' ) || exit;
 				if ( is_array( $actions ) ) {
 					ksort( $actions );
 				}
+
+				$totalCols = 1;
+				if ( empty( $license->getExpiresAt() ) ) {
+					$totalCols ++;
+				}
+				if ( empty( $actions ) ) {
+					$totalCols ++;
+				}
+
                 ?>
                 <tr>
-                    <td class="td" style="text-align: left; vertical-align: middle; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;" colspan="<?php echo ( $license && $license->getExpiresAt() ) ? '' : '2'; ?>">
+                    <td class="td" style="text-align: left; vertical-align: middle; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;" colspan="<?php echo (int) $totalCols; ?>">
 	                    <?php
 	                    echo wc_get_template_html( 'dlm/emails/partials/license-key.php', array(
 		                    'mode' => 'email',
@@ -70,16 +79,18 @@ defined( 'ABSPATH' ) || exit;
                             </code>
                         </td>
 					<?php endif; ?>
-                    <td class="dlm-email-license-key-actions license-key-actions" style="text-align: left; vertical-align: middle; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;">
-                        <?php
-                        foreach ( $actions as $key => $action ) {
-                            $href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
-                            $cssClass = isset( $action['class'] ) ? esc_attr( $action['class'] ) : '';
-                            $text     = isset( $action['text'] ) ? esc_html( $action['text'] ) : '';
-                            echo wp_kses( sprintf( '<a href="%s" class="%s">%s</a>', esc_url( $href ), $cssClass, $text ), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() );
-                        }
-                        ?>
-                    </td>
+	                <?php if ( ! empty( $actions ) ): ?>
+                        <td class="dlm-email-license-key-actions license-key-actions" style="border: 1px solid #e5e5e5; text-align: left; vertical-align: middle; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;">
+			                <?php
+			                foreach ( $actions as $key => $action ) {
+				                $href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
+				                $cssClass = isset( $action['class'] ) ? esc_attr( $action['class'] ) : '';
+				                $text     = isset( $action['text'] ) ? esc_html( $action['text'] ) : '';
+				                echo wp_kses( sprintf( '<a href="%s" class="%s">%s</a>', esc_url( $href ), $cssClass, $text ), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() );
+			                }
+			                ?>
+                        </td>
+	                <?php endif; ?>
                 </tr>
 			<?php endforeach; ?>
             </tbody>

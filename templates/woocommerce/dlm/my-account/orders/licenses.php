@@ -64,9 +64,18 @@ defined( 'ABSPATH' ) || exit; ?>
 				if ( is_array( $actions ) ) {
 					ksort( $actions );
 				}
+
+				$totalCols = 1;
+				if ( empty( $license->getExpiresAt() ) ) {
+					$totalCols ++;
+				}
+				if ( empty( $actions ) ) {
+					$totalCols ++;
+				}
+
 				?>
                 <tr>
-                    <td colspan="<?php echo ( $license && $license->getExpiresAt() ) ? '' : '2'; ?>">
+                    <td colspan="<?php echo (int) $totalCols; ?>">
 						<?php
 						if ( apply_filters( 'dlm_myaccount_licenses_should_obfuscate', $should_obfuscate, $license ) ) {
 							echo esc_html( StringFormatter::obfuscateString( $licenseKey ) );
@@ -93,16 +102,18 @@ defined( 'ABSPATH' ) || exit; ?>
 							); ?>
                         </td>
 					<?php endif; ?>
-                    <td class="dlm-myaccount-license-key-actions license-key-actions">
-						<?php
-						foreach ( $actions as $key => $action ) {
-							$href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
-							$cssClass = isset( $action['class'] ) ? esc_attr( $action['class'] ) : '';
-							$text     = isset( $action['text'] ) ? esc_html( $action['text'] ) : '';
-							echo wp_kses( sprintf( '<a href="%s" class="%s">%s</a>', esc_url( $href ), $cssClass, $text ), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() );
-						}
-						?>
-                    </td>
+	                <?php if ( ! empty( $actions ) ): ?>
+                        <td class="dlm-myaccount-license-key-actions license-key-actions">
+			                <?php
+			                foreach ( $actions as $key => $action ) {
+				                $href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
+				                $cssClass = isset( $action['class'] ) ? esc_attr( $action['class'] ) : '';
+				                $text     = isset( $action['text'] ) ? esc_html( $action['text'] ) : '';
+				                echo wp_kses( sprintf( '<a href="%s" class="%s">%s</a>', esc_url( $href ), $cssClass, $text ), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() );
+			                }
+			                ?>
+                        </td>
+	                <?php endif; ?>
                 </tr>
 			<?php endforeach; ?>
             </tbody>
