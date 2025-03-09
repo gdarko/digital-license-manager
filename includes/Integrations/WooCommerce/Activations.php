@@ -52,8 +52,14 @@ class Activations {
 	public function whitelistAdditionalAccountActions( $actions ) {
 
 		return array_merge( $actions, array(
-			'activation_row_actions',
-			'manual_activation'
+			'activation_row_actions' => [
+				'method' => 'POST',
+				'nonce' => true,
+			],
+			'manual_activation' => [
+				'method' => 'POST',
+				'nonce' => true,
+			]
 		) );
 	}
 

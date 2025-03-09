@@ -29,7 +29,6 @@ namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
 
@@ -42,6 +41,7 @@ defined( 'ABSPATH' ) || exit;
 class MyAccount {
 
 	protected $endpoints = [];
+
 	/**
 	 * MyAccount constructor.
 	 */
@@ -65,16 +65,16 @@ class MyAccount {
 
 	/**
 	 * Register the rewrite endpoints
-	 * @since 1.6.0
 	 * @return void
+	 * @since 1.6.0
 	 */
 	public function rewriteEndpoints() {
 
-		$this->endpoints = apply_filters('dlm_myaccount_rewrite_endpoints', [
+		$this->endpoints = apply_filters( 'dlm_myaccount_rewrite_endpoints', [
 			'digital-licenses' => EP_ROOT | EP_PAGES,
-		]);
+		] );
 
-		foreach($this->endpoints as $slug => $places) {
+		foreach ( $this->endpoints as $slug => $places ) {
 			add_rewrite_endpoint( $slug, $places );
 		}
 	}
@@ -89,19 +89,24 @@ class MyAccount {
 			return;
 		}
 
-		if ( 'POST' != HttpHelper::requestMethod() ) {
-			return;
-		}
+		$action = isset( $_POST['dlm_action'] ) ? sanitize_text_field( wp_unslash( $_POST['dlm_action'] ) ) : '';
 
-		$action              = isset( $_POST['dlm_action'] ) ? sanitize_text_field( wp_unslash( $_POST['dlm_action'] ) ) : '';
 		$whitelisted_actions = apply_filters( 'dlm_myaccount_whitelisted_actions', array() );
-		if ( empty( $whitelisted_actions ) || ! in_array( $action, $whitelisted_actions ) ) {
+		if ( empty( $whitelisted_actions ) || ! array_key_exists( $action, $whitelisted_actions ) ) {
 			return;
 		}
 
-		$nonce = isset( $_POST['dlm_nonce'] ) ? sanitize_key( $_POST['dlm_nonce'] ) : '';
-		if ( ! wp_verify_nonce( $nonce, 'dlm_account' ) ) {
-			wp_die( 'Link has expired. Please try again later.', 'digital-license-manager' );
+		$action_method = isset($whitelisted_actions[$action]['method']) ? $whitelisted_actions[$action]['method'] : 'POST';
+		if ( $action_method != HttpHelper::requestMethod() ) {
+			return;
+		}
+
+		$check_nonce = isset($whitelisted_actions[$action]['nonce']) &&  $whitelisted_actions[$action]['nonce'];
+		if ( $check_nonce ) {
+			$nonce = isset( $_POST['dlm_nonce'] ) ? sanitize_key( $_POST['dlm_nonce'] ) : '';
+			if ( ! wp_verify_nonce( $nonce, 'dlm_account' ) ) {
+				wp_die( 'Link has expired. Please try again later.', 'digital-license-manager' );
+			}
 		}
 
 		do_action( 'dlm_myaccount_handle_action_' . $action );
@@ -131,8 +136,8 @@ class MyAccount {
 		wp_localize_script( 'dlm_myaccount', 'DLM_MyAccount', [
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
 			'_wpnonce' => wp_create_nonce( Activations::NONCE ),
-			'i18n' => [
-				'copiedToClipboard' => __('Key copied to clipboard.', 'digital-license-manager')
+			'i18n'     => [
+				'copiedToClipboard' => __( 'Key copied to clipboard.', 'digital-license-manager' )
 			]
 		] );
 	}
@@ -155,7 +160,7 @@ class MyAccount {
 	/**
 	 * Adds the plugin pages to the "My account" section.
 	 *
-	 * @param  array  $items
+	 * @param array $items
 	 *
 	 * @return array
 	 */
@@ -248,9 +253,9 @@ class MyAccount {
 	/**
 	 * License actions
 	 *
-	 * @param  array  $actions
-	 * @param  License  $license
-	 * @param  string  $licenseKey
+	 * @param array $actions
+	 * @param License $license
+	 * @param string $licenseKey
 	 *
 	 * @return array
 	 */
@@ -271,7 +276,7 @@ class MyAccount {
 	/**
 	 * Single license page
 	 *
-	 * @param  License  $license
+	 * @param License $license
 	 */
 	public function addSingleLicenseContent( $license ) {
 
@@ -286,7 +291,7 @@ class MyAccount {
 					'license'          => $license,
 					'license_key'      => $license->getDecryptedLicenseKey(),
 					'license_key_html' => wc_get_template_html( 'dlm/my-account/licenses/partials/license-key.php', array(
-						'license'     => $license,
+						'license' => $license,
 					), '', Controller::getTemplatePath() ),
 					'product'          => ! empty( $license->getProductId() ) ? wc_get_product( $license->getProductId() ) : null,
 					'order'            => ! empty( $license->getOrderId() ) ? wc_get_order( $license->getOrderId() ) : null,
@@ -331,8 +336,8 @@ class MyAccount {
 	 */
 	public function isOrderPage( $enabled, $hook ) {
 		global $post_type;
-		if ( class_exists('\Automattic\WooCommerce\Utilities\OrderUtil') && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled() ) {
-			return 'woocommerce_page_wc-orders' === $hook && isset($_GET['page']) && 'wc-orders' === $_GET['page'];
+		if ( class_exists( '\Automattic\WooCommerce\Utilities\OrderUtil' ) && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled() ) {
+			return 'woocommerce_page_wc-orders' === $hook && isset( $_GET['page'] ) && 'wc-orders' === $_GET['page'];
 		} else {
 			return in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'shop_order' === $post_type;
 		}
@@ -356,7 +361,7 @@ class MyAccount {
 	/**
 	 * Prints out the licenses activation table
 	 *
-	 * @param  License  $license
+	 * @param License $license
 	 * @param $order
 	 * @param $product
 	 * @param $dateFormat
@@ -433,7 +438,7 @@ class MyAccount {
 		foreach ( $licenses as $license ) {
 
 			$product_id = $license->getProductId();
-			$product = wc_get_product( $product_id );
+			$product    = wc_get_product( $product_id );
 			if ( ! isset( $result[ $product_id ] ) ) {
 				$result[ $product_id ] = array();
 			}
@@ -451,9 +456,9 @@ class MyAccount {
 	/**
 	 * Returns the processing endpoint url
 	 *
+	 * @return string
 	 * @since 1.5.6
 	 *
-	 * @return string
 	 */
 	public static function getProcessingEndpointUrl() {
 		return apply_filters( 'dlm_myaccount_processing_endpoint_url', add_query_arg( [ 'dlm_action_handler' => 1 ], trailingslashit( home_url() ) ) );

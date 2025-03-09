@@ -93,7 +93,10 @@ class Certificates {
 	public function whitelistAdditionalAccountActions( $actions ) {
 
 		return array_merge( $actions, array(
-			'license_certificate_download',
+			'license_certificate_download' => [
+				'method' => 'POST',
+				'nonce' => true,
+			],
 		) );
 	}
 
