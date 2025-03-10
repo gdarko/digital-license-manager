@@ -32,7 +32,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Services\OrdersService;
 use IdeoLogix\DigitalLicenseManager\ListTables\Licenses as LicensesListTable;
@@ -321,7 +321,7 @@ class Orders {
 					'order_id'          => $order->get_id(),
 					'product_id'        => $product->get_id(),
 					'user_id'           => $order->get_user_id(),
-					'status'            => LicenseStatus::SOLD,
+					'status'            => LicensePrivateStatus::SOLD,
 					'source'            => LicenseSource::GENERATOR,
 					'valid_for'         => $generator->getExpiresIn(),
 					'activations_limit' => $activationsLimit
@@ -367,7 +367,7 @@ class Orders {
 		if ( Settings::isAutoDeliveryEnabled() ) {
 			Licenses::instance()->updateBy(
 				array( 'order_id' => $order->get_id() ),
-				array( 'status' => LicenseStatus::DELIVERED )
+				array( 'status' => LicensePrivateStatus::DELIVERED )
 			);
 			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): Order licenses status SET to DELIVERED.', $order->get_id(), $product->get_id() ) );
 		}
@@ -548,7 +548,7 @@ class Orders {
 
 					if ( $behavior == 'disable' ) {
 						$outcome = $licenseService->update( $licenses[ $x ]->getDecryptedLicenseKey(), [
-							'status' => LicenseStatus::DISABLED
+							'status' => LicensePrivateStatus::DISABLED
 						] );
 					} elseif ( $behavior == 'delete' ) {
 						$outcome = $licenseService->delete( $licenses[ $x ]->getDecryptedLicenseKey() );
@@ -561,7 +561,7 @@ class Orders {
 					}
 
 					if ( ! is_null( $outcome ) && ! is_wp_error( $outcome ) ) {
-						do_action( 'dlm_order_item_refund_processed', $licenses, $refund, $order, $refundedItem, $refundItem, LicenseStatus::DISABLED );
+						do_action( 'dlm_order_item_refund_processed', $licenses, $refund, $order, $refundedItem, $refundItem, LicensePrivateStatus::DISABLED );
 						if ( 'disable' === $behavior ) {
 							$note = esc_html__( 'Disabled License #%d following Refund #%d.', 'digital-license-manager' );
 						} else {

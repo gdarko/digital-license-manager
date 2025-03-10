@@ -33,7 +33,7 @@ use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses as LicensesRepository;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\LicenseActivations;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
 use IdeoLogix\DigitalLicenseManager\Settings;
@@ -104,58 +104,58 @@ class Licenses extends AbstractListTable {
 		);
 
 		// Sold link
-		$class               = $current == LicenseStatus::SOLD ? ' class="current"' : '';
-		$soldUrl             = esc_url( add_query_arg( 'status', LicenseStatus::SOLD ) );
+		$class               = $current == LicensePrivateStatus::SOLD ? ' class="current"' : '';
+		$soldUrl             = esc_url( add_query_arg( 'status', LicensePrivateStatus::SOLD ) );
 		$statusLinks['sold'] = sprintf(
 			'<a href="%s" %s>%s <span class="count">(%d)</span></a>',
 			$soldUrl,
 			$class,
 			__( 'Sold', 'digital-license-manager' ),
-			LicensesRepository::instance()->countBy( array( 'status' => LicenseStatus::SOLD ) )
+			LicensesRepository::instance()->countBy( array( 'status' => LicensePrivateStatus::SOLD ) )
 		);
 
 		// Delivered link
-		$class                    = $current == LicenseStatus::DELIVERED ? ' class="current"' : '';
-		$deliveredUrl             = esc_url( add_query_arg( 'status', LicenseStatus::DELIVERED ) );
+		$class                    = $current == LicensePrivateStatus::DELIVERED ? ' class="current"' : '';
+		$deliveredUrl             = esc_url( add_query_arg( 'status', LicensePrivateStatus::DELIVERED ) );
 		$statusLinks['delivered'] = sprintf(
 			'<a href="%s" %s>%s <span class="count">(%d)</span></a>',
 			$deliveredUrl,
 			$class,
 			__( 'Delivered', 'digital-license-manager' ),
-			LicensesRepository::instance()->countBy( array( 'status' => LicenseStatus::DELIVERED ) )
+			LicensesRepository::instance()->countBy( array( 'status' => LicensePrivateStatus::DELIVERED ) )
 		);
 
 		// Active link
-		$class                 = $current == LicenseStatus::ACTIVE ? ' class="current"' : '';
-		$activeUrl             = esc_url( add_query_arg( 'status', LicenseStatus::ACTIVE ) );
+		$class                 = $current == LicensePrivateStatus::ACTIVE ? ' class="current"' : '';
+		$activeUrl             = esc_url( add_query_arg( 'status', LicensePrivateStatus::ACTIVE ) );
 		$statusLinks['active'] = sprintf(
 			'<a href="%s" %s>%s <span class="count">(%d)</span></a>',
 			$activeUrl,
 			$class,
 			__( 'Active', 'digital-license-manager' ),
-			LicensesRepository::instance()->countBy( array( 'status' => LicenseStatus::ACTIVE ) )
+			LicensesRepository::instance()->countBy( array( 'status' => LicensePrivateStatus::ACTIVE ) )
 		);
 
 		// Inactive link
-		$class                   = $current == LicenseStatus::INACTIVE ? ' class="current"' : '';
-		$inactiveUrl             = esc_url( add_query_arg( 'status', LicenseStatus::INACTIVE ) );
+		$class                   = $current == LicensePrivateStatus::INACTIVE ? ' class="current"' : '';
+		$inactiveUrl             = esc_url( add_query_arg( 'status', LicensePrivateStatus::INACTIVE ) );
 		$statusLinks['inactive'] = sprintf(
 			'<a href="%s" %s>%s <span class="count">(%d)</span></a>',
 			$inactiveUrl,
 			$class,
 			__( 'Inactive', 'digital-license-manager' ),
-			LicensesRepository::instance()->countBy( array( 'status' => LicenseStatus::INACTIVE ) )
+			LicensesRepository::instance()->countBy( array( 'status' => LicensePrivateStatus::INACTIVE ) )
 		);
 
 		// Disabled link
-		$class                   = $current == LicenseStatus::DISABLED ? ' class="current"' : '';
-		$disabledUrl             = esc_url( add_query_arg( 'status', LicenseStatus::DISABLED ) );
+		$class                   = $current == LicensePrivateStatus::DISABLED ? ' class="current"' : '';
+		$disabledUrl             = esc_url( add_query_arg( 'status', LicensePrivateStatus::DISABLED ) );
 		$statusLinks['disabled'] = sprintf(
 			'<a href="%s" %s>%s <span class="count">(%d)</span></a>',
 			$disabledUrl,
 			$class,
 			__( 'Disabled', 'digital-license-manager' ),
-			LicensesRepository::instance()->countBy( array( 'status' => LicenseStatus::DISABLED ) )
+			LicensesRepository::instance()->countBy( array( 'status' => LicensePrivateStatus::DISABLED ) )
 		);
 
 		return $statusLinks;
@@ -579,7 +579,7 @@ class Licenses extends AbstractListTable {
 	 * @return string
 	 */
 	public function column_status( $item ) {
-		return LicenseStatus::statusToHtml( $item->getStatus() );
+		return LicensePrivateStatus::statusToHtml( $item->getStatus() );
 	}
 
 	/**
@@ -651,17 +651,17 @@ class Licenses extends AbstractListTable {
 		switch ( $action ) {
 			case 'disable':
 				if ( $this->canEdit ) {
-					$this->toggleStatus( LicenseStatus::DISABLED );
+					$this->toggleStatus( LicensePrivateStatus::DISABLED );
 				}
 				break;
 			case 'mark_as_sold':
 				if ( $this->canEdit ) {
-					$this->toggleStatus( LicenseStatus::SOLD );
+					$this->toggleStatus( LicensePrivateStatus::SOLD );
 				}
 				break;
 			case 'mark_as_delivered':
 				if ( $this->canEdit ) {
-					$this->toggleStatus( LicenseStatus::DELIVERED );
+					$this->toggleStatus( LicensePrivateStatus::DELIVERED );
 				}
 				break;
 			case 'delete':
@@ -805,10 +805,10 @@ class Licenses extends AbstractListTable {
 	 */
 	protected function toggleStatus( $status ) {
 		switch ( $status ) {
-			case LicenseStatus::SOLD:
+			case LicensePrivateStatus::SOLD:
 				$nonce = 'sell';
 				break;
-			case LicenseStatus::DELIVERED:
+			case LicensePrivateStatus::DELIVERED:
 				$nonce = 'deliver';
 				break;
 			default:
@@ -831,13 +831,13 @@ class Licenses extends AbstractListTable {
 			// The license has a product assigned to it, perhaps a stock update is necessary
 			if ( $license->getProductId() !== null ) {
 				// License was active, but no longer is
-				if ( $license->getStatus() === LicenseStatus::ACTIVE && $status !== LicenseStatus::ACTIVE ) {
+				if ( $license->getStatus() === LicensePrivateStatus::ACTIVE && $status !== LicensePrivateStatus::ACTIVE ) {
 					// Update the stock
 					Stock::syncrhonizeProductStock( $license->getProductId() );
 				}
 
 				// License was not active, but is now
-				if ( $license->getStatus() !== LicenseStatus::ACTIVE && $status === LicenseStatus::ACTIVE ) {
+				if ( $license->getStatus() !== LicensePrivateStatus::ACTIVE && $status === LicensePrivateStatus::ACTIVE ) {
 					// Update the stock
 					Stock::syncrhonizeProductStock( $license->getProductId() );
 				}
@@ -915,7 +915,7 @@ class Licenses extends AbstractListTable {
 	 */
 	private function isViewFilterActive() {
 		if ( array_key_exists( 'status', $_GET )
-		     && in_array( $_GET['status'], LicenseStatus::$status )
+		     && in_array( $_GET['status'], LicensePrivateStatus::$status )
 		) {
 			return true;
 		}

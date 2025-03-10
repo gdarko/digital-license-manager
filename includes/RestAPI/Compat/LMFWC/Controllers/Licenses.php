@@ -32,7 +32,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\LicenseActivations;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus;
 use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 use WP_Error;
 use WP_REST_Request;
@@ -317,7 +317,7 @@ class Licenses extends AbstractRestController {
 
 		if ( ! is_null( $status ) ) {
 			$status = strtolower( $status );
-			$status = isset( LicenseStatus::$values[ $status ] ) ? LicenseStatus::$values[ $status ] : null;
+			$status = isset( LicensePrivateStatus::$values[ $status ] ) ? LicensePrivateStatus::$values[ $status ] : null;
 		}
 
 		$license = $this->service->create( array(
@@ -372,7 +372,7 @@ class Licenses extends AbstractRestController {
 		$status = isset( $updateData['status'] ) ? sanitize_text_field( $updateData['status'] ) : null;
 		if ( ! is_null( $status ) ) {
 			$status = strtolower( $status );
-			$updateData['status'] = isset( LicenseStatus::$values[ $status ] ) ? LicenseStatus::$values[ $status ] : null;
+			$updateData['status'] = isset( LicensePrivateStatus::$values[ $status ] ) ? LicensePrivateStatus::$values[ $status ] : null;
 		}
 
 		$updatedLicense = $this->service->update( $licenseKey, $updateData );

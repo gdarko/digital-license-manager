@@ -28,7 +28,7 @@
 
 use IdeoLogix\DigitalLicenseManager\Database\Migrator;
 use IdeoLogix\DigitalLicenseManager\Enums\DatabaseTable;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 
 defined( 'ABSPATH' ) || exit;
@@ -42,7 +42,7 @@ if ( $migrationMode === Migrator::MODE_UP ) {
 	$licenses     = $wpdb->get_results( "SELECT * FROM {$tbl_licenses}", ARRAY_A );
 	if ( ! empty( $licenses ) ) {
 		foreach ( $licenses as $license ) {
-			if ( ! empty( $license['valid_for'] ) && empty( $license['expires_at'] ) && ! empty( $license['created_at'] ) && intval( $license['status'] ) !== LicenseStatus::ACTIVE ) {
+			if ( ! empty( $license['valid_for'] ) && empty( $license['expires_at'] ) && ! empty( $license['created_at'] ) && intval( $license['status'] ) !== LicensePrivateStatus::ACTIVE ) {
 				$expiresAt = DateFormatter::addDaysInFuture( $license['valid_for'], $license['created_at'], 'Y-m-d H:i:s' );
 				$wpdb->update(
 					$tbl_licenses,

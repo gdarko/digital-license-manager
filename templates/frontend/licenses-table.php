@@ -62,7 +62,7 @@ $show_actions = apply_filters( 'dlm_block_license_table_actions', false, $record
 				<?php
 				$status = apply_filters( 'dlm_block_license_table_status', null, $records );
 				if ( null === $status ) {
-					$status = \IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus::statusToHtml( $record->getStatus(), ['style' => 'inline'] );
+					$status = \IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus::statusToHtml( $record->getStatus(), ['style' => 'inline'] );
 				}
 				echo $status;
 				?>

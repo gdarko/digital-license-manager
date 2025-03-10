@@ -127,7 +127,7 @@ class DLM_Helper_Generator {
 			'order_id' => null,
 			'product_id' => $product->get_id(),
 			'activations_limit' => $max,
-			'status' => \IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus::ACTIVE,
+			'status' => \IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus::ACTIVE,
 			'source' => \IdeoLogix\DigitalLicenseManager\Enums\LicenseSource::GENERATOR,
 			'complete' => true,
 		]);

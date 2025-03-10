@@ -29,7 +29,7 @@ namespace IdeoLogix\DigitalLicenseManager\Controllers;
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Generators;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Products;
 use IdeoLogix\DigitalLicenseManager\ListTables\Activations;
@@ -301,7 +301,7 @@ class Admin {
 
 		// Edit, add or import license keys
 		if ( $action === 'edit' || $action === 'add' || $action === 'import' ) {
-			$statusOptions = LicenseStatus::dropdown();
+			$statusOptions = LicensePrivateStatus::dropdown();
 		}
 
 		include trailingslashit( DLM_TEMPLATES_DIR ) . 'admin/page-licenses.php';
@@ -362,7 +362,7 @@ class Admin {
 		// Generate license keys
 		if ( $action === 'generate' ) {
 			$generatorsDropdown = Generators::instance()->findAll();
-			$statusOptions      = LicenseStatus::dropdown();
+			$statusOptions      = LicensePrivateStatus::dropdown();
 
 			if ( ! $generatorsDropdown ) {
 				$generatorsDropdown = array();

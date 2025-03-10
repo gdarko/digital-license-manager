@@ -11,50 +11,66 @@
     padding-left: 0;
     margin-left: 0;
 }
+
 .dlm-list-inline li {
     display: inline-block;
 }
+
 .dlm-inline-child .dlm-status {
     display: inline-block !important;
 }
+
 .dlm-list-inline-mb-0 {
     margin-bottom: 0 !important;
 }
+
 #dlm-license-certificate-download button.button {
     font-size: 13px;
 }
 
 /** My Account **/
-.dlm-header h3, .dlm-header button {
-    display:inline-block;
-    width:auto;
+.dlm-myaccount-license-section--header h3, .dlm-myaccount-license-section--header button {
+    display: inline-block;
+    width: auto;
 }
-.dlm-header .dlm-button {
+
+.dlm-myaccount-license-section--header .dlm-button {
     float: right;
+}
+
+.dlm-myaccount-license-key-actions > .button {
+    line-height: 1;
+    padding: 10px;
 }
 
 /** Micromodal related */
 .micromodal-slide form .dlm-form-row:last-child {
     margin-bottom: 0;
 }
+
 .micromodal-slide form .dlm-form-row {
     margin-bottom: 20px;
 }
+
 .micromodal-slide form .dlm-form-row label {
     display: block;
     font-size: 16px;
     font-weight: bold;
 }
+
 .micromodal-slide .modal__title {
     font-size: 25px;
 }
+
 .micromodal-slide .dlm-form-row input[type=text] {
     width: 100%;
 }
+
 .micromodal-slide .button-primary {
     background: var(--color-success);
     color: #fff;
 }
+
 .micromodal-slide form {
     margin-bottom: 0;
 }
@@ -83,11 +99,11 @@
     background-color: #f0f0f0;
     color: #334;
     padding: 7px 14px;
-    border: 1px solid rgba(0,0,0,.1);
+    border: 1px solid rgba(0, 0, 0, .1);
     border-radius: 3px;
     opacity: 1;
-    -webkit-box-shadow: 2px 3px 5px rgba(0,0,0,.1);
-    box-shadow: 2px 3px 5px rgba(0,0,0,.1);
+    -webkit-box-shadow: 2px 3px 5px rgba(0, 0, 0, .1);
+    box-shadow: 2px 3px 5px rgba(0, 0, 0, .1);
     -webkit-transition: all .5s ease-out;
     -o-transition: all .5s ease-out;
     transition: all .5s ease-out;
@@ -101,15 +117,77 @@
     width: 100%;
     margin-bottom: 10px;
 }
+
 .dlm-form .dlm-form-row label,
 .dlm-form .dlm-form-row input[type=text],
 .dlm-form .dlm-form-row input[type=email],
 .dlm-form .dlm-form-row input[type=password] {
-    display:block;
+    display: block;
     width: 100%;
 }
 
+/**
+Licenses
+ */
+.dlm-myaccount-product-licenses .dlm-myaccount-product-licenses--row {
+    margin-bottom: 36px;
+}
+
+.dlm-myaccount-product-licenses .dlm-myaccount-product-licenses--row .dlm-myaccount-page-subtitle {
+    margin-bottom: 18px;
+}
+
+/** Sections */
+.dlm-myaccount-license-section {
+    margin-bottom: 30px;
+}
+
+/** Statuses */
+.dlm-license-status {
+    padding: 8px;
+    border-width: 1px;
+    border-style: solid;
+    text-align: center;
+    line-height: 1;
+    border-radius: 3px;
+}
+.dlm-license-status--full {
+    width: 100%;
+}
+.dlm-license-status--inline {
+    display: inline-block;
+    padding-left: 20px;
+    padding-right: 20px;
+
+}
+.dlm-myaccount-table-row--status .dlm-license-status--inline{
+    padding-left: 45px;
+    padding-right: 45px;
+}
+
+.dlm-license-status--expired {
+    border-color: #ff7d7d;
+    color: #ff6565;
+    background-color: #fff6f6;
+}
+
+.dlm-license-status--valid {
+    border-color: #80dca3;
+    color: #46c271;
+    background-color: #f4fff8;
+}
+
+.dlm-license-status--invalid {
+    border-color: #ecbf7f;
+    color: #e3b472;
+    background-color: #fffaf2;
+}
+
+/**
+Table actions
+ */
 .dlm-myaccount-license-key-actions {
     display: flex;
+    width: 100%;
     gap: 5px;
 }

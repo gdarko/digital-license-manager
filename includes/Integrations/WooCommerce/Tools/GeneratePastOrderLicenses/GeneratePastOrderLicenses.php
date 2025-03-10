@@ -30,7 +30,7 @@ use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractTool;
 use IdeoLogix\DigitalLicenseManager\Core\Services\GeneratorsService;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus;
 
 class GeneratePastOrderLicenses extends AbstractTool {
 
@@ -190,7 +190,7 @@ class GeneratePastOrderLicenses extends AbstractTool {
 								$status = $licensesServ->createMultiple($licenses, [
 									'order_id'          => $item->get_order_id(),
 									'product_id'        => $productId,
-									'status'            => LicenseStatus::SOLD,
+									'status'            => LicensePrivateStatus::SOLD,
 									'source'            => LicenseSource::GENERATOR,
 									'activations_limit' => $generator->getActivationsLimit(),
 									'valid_for'         => $generator->getExpiresIn(),

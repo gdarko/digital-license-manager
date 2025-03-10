@@ -31,9 +31,8 @@ use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses as LicensesRepository;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus;
 use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
-use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
 use IdeoLogix\DigitalLicenseManager\Utils\ArrayFormatter as ArrayUtil;
 use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\NoticeFlasher;
@@ -89,11 +88,11 @@ class Licenses {
 		$orderId     = array_key_exists( 'order_id', $_POST ) && (int) $_POST['order_id'] > 0 ? (int) $_POST['order_id'] : null;
 		$productId   = array_key_exists( 'product_id', $_POST ) && (int) $_POST['product_id'] > 0 ? (int) $_POST['product_id'] : null;
 		$userId      = array_key_exists( 'user_id', $_POST ) && (int) $_POST['user_id'] > 0 ? (int) $_POST['user_id'] : null;
-		$status      = LicenseStatus::ACTIVE;
+		$status      = LicensePrivateStatus::ACTIVE;
 		$source      = isset( $_POST['source'] ) ? sanitize_text_field( wp_unslash( $_POST['source'] ) ) : '';
 		$licenseKeys = array();
 
-		if ( array_key_exists( 'status', $_POST ) && (int) $_POST['status'] && in_array( (int) $_POST['status'], LicenseStatus::$status ) ) {
+		if ( array_key_exists( 'status', $_POST ) && (int) $_POST['status'] && in_array( (int) $_POST['status'], LicensePrivateStatus::$status ) ) {
 			$status = (int) $_POST['status'];
 		}
 
@@ -578,7 +577,7 @@ class Licenses {
 						$data[ $exportColumn ] = esc_attr( $decrypted );
 						break;
 					case 'status':
-						$data[ $exportColumn ] = LicenseStatus::getLabel( $license->getStatus() );
+						$data[ $exportColumn ] = LicensePrivateStatus::getLabel( $license->getStatus() );
 						break;
 					default:
 						$getter                = 'get' . StringFormatter::camelize( $exportColumn );

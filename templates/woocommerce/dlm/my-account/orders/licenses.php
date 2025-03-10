@@ -103,15 +103,17 @@ defined( 'ABSPATH' ) || exit; ?>
                         </td>
 					<?php endif; ?>
 	                <?php if ( ! empty( $actions ) ): ?>
-                        <td class="table-col table-col-actions dlm-myaccount-license-key-actions license-key-actions">
-			                <?php
-			                foreach ( $actions as $key => $action ) {
-				                $href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
-				                $cssClass = isset( $action['class'] ) ? esc_attr( $action['class'] ) : '';
-				                $text     = isset( $action['text'] ) ? esc_html( $action['text'] ) : '';
-				                echo wp_kses( sprintf( '<a href="%s" class="%s">%s</a>', esc_url( $href ), $cssClass, $text ), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() );
-			                }
-			                ?>
+                        <td class="table-col table-col-actions">
+                            <div class="dlm-myaccount-license-key-actions">
+	                            <?php
+	                            foreach ( $actions as $key => $action ) {
+		                            $href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
+		                            $cssClass = isset( $action['class'] ) ? esc_attr( $action['class'] ) : '';
+		                            $text     = isset( $action['text'] ) ? esc_html( $action['text'] ) : '';
+		                            echo wp_kses( sprintf( '<a href="%s" class="%s">%s</a>', esc_url( $href ), $cssClass, $text ), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() );
+	                            }
+	                            ?>
+                            </div>
                         </td>
 	                <?php endif; ?>
                 </tr>

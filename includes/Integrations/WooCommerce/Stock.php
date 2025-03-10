@@ -27,7 +27,7 @@
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use WC_Product;
@@ -248,7 +248,7 @@ class Stock {
 		$productId     = (int) $license->getProductId();
 		$licneseStatus = (int) $license->getStatus();
 
-		if ( ! empty( $productId ) && $licneseStatus === LicenseStatus::ACTIVE ) {
+		if ( ! empty( $productId ) && $licneseStatus === LicensePrivateStatus::ACTIVE ) {
 			Stock::syncrhonizeProductStock( $productId );
 		}
 	}

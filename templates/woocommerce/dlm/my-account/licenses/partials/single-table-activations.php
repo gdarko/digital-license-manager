@@ -29,7 +29,7 @@
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Activations;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 
@@ -75,7 +75,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 						    <?php
 						    if ( $activation->getDeactivatedAt() ) {
 							    echo wp_kses(
-								    LicenseStatus::statusToHtml( 'disabled', [
+								    LicensePrivateStatus::statusToHtml( 'disabled', [
 									    'style' => 'inline',
 									    'text'  => esc_html__( 'Disabled', 'digital-license-manager' )
 								    ] ),
@@ -83,7 +83,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 							    );
 						    } else {
 							    echo wp_kses(
-								    LicenseStatus::statusToHtml( 'delivered', [
+								    LicensePrivateStatus::statusToHtml( 'delivered', [
 									    'style' => 'inline',
 									    'text'  => esc_html__( 'Enabled', 'digital-license-manager' )
 								    ] ),

@@ -28,7 +28,7 @@ namespace IdeoLogix\DigitalLicenseManager\Abstracts;
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\ApiKey;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\ApiKeys;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus;
+use IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus;
 use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
 use IdeoLogix\DigitalLicenseManager\Utils\JsonFormatter;
 use IdeoLogix\DigitalLicenseManager\Utils\StringHasher;
@@ -148,7 +148,7 @@ abstract class AbstractRestController extends WP_REST_Controller {
 	 * @return int
 	 */
 	protected function getLicenseStatus( $name ) {
-		return LicenseStatus::inputToStatus( $name );
+		return LicensePrivateStatus::inputToStatus( $name );
 	}
 
 	/**

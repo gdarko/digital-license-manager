@@ -83,7 +83,7 @@ if ( ! function_exists( 'dlm_create_license' ) ) {
 		$status = isset( $data['status'] ) ? sanitize_text_field( $data['status'] ) : null;
 		if ( ! is_numeric( $status ) && ! is_null( $status ) ) {
 			$status         = strtolower( $status );
-			$data['status'] = isset( \IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus::$values[ $status ] ) ? \IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus::$values[ $status ] : null;
+			$data['status'] = isset( \IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus::$values[ $status ] ) ? \IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus::$values[ $status ] : null;
 		} else {
 			$status = absint( $status );
 		}
@@ -128,7 +128,7 @@ if ( ! function_exists( 'dlm_update_license' ) ) {
 		$status = isset( $data['status'] ) ? sanitize_text_field( $data['status'] ) : null;
 		if ( ! is_numeric( $status ) && ! is_null( $status ) ) {
 			$status         = strtolower( $status );
-			$data['status'] = isset( \IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus::$values[ $status ] ) ? \IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus::$values[ $status ] : null;
+			$data['status'] = isset( \IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus::$values[ $status ] ) ? \IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus::$values[ $status ] : null;
 		} else {
 			$status = absint( $status );
 		}

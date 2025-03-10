@@ -41,7 +41,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Repositories\LicenseMeta as License
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\LicenseActivations as LicenseActivations;
 use IdeoLogix\DigitalLicenseManager\Enums\ActivationSource;
 use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus as LicenseStatusEnum;
+use IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus as LicenseStatusEnum;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Stock;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\CryptoHelper;

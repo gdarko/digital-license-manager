@@ -15,7 +15,7 @@ class DLM_LicenseActivations_TestCase extends WP_UnitTestCase {
 			[
 				'valid_for'   => 365,
 				'license_key' => 'XXXX-XXXX-XXXX-1111',
-				'status'      => \IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus::DELIVERED,
+				'status'      => \IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus::DELIVERED,
 				'source'      => \IdeoLogix\DigitalLicenseManager\Enums\LicenseSource::IMPORT,
 				'created_at'  => gmdate( 'Y-m-d H:i:s', time() - wp_rand( 2630000, 2630000 * 3 ) ),
 				'activations' => [
@@ -43,7 +43,7 @@ class DLM_LicenseActivations_TestCase extends WP_UnitTestCase {
 			[
 				'valid_for'   => 120,
 				'license_key' => 'XXXX-XXXX-XXXX-XXX1',
-				'status'      => \IdeoLogix\DigitalLicenseManager\Enums\LicenseStatus::DELIVERED,
+				'status'      => \IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus::DELIVERED,
 				'source'      => \IdeoLogix\DigitalLicenseManager\Enums\LicenseSource::API,
 				'created_at'  => gmdate( 'Y-m-d H:i:s', time() - wp_rand( 2630000, 2630000 * 3 ) ),
 				'activations' => [
