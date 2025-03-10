@@ -51,14 +51,14 @@ defined( 'ABSPATH' ) || exit; ?>
 				    <?php endif; ?>
                 </h3>
 
-                <table class="dlm-myaccount-table shop_table_responsive my_account_orders">
+                <table class="dlm-myaccount-table dlm-myaccount-table--licenses shop_table shop_table_responsive">
                     <thead>
                     <tr>
-                        <th class="license-key"><?php esc_html_e( 'License key', 'digital-license-manager' ); ?></th>
-                        <th class="activation"><?php esc_html_e( 'Activations', 'digital-license-manager' ); ?></th>
-                        <th class="valid-until"><?php esc_html_e( 'Expires', 'digital-license-manager' ); ?></th>
-                        <th class="status"><?php esc_html_e( 'Status', 'digital-license-manager' ); ?></th>
-                        <th class="actions"></th>
+                        <th class="table-col table-col-license-key license-key"><?php esc_html_e( 'License key', 'digital-license-manager' ); ?></th>
+                        <th class="table-col table-col-activations activation"><?php esc_html_e( 'Activations', 'digital-license-manager' ); ?></th>
+                        <th class="table-col table-col-valid-until valid-until"><?php esc_html_e( 'Expires', 'digital-license-manager' ); ?></th>
+                        <th class="table-col table-col-status status"><?php esc_html_e( 'Status', 'digital-license-manager' ); ?></th>
+                        <th class="table-col table-col-actions actions"></th>
                     </tr>
                     </thead>
 
@@ -92,25 +92,25 @@ defined( 'ABSPATH' ) || exit; ?>
 
 					    ?>
                         <tr>
-                            <td data-title="<?php esc_html_e( 'License key', 'digital-license-manager' ); ?>">
+                            <td class="table-col table-col-license-key" data-title="<?php esc_html_e( 'License key', 'digital-license-manager' ); ?>">
 							    <?php
 							    echo wc_get_template_html( 'dlm/my-account/licenses/partials/license-key.php', array(
 								    'license'     => $license,
 							    ), '', Controller::getTemplatePath() )
 							    ?>
                             </td>
-                            <td data-title="<?php esc_html_e( 'Activations', 'digital-license-manager' ); ?>">
+                            <td class="table-col table-col-activations" data-title="<?php esc_html_e( 'Activations', 'digital-license-manager' ); ?>">
                                 <span><?php echo esc_html( $timesActivated ); ?></span>
                                 <span>/</span>
                                 <span><?php echo esc_attr( $activationsLimit ); ?></span>
                             </td>
-                            <td data-title="<?php esc_html_e( 'Expires', 'digital-license-manager' ); ?>">
+                            <td class="table-col table-col-valid-until" data-title="<?php esc_html_e( 'Expires', 'digital-license-manager' ); ?>">
 							    <?php echo DateFormatter::toHtml( $license->getExpiresAt(), [ 'expires' => true ] ); ?>
                             </td>
-                            <td>
+                            <td class="table-col table-col-status">
 							    <?php echo $license->isExpired() ? LicenseStatus::toHtmlExpired( $license, [ 'style' => 'inline' ] ) : LicenseStatus::toHtml( $license, [ 'style' => 'inline' ] ); ?>
                             </td>
-                            <td data-title="<?php esc_html_e( 'Actions', 'digital-license-manager' ); ?>" class="license-key-actions">
+                            <td cmdk-list="table-col table-col-actions dlm-myaccount-license-key-actions license-key-actions" data-title="<?php esc_html_e( 'Actions', 'digital-license-manager' ); ?>">
 							    <?php
 							    foreach ( $actions as $key => $action ) {
 								    $href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';

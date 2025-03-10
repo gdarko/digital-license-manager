@@ -40,10 +40,10 @@ defined( 'ABSPATH' ) || exit; ?>
 
     <?php
 	foreach ( $data as $productId => $row ): ?>
-        <table class="dlm-myaccount-table dlm-myaccount-table--order-licenses shop_table">
+        <table class="dlm-myaccount-table dlm-myaccount-table--order-licenses shop_table shop_table_responsive">
             <thead>
             <tr>
-                <th colspan="3"><?php echo esc_html( $row['name'] ); ?></th>
+                <th class="table-col table-col-name" colspan="3"><?php echo esc_html( $row['name'] ); ?></th>
             </tr>
             </thead>
             <tbody>
@@ -75,7 +75,7 @@ defined( 'ABSPATH' ) || exit; ?>
 
 				?>
                 <tr>
-                    <td colspan="<?php echo (int) $totalCols; ?>">
+                    <td class="table-col table-col-license-key" colspan="<?php echo (int) $totalCols; ?>">
 						<?php
 						if ( apply_filters( 'dlm_myaccount_licenses_should_obfuscate', $should_obfuscate, $license ) ) {
 							echo esc_html( StringFormatter::obfuscateString( $licenseKey ) );
@@ -90,7 +90,7 @@ defined( 'ABSPATH' ) || exit; ?>
 						<?php
 						$date = wp_date( $date_format, strtotime( $license->getExpiresAt() ) );
 						?>
-                        <td>
+                        <td class="table-col table-col-status">
 							<?php echo wp_kses(
 								sprintf(
 									'%s <strong>%s</strong> %s',
@@ -103,7 +103,7 @@ defined( 'ABSPATH' ) || exit; ?>
                         </td>
 					<?php endif; ?>
 	                <?php if ( ! empty( $actions ) ): ?>
-                        <td class="dlm-myaccount-license-key-actions license-key-actions">
+                        <td class="table-col table-col-actions dlm-myaccount-license-key-actions license-key-actions">
 			                <?php
 			                foreach ( $actions as $key => $action ) {
 				                $href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';
