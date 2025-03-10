@@ -38,11 +38,6 @@
     float: right;
 }
 
-.dlm-myaccount-license-key-actions > .button {
-    line-height: 1;
-    padding: 10px;
-}
-
 /** Micromodal related */
 .micromodal-slide form .dlm-form-row:last-child {
     margin-bottom: 0;
@@ -190,4 +185,9 @@ Table actions
     display: flex;
     width: 100%;
     gap: 5px;
+}
+
+.dlm-myaccount-license-key-actions > .button {
+    line-height: 1;
+    padding: 10px;
 }

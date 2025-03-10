@@ -104,7 +104,7 @@ defined( 'ABSPATH' ) || exit; ?>
 					<?php endif; ?>
 	                <?php if ( ! empty( $actions ) ): ?>
                         <td class="table-col table-col-actions">
-                            <div class="dlm-myaccount-license-key-actions">
+                            <div class="dlm-myaccount-table-row-actions">
 	                            <?php
 	                            foreach ( $actions as $key => $action ) {
 		                            $href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';

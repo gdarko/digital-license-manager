@@ -110,7 +110,7 @@ defined( 'ABSPATH' ) || exit; ?>
 								?>
                             </td>
                             <td class="table-col table-col-actions" data-title="<?php esc_html_e( 'Actions', 'digital-license-manager' ); ?>">
-                                <div class="dlm-myaccount-license-key-actions">
+                                <div class="dlm-myaccount-table-row-actions">
 	                                <?php
 	                                foreach ( $actions as $key => $action ) {
 		                                $href     = isset( $action['href'] ) ? esc_url( $action['href'] ) : '';

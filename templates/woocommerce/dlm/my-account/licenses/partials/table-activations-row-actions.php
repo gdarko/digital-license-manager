@@ -29,41 +29,39 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation;
 
 ?>
 
-<form class="dlm-myaccount-row-actions" action="<?php echo esc_url( \IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\MyAccount::getProcessingEndpointUrl() ); ?>" method="POST">
+<form class="dlm-myaccount-row-actions dlm-myaccount-table-row-actions" action="<?php echo esc_url( \IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\MyAccount::getProcessingEndpointUrl() ); ?>" method="POST">
     <input type="hidden" name="dlm_action" value="activation_row_actions">
     <input type="hidden" name="dlm_nonce" value="<?php echo wp_create_nonce( 'dlm_account' ); ?>">
     <input type="hidden" name="license_id" value="<?php echo esc_attr( $license->getId() ); ?>">
     <input type="hidden" name="activation" value="<?php echo esc_attr( $activation->getToken() ); ?>">
-    <ul class="dlm-list-inline">
-		<?php foreach ( $rowActions as $rowAction ): ?>
-			<?php
-			$params   = apply_filters( 'dlm_myaccount_license_activation_row_action_params', [ 'class' => [ 'button' ] ], $rowAction, $license, $activation, $order, $product );
-			$classes  = isset( $params['classes'] ) ? $params['classes'] : [];
-			$disabled = false;
-			if ( isset( $params['disabled'] ) && $params['disabled'] ) {
-				$classes[] = 'disabled';
-				$disabled  = true;
-			}
-			?>
-			<?php if ( ! empty( $rowAction['href'] ) ): ?>
-                <a href="<?php echo esc_url( $rowAction['href'] ); ?>"
-                   title="<?php echo isset( $params['title'] ) ? esc_attr( $params['title'] ) : ''; ?>"
-                   class="<?php echo isset( $params['class'] ) ? esc_attr( $params['class'] ) : ''; ?>">
-					<?php echo esc_html( $rowAction['text'] ); ?>
-                </a>
-			<?php else: ?>
-                <button type="submit"
-					<?php if ( isset( $rowAction['confirm'] ) && $rowAction['confirm'] ): ?>
-                        onclick="return confirm('<?php esc_html_e( 'Are you sure you want to do this? This action can not be revered.', 'digital-license-manager' ); ?>')"
-					<?php endif; ?>
-                        name="<?php echo esc_attr( $rowAction['id'] ); ?>"
-                        title="<?php echo isset( $params['title'] ) ? esc_attr( $params['title'] ) : ''; ?>"
-                        value="<?php echo isset( $params['value'] ) ? esc_attr( $params['value'] ) : 1; ?>"
-                        class="<?php echo isset( $params['class'] ) ? esc_attr( implode( ' ', $params['class'] ) ) : ''; ?>"
-					<?php disabled( true, $disabled ); ?> >
-					<?php echo esc_html( $rowAction['text'] ); ?>
-                </button>
-			<?php endif; ?>
-		<?php endforeach; ?>
-    </ul>
+	<?php foreach ( $rowActions as $rowAction ): ?>
+		<?php
+		$params   = apply_filters( 'dlm_myaccount_license_activation_row_action_params', [ 'class' => [ 'button' ] ], $rowAction, $license, $activation, $order, $product );
+		$classes  = isset( $params['classes'] ) ? $params['classes'] : [];
+		$disabled = false;
+		if ( isset( $params['disabled'] ) && $params['disabled'] ) {
+			$classes[] = 'disabled';
+			$disabled  = true;
+		}
+		?>
+		<?php if ( ! empty( $rowAction['href'] ) ): ?>
+            <a href="<?php echo esc_url( $rowAction['href'] ); ?>"
+               title="<?php echo isset( $params['title'] ) ? esc_attr( $params['title'] ) : ''; ?>"
+               class="<?php echo isset( $params['class'] ) ? esc_attr( $params['class'] ) : ''; ?> dlm-myaccount-table-row-actions--button">
+				<?php echo esc_html( $rowAction['text'] ); ?>
+            </a>
+		<?php else: ?>
+            <button type="submit"
+				<?php if ( isset( $rowAction['confirm'] ) && $rowAction['confirm'] ): ?>
+                    onclick="return confirm('<?php esc_html_e( 'Are you sure you want to do this? This action can not be revered.', 'digital-license-manager' ); ?>')"
+				<?php endif; ?>
+                    name="<?php echo esc_attr( $rowAction['id'] ); ?>"
+                    title="<?php echo isset( $params['title'] ) ? esc_attr( $params['title'] ) : ''; ?>"
+                    value="<?php echo isset( $params['value'] ) ? esc_attr( $params['value'] ) : 1; ?>"
+                    class="<?php echo isset( $params['class'] ) ? esc_attr( implode( ' ', $params['class'] ) ) : ''; ?> dlm-myaccount-table-row-actions--button"
+				<?php disabled( true, $disabled ); ?> >
+				<?php echo esc_html( $rowAction['text'] ); ?>
+            </button>
+		<?php endif; ?>
+	<?php endforeach; ?>
 </form>
