@@ -28,6 +28,7 @@
 
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus;
+use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Certificates;
 use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 
@@ -83,25 +84,39 @@ do_action( 'dlm_myaccount_licenses_single_page_start', $license, $order, $produc
             <tr class="dlm-myaccount-table-row dlm-myaccount-table-row--status woocommerce-table__line-item license_status">
                 <th scope="row"><?php esc_html_e( 'Status', 'digital-license-manager' ); ?></th>
                 <td>
-	                <?php
-	                echo wc_get_template_html( 'dlm/my-account/licenses/partials/license-status.php', array(
-		                'license' => $license,
-                        'inline'  => true
-	                ), '', Controller::getTemplatePath() );
-	                ?>
+					<?php
+					echo wc_get_template_html( 'dlm/my-account/licenses/partials/license-status.php', array(
+						'license' => $license,
+						'inline'  => true
+					), '', Controller::getTemplatePath() );
+					?>
                 </td>
             </tr>
 
-            <?php if ( in_array( $license->getStatus(), [ LicensePrivateStatus::SOLD, LicensePrivateStatus::DELIVERED ] ) ): ?>
+			<?php if ( in_array( $license->getStatus(), [ LicensePrivateStatus::SOLD, LicensePrivateStatus::DELIVERED ] ) ): ?>
                 <tr class="dlm-myaccount-table-row dlm-myaccount-table-row--valid-until woocommerce-table__line-item valid_until">
                     <th scope="row"><?php esc_html_e( 'Expires', 'digital-license-manager' ); ?></th>
                     <td class="dlm-inline-child">
-			            <?php
-			            echo wp_kses( DateFormatter::toHtml( $license->getExpiresAt(), [ 'expires' => true ] ), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() );
-			            ?>
+						<?php
+						echo wp_kses( DateFormatter::toHtml( $license->getExpiresAt(), [ 'expires' => true ] ), \IdeoLogix\DigitalLicenseManager\Utils\SanitizeHelper::ksesAllowedHtmlTags() );
+						?>
                     </td>
                 </tr>
-            <?php endif; ?>
+
+				<?php if ( Certificates::isLicenseCertificationEnabled() ): ?>
+                    <tr class="dlm-myaccount-table-row dlm-myaccount-table-row--certificate woocommerce-table__line-item certificate">
+                        <th scope="row"><?php esc_html_e( 'Certificate', 'digital-license-manager' ); ?></th>
+                        <td class="dlm-inline-child dlm-license-certificate">
+							<?php
+							echo wc_get_template_html( 'dlm/my-account/licenses/partials/single-certificate-button.php', array(
+								'license' => $license,
+							), '', Controller::getTemplatePath() );
+							?>
+                        </td>
+                    </tr>
+				<?php endif; ?>
+
+			<?php endif; ?>
 
 			<?php do_action( 'dlm_myaccount_licenses_single_page_table_details', $license, $order, $product, $date_format, $license_key ); ?>
 
@@ -112,7 +127,7 @@ do_action( 'dlm_myaccount_licenses_single_page_start', $license, $order, $produc
 	<?php if ( ! empty( $order ) ): ?>
         <div class="dlm-myaccount-license-section-footer dlm-license-details--view-order">
             <p>
-                <a href="<?php echo esc_url( $order->get_view_order_url() ); ?>" class="woocommerce-button button dlm-button"><?php esc_html_e( 'View Order', 'digital-license-manager' ); ?></a>
+                <a href="<?php echo esc_url( $order->get_view_order_url() ); ?>" class="woocommerce-button button dlm-button"><span class="dlm-icon-angle-left"></span> <?php esc_html_e( 'View Order', 'digital-license-manager' ); ?></a>
             </p>
         </div>
 	<?php endif; ?>

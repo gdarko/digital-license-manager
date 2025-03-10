@@ -47,7 +47,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation;
 		<?php if ( ! empty( $rowAction['href'] ) ): ?>
             <a href="<?php echo esc_url( $rowAction['href'] ); ?>"
                title="<?php echo isset( $params['title'] ) ? esc_attr( $params['title'] ) : ''; ?>"
-               class="<?php echo isset( $params['class'] ) ? esc_attr( $params['class'] ) : ''; ?> dlm-myaccount-table-row-actions--button">
+               class="<?php echo isset( $params['class'] ) ? esc_attr( $params['class'] ) : ''; ?> dlm-button dlm-myaccount-table-row-actions--button">
 				<?php echo esc_html( $rowAction['text'] ); ?>
             </a>
 		<?php else: ?>
@@ -58,7 +58,7 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation;
                     name="<?php echo esc_attr( $rowAction['id'] ); ?>"
                     title="<?php echo isset( $params['title'] ) ? esc_attr( $params['title'] ) : ''; ?>"
                     value="<?php echo isset( $params['value'] ) ? esc_attr( $params['value'] ) : 1; ?>"
-                    class="<?php echo isset( $params['class'] ) ? esc_attr( implode( ' ', $params['class'] ) ) : ''; ?> dlm-myaccount-table-row-actions--button"
+                    class="<?php echo isset( $params['class'] ) ? esc_attr( implode( ' ', $params['class'] ) ) : ''; ?> dlm-button dlm-myaccount-table-row-actions--button"
 				<?php disabled( true, $disabled ); ?> >
 				<?php echo esc_html( $rowAction['text'] ); ?>
             </button>

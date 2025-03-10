@@ -40,7 +40,6 @@ class Certificates {
 	 * Constructor
 	 */
 	public function __construct() {
-		add_action( 'dlm_myaccount_licenses_single_page_table_details', array( $this, 'addSingleLicenseCertificationDownload' ), 10, 5 );
 		add_action( 'dlm_myaccount_handle_action', array( $this, 'handleAdditionalAccountActions' ) );
 		add_filter( 'dlm_myaccount_whitelisted_actions', array( $this, 'whitelistAdditionalAccountActions' ) );
 	}

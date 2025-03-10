@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'digital-license-manager';
-  src: url('../font/digital-license-manager.eot?55825419');
-  src: url('../font/digital-license-manager.eot?55825419#iefix') format('embedded-opentype'),
-       url('../font/digital-license-manager.woff2?55825419') format('woff2'),
-       url('../font/digital-license-manager.woff?55825419') format('woff'),
-       url('../font/digital-license-manager.ttf?55825419') format('truetype'),
-       url('../font/digital-license-manager.svg?55825419#digital-license-manager') format('svg');
+  src: url('../font/digital-license-manager.eot?72807289');
+  src: url('../font/digital-license-manager.eot?72807289#iefix') format('embedded-opentype'),
+       url('../font/digital-license-manager.woff2?72807289') format('woff2'),
+       url('../font/digital-license-manager.woff?72807289') format('woff'),
+       url('../font/digital-license-manager.ttf?72807289') format('truetype'),
+       url('../font/digital-license-manager.svg?72807289#digital-license-manager') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'digital-license-manager';
-    src: url('../font/digital-license-manager.svg?55825419#digital-license-manager') format('svg');
+    src: url('../font/digital-license-manager.svg?72807289#digital-license-manager') format('svg');
   }
 }
 */
@@ -72,6 +72,9 @@
 .dlm-icon-emo-wink2:before { content: '\e813'; } /* '' */
 .dlm-icon-link-ext:before { content: '\f08e'; } /* '' */
 .dlm-icon-certificate:before { content: '\f0a3'; } /* '' */
+.dlm-icon-angle-left:before { content: '\f104'; } /* '' */
+.dlm-icon-angle-right:before { content: '\f105'; } /* '' */
+.dlm-icon-angle-up:before { content: '\f106'; } /* '' */
 .dlm-icon-angle-down:before { content: '\f107'; } /* '' */
 .dlm-icon-dot-circled:before { content: '\f192'; } /* '' */
 .dlm-icon-file-pdf:before { content: '\f1c1'; } /* '' */

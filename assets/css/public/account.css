@@ -24,8 +24,13 @@
     margin-bottom: 0 !important;
 }
 
-#dlm-license-certificate-download button.button {
-    font-size: 13px;
+/** Buttons */
+.dlm-button {
+    width: auto;
+    height: auto;
+    padding: 10px 12px;
+    line-height: 1;
+    border-radius: 3px;
 }
 
 /** My Account **/
@@ -146,18 +151,20 @@ Licenses
     line-height: 1;
     border-radius: 3px;
 }
+
 .dlm-license-status--full {
     width: 100%;
 }
+
 .dlm-license-status--inline {
     display: inline-block;
     padding-left: 20px;
     padding-right: 20px;
 
 }
-.dlm-myaccount-table-row--status .dlm-license-status--inline{
-    padding-left: 45px;
-    padding-right: 45px;
+
+.dlm-myaccount-table-row--status .dlm-license-status--inline {
+    min-width: 150px;
 }
 
 .dlm-license-status--expired {
@@ -179,15 +186,24 @@ Licenses
 }
 
 /**
-Table actions
+Certificates
  */
-.dlm-myaccount-license-key-actions {
-    display: flex;
-    width: 100%;
-    gap: 5px;
+#dlm-license-certificate-download .dlm-button {
+    min-width: 150px;
+    font-weight: normal;
+    font-size: 15px;
 }
 
-.dlm-myaccount-license-key-actions > .button {
-    line-height: 1;
-    padding: 10px;
+/**
+Table actions
+ */
+.dlm-myaccount-table-row-actions {
+    display: flex;
+    width: 100%;
+    gap: 3px;
+}
+
+.dlm-myaccount-table-row-actions .dlm-myaccount-table-row-actions--button {
+    font-weight: normal;
+    font-size: 15px;
 }

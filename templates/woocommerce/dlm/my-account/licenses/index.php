@@ -117,6 +117,7 @@ defined( 'ABSPATH' ) || exit; ?>
 		                                $cssClass = isset( $action['class'] ) ? esc_attr( $action['class'] ) : '';
 		                                $text     = isset( $action['text'] ) ? esc_html( $action['text'] ) : '';
 		                                $title    = isset( $action['title'] ) ? 'title="' . esc_attr( $action['title'] ) . '"' : '';
+                                        $cssClass .= ' dlm-button dlm-myaccount-table-row-actions--button';
 		                                echo wp_kses( sprintf( '<a href="%s" %s class="%s">%s</a>', $href, $title, $cssClass, $text ), SanitizeHelper::ksesAllowedHtmlTags() );
 	                                }
 	                                ?>

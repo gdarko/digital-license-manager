@@ -17,20 +17,15 @@
  *
  * Default variables
  *
- * @var string $license_key
+ * @var \IdeoLogix\DigitalLicenseManager\Database\Models\License $license
  */
 ?>
 
-<tr class="dlm-myaccount-table-row dlm-myaccount-table-row--certificate woocommerce-table__line-item certificate">
-	<th scope="row"><?php esc_html_e( 'Certificate', 'digital-license-manager' ); ?></th>
-	<td class="dlm-inline-child dlm-license-certificate">
-        <form id="dlm-license-certificate-download" action="<?php echo esc_url( \IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\MyAccount::getProcessingEndpointUrl() ); ?>" method="POST" class="dlm-list-inline-mb-0">
-			<input type="hidden" name="dlm_action" value="license_certificate_download">
-			<input type="hidden" name="dlm_nonce" value="<?php echo wp_create_nonce('dlm_account'); ?>">
-			<input type="hidden" name="license" value="<?php echo esc_attr($license_key); ?>">
-            <button type="submit" class="woocommerce-button button dlm-button" name="license_certificate_download" value="1">
-                <span class="dlm-icon-file-pdf"></span> <?php esc_html_e( 'Download', 'digital-license-manager' ); ?>
-            </button>
-		</form>
-	</td>
-</tr>
+<form id="dlm-license-certificate-download" action="<?php echo esc_url( \IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\MyAccount::getProcessingEndpointUrl() ); ?>" method="POST" class="dlm-list-inline-mb-0">
+    <input type="hidden" name="dlm_action" value="license_certificate_download">
+    <input type="hidden" name="dlm_nonce" value="<?php echo wp_create_nonce('dlm_account'); ?>">
+    <input type="hidden" name="license" value="<?php echo esc_attr($license->getDecryptedLicenseKey()); ?>">
+    <button type="submit" class="woocommerce-button button dlm-button" name="license_certificate_download" value="1">
+        <span class="dlm-icon-file-pdf"></span> <?php esc_html_e( 'Download', 'digital-license-manager' ); ?>
+    </button>
+</form>
