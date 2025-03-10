@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce
 Requires at least: 4.7
 Requires PHP: 7.0
 Tested up to: 6.8
-Stable tag: 1.7.3
+Stable tag: 1.8.0-RC1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -207,6 +207,16 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 23. License check form displayed by using block or shortcode
 
 == Changelog ==
+
+= 1.8.0 =
+*Release date - 12 Mar 2025*
+
+* New simplified public license statuses for front-end templates (<a href="https://docs.codeverve.com/digital-license-manager/handbook/licenses/license-statuses/">More details</a>)
+* Extend the MyAccount request handler to support methods and conditional nonces
+* Add filter for adding table actions on order licenses table for email
+* Redirect requests to the MyAccount action handler to login page if user not logged in
+* Improved My Account buttons and table row actions styling
+* Improved My Account templates for consistency
 
 = 1.7.3 =
 *Release date - 08 Mar 2025*
