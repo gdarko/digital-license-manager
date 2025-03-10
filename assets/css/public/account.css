@@ -34,14 +34,6 @@
 }
 
 /** My Account **/
-.dlm-myaccount-license-section--header h3, .dlm-myaccount-license-section--header button {
-    display: inline-block;
-    width: auto;
-}
-
-.dlm-myaccount-license-section--header .dlm-button {
-    float: right;
-}
 
 /** Micromodal related */
 .micromodal-slide form .dlm-form-row:last-child {
@@ -139,7 +131,20 @@ Licenses
 
 /** Sections */
 .dlm-myaccount-license-section {
-    margin-bottom: 30px;
+    margin-bottom: 32px;
+}
+.dlm-myaccount-license-section--content {
+    margin-bottom: 18px;
+}
+.dlm-myaccount-license-section--header {
+    margin-bottom: 12px;
+}
+.dlm-myaccount-license-section--header h3, .dlm-myaccount-license-section--header button {
+    display: inline-block;
+    width: auto;
+}
+.dlm-myaccount-license-section--header .dlm-button {
+    float: right;
 }
 
 /** Statuses */
@@ -195,14 +200,26 @@ Certificates
 }
 
 /**
-Table actions
+Tables
  */
+.dlm-myaccount-table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 1px solid #ccc;
+}
+.dlm-myaccount-table table th {
+    text-align:left;
+}
+.dlm-myaccount-table td,
+.dlm-myaccount-table th {
+    padding: 15px;
+    border-bottom: 1px solid #ccc;
+}
 .dlm-myaccount-table-row-actions {
     display: flex;
     width: 100%;
     gap: 3px;
 }
-
 .dlm-myaccount-table-row-actions .dlm-myaccount-table-row-actions--button {
     font-weight: normal;
     font-size: 15px;
