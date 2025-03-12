@@ -30,6 +30,7 @@ use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
 use IdeoLogix\DigitalLicenseManager\Settings;
+use IdeoLogix\DigitalLicenseManager\Utils\ArrayFormatter;
 use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
 
 defined( 'ABSPATH' ) || exit;
@@ -397,9 +398,9 @@ class MyAccount {
 
 		$manual_activations_enabled = (int) Settings::get( 'enable_manual_activations', Settings::SECTION_WOOCOMMERCE );
 
-		$rowActions = apply_filters( 'dlm_myaccount_license_activation_row_actions', array(), $license, $order, $product );
+		$row_actions = apply_filters( 'dlm_myaccount_license_activation_row_actions', array(), $license, $order, $product );
 
-		ksort( $rowActions );
+		usort( $row_actions, [ ArrayFormatter::class, 'prioritySort' ] );
 
 		return wc_get_template_html(
 			'dlm/my-account/licenses/partials/single-table-activations.php',
@@ -410,7 +411,7 @@ class MyAccount {
 				'order'                      => $order,
 				'date_format'                => $dateFormat,
 				'manual_activations_enabled' => $manual_activations_enabled,
-				'rowActions'                 => $rowActions,
+				'rowActions'                 => $row_actions,
 				'activations'                => $license->getActivations(),
 				'nonce'                      => wp_create_nonce( 'dlm_nonce' ),
 			),

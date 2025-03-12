@@ -35,6 +35,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Products;
 use IdeoLogix\DigitalLicenseManager\ListTables\Activations;
 use IdeoLogix\DigitalLicenseManager\ListTables\Generators as GeneratorsListTable;
 use IdeoLogix\DigitalLicenseManager\ListTables\Licenses as LicensesListTable;
+use IdeoLogix\DigitalLicenseManager\Utils\ArrayFormatter;
 
 /**
  * General admin related hooks
@@ -96,7 +97,7 @@ class Admin {
 	private function getSubpages() {
 
 		$pages = array(
-			10 => array(
+			array(
 				'parent'         => PageSlug::LICENSES,
 				'page_title'     => __( 'License Manager', 'digital-license-manager' ),
 				'menu_title'     => __( 'Licenses', 'digital-license-manager' ),
@@ -104,8 +105,9 @@ class Admin {
 				'menu_slug'      => PageSlug::LICENSES,
 				'function'       => array( $this, 'licensesPage' ),
 				'screen_options' => array( $this, 'licensesPageScreenOptions' ),
+				'priority'       => 10
 			),
-			20 => array(
+			array(
 				'parent'         => PageSlug::LICENSES,
 				'page_title'     => __( 'License Manager - Generators', 'digital-license-manager' ),
 				'menu_title'     => __( 'Generators', 'digital-license-manager' ),
@@ -113,8 +115,9 @@ class Admin {
 				'menu_slug'      => PageSlug::GENERATORS,
 				'function'       => array( $this, 'generatorsPage' ),
 				'screen_options' => array( $this, 'generatorsPageScreenOptions' ),
+				'priority'       => 20
 			),
-			30 => array(
+			array(
 				'parent'         => PageSlug::LICENSES,
 				'page_title'     => __( 'License Manager - Activations', 'digital-license-manager' ),
 				'menu_title'     => __( 'Activations', 'digital-license-manager' ),
@@ -122,19 +125,22 @@ class Admin {
 				'menu_slug'      => PageSlug::ACTIVATIONS,
 				'function'       => array( $this, 'activationsPage' ),
 				'screen_options' => array( $this, 'activationsPageScreenOptions' ),
+				'priority'       => 30
 			),
-			40 => array(
+			array(
 				'parent'     => PageSlug::LICENSES,
 				'page_title' => __( 'License Manager - Settings', 'digital-license-manager' ),
 				'menu_title' => __( 'Settings', 'digital-license-manager' ),
 				'capability' => 'dlm_manage_settings',
 				'menu_slug'  => PageSlug::SETTINGS,
 				'function'   => array( $this, 'settingsPage' ),
+				'priority'       => 40
 			)
 		);
 
 		$pages = apply_filters( 'dlm_admin_submenu_pages', $pages );
-		ksort( $pages );
+
+		usort( $pages, [ArrayFormatter::class, 'prioritySort'] );
 
 		return $pages;
 	}

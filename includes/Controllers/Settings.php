@@ -34,6 +34,7 @@ use IdeoLogix\DigitalLicenseManager\Enums\PageSlug;
 use IdeoLogix\DigitalLicenseManager\ListTables\ApiKeys as ApiKeysListTable;
 use IdeoLogix\DigitalLicenseManager\Tools\Migration\Migration;
 use IdeoLogix\DigitalLicenseManager\Traits\Singleton;
+use IdeoLogix\DigitalLicenseManager\Utils\ArrayFormatter;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 
 /**
@@ -87,25 +88,27 @@ class Settings {
 						'page'     => 'licenses',
 						'priority' => 10,
 						'fields'   => array(
-							10 => array(
+							array(
 								'id'       => 'hide_license_keys',
 								'title'    => __( 'Obscure licenses', 'digital-license-manager' ),
+								'priority' => 10,
 								'callback' => array( $this, 'fieldCheckbox' ),
 								'args'     => array(
 									'label'   => __( 'Hide license keys in the admin dashboard.', 'digital-license-manager' ),
 									'explain' => __( "All license keys will be hidden and only displayed when the 'Show' action is clicked.", 'digital-license-manager' ),
 								)
 							),
-							40 => array(
+							array(
 								'id'       => 'allow_duplicates',
 								'title'    => __( 'Duplicate licenses', 'digital-license-manager' ),
+								'priority' => 40,
 								'callback' => array( $this, 'fieldCheckbox' ),
 								'args'     => array(
 									'label'   => __( 'Allow duplicate license keys inside the licenses database table.', 'digital-license-manager' ),
 									'explain' => __( 'If enabled the system will store new license keys in the database, even if the same key exist.', 'digital-license-manager' ),
 								)
 							),
-							50 => $this->getExpirationFormatField(),
+							$this->getExpirationFormatField(),
 						)
 					),
 					'branding' => array(
@@ -113,9 +116,10 @@ class Settings {
 						'page'     => 'branding',
 						'priority' => 10,
 						'fields'   => array(
-							10 => array(
+							array(
 								'id'       => 'company_logo',
 								'title'    => __( 'Company Logo', 'digital-license-manager' ),
+								'priority' => 10,
 								'callback' => array( $this, 'fieldImageUpload' ),
 								'args'     => array(
 									'label'   => __( 'Upload a company logo that will be displayed in the certification PDF.', 'digital-license-manager' ),
@@ -129,9 +133,10 @@ class Settings {
 						'page'     => 'rest_api',
 						'priority' => 20,
 						'fields'   => array(
-							10 => array(
+							array(
 								'id'       => 'disable_api_ssl',
 								'title'    => __( 'API & SSL', 'digital-license-manager' ),
+								'priority' => 10,
 								'callback' => array( $this, 'fieldCheckbox' ),
 								'args'     => array(
 									'label'   => __( "Enable the plugin API routes over insecure HTTP connections.", 'digital-license-manager' ),
@@ -145,9 +150,10 @@ class Settings {
 						'page'     => 'other',
 						'priority' => 30,
 						'fields'   => array(
-							10 => array(
+							array(
 								'id'       => 'safeguard_data',
 								'title'    => __( 'Data safety', 'digital-license-manager' ),
+								'priority' => 10,
 								'callback' => array( $this, 'fieldCheckbox' ),
 								'args'     => array(
 									'label'   => __( "Enable this option to safe guard the data on plugin removal/uninstallation.", 'digital-license-manager' ),
@@ -213,6 +219,7 @@ class Settings {
 		return array(
 			'id'       => 'expiration_format',
 			'title'    => __( 'License expiration format', 'digital-license-manager' ),
+			'priority' => 50,
 			'callback' => array( $this, 'fieldText' ),
 			'args'     => array(
 				'explain'   => sprintf(
@@ -439,7 +446,7 @@ class Settings {
 			foreach ( $tab['sections'] as $page => $section ) {
 				$section_fields = isset( $section['fields'] ) ? $section['fields'] : array();
 				if ( ! empty( $section_fields ) ) {
-					ksort( $section_fields );
+					usort( $section_fields, [ArrayFormatter::class, 'prioritySort'] );
 				}
 				$section_name = isset( $section['name'] ) ? $section['name'] : '';
 				$section_page = 'dlm_' . $page;

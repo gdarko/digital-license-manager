@@ -109,4 +109,23 @@ class ArrayFormatter {
 		return isset( $array[ $key ] ) ? $array[ $key ] : $default;
 	}
 
+
+	/**
+	 * Priority sort
+	 *
+	 * @param array $field1
+	 * @param array $field2
+	 *
+	 * @return int
+	 */
+	public static function prioritySort( $field1, $field2 ) {
+		$prio1 = isset( $field1['priority'] ) ? (int) $field1['priority'] : 100;
+		$prio2 = isset( $field2['priority'] ) ? (int) $field2['priority'] : 100;
+
+		if ( $prio1 === $prio2 ) {
+			return 0;
+		}
+
+		return $prio1 > $prio2 ? 1 : - 1;
+	}
 }

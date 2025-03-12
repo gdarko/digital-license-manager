@@ -42,41 +42,46 @@ class Settings {
 					'page' => 'general',
 					'priority' => 5,
 					'fields' => array(
-						10 => array(
+						array(
 							'id'       => 'auto_delivery',
 							'title'    => __( 'Automatic delivery', 'digital-license-manager' ),
+							'priority' => 10,
 							'callback' => array( $this, 'fieldCheckbox' ),
 							'args'     => array(
 								'label'   => __( "Enable this option to delivery License keys once specific product is purchased.", 'digital-license-manager' ),
 								'explain' => __( "If enabled the customer will receive License keys once they purchase specific product, based on the product configuration.", 'digital-license-manager' ),
 							)
 						),
-						15 => array(
+						array(
 							'id'       => 'order_delivery_statuses',
 							'title'    => __( 'Order status delivery', 'digital-license-manager' ),
+							'priority' => 15,
 							'callback' => array( $this, 'fieldLicenseKeyDeliveryOptions' ),
 							'args'     => array(
 								'label'   => __( "Enable this option to safe guard the data on plugin removal/uninstallation.", 'digital-license-manager' ),
 								'explain' => __( "If enabled your data will NOT be removed once this plugin is uninstalled. This is usually prefered option in case you want to use the plugin again in future.", 'digital-license-manager' ),
 							)
 						),
-						20 => array(
+						array(
 							'id'       => 'stock_management',
 							'title'    => __( 'Stock management', 'digital-license-manager' ),
+							'priority' => 20,
 							'callback' => array( $this, 'fieldManageStock' ),
 						),
-						30 => array(
+						array(
 							'id'       => 'hide_license_keys',
 							'title'    => __( 'Obscure licenses', 'digital-license-manager' ),
+							'priority' => 30,
 							'callback' => array( $this, 'fieldCheckbox' ),
 							'args'     => array(
 								'label'   => __( 'Hide license keys in the public facing pages like "Order Received".', 'digital-license-manager' ),
 								'explain' => __( "The license keys will be masked with stars on the public facing pages for security purposes.", 'digital-license-manager' ),
 							)
 						),
-						40 => array(
+						array(
 							'id'       => 'refund_behavior',
 							'title'    => __( 'Refund behavior', 'digital-license-manager' ),
+							'priority' => 40,
 							'callback' => array( $this, 'fieldSelect' ),
 							'args'     => array(
 								'label'   => __( 'Set the plugin behavior when a refund for line item that contains license is issued', 'digital-license-manager' ),
@@ -95,36 +100,40 @@ class Settings {
 					'page'     => 'my_account',
 					'priority' => 10,
 					'fields'   => array(
-						10 => array(
+						array(
 							'id'       => 'myaccount_endpoint',
 							'title'    => __( 'Enable "Licenses"', 'digital-license-manager' ),
+							'priority' => 10,
 							'callback' => array( $this, 'fieldCheckbox' ),
 							'args'     => array(
 								'label'   => __( "Display the 'Licenses' section inside WooCommerce's 'My Account'.", 'digital-license-manager' ),
 								'explain' => __( "You might need to save your permalinks after enabling this option.", 'digital-license-manager' ),
 							)
 						),
-						30 => array(
+						array(
 							'id'       => 'enable_activations_table',
 							'title'    => __( 'Activation History', 'digital-license-manager' ),
+							'priority' => 30,
 							'callback' => array( $this, 'fieldCheckbox' ),
 							'args'     => array(
 								'label'   => __( "Enable historical records that shows previous activations in the license page in My Account dashboard.", 'digital-license-manager' ),
 								'explain' => __( "Use this option to display table that shows list of activations and labels.", 'digital-license-manager' ),
 							)
 						),
-						50 => array(
+						array(
 							'id'       => 'enable_manual_activations',
 							'title'    => __( 'Allow Manual Activations', 'digital-license-manager' ),
+							'priority' => 50,
 							'callback' => array( $this, 'fieldCheckbox' ),
 							'args'     => array(
 								'label'   => __( "Enable this to allow manual license activation. Users will be able to create activations from the admin without using the REST API.", 'digital-license-manager' ),
 								'explain' => __( "Normally activations should be done through the REST API from your apps, however this is more a psychological feature to give the users a feeling that they can activate the product.", 'digital-license-manager' ),
 							)
 						),
-						70 => array(
+						array(
 							'id'       => 'enable_certificates',
 							'title'    => __( 'Enable "PDF Certificates"', 'digital-license-manager' ),
+							'priority' => 60,
 							'callback' => array( $this, 'fieldCheckbox' ),
 							'args'     => array(
 								'label'   => __( "Enable License PDF certificates in the single license page in My Account dashboard.", 'digital-license-manager' ),

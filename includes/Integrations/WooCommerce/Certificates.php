@@ -65,27 +65,6 @@ class Certificates {
 	}
 
 	/**
-	 * Add the license certification download button to the single page
-	 * @return void
-	 */
-	public function addSingleLicenseCertificationDownload( $license, $order, $product, $date_format, $license_key ) {
-
-		echo wc_get_template_html(
-			'dlm/my-account/licenses/partials/single-certificate-button.php',
-			array(
-				'license'     => $license,
-				'license_key' => $license_key,
-				'order'       => $order,
-				'product'     => $product,
-				'date_format' => $date_format,
-			),
-			'',
-			Controller::getTemplatePath()
-		);
-
-	}
-
-	/**
 	 * Whitelist additional account actions
 	 * @return array
 	 */
