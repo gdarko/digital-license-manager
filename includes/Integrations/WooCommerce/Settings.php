@@ -133,7 +133,7 @@ class Settings {
 						array(
 							'id'       => 'enable_certificates',
 							'title'    => __( 'Enable "PDF Certificates"', 'digital-license-manager' ),
-							'priority' => 60,
+							'priority' => 75,
 							'callback' => array( $this, 'fieldCheckbox' ),
 							'args'     => array(
 								'label'   => __( "Enable License PDF certificates in the single license page in My Account dashboard.", 'digital-license-manager' ),
