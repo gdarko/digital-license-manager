@@ -544,7 +544,7 @@ class Products {
 			)
 		);
 
-		return apply_filters( 'dlm_product_fields', $fields, $product );
+		return apply_filters( 'dlm_product_fields', $fields, $product, $isVariableProduct );
 	}
 
 	/**
