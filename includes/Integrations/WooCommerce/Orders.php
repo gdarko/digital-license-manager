@@ -131,8 +131,8 @@ class Orders {
 		/**
 		 * Allow developers to skip the whole process for specific order.
 		 */
-		$skip = apply_filters_deprecated( 'dlm_skip_licenses_generation_for_order', [ false, $orderId ], '1.8.0', 'dlm_woocommerce_order_license_creation_skip' );
-		if ( apply_filters( 'dlm_woocommerce_order_licenses_creation_skip', $skip, $order ) ) {
+		$skip = (bool) apply_filters_deprecated( 'dlm_skip_licenses_generation_for_order', [ false, $orderId ], '1.8.0', 'dlm_woocommerce_order_license_creation_skip' );
+		if ( ! apply_filters( 'dlm_woocommerce_order_licenses_creation', ! $skip, $order ) ) {
 			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses: Skipped for %d', $orderId ) );
 
 			return;
