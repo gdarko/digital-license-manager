@@ -200,21 +200,8 @@ Certificates
 }
 
 /**
-Tables
+Tables Row actions
  */
-.dlm-myaccount-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-    border: 1px solid #ccc;
-}
-.dlm-myaccount-table table th {
-    text-align:left;
-}
-.dlm-myaccount-table td,
-.dlm-myaccount-table th {
-    padding: 15px;
-    border-bottom: 1px solid #ccc;
-}
 .dlm-myaccount-table-row-actions {
     display: flex;
     width: 100%;
