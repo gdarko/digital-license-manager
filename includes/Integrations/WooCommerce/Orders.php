@@ -117,15 +117,6 @@ class Orders {
 		}
 
 		/**
-		 * Allow developers to skip the whole process for specific order.
-		 */
-		if ( apply_filters( 'dlm_skip_licenses_generation_for_order', false, $orderId ) ) {
-			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses: Skipped for %d', $orderId ) );
-
-			return;
-		}
-
-		/**
 		 * Basic data sanitization
 		 *
 		 * @var WC_Order $order
@@ -133,6 +124,16 @@ class Orders {
 		$order = is_numeric( $orderId ) ? wc_get_order( $orderId ) : $orderId;
 		if ( ! $order ) {
 			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses: Order %d not found.', $orderId ) );
+
+			return;
+		}
+
+		/**
+		 * Allow developers to skip the whole process for specific order.
+		 */
+		$skip = apply_filters_deprecated( 'dlm_skip_licenses_generation_for_order', [ false, $orderId ], '1.8.0', 'dlm_woocommerce_order_license_creation_skip' );
+		if ( apply_filters( 'dlm_woocommerce_order_licenses_creation', $skip, $order ) ) {
+			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses: Skipped for %d', $orderId ) );
 
 			return;
 		}
@@ -512,6 +513,7 @@ class Orders {
 		$behavior = Settings::get( 'refund_behavior', Settings::SECTION_WOOCOMMERCE, 'disable' );
 		if ( 'skip' === $behavior ) {
 			DebugLogger::info( 'WC -> Refund: Handling not enabled! Skipping.' );
+
 			return;
 		}
 
@@ -522,9 +524,9 @@ class Orders {
 
 		foreach ( $refund->get_items() as $_refund_item ) {
 
-			$refundItem = new WC_Order_Item_Product( $_refund_item );
+			$refundItem     = new WC_Order_Item_Product( $_refund_item );
 			$refundedItemId = (int) $refundItem->get_meta( '_refunded_item_id' );
-			$refundedItem    = new WC_Order_Item_Product( $refundedItemId );
+			$refundedItem   = new WC_Order_Item_Product( $refundedItemId );
 			if ( $refundedItem->get_id() <= 0 ) {
 				DebugLogger::info( sprintf( 'WC -> Order Item (#%d) Refund: Unable to load refunded item.', $refundedItemId ) );
 				continue;
@@ -588,12 +590,14 @@ class Orders {
 
 	/**
 	 * Hide order meta from the UI
+	 *
 	 * @param $arr
 	 *
 	 * @return mixed
 	 */
 	public function hiddenOrderItemmeta( $arr ) {
 		$arr[] = '_dlm_license_id';
+
 		return $arr;
 	}
 
