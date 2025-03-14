@@ -275,6 +275,8 @@ class Orders {
 					$log_msg = sprintf( __( 'License delivery failed: %s.', 'digital-license-manager' ), $licenses->get_error_message() );
 				} else {
 					$log_msg = sprintf( __( 'Delivered in total %d licenses from stock.', 'digital-license-manager' ), count( $licenses ) );
+
+					do_action( 'dlm_stock_delivery_assigned_licenses', $licenses, $neededAmount, $availableStock, $order, $product );
 				}
 
 			} else {
@@ -283,8 +285,6 @@ class Orders {
 
 			$order->add_order_note( $log_msg );
 			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): %s', $order->get_id(), $product->get_id(), $log_msg ) );
-
-			do_action( 'dlm_stock_delivery_assigned_licenses', $licenses, $neededAmount, $availableStock, $order, $product );
 
 		} else if ( $useGenerator ) { // Sell Licenses through the active generator
 
@@ -372,7 +372,6 @@ class Orders {
 			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): Order licenses status SET to DELIVERED.', $order->get_id(), $product->get_id() ) );
 		}
 
-
 		/**
 		 * Set activations limit on the ordered licenses based on the max activastions behavior.
 		 * @var License[] $orderedLicenses
@@ -388,13 +387,18 @@ class Orders {
 		/**
 		 * Fire an action as a final step, to allow the developers to hook into.
 		 */
-		do_action(
+		do_action_deprecated(
 			'dlm_licenses_generated_on_order',
 			array(
-				'orderId'  => $order->get_id(),
-				'licenses' => $orderedLicenses
-			)
+				array(
+					'orderId'  => $order->get_id(),
+					'licenses' => $orderedLicenses
+				)
+			),
+			'1.8.0',
+			'dlm_order_licenses_created'
 		);
+		do_action( 'dlm_woocommerce_order_licenses_created', $order, $orderedLicenses );
 
 		return count( $orderedLicenses );
 	}
