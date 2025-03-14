@@ -113,7 +113,7 @@ use IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Controller;
 						    ?>
                         </td>
 					    <?php if ( ! empty( $rowActions ) ): ?>
-                            <td class="table-col table-col-date" data-title="<?php esc_html_e( 'Actions', 'digital-license-manager' ); ?>">
+                            <td class="table-col table-col-actions">
 							    <?php
 							    echo wc_get_template_html(
 								    'dlm/my-account/licenses/partials/table-activations-row-actions.php',

@@ -157,6 +157,21 @@ Licenses
     border-radius: 3px;
 }
 
+@media (max-width: 767px) {
+    .shop_table_responsive .dlm-license-status.dlm-license-status--full {
+        display: inline-block;
+        min-width: 120px;
+        width: auto;
+    }
+    .shop_table_responsive .dlm-myaccount-table-row-actions {
+        display: inline-flex;
+        width: auto;
+    }
+    .shop_table_responsive .dlm-status-inline {
+        display: inline-flex
+    }
+}
+
 .dlm-license-status--full {
     width: 100%;
 }
@@ -210,4 +225,5 @@ Tables Row actions
 .dlm-myaccount-table-row-actions .dlm-myaccount-table-row-actions--button {
     font-weight: normal;
     font-size: 15px;
+    padding: 8px 10px;
 }
