@@ -235,7 +235,7 @@ class Orders {
 		 */
 		$activationsLimit = null;
 		if ( 'quantity' === $maxActivationsBehavior ) {
-			$activationsLimit = $orderItem;
+			$activationsLimit = $orderItem->get_quantity();
 			DebugLogger::info( sprintf( 'WC -> Generate Order Licenses (Order #%d, Product #%d): Activations Limit SET to %d based on quantity', $order->get_id(), $product->get_id(), $activationsLimit ) );
 		}
 
