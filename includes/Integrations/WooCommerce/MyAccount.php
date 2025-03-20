@@ -29,6 +29,7 @@ namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Database\Repositories\Licenses;
+use IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Utils\ArrayFormatter;
 use IdeoLogix\DigitalLicenseManager\Utils\HttpHelper;
@@ -402,6 +403,11 @@ class MyAccount {
 
 		usort( $row_actions, [ ArrayFormatter::class, 'prioritySort' ] );
 
+		if ( in_array( $license->getStatus(), [ LicensePrivateStatus::DISABLED, LicensePrivateStatus::INACTIVE ] ) ) {
+			$row_actions = [];
+			$manual_activations_enabled = false;
+		}
+
 		return wc_get_template_html(
 			'dlm/my-account/licenses/partials/single-table-activations.php',
 			array(
@@ -411,6 +417,7 @@ class MyAccount {
 				'order'                      => $order,
 				'date_format'                => $dateFormat,
 				'manual_activations_enabled' => $manual_activations_enabled,
+				'can_activate'               => $can_activate,
 				'rowActions'                 => $row_actions,
 				'activations'                => $license->getActivations(),
 				'nonce'                      => wp_create_nonce( 'dlm_nonce' ),

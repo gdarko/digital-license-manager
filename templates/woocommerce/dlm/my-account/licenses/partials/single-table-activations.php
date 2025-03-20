@@ -22,6 +22,7 @@
  * @var WC_Product $product
  * @var string $date_format
  * @var string $license_key
+ * @var bool $can_activate
  * @var int $manual_activations_enabled
  * @var array $rowActions
  * @var \IdeoLogix\DigitalLicenseManager\Database\Models\LicenseActivation[] $activations
