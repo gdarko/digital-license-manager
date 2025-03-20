@@ -73,7 +73,7 @@ class LicensePublicStatus {
 			case 'valid':
 				return esc_html__( 'Valid', 'digital-license-manager' );
 			case 'invalid':
-				return esc_html__( 'Invalid', 'digital-license-manager' );
+				return esc_html__( 'Disabled', 'digital-license-manager' );
 			case 'expired':
 				return esc_html__( 'Expired', 'digital-license-manager' );
 			default:
