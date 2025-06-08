@@ -42,7 +42,16 @@ class Blocks {
 	 * @since 1.5.1
 	 */
 	public function __construct() {
+		add_action( 'init', [ $this, 'register_blocks' ] );
+		//add_action( 'enqueue_block_editor_assets', [ $this, 'register_block_editor_assets' ] );
+		add_action( 'dlm_enqueue_scripts', [ $this, 'enqueue_scripts' ], 10, 1 );
+	}
 
+	/**
+	 * Setup the blocks
+	 * @return void
+	 */
+	public function setup_blocks() {
 		$this->blocks = [
 			'licenses-check' => [
 				'i18n'      => [
@@ -69,13 +78,7 @@ class Blocks {
 			]
 		];
 
-
 		$this->blocks['licenses-table']['settings'] = apply_filters( 'dlm_block_licenses_table_settings', $this->blocks['licenses-table']['settings'] );
-
-
-		add_action( 'init', [ $this, 'register_blocks' ] );
-		//add_action( 'enqueue_block_editor_assets', [ $this, 'register_block_editor_assets' ] );
-		add_action( 'dlm_enqueue_scripts', [ $this, 'enqueue_scripts' ], 10, 1 );
 	}
 
 	/**
@@ -84,6 +87,9 @@ class Blocks {
 	 * @since 1.5.1
 	 */
 	public function register_blocks() {
+
+		$this->setup_blocks();
+
 		$block_path = DLM_ABSPATH . 'blocks/dist/';
 		foreach ( $this->blocks as $block => $params ) {
 			$asset_file = include $block_path . $block . DIRECTORY_SEPARATOR . 'index.asset.php';

@@ -209,7 +209,7 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 == Changelog ==
 
 = 1.8.0 =
-*Release date - 12 Mar 2025*
+*Release date - 08 Jun 2025*
 
 * New simplified public license statuses for front-end templates (<a href="https://docs.codeverve.com/digital-license-manager/handbook/licenses/license-statuses/">More details</a>)
 * Extend the MyAccount request handler to support methods and conditional nonces
@@ -217,6 +217,11 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 * Redirect requests to the MyAccount action handler to login page if user not logged in
 * Improved My Account buttons and table row actions styling
 * Improved My Account templates for consistency
+
+= 1.7.4 =
+*Release date - 24 Mar 2025*
+
+* Minor security improvements (props to Peter Thaleikis)
 
 = 1.7.3 =
 *Release date - 08 Mar 2025*

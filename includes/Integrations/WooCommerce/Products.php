@@ -530,8 +530,8 @@ class Products {
 						'description'   => esc_html__( 'Select the behavior of the max activations for the new licenses whether it to be based on quantity or the generator default value".', 'digital-license-manager' ),
 						'desc_tip'      => true,
 						'options'       => [
-							'standard' => __( 'Standard - Based on the Generator\'s "Max Activations"' ),
-							'quantity' => __( 'Product Quantity - Always deliver single license and set activations limit based on product quantity' ),
+							'standard' => __( 'Standard - Based on the Generator\'s "Max Activations"', 'digital-license-manager' ),
+							'quantity' => __( 'Product Quantity - Always deliver single license and set activations limit based on product quantity', 'digital-license-manager' ),
 						],
 						'value'         => $this->getMeta( $product->get_id(), 'dlm_licensed_product_activations_behavior', 'standard' ),
 						'wrapper_class' => $isVariableProduct ? 'form-row form-row-last dlm-field-conditional-target' : 'dlm-field-conditional-target',
