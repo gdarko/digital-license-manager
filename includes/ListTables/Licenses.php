@@ -824,24 +824,8 @@ class Licenses extends AbstractListTable {
 
 		foreach ( $licenseKeyIds as $licenseKeyId ) {
 			/** @var License $license */
-			$license = LicensesRepository::instance()->find( $licenseKeyId );
-
-			LicensesRepository::instance()->update( $licenseKeyId, array( 'status' => $status ) );
-
-			// The license has a product assigned to it, perhaps a stock update is necessary
-			if ( $license->getProductId() !== null ) {
-				// License was active, but no longer is
-				if ( $license->getStatus() === LicensePrivateStatus::ACTIVE && $status !== LicensePrivateStatus::ACTIVE ) {
-					// Update the stock
-					Stock::syncrhonizeProductStock( $license->getProductId() );
-				}
-
-				// License was not active, but is now
-				if ( $license->getStatus() !== LicensePrivateStatus::ACTIVE && $status === LicensePrivateStatus::ACTIVE ) {
-					// Update the stock
-					Stock::syncrhonizeProductStock( $license->getProductId() );
-				}
-			}
+            $licenseService = new LicensesService();
+			$licenseService->update( $licenseKeyId, array( 'status' => $status ) );
 
 			$count ++;
 		}

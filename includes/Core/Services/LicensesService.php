@@ -239,10 +239,8 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			return new WP_Error( 'server_error', sprintf( __( "The license key '%s' could not be added", 'digital-license-manager' ), $licenseKey ), array( 'code' => 500 ) );
 		}
 
-		// Update the stock
-		if ( $license->getProductId() !== null && $license->getStatus() === LicenseStatusEnum::ACTIVE ) {
-			Stock::syncrhonizeProductStock( $license->getProductId() );
-		}
+		do_action( 'dlm_license_created', $license, $data );
+		do_action( 'dlm_license_saved', $license, null, $data );
 
 		return $license;
 	}
@@ -423,7 +421,6 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			}
 		}
 
-
 		// License key
 		if ( array_key_exists( 'license_key', $data ) && $data['license_key'] != $oldLicense->getDecryptedLicenseKey() ) {
 			// Check for possible duplicates
@@ -466,11 +463,6 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			$updateData['activations_limit'] = is_numeric( $data['activations_limit'] ) ? absint( $data['activations_limit'] ) : null;
 		}
 
-		// Update the stock
-		if ( $oldLicense->getProductId() !== null && $oldLicense->getStatus() === LicenseStatusEnum::ACTIVE ) {
-			Stock::syncrhonizeProductStock( $oldLicense->getProductId() );
-		}
-
 		/** @var License $license */
 		$license = Licenses::instance()->updateBy(
 			array(
@@ -496,11 +488,8 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			return new WP_Error( 'server_error', __( 'The updated license key could not be found.', 'digital-license-manager' ), array( 'code' => 500 ) );
 		}
 
-		// Update the stock
-		if ( $newLicense->getProductId() !== null && $newLicense->getStatus() === LicenseStatusEnum::ACTIVE ) {
-			Stock::syncrhonizeProductStock( $newLicense->getProductId() );
-
-		}
+		do_action( 'dlm_license_updated', $newLicense, $oldLicense, $data );
+		do_action( 'dlm_license_saved', $newLicense, $oldLicense, $data );
 
 		return $newLicense;
 	}
@@ -1087,7 +1076,6 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 			return new WP_Error( 'data_error', sprintf( __( 'Required amout of %d licenses was not found in stock.', 'digital-license-manager' ), $amount ), array( 'code' => 422 ) );
 		}
 
-
 		$assignedLicenses = [];
 		for ( $i = 0; $i < $amount; $i ++ ) {
 			$license   = $licenses[ $i ];
@@ -1117,8 +1105,9 @@ class LicensesService implements ServiceInterface, MetadataInterface {
 
 			Licenses::instance()->update( $license->getId(), $params );
 
-			Stock::syncrhonizeProductStock( $product );
+			$newLicense = Licenses::instance()->findBy( array( 'id' => $license->getId() ) );
 
+			do_action( 'dlm_license_saved', $newLicense, $license, $product );
 
 			$assignedLicenses[] = $license;
 		}

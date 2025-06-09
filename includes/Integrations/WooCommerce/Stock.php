@@ -51,6 +51,7 @@ class Stock {
 
 		add_action( 'dlm_object_deleted', [ $this, 'onLicenseDeleted' ], 10, 1 );
 		add_action( 'dlm_licenses_created', [ $this, 'onLicensesCreated' ], 10, 1 );
+		add_action( 'dlm_license_saved', [$this, 'onLicenseSaved' ], 10, 3 );
 	}
 
 	/**
@@ -65,6 +66,11 @@ class Stock {
 	private static function modify( $product, $action, $amount = 1 ) {
 		// Check if the setting is enabled
 		if ( ! Settings::get( 'stock_management', Settings::SECTION_WOOCOMMERCE ) ) {
+			return false;
+		}
+
+		// Check if WooCommerce is available
+		if( ! function_exists('wc_get_product' ) ) {
 			return false;
 		}
 
@@ -156,7 +162,6 @@ class Stock {
 
 		/** @var WC_Product $product */
 		foreach ( $products as $product ) {
-
 			self::syncrhonizeProductStock( $product );
 			$synchronized ++;
 		}
@@ -249,7 +254,7 @@ class Stock {
 		$licneseStatus = (int) $license->getStatus();
 
 		if ( ! empty( $productId ) && $licneseStatus === LicensePrivateStatus::ACTIVE ) {
-			Stock::syncrhonizeProductStock( $productId );
+			self::syncrhonizeProductStock( $productId );
 		}
 	}
 
@@ -263,6 +268,32 @@ class Stock {
 	public function onLicensesCreated( $result ) {
 		$licenses = isset( $result['licenses'] ) ? $result['licenses'] : [];
 		$this->resyncMultiple( $licenses );
+	}
+
+	/**
+	 * Resync on license saved event
+	 *
+	 * @param $license
+	 * @param $oldLicense
+	 * @param $data
+	 *
+	 * @return void
+	 */
+	public function onLicenseSaved( $license, $oldLicense, $data ) {
+		// Update the stock
+		if ( $license->getProductId() !== null ) {
+			$resync = 0;
+			if ( $oldLicense ) {
+				if ( $oldLicense->getStatus() !== $license->getStatus() ) {
+					$resync = 1;
+				}
+			} else {
+				$resync = 1;
+			}
+			if ( $resync ) {
+				$this->resyncMultiple( array( $license ) );
+			}
+		}
 	}
 
 	/**
@@ -286,7 +317,7 @@ class Stock {
 		}
 		$products = array_unique( $products );
 		foreach ( $products as $productId ) {
-			Stock::syncrhonizeProductStock( $productId );
+			self::syncrhonizeProductStock( $productId );
 		}
 	}
 }
