@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce
 Requires at least: 4.7
 Requires PHP: 7.0
 Tested up to: 6.8
-Stable tag: 1.8.0-RC3
+Stable tag: 1.8.0-RC4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -209,14 +209,33 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 == Changelog ==
 
 = 1.8.0 =
-*Release date - 08 Jun 2025*
+*Release date - 14 Jun 2025*
 
 * New simplified public license statuses for front-end templates (<a href="https://docs.codeverve.com/digital-license-manager/handbook/licenses/license-statuses/">More details</a>)
-* Extend the MyAccount request handler to support methods and conditional nonces
 * Add filter for adding table actions on order licenses table for email
-* Redirect requests to the MyAccount action handler to login page if user not logged in
+* Add prefixed CSS classes in license actions area in MyAccount
+* Improved font display in order licenses email
+* Improved table display in order licenses email
+* Improved HTTP redirects when hitting MyAccount endpoints as guest
+* Improved MyAccount form action handlers
 * Improved My Account buttons and table row actions styling
-* Improved My Account templates for consistency
+* Improved My Account templates for consistency (css classes and structure)
+* Improved My Account templates overall styling
+* Improved My Account templates mobile stying
+* Changed the way sort Priority is specified when registering menus, settings, row actions from array key to array property "priority"
+* Redirect requests to the MyAccount action handler to login page if user not logged in
+* Extend the MyAccount request handler to support methods and conditional nonces
+* Fix PHP warning on order license creation
+* Add new action dlm_woocommerce_order_licenses_created
+* Add new filter dlm_woocommerce_order_licenses_creation
+* Add handling to license single template when license is disabled disabled or expired
+* Add missing strings for i18n in Product edit area
+* Refactor stock sync and improve the code for reusability
+* Fix Function _load_textdomain_just_in_time was called incorrectly warnings (Issue #52)
+* Fix License update rest endpoint when WooCommerce is disabled (Issue #53)
+* Fix License Table block status filter and styles
+* Updated block editor related JS dependencies to the latest versions
+* Updated PHP dependencies to the latest versions
 
 = 1.7.4 =
 *Release date - 24 Mar 2025*
