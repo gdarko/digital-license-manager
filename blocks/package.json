@@ -7,18 +7,11 @@
   "license": "GPL-2.0-or-later",
   "keywords": [
     "WordPress",
-    "vimeo",
+    "dlm",
     "editor",
-    "vimeify"
+    "digital-license-manager"
   ],
   "homepage": "https://github.com/gdarko/digital-license-manager",
-  "devDependencies": {
-    "@wordpress/e2e-test-utils": "^10.24.0",
-    "@wordpress/env": "^9.5.0",
-    "@wordpress/scripts": "^27.4.0",
-    "ajv": "^8.16.0",
-    "copy-webpack-plugin": "^12.0.2"
-  },
   "prettier": "@wordpress/prettier-config",
   "scripts": {
     "start": "wp-scripts start --webpack-copy-php --webpack-src-dir=src --output-path=dist",
@@ -36,11 +29,18 @@
     "packages-update": "wp-scripts packages-update"
   },
   "dependencies": {
-    "@wordpress/api-fetch": "^6.50.0",
-    "@wordpress/block-editor": "^12.9.0",
-    "@wordpress/components": "^27.1.0",
-    "@wordpress/data": "^9.23.0",
-    "@wordpress/element": "^5.30.0",
-    "@wordpress/i18n": "^4.53.0"
+    "@wordpress/api-fetch": "^7.25",
+    "@wordpress/block-editor": "^14.20",
+    "@wordpress/components": "^29.11",
+    "@wordpress/data": "^10.25",
+    "@wordpress/element": "^6.25",
+    "@wordpress/i18n": "^5.25"
+  },
+  "devDependencies": {
+    "@wordpress/e2e-test-utils": "^11.25",
+    "@wordpress/env": "^10.25",
+    "@wordpress/scripts": "^30.18",
+    "ajv": "^8.17",
+    "copy-webpack-plugin": "^13.0"
   }
 }
