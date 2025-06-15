@@ -226,8 +226,11 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 * Redirect requests to the MyAccount action handler to login page if user not logged in
 * Extend the MyAccount request handler to support methods and conditional nonces
 * Fix PHP warning on order license creation
+* Add new filter dlm_myaccount_licenses_query
 * Add new action dlm_woocommerce_order_licenses_created
 * Add new filter dlm_woocommerce_order_licenses_creation
+* Add new filter dlm_myaccount_order_licenses_row_actions
+* Deprecate filter dlm_myaccount_licenses_keys_row_actions in favor of dlm_myaccount_order_licenses_row_actions
 * Add handling to license single template when license is disabled disabled or expired
 * Add missing strings for i18n in Product edit area
 * Refactor stock sync and improve the code for reusability
