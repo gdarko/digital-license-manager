@@ -28,8 +28,10 @@
 namespace IdeoLogix\DigitalLicenseManager\Controllers;
 
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
+use IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
 use IdeoLogix\DigitalLicenseManager\Utils\TemplateHelper;
+use LicenseManagerForWooCommerce\Enums\LicenseStatus;
 
 class Frontend {
 
@@ -147,16 +149,24 @@ class Frontend {
 		$currentUserId = is_user_logged_in() ? get_current_user_id() : md5( PHP_INT_MIN );
 
 		switch ( $statusFilter ) {
+			case 'invalid':
+				$query = [
+					'user_id'    => [ 'key' => 'user_id', 'operator' => '=', 'value' => $currentUserId ],
+					'status'     => [ 'key' => 'status', 'value' => array(LicensePrivateStatus::INACTIVE, LicensePrivateStatus::DISABLED ) ],
+				];
+				break;
 			case 'valid':
 				$query = [
 					'expires_at' => [ 'key' => 'expires_at', 'operator' => '>', 'value' => gmdate( 'Y-m-d H:i:s', time() ) ],
-					'user_id'    => [ 'key' => 'user_id', 'operator' => '=', 'value' => $currentUserId ]
+					'user_id'    => [ 'key' => 'user_id', 'operator' => '=', 'value' => $currentUserId ],
+					'status'     => [ 'key' => 'status', 'operator' => 'IN', 'value' => array( LicensePrivateStatus::SOLD, LicensePrivateStatus::DELIVERED) ],
 				];
 				break;
 			case 'expired':
 				$query = [
 					'expires_at' => [ 'key' => 'expires_at', 'operator' => '<', 'value' => gmdate( 'Y-m-d H:i:s', time() ) ],
-					'user_id'    => [ 'key' => 'user_id', 'operator' => '=', 'value' => $currentUserId ]
+					'user_id'    => [ 'key' => 'user_id', 'operator' => '=', 'value' => $currentUserId ],
+					'status'     => [ 'key' => 'status', 'value' => array(LicensePrivateStatus::SOLD, LicensePrivateStatus::DELIVERED ) ],
 				];
 				break;
 			default:

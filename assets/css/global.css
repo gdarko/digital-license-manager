@@ -172,3 +172,42 @@
     background-color: var(--color-success);
     color: #ffffff;
 }
+
+/** Statuses **/
+.dlm-license-status {
+    padding: 8px;
+    border-width: 1px;
+    border-style: solid;
+    text-align: center;
+    line-height: 1;
+    border-radius: 3px;
+}
+
+.dlm-license-status--expired {
+    border-color: #ff7d7d;
+    color: #ff6565;
+    background-color: #fff6f6;
+}
+
+.dlm-license-status--valid {
+    border-color: #80dca3;
+    color: #46c271;
+    background-color: #f4fff8;
+}
+
+.dlm-license-status--invalid {
+    border-color: #ecbf7f;
+    color: #e3b472;
+    background-color: #fffaf2;
+}
+
+.dlm-license-status--full {
+    width: 100%;
+}
+
+.dlm-license-status--inline {
+    display: inline-block;
+    padding-left: 20px;
+    padding-right: 20px;
+
+}

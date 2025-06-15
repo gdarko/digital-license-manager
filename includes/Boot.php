@@ -257,7 +257,7 @@ class Boot {
 		/**
 		 * Global assets
 		 */
-		wp_register_style( 'dlm_global', DLM_CSS_URL . 'global.css', array(), $this->version );
+		wp_register_style( 'dlm_global', DLM_CSS_URL . 'global.css', array('dlm_iconfont'), $this->version );
 
 		/**
 		 * Global admin assets

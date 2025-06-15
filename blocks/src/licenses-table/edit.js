@@ -23,9 +23,14 @@ import {useEffect, useState} from "@wordpress/element";
 import { __ } from '@wordpress/i18n';
 
 
-const settings = window?.DLM_BLOCK_LICENSES_TABLE?.settings ?? {};
-
 const Edit = ({attributes, setAttributes}) => {
+    
+    const statuses = [
+        { 'label': __( 'All', 'digital-license-manager' ), 'value' : 'all' },
+        { 'label' : __( 'Valid', 'digital-license-manager' ), 'value' : 'valid' },
+        { 'label' : __( 'Invalid', 'digital-license-manager' ), 'value' : 'invalid' },
+        { 'label' : __( 'Expired', 'digital-license-manager' ), 'value' : 'expired' }
+    ];
 
     const blockProps = useBlockProps();
 
@@ -44,7 +49,7 @@ const Edit = ({attributes, setAttributes}) => {
                         <SelectControl
                             label={__('Status', 'digital-license-manager')}
                             value={statusFilter}
-                            options={settings.statuses}
+                            options={statuses}
                             onChange={setStatusFilter}
                             __nextHasNoMarginBottom
                         />
