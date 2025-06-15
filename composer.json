@@ -14,12 +14,12 @@
   "require": {
     "ext-openssl": "*",
     "ext-json": "*",
-    "defuse/php-encryption": "^2.2",
+    "defuse/php-encryption": "^2.4",
     "ignitekit/wp-notices": "^1.0",
-    "ignitekit/wp-query-builder": "^1.2",
+    "ignitekit/wp-query-builder": "^1.3",
     "ignitekit/wp-deactivate-feedback-client": "^1.0",
     "spipu/html2pdf": "^5.2",
-    "tecnickcom/tcpdf": "^6.4"
+    "tecnickcom/tcpdf": "^6.10"
   },
   "config": {
     "optimize-autoloader": true
