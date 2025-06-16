@@ -13,7 +13,7 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @version 1.0.0
+ * @version 1.0.1
  *
  * Default variables
  *
@@ -27,17 +27,17 @@
 <div style="padding:60px 90px;">
 	<?php if ( ! empty( $logo ) ): ?>
         <div style="margin-bottom: 35px;">
-            <img alt="Logo" src="<?php echo esc_attr( $logo ); ?>" style="max-width: 300px;" width="<?php echo esc_attr(apply_filters('dlm_license_certification_logo_width', 300)); ?>">
+            <img alt="Logo" src="<?php echo esc_attr( $logo ); ?>" style="max-width: 300px;" width="<?php echo esc_attr( apply_filters( 'dlm_license_certification_logo_width', 300 ) ); ?>">
         </div>
 	<?php else: ?>
         <h3><?php echo esc_html( $title ); ?></h3>
 	<?php endif; ?>
     <div style="border: 1px dashed #aaaaaa;padding:20px; width:860px; margin-top: 30px;">
         <h1 style="font-size: 32px;margin-top: 0; margin-bottom: 30px;">
-	        <?php echo apply_filters( 'dlm_license_certification_title', esc_html__( 'License Certificate', 'digital-license-manager' ) ); ?>
+			<?php echo apply_filters( 'dlm_license_certification_title', esc_html__( 'License Certificate', 'digital-license-manager' ) ); ?>
         </h1>
         <p style="font-size: 16px; margin-bottom: 20px; margin-top:0;">
-            <?php esc_html_e('This document certifies the purchase of license key for: ', 'digital-license-manager'); ?>
+			<?php esc_html_e( 'This document certifies the purchase of license key for: ', 'digital-license-manager' ); ?>
             <strong><?php echo esc_html( wp_strip_all_tags( $license_product_name ) ); ?></strong>
         </p>
         <p style="font-size: 16px; margin-bottom: 20px; margin-top:0;">
@@ -46,10 +46,16 @@
 		<?php if ( ! empty( $license_details ) ): ?>
             <table style="margin-top:0; margin-bottom: 20px;font-size: 16px; border-spacing: 15px; border: 1px solid #aaaaaa; border-collapse: collapse; width: 100%;">
                 <tbody>
-				<?php foreach ( $license_details as $detail ): ?>
+				<?php foreach ( $license_details as $key => $detail ): ?>
                     <tr>
                         <th style="padding:5px; border: 1px solid black; border-collapse: collapse; width:180px;"><?php echo esc_html( $detail['title'] ); ?></th>
-                        <td style="padding:5px; border: 1px solid black; border-collapse: collapse; width:570px;"><?php echo esc_html( wp_strip_all_tags( $detail['value'] ) ); ?></td>
+						<?php if ( $key === 'product_url' ): ?>
+                            <td style="padding:5px; border: 1px solid black; border-collapse: collapse; width:570px;">
+                                <a target="_blank" href="<?php echo esc_url( $detail['value'] ); ?>"><?php esc_html_e( 'Click to View', 'digital-license-manager' ); ?></a>
+                            </td>
+						<?php else: ?>
+                            <td style="padding:5px; border: 1px solid black; border-collapse: collapse; width:570px;"><?php echo esc_html( wp_strip_all_tags( $detail['value'] ) ); ?></td>
+						<?php endif; ?>
                     </tr>
 				<?php endforeach; ?>
                 </tbody>
