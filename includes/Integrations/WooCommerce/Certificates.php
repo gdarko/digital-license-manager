@@ -30,9 +30,9 @@ use IdeoLogix\DigitalLicenseManager\Database\Models\License;
 use IdeoLogix\DigitalLicenseManager\Settings;
 use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
 use IdeoLogix\DigitalLicenseManager\Utils\DateFormatter;
+use IdeoLogix\DigitalLicenseManager\Utils\MultiScriptHtml2Pdf;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
-use Spipu\Html2Pdf\Html2Pdf;
 
 class Certificates {
 
@@ -231,16 +231,13 @@ class Certificates {
 			Controller::getTemplatePath()
 		);
 
-
 		/**
 		 * Output the template
 		 */
 		try {
-			$html2pdf = new Html2Pdf( 'L', 'A4', 'EN' );
+			$html2pdf = new MultiScriptHtml2Pdf( 'L', 'A4', 'EN' );
 			$html2pdf->getSecurityService()->disableCheckAllowedHosts();
-			$html2pdf->addFont( 'Helvetica', '', 'helvetica.php' );
-			$html2pdf->setDefaultFont('Helvetica');
-			$html2pdf->writeHTML( $content );
+			$html2pdf->writeHTMLWithScriptDetection( $content );
 			$html2pdf->output( 'license-certificate-'.$license->getId().'.pdf', 'D' );
 		} catch ( Html2PdfException $e ) {
 			$html2pdf->clean();
