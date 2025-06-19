@@ -237,6 +237,7 @@ class Certificates {
 		 */
 		try {
 			$html2pdf = new Html2Pdf( 'L', 'A4', 'EN' );
+			$html2pdf->getSecurityService()->disableCheckAllowedHosts();
 			$html2pdf->addFont( 'Helvetica', '', 'helvetica.php' );
 			$html2pdf->setDefaultFont('Helvetica');
 			$html2pdf->writeHTML( $content );
