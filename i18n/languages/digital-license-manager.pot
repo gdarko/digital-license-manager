@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Digital License Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-15 17:38+0000\n"
+"POT-Creation-Date: 2025-06-20 08:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -345,6 +345,10 @@ msgstr ""
 
 #: includes/Core/Services/GeneratorsService.php:112
 msgid "Chunks should be between 1 and 99"
+msgstr ""
+
+#: templates/woocommerce/dlm/my-account/licenses/partials/single-certificate.php:54
+msgid "Click to View"
 msgstr ""
 
 #: templates/admin/licenses/page-import.php:54
@@ -1958,7 +1962,7 @@ msgid ""
 "Manager</strong>"
 msgstr ""
 
-#: templates/woocommerce/dlm/my-account/licenses/partials/single-certificate.php:59
+#: templates/woocommerce/dlm/my-account/licenses/partials/single-certificate.php:65
 msgid ""
 "Thanks for using our services. If you have any questions feel free to reach "
 "out and ask."
