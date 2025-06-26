@@ -104,7 +104,6 @@ class Activations extends AbstractListTable {
 	 */
 	private function getRecordsCount( $status = '' ) {
 		$query = $this->getRecordsQuery( $status );
-
 		return LicenseActivations::instance()->count( $query['where'] );
 	}
 
@@ -118,21 +117,22 @@ class Activations extends AbstractListTable {
 		$where = [];
 
 		// Applies the view filter
-		if ( ! empty( $status ) || $this->isViewFilterActive() ) {
+		if ( empty( $status ) && $this->isViewFilterActive() ) {
+            $status = isset( $_REQUEST['status'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['status'] ) ) : '';
+		}
 
-			$status = empty( $status ) && ! empty( $_GET['status'] ) ? sanitize_text_field( wp_unslash( $_GET['status'] ) ) : '';
-
-			if ( 'inactive' === $status ) {
-				$where['deactivated_at'] = [
-					'operator' => "IS",
-					'value'    => "NOT NULL",
-				];
-			} else {
+		switch($status) {
+			case 'enabled':
 				$where['deactivated_at'] = [
 					'operator' => "IS",
 					'value'    => "NULL",
 				];
-			}
+				break;
+			case 'disabled':
+				$where['deactivated_at'] = [
+					'operator' => "IS",
+					'value'    => "NOT NULL",
+				];
 		}
 
 		// Applies the search box filter
@@ -315,12 +315,12 @@ class Activations extends AbstractListTable {
 		if ( ! empty( $item->getDeactivatedAt() ) ) {
 			$html = sprintf(
 				'<div class="dlm-status dlm-status-inactive"><span class="dashicons dashicons-marker"></span> %s</div>',
-				__( 'Inactive', 'digital-license-manager' )
+				__( 'Disabled', 'digital-license-manager' )
 			);
 		} else {
 			$html = sprintf(
 				'<div class="dlm-status dlm-status-delivered"><span class="dashicons dashicons-marker"></span> %s</div>',
-				__( 'Active', 'digital-license-manager' )
+				__( 'Enabled', 'digital-license-manager' )
 			);
 		}
 
@@ -450,7 +450,7 @@ class Activations extends AbstractListTable {
 	 */
 	private function isViewFilterActive() {
 		if ( array_key_exists( 'status', $_GET )
-		     && in_array( $_GET['status'], array( 'active', 'inactive' ) )
+		     && in_array( $_GET['status'], array( 'enabled', 'disabled' ) )
 		) {
 			return true;
 		}
@@ -468,8 +468,9 @@ class Activations extends AbstractListTable {
 		$statusLinks = array();
 		$current     = ! empty( $_REQUEST['status'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['status'] ) ) : 'all';
 
-		$total_active   = $this->getRecordsCount( 'active' );
-		$total_inactive = $this->getRecordsCount( 'inactive' );
+		$total_active   = $this->getRecordsCount( 'enabled' );
+		$total_inactive = $this->getRecordsCount( 'disabled' );
+
 
 		// All link
 		$class              = $current == 'all' ? ' class="current"' : '';
@@ -482,25 +483,25 @@ class Activations extends AbstractListTable {
 			$total_active + $total_inactive
 		);
 
-		// Active link
-		$class                 = $current == 'active' ? ' class="current"' : '';
-		$activeUrl             = esc_url( add_query_arg( 'status', 'active' ) );
-		$statusLinks['active'] = sprintf(
+		// Enabled link
+		$class                 = $current == 'enabled' ? ' class="current"' : '';
+		$activeUrl             = esc_url( add_query_arg( 'status', 'enabled' ) );
+		$statusLinks['enabled'] = sprintf(
 			'<a href="%s" %s>%s <span class="count">(%d)</span></a>',
 			$activeUrl,
 			$class,
-			__( 'Active', 'digital-license-manager' ),
+			__( 'Enabled', 'digital-license-manager' ),
 			$total_active
 		);
 
-		// Inactive link
-		$class                   = $current == 'inactive' ? ' class="current"' : '';
-		$inactiveUrl             = esc_url( add_query_arg( 'status', 'inactive' ) );
-		$statusLinks['inactive'] = sprintf(
+		// Disabled link
+		$class                   = $current == 'disabled' ? ' class="current"' : '';
+		$inactiveUrl             = esc_url( add_query_arg( 'status', 'disabled' ) );
+		$statusLinks['disabled'] = sprintf(
 			'<a href="%s" %s>%s <span class="count">(%d)</span></a>',
 			$inactiveUrl,
 			$class,
-			__( 'Inactive', 'digital-license-manager' ),
+			__( 'Disabled', 'digital-license-manager' ),
 			$total_inactive
 		);
 
