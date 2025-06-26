@@ -625,7 +625,7 @@ class Activations extends AbstractListTable {
 
 		$this->processBulkActions();
 
-		$perPage     = $this->get_items_per_page( 'activations_per_page', 10 );
+		$perPage     = $this->get_items_per_page( 'dlm_activations_per_page', 10 );
 		$currentPage = $this->get_pagenum();
 		$totalItems  = $this->getRecordsCount();
 
