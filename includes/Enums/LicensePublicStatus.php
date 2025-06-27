@@ -93,7 +93,7 @@ class LicensePublicStatus {
 
 		$wrapper = isset( $args['inline'] ) && $args['inline'] ? 'inline' : 'full';
 
-		if ( in_array( $license->getStatus(), [ LicensePrivateStatus::SOLD, LicensePrivateStatus::DELIVERED ] ) ) {
+		if ( in_array( $license->getStatus(), [ LicensePrivateStatus::SOLD, LicensePrivateStatus::DELIVERED, LicensePrivateStatus::ACTIVE ] ) ) {
 			if ( $license->isExpired() ) {
 				$status = self::EXPIRED;
 			} else {
