@@ -417,7 +417,6 @@ class MyAccount {
 				'order'                      => $order,
 				'date_format'                => $dateFormat,
 				'manual_activations_enabled' => $manual_activations_enabled,
-				'can_activate'               => $can_activate,
 				'rowActions'                 => $row_actions,
 				'activations'                => $license->getActivations(),
 				'nonce'                      => wp_create_nonce( 'dlm_nonce' ),
