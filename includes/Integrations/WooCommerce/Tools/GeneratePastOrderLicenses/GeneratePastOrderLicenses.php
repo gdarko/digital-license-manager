@@ -27,10 +27,6 @@
 namespace IdeoLogix\DigitalLicenseManager\Integrations\WooCommerce\Tools\GeneratePastOrderLicenses;
 
 use IdeoLogix\DigitalLicenseManager\Abstracts\AbstractTool;
-use IdeoLogix\DigitalLicenseManager\Core\Services\GeneratorsService;
-use IdeoLogix\DigitalLicenseManager\Core\Services\LicensesService;
-use IdeoLogix\DigitalLicenseManager\Enums\LicenseSource;
-use IdeoLogix\DigitalLicenseManager\Enums\LicensePrivateStatus;
 
 class GeneratePastOrderLicenses extends AbstractTool {
 
@@ -63,7 +59,6 @@ class GeneratePastOrderLicenses extends AbstractTool {
 	 * Returns the tool steps
 	 *
 	 * eg:
-	 *
 	 *    [
 	 *        1 => array( 'name' => 'Step 1', 'pages' => 3 ),
 	 *        2 => array( 'name' => 'Step 2', 'pages' => 4 ),
@@ -140,18 +135,21 @@ class GeneratePastOrderLicenses extends AbstractTool {
 				if ( empty( $results->orders ) ) {
 					return new \WP_Error( 'not_found', sprintf( __( 'No orders found for step "%s", page "%s"' ), $step, $page ) );
 				}
-				$generatorId    = isset( $_POST['generator'] ) ? intval( $_POST['generator'] ) : 0;
-				$useProductConf = isset( $_POST['use_product_licensing_configuration'] ) ? intval( $_POST['use_product_licensing_configuration'] ) : 0;
-				$licensesServ   = new LicensesService();
-				$generatorServ  = new GeneratorsService();
-				$generator      = $generatorServ->findById( $generatorId );
 
-				static $productGenerators = [];
+				$generatorArgs = [
+					'generator'                           => isset( $_POST['generator'] ) ? intval( $_POST['generator'] ) : 0,
+					'use_product_licensing_configuration' => isset( $_POST['use_product_licensing_configuration'] ) ? intval( $_POST['use_product_licensing_configuration'] ) : 0,
+				];
+
+				$licenseGenerator = apply_filters( 'dlm_tool_generate_past_order_licenses_license_generator', null, $generatorArgs );
+
+				if ( ! ( $licenseGenerator instanceof BaseLicenseGenerator ) ) {
+					$licenseGenerator = new StandardLicenseGenerator( $generatorArgs );
+				}
 
 				$generated = 0;
 
 				foreach ( $results->orders as $order ) {
-					$generatedForOrder = 0;
 					/* @var \WC_Order $order */
 					$skip_order = (bool) $order->get_meta( '_subscription_renewal' ); // Skip renewal orders?
 					if ( apply_filters( 'dlm_tool_generate_past_order_licenses_skip_order', $skip_order, $order ) ) {
@@ -161,60 +159,12 @@ class GeneratePastOrderLicenses extends AbstractTool {
 						if ( apply_filters( 'dlm_tool_generate_past_order_licenses_skip_order_item', false, $item, $order ) ) {
 							continue;
 						}
-						/* @var \WC_Order_Item_Product $item */
-						$productId = $item->get_product_id();
-						$quantity  = $item->get_quantity();
-						if ( $useProductConf ) {
-							$product = $item->get_product();
-							if ( $product ) {
-								$productGeneratorId = $product->get_meta( 'dlm_licensed_product_assigned_generator' );
-								if ( $productGeneratorId ) {
-									$productGenerator = $generatorServ->findById( $productGeneratorId );
-									if ( ! is_wp_error( $productGenerator ) ) {
-										$productGenerators[ $productId ] = $productGenerator;
-									}
-								}
-							}
+						$generationResult = $licenseGenerator->generate( $order, $item );
+						if ( $generationResult->total > 0 ) {
+							$generated ++;
+							$order->add_meta_data( 'dlm_past_order_generated_licenses', 1 );
+							$order->save_meta_data();
 						}
-
-						if ( ! isset( $productGenerators[ $productId ] ) ) {
-							if ( ! is_wp_error( $generator ) ) {
-								$productGenerators[ $productId ] = $generator;
-							}
-						}
-
-						if ( isset( $productGenerators[ $productId ] ) ) {
-							$licenses = $generatorServ->generateLicenses( $quantity, $generator, [] );
-							if ( ! is_wp_error( $licenses ) ) {
-
-								$status = $licensesServ->createMultiple($licenses, [
-									'order_id'          => $item->get_order_id(),
-									'product_id'        => $productId,
-									'status'            => LicensePrivateStatus::SOLD,
-									'source'            => LicenseSource::GENERATOR,
-									'activations_limit' => $generator->getActivationsLimit(),
-									'valid_for'         => $generator->getExpiresIn(),
-								]);
-
-								if ( ! is_wp_error( $status ) ) {
-									$total = count( $status['licenses'] );
-									$order->add_order_note( sprintf( __( 'Generated %d license(s) for order item #%d (product #%d) with generator #%d via the "Past Orders License Generator" tool.', 'digital-license-manager' ), $total, $item->get_id(), $item->get_product_id(), $productGenerators[ $productId ]->getId() ) );
-									$item->add_meta_data( 'generated_licenses', time() );
-									$item->save_meta_data();
-									$generated ++;
-								}
-
-								if ( ! is_wp_error( $status ) ) {
-									$generated ++;
-									$generatedForOrder ++;
-								}
-							}
-						}
-					}
-
-					if ( $generatedForOrder ) {
-						$order->add_meta_data( 'dlm_past_order_generated_licenses', 1 );
-						$order->save_meta_data();
 					}
 				}
 
@@ -271,7 +221,7 @@ class GeneratePastOrderLicenses extends AbstractTool {
 	}
 
 	/**
-	 * Returns the orders query
+	 * Returns the order's query
 	 * @return mixed|null
 	 */
 	private function getOrdersQuery() {
