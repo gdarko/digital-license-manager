@@ -4,7 +4,7 @@ Tags: license key, license manager, software license, serial key, woocommerce
 Requires at least: 4.7
 Requires PHP: 7.0
 Tested up to: 6.8
-Stable tag: 1.8.2
+Stable tag: 1.8.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -208,6 +208,11 @@ Yes, you can do this by going to Settings > Tools > "Generate Licneses For Past 
 
 == Changelog ==
 
+= 1.8.3 =
+*Release date - 02 Sep 2025*
+
+* Fix undefined can_activate variable warning in My Account
+* Test with WooCommerce 10
 
 = 1.8.2 =
 *Release date - 27 Jun 2025*
